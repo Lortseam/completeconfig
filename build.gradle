@@ -17,6 +17,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modImplementation "me.shedaniel.cloth:config-2:${project.cloth_config_version}"
+	include "me.shedaniel.cloth:config-2:${project.cloth_config_version}"
 
 	compileOnly "org.projectlombok:lombok:${project.lombok_version}"
 	annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
