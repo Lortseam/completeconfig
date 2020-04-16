@@ -14,13 +14,13 @@ import me.lortseam.completeconfig.api.ConfigEntrySaveConsumer;
 import me.lortseam.completeconfig.collection.Collection;
 import me.lortseam.completeconfig.entry.BoundedEntry;
 import me.lortseam.completeconfig.entry.Entry;
+import me.lortseam.completeconfig.entry.GuiProvider;
 import me.lortseam.completeconfig.saveconsumer.SaveConsumer;
 import me.lortseam.completeconfig.serialization.CollectionsDeserializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.impl.builders.FieldBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
@@ -44,11 +44,13 @@ public class ConfigManager {
     private final LinkedHashMap<String, Collection> config = new LinkedHashMap<>();
     private final JsonElement json;
     private final Set<SaveConsumer> pendingSaveConsumers = new HashSet<>();
+    private final Map<Class, GuiProvider> guiProviders = new HashMap<>();
 
     ConfigManager(String modID) {
         this.modID = modID;
         jsonPath = Paths.get(FabricLoader.getInstance().getConfigDirectory().toPath().toString(), modID + ".json");
         json = load();
+        setDefaultGuiProviders();
     }
 
     private JsonElement load() {
@@ -58,6 +60,61 @@ public class ConfigManager {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void setDefaultGuiProviders() {
+        setEntryGuiProvider(Boolean.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startBooleanToggle(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        setEntryGuiProvider(Enum.class, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startEnumSelector(translationKey, Enum.class, value)
+                .setDefaultValue(defaultValue)
+                .setEnumNameProvider(e -> I18n.translate(joinIDs(translationKey, CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, e.name()))))
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        setEntryGuiProvider(Integer.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startIntField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        setEntryGuiProvider(Long.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startLongField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        //TODO: Bounded
+        /*BoundedEntry<Integer> boundedIntEntry = (BoundedEntry<Integer>) entry;
+        fieldBuilder = builder.startIntSlider(translationKey, (Integer) value, boundedIntEntry.getMin(), boundedIntEntry.getMax())
+                .setDefaultValue(boundedIntEntry.getDefaultValue())
+                .setSaveConsumer(boundedIntEntry::setValue);
+        BoundedEntry<Long> boundedLongEntry = (BoundedEntry<Long>) entry;
+        fieldBuilder = builder.startLongSlider(translationKey, (Long) value, boundedLongEntry.getMin(), boundedLongEntry.getMax())
+                .setDefaultValue(boundedLongEntry.getDefaultValue())
+                .setSaveConsumer(boundedLongEntry::setValue);*/
+        setEntryGuiProvider(Float.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startFloatField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        setEntryGuiProvider(Double.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startDoubleField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
     }
 
     private LinkedHashMap<String, Entry> getContainerEntries(ConfigEntryContainer container) {
@@ -151,6 +208,10 @@ public class ConfigManager {
         return entries;
     }
 
+    public <T> void setEntryGuiProvider(Class<T> entryValueType, GuiProvider<T> guiProvider) {
+        guiProviders.put(entryValueType, guiProvider);
+    }
+
     public void register(ConfigCategory... categories) {
         Arrays.stream(categories).forEach(category -> registerCategory(config, category, true));
     }
@@ -183,7 +244,7 @@ public class ConfigManager {
             throw new RuntimeException("An instance of " + container.getClass() + " is already registered!");
         }
         collection.getEntries().putAll(getContainerEntries(container));
-        ConfigEntryContainer[] containers = container.getConfigEntryContainers();
+        ConfigEntryContainer[] containers = container.getTransitiveConfigEntryContainers();
         if (containers != null) {
             for (ConfigEntryContainer c : containers) {
                 if (c instanceof ConfigCategory) {
@@ -222,55 +283,8 @@ public class ConfigManager {
     private List<AbstractConfigListEntry> buildCollection(String parentID, Collection collection) {
         List<AbstractConfigListEntry> list = new ArrayList<>();
         collection.getEntries().forEach((entryID, entry) -> {
-            ConfigEntryBuilder builder = ConfigEntryBuilder.create();
-            FieldBuilder fieldBuilder = null;
-            Object value = entry.getValue();
             String translationKey = entry.getTranslationKey() != null ? buildTranslationKey(entry.getTranslationKey()) : buildTranslationKey(parentID, entryID);
-            if (value instanceof Enum) {
-                Enum enumValue = (Enum) value;
-                fieldBuilder = builder.startEnumSelector(translationKey, enumValue.getDeclaringClass(), enumValue)
-                        .setDefaultValue((Enum) entry.getDefaultValue())
-                        .setEnumNameProvider(e -> I18n.translate(joinIDs(translationKey, CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, ((Enum) e).name()))))
-                        .setSaveConsumer(entry::setValue);
-            } else if (value instanceof Boolean) {
-                fieldBuilder = builder.startBooleanToggle(translationKey, (Boolean) value)
-                        .setDefaultValue((Boolean) entry.getDefaultValue())
-                        .setSaveConsumer(entry::setValue);
-            } else if (value instanceof Integer) {
-                if (entry instanceof BoundedEntry) {
-                    BoundedEntry<Integer> boundedIntEntry = (BoundedEntry<Integer>) entry;
-                    fieldBuilder = builder.startIntSlider(translationKey, (Integer) value, boundedIntEntry.getMin(), boundedIntEntry.getMax())
-                            .setDefaultValue(boundedIntEntry.getDefaultValue())
-                            .setSaveConsumer(boundedIntEntry::setValue);
-                } else {
-                    fieldBuilder = builder.startIntField(translationKey, (Integer) value)
-                            .setDefaultValue((Integer) entry.getDefaultValue())
-                            .setSaveConsumer(entry::setValue);
-                }
-            } else if (value instanceof Long) {
-                if (entry instanceof BoundedEntry) {
-                    BoundedEntry<Long> boundedLongEntry = (BoundedEntry<Long>) entry;
-                    fieldBuilder = builder.startLongSlider(translationKey, (Long) value, boundedLongEntry.getMin(), boundedLongEntry.getMax())
-                            .setDefaultValue(boundedLongEntry.getDefaultValue())
-                            .setSaveConsumer(boundedLongEntry::setValue);
-                } else {
-                    fieldBuilder = builder.startIntField(translationKey, (Integer) value)
-                            .setDefaultValue((Integer) entry.getDefaultValue())
-                            .setSaveConsumer(entry::setValue);
-                }
-            } else if (value instanceof Double) {
-                fieldBuilder = builder.startDoubleField(translationKey, (Double) value)
-                        .setDefaultValue((Double) entry.getDefaultValue())
-                        .setSaveConsumer(entry::setValue);
-            } else if (value instanceof Float) {
-                fieldBuilder = builder.startFloatField(translationKey, (Float) value)
-                        .setDefaultValue((Float) entry.getDefaultValue())
-                        .setSaveConsumer(entry::setValue);
-            }
-            if (fieldBuilder == null) {
-                throw new RuntimeException("Unable to create config entry field for type " + value.getClass());
-            }
-            list.add(fieldBuilder.build());
+            list.add(guiProviders.get(entry.getType()).build(translationKey, entry.getValue(), entry.getDefaultValue(), entry::setValue));
         });
         collection.getCollections().forEach((subcategoryID, c) -> {
             String id = joinIDs(parentID, subcategoryID);
