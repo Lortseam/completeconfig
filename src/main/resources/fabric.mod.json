@@ -4,9 +4,16 @@
   "version": "${version}",
 
   "name": "CompleteConfig",
+  "description": "Flexible all-in-one configuration API",
+  "contact": {
+    "email": "lortseam@gmail.com",
+    "issues": "https://gitlab.com/Lortseam/completeconfig/-/issues",
+    "sources": "https://gitlab.com/Lortseam/completeconfig"
+  },
   "authors": [
     "Lortseam"
   ],
+  "license": "Apache-2.0",
 
   "environment": "client",
 
