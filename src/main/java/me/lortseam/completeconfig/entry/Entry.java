@@ -1,16 +1,20 @@
 package me.lortseam.completeconfig.entry;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Entry<T> {
 
+    @Getter(AccessLevel.PACKAGE)
     private final Field field;
     @Getter
     private final Class<T> type;
@@ -65,6 +69,13 @@ public class Entry<T> {
             method.setAccessible(true);
         }
         saveConsumers.put(method, parentObject);
+    }
+
+    @FunctionalInterface
+    public interface GuiProvider<T> {
+
+        AbstractConfigListEntry<T> build(String translationKey, T value, T defaultValue, Consumer<T> saveConsumer);
+
     }
 
 }

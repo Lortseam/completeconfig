@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig;
 
-import com.google.common.base.CaseFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -14,7 +13,7 @@ import me.lortseam.completeconfig.api.ConfigEntrySaveConsumer;
 import me.lortseam.completeconfig.collection.Collection;
 import me.lortseam.completeconfig.entry.BoundedEntry;
 import me.lortseam.completeconfig.entry.Entry;
-import me.lortseam.completeconfig.entry.GuiProvider;
+import me.lortseam.completeconfig.entry.GuiRegistry;
 import me.lortseam.completeconfig.saveconsumer.SaveConsumer;
 import me.lortseam.completeconfig.serialization.CollectionsDeserializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
@@ -24,7 +23,6 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -33,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 //TODO: Sortierung der Categories, Subcategories und Entrys (Nach Registrierungsreihenfolge oder Alphabet; allgemein und für jeden Container einzeln?)
@@ -44,13 +43,13 @@ public class ConfigManager {
     private final LinkedHashMap<String, Collection> config = new LinkedHashMap<>();
     private final JsonElement json;
     private final Set<SaveConsumer> pendingSaveConsumers = new HashSet<>();
-    private final Map<Class, GuiProvider> guiProviders = new HashMap<>();
+    @Getter
+    private final GuiRegistry guiRegistry = new GuiRegistry();
 
     ConfigManager(String modID) {
         this.modID = modID;
         jsonPath = Paths.get(FabricLoader.getInstance().getConfigDirectory().toPath().toString(), modID + ".json");
         json = load();
-        setDefaultGuiProviders();
     }
 
     private JsonElement load() {
@@ -60,61 +59,6 @@ public class ConfigManager {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void setDefaultGuiProviders() {
-        setEntryGuiProvider(Boolean.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
-                .create()
-                .startBooleanToggle(translationKey, value)
-                .setDefaultValue(defaultValue)
-                .setSaveConsumer(saveConsumer)
-                .build()
-        );
-        setEntryGuiProvider(Enum.class, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
-                .create()
-                .startEnumSelector(translationKey, Enum.class, value)
-                .setDefaultValue(defaultValue)
-                .setEnumNameProvider(e -> I18n.translate(joinIDs(translationKey, CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, e.name()))))
-                .setSaveConsumer(saveConsumer)
-                .build()
-        );
-        setEntryGuiProvider(Integer.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
-                .create()
-                .startIntField(translationKey, value)
-                .setDefaultValue(defaultValue)
-                .setSaveConsumer(saveConsumer)
-                .build()
-        );
-        setEntryGuiProvider(Long.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
-                .create()
-                .startLongField(translationKey, value)
-                .setDefaultValue(defaultValue)
-                .setSaveConsumer(saveConsumer)
-                .build()
-        );
-        //TODO: Bounded
-        /*BoundedEntry<Integer> boundedIntEntry = (BoundedEntry<Integer>) entry;
-        fieldBuilder = builder.startIntSlider(translationKey, (Integer) value, boundedIntEntry.getMin(), boundedIntEntry.getMax())
-                .setDefaultValue(boundedIntEntry.getDefaultValue())
-                .setSaveConsumer(boundedIntEntry::setValue);
-        BoundedEntry<Long> boundedLongEntry = (BoundedEntry<Long>) entry;
-        fieldBuilder = builder.startLongSlider(translationKey, (Long) value, boundedLongEntry.getMin(), boundedLongEntry.getMax())
-                .setDefaultValue(boundedLongEntry.getDefaultValue())
-                .setSaveConsumer(boundedLongEntry::setValue);*/
-        setEntryGuiProvider(Float.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
-                .create()
-                .startFloatField(translationKey, value)
-                .setDefaultValue(defaultValue)
-                .setSaveConsumer(saveConsumer)
-                .build()
-        );
-        setEntryGuiProvider(Double.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
-                .create()
-                .startDoubleField(translationKey, value)
-                .setDefaultValue(defaultValue)
-                .setSaveConsumer(saveConsumer)
-                .build()
-        );
     }
 
     private LinkedHashMap<String, Entry> getContainerEntries(ConfigEntryContainer container) {
@@ -178,6 +122,9 @@ public class ConfigManager {
                 } else {
                     entry = new Entry<>(field, field.getType(), container, translationKey);
                 }
+                if (!guiRegistry.hasProvider(entry)) {
+                    throw new RuntimeException("Could not find gui provider for type " + entry.getType());
+                }
                 String fieldName = field.getName();
                 saveConsumers.removeIf(saveConsumer -> {
                     if (!saveConsumer.getFieldName().equals(fieldName)) {
@@ -206,10 +153,6 @@ public class ConfigManager {
             entries.putAll(findEntries(collection.getCollections(), parentClass));
         }
         return entries;
-    }
-
-    public <T> void setEntryGuiProvider(Class<T> entryValueType, GuiProvider<T> guiProvider) {
-        guiProviders.put(entryValueType, guiProvider);
     }
 
     public void register(ConfigCategory... categories) {
@@ -284,7 +227,13 @@ public class ConfigManager {
         List<AbstractConfigListEntry> list = new ArrayList<>();
         collection.getEntries().forEach((entryID, entry) -> {
             String translationKey = entry.getTranslationKey() != null ? buildTranslationKey(entry.getTranslationKey()) : buildTranslationKey(parentID, entryID);
-            list.add(guiProviders.get(entry.getType()).build(translationKey, entry.getValue(), entry.getDefaultValue(), entry::setValue));
+            AbstractConfigListEntry guiEntry;
+            if (entry instanceof BoundedEntry) {
+                guiEntry = guiRegistry.getBoundedProvider((BoundedEntry) entry).build(translationKey, entry.getValue(), ((BoundedEntry) entry).getMin(), ((BoundedEntry) entry).getMax(), entry.getDefaultValue(), entry::setValue);
+            } else {
+                guiEntry = guiRegistry.getProvider(entry).build(translationKey, entry.getValue(), entry.getDefaultValue(), entry::setValue);
+            }
+            list.add(guiEntry);
         });
         collection.getCollections().forEach((subcategoryID, c) -> {
             String id = joinIDs(parentID, subcategoryID);

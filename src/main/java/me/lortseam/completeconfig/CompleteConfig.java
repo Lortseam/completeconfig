@@ -1,5 +1,11 @@
 package me.lortseam.completeconfig;
 
+import com.google.common.base.CaseFormat;
+import me.lortseam.completeconfig.entry.Entry;
+import me.lortseam.completeconfig.entry.GuiRegistry;
+import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import net.minecraft.client.resource.language.I18n;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -13,8 +19,68 @@ public class CompleteConfig {
             throw new RuntimeException("There is already registered a manager for this mod ID!");
         }
         ConfigManager manager = new ConfigManager(modID);
+        registerDefaultGuiProviders(manager.getGuiRegistry());
         managers.add(manager);
         return manager;
+    }
+
+    private static void registerDefaultGuiProviders(GuiRegistry registry) {
+        registry.registerTypeProvider(Boolean.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startBooleanToggle(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        registry.registerTypeProvider(Integer.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startIntField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        registry.registerBoundedTypeProvider(Integer.TYPE, (translationKey, value, min, max, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startIntSlider(translationKey, value, min, max)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        registry.registerTypeProvider(Long.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startLongField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        registry.registerBoundedTypeProvider(Long.TYPE, (translationKey, value, min, max, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startLongSlider(translationKey, value, min, max)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        registry.registerTypeProvider(Float.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startFloatField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        registry.registerTypeProvider(Double.TYPE, (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startDoubleField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        registry.registerProvider(field -> Enum.class.isAssignableFrom(field.getDeclaringClass()), (Entry.GuiProvider<? extends Enum>) (translationKey, value, defaultValue, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startEnumSelector(translationKey, Enum.class, value)
+                .setDefaultValue(defaultValue)
+                .setEnumNameProvider(e -> I18n.translate(translationKey + "." + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, e.name())))
+                .setSaveConsumer(saveConsumer)
+                .build());
     }
 
     public static Optional<ConfigManager> getManager(String modID) {
