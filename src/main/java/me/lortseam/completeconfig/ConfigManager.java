@@ -122,9 +122,7 @@ public class ConfigManager {
                 } else {
                     entry = new Entry<>(field, field.getType(), container, translationKey);
                 }
-                if (!guiRegistry.hasProvider(entry)) {
-                    throw new RuntimeException("Could not find gui provider for type " + entry.getType());
-                }
+                //TODO: Check if there is a gui provider for this entry, else throw error
                 String fieldName = field.getName();
                 saveConsumers.removeIf(saveConsumer -> {
                     if (!saveConsumer.getFieldName().equals(fieldName)) {
