@@ -22,7 +22,10 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Modifier;
@@ -92,8 +95,15 @@ public class ConfigManager {
                 }
             });
             LinkedHashMap<String, Entry> clazzEntries = new LinkedHashMap<>();
-            //TODO: Warnung in der Konsole anzeigen, wenn Container POJO ist (isConfigPOJO() == true) aber trotzdem ein Feld mit @ConfigEntry annotiert ist, oder wenn Container kein POJO ist und Feld mit @ConfigEntry.Ignore annotiert ist
-            Arrays.stream(clazz.getDeclaredFields()).filter(field -> !Modifier.isStatic(field.getModifiers()) && (container.isConfigPOJO() && !field.isAnnotationPresent(ConfigEntry.Ignore.class) || field.isAnnotationPresent(ConfigEntry.class))).forEach(field -> {
+            Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
+                if (Modifier.isStatic(field.getModifiers()) || field.isAnnotationPresent(ConfigEntryContainer.Transitive.class)) {
+                    return false;
+                }
+                if (container.isConfigPOJO()) {
+                    return !field.isAnnotationPresent(ConfigEntry.Ignore.class);
+                }
+                return field.isAnnotationPresent(ConfigEntry.class);
+            }).forEach(field -> {
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
@@ -184,15 +194,37 @@ public class ConfigManager {
             throw new RuntimeException("An instance of " + container.getClass() + " is already registered!");
         }
         collection.getEntries().putAll(getContainerEntries(container));
-        ConfigEntryContainer[] containers = container.getTransitiveConfigEntryContainers();
-        if (containers != null) {
-            for (ConfigEntryContainer c : containers) {
-                if (c instanceof ConfigCategory) {
-                    registerCategory(collection.getCollections(), (ConfigCategory) c, false);
-                } else {
-                    registerContainer(collection, c);
-                    collection.getEntries().putAll(getContainerEntries(c));
+        ConfigEntryContainer[] containers = ArrayUtils.addAll(Arrays.stream(container.getClass().getDeclaredFields()).filter(field -> {
+            if (Modifier.isStatic(field.getModifiers())) {
+                return false;
+            }
+            if (container.isConfigPOJO()) {
+                return ConfigEntryContainer.class.isAssignableFrom(field.getType());
+            } else {
+                if (field.isAnnotationPresent(ConfigEntryContainer.Transitive.class)) {
+                    if (!ConfigEntryContainer.class.isAssignableFrom(field.getType())) {
+                        throw new RuntimeException("@ConfigEntryContainer.Transitive is not applicable on field type " + field.getType());
+                    }
+                    return true;
                 }
+                return false;
+            }
+        }).map(field -> {
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+            try {
+                return field.get(container);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }).toArray(ConfigEntryContainer[]::new), Objects.requireNonNull(container.getTransitiveConfigEntryContainers()));
+        for (ConfigEntryContainer c : containers) {
+            if (c instanceof ConfigCategory) {
+                registerCategory(collection.getCollections(), (ConfigCategory) c, false);
+            } else {
+                registerContainer(collection, c);
+                collection.getEntries().putAll(getContainerEntries(c));
             }
         }
     }

@@ -8,14 +8,13 @@ import java.lang.annotation.Target;
 public interface ConfigEntryContainer {
 
     default ConfigEntryContainer[] getTransitiveConfigEntryContainers() {
-        return null;
+        return new ConfigEntryContainer[0];
     }
 
     default boolean isConfigPOJO() {
         return false;
     }
 
-    //TODO: Implement
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Transitive {
