@@ -3,14 +3,19 @@ package me.lortseam.completeconfig.entry;
 import lombok.*;
 import lombok.experimental.Accessors;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Entry<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Getter(AccessLevel.PACKAGE)
     private final Field field;
@@ -30,12 +35,19 @@ public class Entry<T> {
         this.field = field;
         this.type = type;
         this.parentObject = parentObject;
-        defaultValue = getValue();
         this.customTranslationKey = customTranslationKey;
         this.extras = extras;
+        defaultValue = getValue();
     }
 
     public T getValue() {
+        if (updateValueIfNecessary()) {
+            return getValue();
+        }
+        return get();
+    }
+
+    private T get() {
         try {
             return (T) field.get(parentObject);
         } catch (IllegalAccessException e) {
@@ -44,6 +56,31 @@ public class Entry<T> {
     }
 
     public void setValue(T value) {
+        updateValueIfNecessary(value);
+    }
+
+    private boolean updateValueIfNecessary() {
+        return updateValueIfNecessary(get());
+    }
+
+    private boolean updateValueIfNecessary(T value) {
+        if (extras.getBounds() != null) {
+            if (new BigDecimal(value.toString()).compareTo(new BigDecimal(extras.getBounds().getMin().toString())) < 0) {
+                LOGGER.warn("[CompleteConfig] Tried to set value of field " + field + " to a value less than minimum bound, setting to minimum now!");
+                value = extras.getBounds().getMin();
+            } else if (new BigDecimal(value.toString()).compareTo(new BigDecimal(extras.getBounds().getMax().toString())) > 0) {
+                LOGGER.warn("[CompleteConfig] Tried to set value of field " + field + " to a value greater than maximum bound, setting to maximum now!");
+                value = extras.getBounds().getMax();
+            }
+        }
+        if (value.equals(get())) {
+            return false;
+        }
+        set(value);
+        return true;
+    }
+
+    private void set(T value) {
         if (saveConsumers.values().stream().noneMatch(parentObject -> parentObject == this.parentObject)) {
             try {
                 field.set(parentObject, value);
@@ -52,13 +89,13 @@ public class Entry<T> {
             }
         }
         if (!saveConsumers.isEmpty()) {
-            saveConsumers.forEach((method, parentObject) -> {
+            for (Map.Entry<Method, ConfigEntryContainer> mapEntry : saveConsumers.entrySet()) {
                 try {
-                    method.invoke(parentObject, value);
+                    mapEntry.getKey().invoke(mapEntry.getValue(), value);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new RuntimeException(e);
                 }
-            });
+            }
         }
     }
 
@@ -70,25 +107,6 @@ public class Entry<T> {
             method.setAccessible(true);
         }
         saveConsumers.put(method, parentObject);
-    }
-
-    @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-    public static class Extras<T> {
-
-        @Getter
-        private final Bounds<T> bounds;
-
-    }
-
-    //TODO: Bounds auch beim Einlesen aus JSON beachten
-    @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-    public static class Bounds<T> {
-
-        @Getter
-        private final T min;
-        @Getter
-        private final T max;
-
     }
 
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)

@@ -267,7 +267,7 @@ public class ConfigManager {
         return list;
     }
 
-    private void save() {
+    public void save() {
         if (!Files.exists(jsonPath)) {
             try {
                 Files.createDirectories(jsonPath.getParent());
@@ -285,18 +285,6 @@ public class ConfigManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void refreshCollections(LinkedHashMap<String, Collection> collections) {
-        collections.values().forEach(collection -> {
-            collection.getEntries().values().forEach(Entry::getValue);
-            refreshCollections(collection.getCollections());
-        });
-    }
-
-    public void refreshAndSave() {
-        refreshCollections(config);
-        save();
     }
 
 }
