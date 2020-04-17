@@ -25,7 +25,7 @@ public @interface ConfigEntry {
 
         @Target(ElementType.FIELD)
         @Retention(RetentionPolicy.RUNTIME)
-        public @interface Bound {
+        public @interface Bounded {
 
             int min();
 
@@ -40,7 +40,7 @@ public @interface ConfigEntry {
 
         @Target(ElementType.FIELD)
         @Retention(RetentionPolicy.RUNTIME)
-        public @interface Bound {
+        public @interface Bounded {
 
             long min();
 

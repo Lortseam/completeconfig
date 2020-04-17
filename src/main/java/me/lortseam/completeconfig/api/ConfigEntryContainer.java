@@ -15,6 +15,7 @@ public interface ConfigEntryContainer {
         return false;
     }
 
+    //TODO: Implement
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Transitive {

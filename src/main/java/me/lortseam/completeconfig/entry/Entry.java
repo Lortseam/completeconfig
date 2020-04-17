@@ -1,16 +1,14 @@
 package me.lortseam.completeconfig.entry;
 
-import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.*;
+import lombok.experimental.Accessors;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class Entry<T> {
 
@@ -23,15 +21,18 @@ public class Entry<T> {
     @Getter
     private final T defaultValue;
     @Getter
-    private final String translationKey;
+    private final String customTranslationKey;
+    @Getter
+    private final Extras<T> extras;
     private final Map<Method, ConfigEntryContainer> saveConsumers = new HashMap<>();
 
-    public Entry(Field field, Class<T> type, ConfigEntryContainer parentObject, String translationKey) {
+    private Entry(Field field, Class<T> type, ConfigEntryContainer parentObject, String customTranslationKey, Extras<T> extras) {
         this.field = field;
         this.type = type;
         this.parentObject = parentObject;
         defaultValue = getValue();
-        this.translationKey = translationKey;
+        this.customTranslationKey = customTranslationKey;
+        this.extras = extras;
     }
 
     public T getValue() {
@@ -71,10 +72,47 @@ public class Entry<T> {
         saveConsumers.put(method, parentObject);
     }
 
-    @FunctionalInterface
-    public interface GuiProvider<T> {
+    @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class Extras<T> {
 
-        AbstractConfigListEntry<T> build(String translationKey, T value, T defaultValue, Consumer<T> saveConsumer);
+        @Getter
+        private final Bounds<T> bounds;
+
+    }
+
+    //TODO: Bounds auch beim Einlesen aus JSON beachten
+    @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+    public static class Bounds<T> {
+
+        @Getter
+        private final T min;
+        @Getter
+        private final T max;
+
+    }
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    @Accessors(chain = true)
+    public static class Builder {
+
+        public static Builder create(Field field, ConfigEntryContainer parentObject) {
+            return new Builder(field, parentObject);
+        }
+
+        private final Field field;
+        private final ConfigEntryContainer parentObject;
+        @Setter
+        private String customTranslationKey;
+        private Bounds bounds;
+
+        public <N extends Number> Builder setBounds(N min, N max) {
+            bounds = new Bounds<>(min, max);
+            return this;
+        }
+
+        public Entry<?> build() {
+            return new Entry<>(field, field.getType(), parentObject, customTranslationKey, new Extras<>(bounds));
+        }
 
     }
 

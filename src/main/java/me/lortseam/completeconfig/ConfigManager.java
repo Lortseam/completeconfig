@@ -11,7 +11,6 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigEntrySaveConsumer;
 import me.lortseam.completeconfig.collection.Collection;
-import me.lortseam.completeconfig.entry.BoundedEntry;
 import me.lortseam.completeconfig.entry.Entry;
 import me.lortseam.completeconfig.entry.GuiRegistry;
 import me.lortseam.completeconfig.saveconsumer.SaveConsumer;
@@ -31,7 +30,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 //TODO: Sortierung der Categories, Subcategories und Entrys (Nach Registrierungsreihenfolge oder Alphabet; allgemein und für jeden Container einzeln?)
@@ -99,30 +97,31 @@ public class ConfigManager {
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
-                String translationKey = null;
+                Entry.Builder builder = Entry.Builder.create(field, container);
                 if (field.isAnnotationPresent(ConfigEntry.TranslationKey.class)) {
-                    translationKey = field.getDeclaredAnnotation(ConfigEntry.TranslationKey.class).value();
-                    if (StringUtils.isBlank(translationKey)) {
+                    String customTranslationKey = field.getDeclaredAnnotation(ConfigEntry.TranslationKey.class).value();
+                    if (StringUtils.isBlank(customTranslationKey)) {
                         throw new RuntimeException("Translation key for entry field " + field + " was blank!");
                     }
+                    builder.setCustomTranslationKey(customTranslationKey);
                 }
-                Entry entry;
-                if (field.isAnnotationPresent(ConfigEntry.Integer.Bound.class)) {
+                if (field.isAnnotationPresent(ConfigEntry.Integer.Bounded.class)) {
                     if (field.getType() != Integer.TYPE) {
                         throw new RuntimeException("Cannot apply integer bound to non integer field " + field + "!");
                     }
-                    ConfigEntry.Integer.Bound bound = field.getDeclaredAnnotation(ConfigEntry.Integer.Bound.class);
-                    entry = new BoundedEntry<>(field, Integer.TYPE, container, translationKey, bound.min(), bound.max());
-                } else if (field.isAnnotationPresent(ConfigEntry.Long.Bound.class)) {
+                    ConfigEntry.Integer.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Integer.Bounded.class);
+                    builder.setBounds(bounds.min(), bounds.max());
+                } else if (field.isAnnotationPresent(ConfigEntry.Long.Bounded.class)) {
                     if (field.getType() != Long.TYPE) {
                         throw new RuntimeException("Cannot apply long bound to non long field " + field + "!");
                     }
-                    ConfigEntry.Long.Bound bound = field.getDeclaredAnnotation(ConfigEntry.Long.Bound.class);
-                    entry = new BoundedEntry<>(field, Long.TYPE, container, translationKey, bound.min(), bound.max());
-                } else {
-                    entry = new Entry<>(field, field.getType(), container, translationKey);
+                    ConfigEntry.Long.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Long.Bounded.class);
+                    builder.setBounds(bounds.min(), bounds.max());
                 }
-                //TODO: Check if there is a gui provider for this entry, else throw error
+                Entry<?> entry = builder.build();
+                if (guiRegistry.getProvider(entry) == null) {
+                    throw new RuntimeException("Could not find gui provider for field type " + entry.getType());
+                }
                 String fieldName = field.getName();
                 saveConsumers.removeIf(saveConsumer -> {
                     if (!saveConsumer.getFieldName().equals(fieldName)) {
@@ -224,14 +223,8 @@ public class ConfigManager {
     private List<AbstractConfigListEntry> buildCollection(String parentID, Collection collection) {
         List<AbstractConfigListEntry> list = new ArrayList<>();
         collection.getEntries().forEach((entryID, entry) -> {
-            String translationKey = entry.getTranslationKey() != null ? buildTranslationKey(entry.getTranslationKey()) : buildTranslationKey(parentID, entryID);
-            AbstractConfigListEntry guiEntry;
-            if (entry instanceof BoundedEntry) {
-                guiEntry = guiRegistry.getBoundedProvider((BoundedEntry) entry).build(translationKey, entry.getValue(), ((BoundedEntry) entry).getMin(), ((BoundedEntry) entry).getMax(), entry.getDefaultValue(), entry::setValue);
-            } else {
-                guiEntry = guiRegistry.getProvider(entry).build(translationKey, entry.getValue(), entry.getDefaultValue(), entry::setValue);
-            }
-            list.add(guiEntry);
+            String translationKey = entry.getCustomTranslationKey() != null ? buildTranslationKey(entry.getCustomTranslationKey()) : buildTranslationKey(parentID, entryID);
+            list.add(guiRegistry.getProvider(entry).build(translationKey, entry.getType(), entry.getValue(), entry.getDefaultValue(), entry.getExtras(), entry::setValue));
         });
         collection.getCollections().forEach((subcategoryID, c) -> {
             String id = joinIDs(parentID, subcategoryID);
