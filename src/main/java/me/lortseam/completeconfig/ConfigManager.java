@@ -96,11 +96,11 @@ public class ConfigManager {
             });
             LinkedHashMap<String, Entry> clazzEntries = new LinkedHashMap<>();
             Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
-                if (Modifier.isStatic(field.getModifiers()) || field.isAnnotationPresent(ConfigEntryContainer.Transitive.class)) {
+                if (Modifier.isStatic(field.getModifiers())) {
                     return false;
                 }
                 if (container.isConfigPOJO()) {
-                    return !field.isAnnotationPresent(ConfigEntry.Ignore.class);
+                    return !ConfigEntryContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntry.Ignore.class);
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
             }).forEach(field -> {
@@ -200,15 +200,14 @@ public class ConfigManager {
             }
             if (container.isConfigPOJO()) {
                 return ConfigEntryContainer.class.isAssignableFrom(field.getType());
-            } else {
-                if (field.isAnnotationPresent(ConfigEntryContainer.Transitive.class)) {
-                    if (!ConfigEntryContainer.class.isAssignableFrom(field.getType())) {
-                        throw new RuntimeException("@ConfigEntryContainer.Transitive is not applicable on field type " + field.getType());
-                    }
-                    return true;
-                }
-                return false;
             }
+            if (field.isAnnotationPresent(ConfigEntryContainer.Transitive.class)) {
+                if (!ConfigEntryContainer.class.isAssignableFrom(field.getType())) {
+                    throw new RuntimeException("@ConfigEntryContainer.Transitive is not applicable on field type " + field.getType());
+                }
+                return true;
+            }
+            return false;
         }).map(field -> {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
