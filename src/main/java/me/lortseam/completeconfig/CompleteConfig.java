@@ -1,7 +1,8 @@
 package me.lortseam.completeconfig;
 
 import com.google.common.base.CaseFormat;
-import me.lortseam.completeconfig.entry.Entry;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.entry.GuiProvider;
 import me.lortseam.completeconfig.entry.GuiRegistry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -11,13 +12,14 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class CompleteConfig {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class CompleteConfig {
 
     private static final Set<ConfigManager> managers = new HashSet<>();
 
     public static ConfigManager register(String modID) {
         if (getManager(modID).isPresent()) {
-            throw new RuntimeException("There is already registered a manager for this mod ID!");
+            throw new IllegalArgumentException("A manager with this mod ID is already registered");
         }
         ConfigManager manager = new ConfigManager(modID);
         registerDefaultGuiProviders(manager.getGuiRegistry());

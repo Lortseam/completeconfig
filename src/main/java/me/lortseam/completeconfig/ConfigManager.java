@@ -13,6 +13,9 @@ import me.lortseam.completeconfig.api.ConfigEntrySaveConsumer;
 import me.lortseam.completeconfig.collection.Collection;
 import me.lortseam.completeconfig.entry.Entry;
 import me.lortseam.completeconfig.entry.GuiRegistry;
+import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
+import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
+import me.lortseam.completeconfig.exception.IllegalReturnValueException;
 import me.lortseam.completeconfig.saveconsumer.SaveConsumer;
 import me.lortseam.completeconfig.serialization.CollectionsDeserializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
@@ -35,7 +38,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//TODO: Sortierung der Categories, Subcategories und Entrys (Nach Registrierungsreihenfolge oder Alphabet; allgemein und für jeden Container einzeln?)
 public class ConfigManager {
 
     @Getter(AccessLevel.PACKAGE)
@@ -54,12 +56,14 @@ public class ConfigManager {
     }
 
     private JsonElement load() {
-        if(!Files.exists(jsonPath)) return JsonNull.INSTANCE;
-        try {
-            return new Gson().fromJson(new FileReader(jsonPath.toString()), JsonElement.class);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        if(Files.exists(jsonPath)) {
+            try {
+                return new Gson().fromJson(new FileReader(jsonPath.toString()), JsonElement.class);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
+        return JsonNull.INSTANCE;
     }
 
     private LinkedHashMap<String, Entry> getContainerEntries(ConfigEntryContainer container) {
@@ -88,7 +92,7 @@ public class ConfigManager {
                     } else {
                         Entry entry = fieldClassEntries.get(fieldName);
                         if (entry == null) {
-                            throw new RuntimeException("Could not find field " + fieldName + " in " + fieldClass + " of save consumer method " + method);
+                            throw new IllegalAnnotationParameterException("Could not find field " + fieldName + " in " + fieldClass + " requested by save consumer method " + method);
                         }
                         entry.addSaveConsumer(method, container);
                     }
@@ -111,26 +115,26 @@ public class ConfigManager {
                 if (field.isAnnotationPresent(ConfigEntry.TranslationKey.class)) {
                     String customTranslationKey = field.getDeclaredAnnotation(ConfigEntry.TranslationKey.class).value();
                     if (StringUtils.isBlank(customTranslationKey)) {
-                        throw new RuntimeException("Translation key for entry field " + field + " was blank!");
+                        throw new IllegalAnnotationParameterException("Translation key for entry field " + field + " must not be blank");
                     }
                     builder.setCustomTranslationKey(customTranslationKey);
                 }
                 if (field.isAnnotationPresent(ConfigEntry.Integer.Bounded.class)) {
                     if (field.getType() != Integer.TYPE) {
-                        throw new RuntimeException("Cannot apply integer bound to non integer field " + field + "!");
+                        throw new IllegalAnnotationTargetException("Cannot apply integer bound to non integer field " + field);
                     }
                     ConfigEntry.Integer.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Integer.Bounded.class);
                     builder.setBounds(bounds.min(), bounds.max());
                 } else if (field.isAnnotationPresent(ConfigEntry.Long.Bounded.class)) {
                     if (field.getType() != Long.TYPE) {
-                        throw new RuntimeException("Cannot apply long bound to non long field " + field + "!");
+                        throw new IllegalAnnotationTargetException("Cannot apply long bound to non long field " + field);
                     }
                     ConfigEntry.Long.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Long.Bounded.class);
                     builder.setBounds(bounds.min(), bounds.max());
                 }
                 Entry<?> entry = builder.build();
                 if (guiRegistry.getProvider(entry) == null) {
-                    throw new RuntimeException("Could not find gui provider for field type " + entry.getType());
+                    throw new UnsupportedOperationException("Could not find gui provider for field type " + entry.getType());
                 }
                 String fieldName = field.getName();
                 saveConsumers.removeIf(saveConsumer -> {
@@ -144,7 +148,7 @@ public class ConfigManager {
             });
             if (!saveConsumers.isEmpty()) {
                 SaveConsumer saveConsumer = saveConsumers.iterator().next();
-                throw new RuntimeException("Could not find field " + saveConsumer.getFieldName() + " of save consumer method " + saveConsumer.getMethod());
+                throw new IllegalAnnotationParameterException("Could not find field " + saveConsumer.getFieldName() + " in " + clazz + " requested by save consumer method " + saveConsumer.getMethod());
             }
             clazzEntries.putAll(entries);
             entries = clazzEntries;
@@ -169,10 +173,10 @@ public class ConfigManager {
     private void registerCategory(LinkedHashMap<String, Collection> configMap, ConfigCategory category, boolean applyJson) {
         String categoryID = category.getConfigCategoryID();
         if (StringUtils.isBlank(categoryID)) {
-            throw new RuntimeException("Category ID of " + category.getClass() + " was null or blank!");
+            throw new IllegalReturnValueException("Category ID of " + category.getClass() + " must not be null or blank");
         }
         if (configMap.containsKey(categoryID)) {
-            throw new RuntimeException("Duplicate category ID found: " + categoryID);
+            throw new IllegalStateException("Duplicate category ID found: " + categoryID);
         }
         Collection collection = new me.lortseam.completeconfig.collection.Collection();
         configMap.put(categoryID, collection);
@@ -191,7 +195,7 @@ public class ConfigManager {
 
     private void registerContainer(Collection collection, ConfigEntryContainer container) {
         if (!findEntries(config, container.getClass()).isEmpty()) {
-            throw new RuntimeException("An instance of " + container.getClass() + " is already registered!");
+            throw new UnsupportedOperationException("An instance of " + container.getClass() + " is already registered");
         }
         collection.getEntries().putAll(getContainerEntries(container));
         ConfigEntryContainer[] containers = ArrayUtils.addAll(Arrays.stream(container.getClass().getDeclaredFields()).filter(field -> {
@@ -203,7 +207,7 @@ public class ConfigManager {
             }
             if (field.isAnnotationPresent(ConfigEntryContainer.Transitive.class)) {
                 if (!ConfigEntryContainer.class.isAssignableFrom(field.getType())) {
-                    throw new RuntimeException("@ConfigEntryContainer.Transitive is not applicable on field type " + field.getType());
+                    throw new IllegalAnnotationTargetException("Transitive entry " + field + " must implement ConfigEntryContainer");
                 }
                 return true;
             }

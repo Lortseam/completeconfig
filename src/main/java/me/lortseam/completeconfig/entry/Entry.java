@@ -101,7 +101,7 @@ public class Entry<T> {
 
     public void addSaveConsumer(Method method, ConfigEntryContainer parentObject) {
         if (method.getParameterCount() != 1 || method.getParameterTypes()[0] != type) {
-            throw new IllegalArgumentException("Save consumer method " + method + " has wrong parameter type(s)!");
+            throw new IllegalArgumentException("Save consumer method " + method + " has wrong parameter type(s)");
         }
         if (!method.isAccessible()) {
             method.setAccessible(true);

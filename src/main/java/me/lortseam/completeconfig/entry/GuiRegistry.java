@@ -3,8 +3,6 @@ package me.lortseam.completeconfig.entry;
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 public class GuiRegistry {
 
