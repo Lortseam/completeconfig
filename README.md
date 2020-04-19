@@ -10,7 +10,8 @@ This means:
 * Easy integration into existing code
 
 ## Setup
-[![](https://jitpack.io/v/com.gitlab.Lortseam/completeconfig.svg)](https://jitpack.io/#com.gitlab.Lortseam/completeconfig)  
+[![](https://jitpack.io/v/com.gitlab.Lortseam/completeconfig.svg)](https://jitpack.io/#com.gitlab.Lortseam/completeconfig)
+
 To use the API, first add the JitPack repository in your `build.gradle`:
 ```groovy
 repositories {
@@ -29,11 +30,11 @@ dependencies {
     include 'com.gitlab.Lortseam:completeconfig:Tag'
     
     //This includes Cloth Config in your mod's jar which is required for CompleteConfig
-    //Replace Version with the current version
+    //Replace Version with current version
     include 'me.shedaniel.cloth:config-2:Version'
 
     //Recommended: Adds ModMenu to your game, so you can easily open your config GUI
-    //Replace Version with the current version
+    //Replace Version with current version
     modImplementation 'io.github.prospector:modmenu:Version'
 }
 ```
