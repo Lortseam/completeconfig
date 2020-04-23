@@ -25,7 +25,6 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -196,30 +195,36 @@ public class ConfigManager {
             throw new UnsupportedOperationException("An instance of " + container.getClass() + " is already registered");
         }
         collection.getEntries().putAll(getContainerEntries(container));
-        ConfigEntryContainer[] containers = ArrayUtils.addAll(Arrays.stream(container.getClass().getDeclaredFields()).filter(field -> {
-            if (Modifier.isStatic(field.getModifiers())) {
-                return false;
-            }
-            if (container.isConfigPOJO()) {
-                return ConfigEntryContainer.class.isAssignableFrom(field.getType());
-            }
-            if (field.isAnnotationPresent(ConfigEntryContainer.Transitive.class)) {
-                if (!ConfigEntryContainer.class.isAssignableFrom(field.getType())) {
-                    throw new IllegalAnnotationTargetException("Transitive entry " + field + " must implement ConfigEntryContainer");
+        List<ConfigEntryContainer> containers = new ArrayList<>();
+        Class clazz = container.getClass();
+        while (clazz != null) {
+            containers.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
+                if (Modifier.isStatic(field.getModifiers())) {
+                    return false;
                 }
-                return true;
-            }
-            return false;
-        }).map(field -> {
-            if (!field.isAccessible()) {
-                field.setAccessible(true);
-            }
-            try {
-                return field.get(container);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }).toArray(ConfigEntryContainer[]::new), Objects.requireNonNull(container.getTransitiveConfigEntryContainers()));
+                if (container.isConfigPOJO()) {
+                    return ConfigEntryContainer.class.isAssignableFrom(field.getType());
+                }
+                if (field.isAnnotationPresent(ConfigEntryContainer.Transitive.class)) {
+                    if (!ConfigEntryContainer.class.isAssignableFrom(field.getType())) {
+                        throw new IllegalAnnotationTargetException("Transitive entry " + field + " must implement ConfigEntryContainer");
+                    }
+                    return true;
+                }
+                return false;
+            }).map(field -> {
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
+                try {
+                    return (ConfigEntryContainer) field.get(container);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList()));
+            clazz = clazz.getSuperclass();
+        }
+        containers.addAll(Arrays.asList(container.getTransitiveConfigEntryContainers()));
         for (ConfigEntryContainer c : containers) {
             if (c instanceof ConfigCategory) {
                 registerCategory(collection.getCollections(), (ConfigCategory) c, false);
