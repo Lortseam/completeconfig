@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ConfigManager {
@@ -45,6 +46,7 @@ public class ConfigManager {
     private final Set<SaveConsumer> pendingSaveConsumers = new HashSet<>();
     @Getter
     private final GuiRegistry guiRegistry = new GuiRegistry();
+    private Supplier<ConfigBuilder> guiBuilder = ConfigBuilder::create;
 
     ConfigManager(String modID) {
         this.modID = modID;
@@ -243,10 +245,13 @@ public class ConfigManager {
         return joinIDs("config", modID, joinIDs(ids));
     }
 
+    public void setCustomGuiBuilder(Supplier<ConfigBuilder> guiBuilder) {
+        this.guiBuilder = guiBuilder;
+    }
+
     public Screen getConfigScreen(Screen parentScreen) {
-        ConfigBuilder builder = ConfigBuilder
-                .create()
-                .setParentScreen(parentScreen)
+        ConfigBuilder builder = guiBuilder.get();
+        builder.setParentScreen(parentScreen)
                 .setTitle(buildTranslationKey("title"))
                 .setSavingRunnable(this::save);
         config.forEach((categoryID, category) -> {
