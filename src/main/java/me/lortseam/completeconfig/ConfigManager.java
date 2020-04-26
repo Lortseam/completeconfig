@@ -102,6 +102,7 @@ public class ConfigManager {
                 if (Modifier.isStatic(field.getModifiers())) {
                     return false;
                 }
+                //TODO: Do not allow final fields
                 if (container.isConfigPOJO()) {
                     return !ConfigEntryContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntry.Ignore.class);
                 }
@@ -120,15 +121,27 @@ public class ConfigManager {
                 }
                 if (field.isAnnotationPresent(ConfigEntry.Integer.Bounded.class)) {
                     if (field.getType() != Integer.TYPE) {
-                        throw new IllegalAnnotationTargetException("Cannot apply integer bound to non integer field " + field);
+                        throw new IllegalAnnotationTargetException("Cannot apply Integer bound to non Integer field " + field);
                     }
                     ConfigEntry.Integer.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Integer.Bounded.class);
                     builder.setBounds(bounds.min(), bounds.max());
                 } else if (field.isAnnotationPresent(ConfigEntry.Long.Bounded.class)) {
                     if (field.getType() != Long.TYPE) {
-                        throw new IllegalAnnotationTargetException("Cannot apply long bound to non long field " + field);
+                        throw new IllegalAnnotationTargetException("Cannot apply Long bound to non Long field " + field);
                     }
                     ConfigEntry.Long.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Long.Bounded.class);
+                    builder.setBounds(bounds.min(), bounds.max());
+                } else if (field.isAnnotationPresent(ConfigEntry.Float.Bounded.class)) {
+                    if (field.getType() != Float.TYPE) {
+                        throw new IllegalAnnotationTargetException("Cannot apply Float bound to non Float field " + field);
+                    }
+                    ConfigEntry.Float.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Float.Bounded.class);
+                    builder.setBounds(bounds.min(), bounds.max());
+                } else if (field.isAnnotationPresent(ConfigEntry.Double.Bounded.class)) {
+                    if (field.getType() != Double.TYPE) {
+                        throw new IllegalAnnotationTargetException("Cannot apply Double bound to non Double field " + field);
+                    }
+                    ConfigEntry.Double.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Double.Bounded.class);
                     builder.setBounds(bounds.min(), bounds.max());
                 }
                 Entry<?> entry = builder.build();

@@ -11,6 +11,7 @@ import net.minecraft.client.resource.language.I18n;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CompleteConfig {
@@ -70,10 +71,28 @@ public final class CompleteConfig {
                 .setSaveConsumer(saveConsumer)
                 .build()
         );
+        registry.registerBoundedTypeProvider(Float.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startFloatField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                //TODO: Add error message
+                .setErrorSupplier(v -> v < extras.getBounds().getMin() || v > extras.getBounds().getMax() ? Optional.of("") : Optional.empty())
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
         registry.registerTypeProvider(Double.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startDoubleField(translationKey, value)
                 .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build()
+        );
+        registry.registerBoundedTypeProvider(Double.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startDoubleField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                //TODO: Add error message
+                .setErrorSupplier(v -> v < extras.getBounds().getMin() || v > extras.getBounds().getMax() ? Optional.of("") : Optional.empty())
                 .setSaveConsumer(saveConsumer)
                 .build()
         );

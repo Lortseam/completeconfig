@@ -27,9 +27,9 @@ public @interface ConfigEntry {
         @Retention(RetentionPolicy.RUNTIME)
         public @interface Bounded {
 
-            int min();
+            int min() default java.lang.Integer.MIN_VALUE;
 
-            int max();
+            int max() default java.lang.Integer.MAX_VALUE;
 
         }
 
@@ -42,9 +42,39 @@ public @interface ConfigEntry {
         @Retention(RetentionPolicy.RUNTIME)
         public @interface Bounded {
 
-            long min();
+            long min() default java.lang.Long.MIN_VALUE;
 
-            long max();
+            long max() default java.lang.Long.MAX_VALUE;
+
+        }
+
+    }
+
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    class Float {
+
+        @Target(ElementType.FIELD)
+        @Retention(RetentionPolicy.RUNTIME)
+        public @interface Bounded {
+
+            float min() default -java.lang.Float.MAX_VALUE;
+
+            float max() default java.lang.Float.MAX_VALUE;
+
+        }
+
+    }
+
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    class Double {
+
+        @Target(ElementType.FIELD)
+        @Retention(RetentionPolicy.RUNTIME)
+        public @interface Bounded {
+
+            double min() default -java.lang.Double.MAX_VALUE;
+
+            double max() default java.lang.Double.MAX_VALUE;
 
         }
 
