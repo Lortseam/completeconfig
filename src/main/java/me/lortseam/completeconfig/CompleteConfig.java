@@ -75,8 +75,8 @@ public final class CompleteConfig {
                 .create()
                 .startFloatField(translationKey, value)
                 .setDefaultValue(defaultValue)
-                //TODO: Add error message
-                .setErrorSupplier(v -> v < extras.getBounds().getMin() || v > extras.getBounds().getMax() ? Optional.of("") : Optional.empty())
+                .setMin(extras.getBounds().getMin())
+                .setMax(extras.getBounds().getMax())
                 .setSaveConsumer(saveConsumer)
                 .build()
         );
@@ -91,8 +91,8 @@ public final class CompleteConfig {
                 .create()
                 .startDoubleField(translationKey, value)
                 .setDefaultValue(defaultValue)
-                //TODO: Add error message
-                .setErrorSupplier(v -> v < extras.getBounds().getMin() || v > extras.getBounds().getMax() ? Optional.of("") : Optional.empty())
+                .setMin(extras.getBounds().getMin())
+                .setMax(extras.getBounds().getMax())
                 .setSaveConsumer(saveConsumer)
                 .build()
         );
