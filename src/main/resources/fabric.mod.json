@@ -7,8 +7,9 @@
   "description": "Flexible all-in-one configuration API",
   "contact": {
     "email": "lortseam@gmail.com",
-    "issues": "https://gitlab.com/Lortseam/completeconfig/-/issues",
-    "sources": "https://gitlab.com/Lortseam/completeconfig"
+    "homepage": "https://gitlab.com/Lortseam/completeconfig",
+    "sources": "https://gitlab.com/Lortseam/completeconfig",
+    "issues": "https://gitlab.com/Lortseam/completeconfig/-/issues"
   },
   "authors": [
     "Lortseam"
