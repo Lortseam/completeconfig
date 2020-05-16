@@ -6,8 +6,9 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.resource.language.I18n;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.lang.reflect.Field;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class GuiRegistry {
@@ -110,6 +111,14 @@ public class GuiRegistry {
                 .build(),
                 double.class, Double.class
         );
+        registerProvider((GuiProvider<String>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startStrField(translationKey, value)
+                .setDefaultValue(defaultValue)
+                .setSaveConsumer(saveConsumer)
+                .build(),
+                String.class
+        );
         registerProvider((GuiProvider<? extends Enum>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startEnumSelector(translationKey, (Class<Enum>) field.getType(), value)
@@ -122,14 +131,14 @@ public class GuiRegistry {
     }
 
     public <T> GuiProvider<T> getProvider(Entry<T> entry) {
-        GuiProvider<T> guiProvider = null;
-        for (Map.Entry<GuiProviderPredicate, GuiProvider> mapEntry : guiProviders.entrySet()) {
-            Field field = entry.getField();
-            if (mapEntry.getKey().test(field, entry.getExtras())) {
-                guiProvider = mapEntry.getValue();
+        Iterator<Map.Entry<GuiProviderPredicate, GuiProvider>> iter = new LinkedList<>(guiProviders.entrySet()).descendingIterator();
+        while (iter.hasNext()) {
+            Map.Entry<GuiProviderPredicate, GuiProvider> mapEntry = iter.next();
+            if (mapEntry.getKey().test(entry.getField(), entry.getExtras())) {
+                return mapEntry.getValue();
             }
         }
-        return guiProvider;
+        return null;
     }
 
 }
