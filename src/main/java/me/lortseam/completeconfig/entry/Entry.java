@@ -17,7 +17,7 @@ public class Entry<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private final Field field;
     @Getter
     private final Class<T> type;

@@ -12,7 +12,7 @@ import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigEntrySaveConsumer;
 import me.lortseam.completeconfig.collection.Collection;
 import me.lortseam.completeconfig.entry.Entry;
-import me.lortseam.completeconfig.entry.GuiRegistry;
+import me.lortseam.completeconfig.gui.GuiRegistry;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.exception.IllegalReturnValueException;
@@ -120,25 +120,25 @@ public class ConfigManager {
                     builder.setCustomTranslationKey(customTranslationKey);
                 }
                 if (field.isAnnotationPresent(ConfigEntry.Integer.Bounded.class)) {
-                    if (field.getType() != Integer.TYPE) {
+                    if (field.getType() != int.class && field.getType() != Integer.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Integer bound to non Integer field " + field);
                     }
                     ConfigEntry.Integer.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Integer.Bounded.class);
                     builder.setBounds(bounds.min(), bounds.max());
                 } else if (field.isAnnotationPresent(ConfigEntry.Long.Bounded.class)) {
-                    if (field.getType() != Long.TYPE) {
+                    if (field.getType() != long.class && field.getType() != Long.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Long bound to non Long field " + field);
                     }
                     ConfigEntry.Long.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Long.Bounded.class);
                     builder.setBounds(bounds.min(), bounds.max());
                 } else if (field.isAnnotationPresent(ConfigEntry.Float.Bounded.class)) {
-                    if (field.getType() != Float.TYPE) {
+                    if (field.getType() != float.class && field.getType() != Float.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Float bound to non Float field " + field);
                     }
                     ConfigEntry.Float.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Float.Bounded.class);
                     builder.setBounds(bounds.min(), bounds.max());
                 } else if (field.isAnnotationPresent(ConfigEntry.Double.Bounded.class)) {
-                    if (field.getType() != Double.TYPE) {
+                    if (field.getType() != double.class && field.getType() != Double.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Double bound to non Double field " + field);
                     }
                     ConfigEntry.Double.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Double.Bounded.class);
@@ -280,7 +280,7 @@ public class ConfigManager {
         List<AbstractConfigListEntry> list = new ArrayList<>();
         collection.getEntries().forEach((entryID, entry) -> {
             String translationKey = entry.getCustomTranslationKey() != null ? buildTranslationKey(entry.getCustomTranslationKey()) : buildTranslationKey(parentID, entryID);
-            list.add(guiRegistry.getProvider(entry).build(translationKey, entry.getType(), entry.getValue(), entry.getDefaultValue(), entry.getExtras(), entry::setValue));
+            list.add(guiRegistry.getProvider(entry).build(translationKey, entry.getField(), entry.getValue(), entry.getDefaultValue(), entry.getExtras(), entry::setValue));
         });
         collection.getCollections().forEach((subcategoryID, c) -> {
             String id = joinIDs(parentID, subcategoryID);

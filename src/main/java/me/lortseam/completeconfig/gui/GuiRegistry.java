@@ -1,9 +1,10 @@
-package me.lortseam.completeconfig.entry;
+package me.lortseam.completeconfig.gui;
 
 import com.google.common.base.CaseFormat;
-import me.lortseam.completeconfig.api.ConfigEntry;
+import me.lortseam.completeconfig.entry.Entry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.resource.language.I18n;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
@@ -17,100 +18,114 @@ public class GuiRegistry {
         registerDefaultProviders();
     }
 
-    public void registerProvider(GuiProviderPredicate predicate, GuiProvider provider) {
-        guiProviders.put(predicate, provider);
+    public <T> void registerProvider(GuiProvider<T> provider, GuiProviderPredicate<T> predicate, Class... types) {
+        guiProviders.put(predicate.and((field, extras) -> types.length == 0 || ArrayUtils.contains(types, field.getType())), provider);
     }
 
-    public <T> void registerTypeProvider(Class<T> type, GuiProvider<T> provider) {
-        registerProvider((field, fieldType, extras) -> fieldType == type, provider);
+    public void registerProvider(GuiProvider<?> provider, Class... types) {
+        if (types.length == 0) {
+            throw new IllegalArgumentException("Types must not be empty");
+        }
+        registerProvider(provider, (field, extras) -> true, types);
     }
 
-    public <T> void registerBoundedTypeProvider(Class<T> type, GuiProvider<T> provider) {
-        registerProvider((field, fieldType, extras) -> fieldType == type && extras.getBounds() != null, provider);
+    public void registerBoundedProvider(GuiProvider<?> provider, Class... types) {
+        registerProvider(provider, (field, extras) -> extras.getBounds() != null, types);
     }
 
     private void registerDefaultProviders() {
-        registerTypeProvider(Boolean.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Boolean>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startBooleanToggle(translationKey, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
-                .build()
+                .build(),
+                boolean.class, Boolean.class
         );
-        registerTypeProvider(Integer.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Integer>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startIntField(translationKey, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
-                .build()
+                .build(),
+                int.class, Integer.class
         );
-        registerBoundedTypeProvider(Integer.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Integer>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startIntSlider(translationKey, value, extras.getBounds().getMin(), extras.getBounds().getMax())
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
-                .build()
+                .build(),
+                int.class, Integer.class
         );
-        registerTypeProvider(Long.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Long>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startLongField(translationKey, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
-                .build()
+                .build(),
+                long.class, Long.class
         );
-        registerBoundedTypeProvider(Long.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Long>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startLongSlider(translationKey, value, extras.getBounds().getMin(), extras.getBounds().getMax())
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
-                .build()
+                .build(),
+                long.class, Long.class
         );
-        registerTypeProvider(Float.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Float>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startFloatField(translationKey, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
-                .build()
+                .build(),
+                float.class, Float.class
         );
-        registerBoundedTypeProvider(Float.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Float>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startFloatField(translationKey, value)
                 .setDefaultValue(defaultValue)
                 .setMin(extras.getBounds().getMin())
                 .setMax(extras.getBounds().getMax())
                 .setSaveConsumer(saveConsumer)
-                .build()
+                .build(),
+                float.class, Float.class
         );
-        registerTypeProvider(Double.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Double>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startDoubleField(translationKey, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
-                .build()
+                .build(),
+                double.class, Double.class
         );
-        registerBoundedTypeProvider(Double.TYPE, (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Double>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startDoubleField(translationKey, value)
                 .setDefaultValue(defaultValue)
                 .setMin(extras.getBounds().getMin())
                 .setMax(extras.getBounds().getMax())
                 .setSaveConsumer(saveConsumer)
-                .build()
+                .build(),
+                double.class, Double.class
         );
-        registerProvider((field, type, extras) -> Enum.class.isAssignableFrom(type), (GuiProvider<? extends Enum>) (translationKey, type, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<? extends Enum>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startEnumSelector(translationKey, type, value)
+                .startEnumSelector(translationKey, (Class<Enum>) field.getType(), value)
                 .setDefaultValue(defaultValue)
                 .setEnumNameProvider(e -> I18n.translate(translationKey + "." + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, e.name())))
                 .setSaveConsumer(saveConsumer)
-                .build());
+                .build(),
+                (field, extras) -> Enum.class.isAssignableFrom(field.getType())
+        );
     }
 
     public <T> GuiProvider<T> getProvider(Entry<T> entry) {
         GuiProvider<T> guiProvider = null;
         for (Map.Entry<GuiProviderPredicate, GuiProvider> mapEntry : guiProviders.entrySet()) {
             Field field = entry.getField();
-            if (mapEntry.getKey().test(field, field.getType(), entry.getExtras())) {
+            if (mapEntry.getKey().test(field, entry.getExtras())) {
                 guiProvider = mapEntry.getValue();
             }
         }
