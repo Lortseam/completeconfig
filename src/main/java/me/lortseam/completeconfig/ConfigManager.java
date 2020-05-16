@@ -12,6 +12,7 @@ import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigEntrySaveConsumer;
 import me.lortseam.completeconfig.collection.Collection;
 import me.lortseam.completeconfig.entry.Entry;
+import me.lortseam.completeconfig.exception.IllegalModifierException;
 import me.lortseam.completeconfig.gui.GuiRegistry;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
@@ -102,12 +103,14 @@ public class ConfigManager {
                 if (Modifier.isStatic(field.getModifiers())) {
                     return false;
                 }
-                //TODO: Do not allow final fields
                 if (container.isConfigPOJO()) {
                     return !ConfigEntryContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntry.Ignore.class);
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
             }).forEach(field -> {
+                if (Modifier.isFinal(field.getModifiers())) {
+                    throw new IllegalModifierException("Entry field " + field + " must not be final");
+                }
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
