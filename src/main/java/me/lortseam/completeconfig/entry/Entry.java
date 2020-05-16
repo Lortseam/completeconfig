@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Entry<T> {
 
@@ -49,7 +50,7 @@ public class Entry<T> {
 
     private T get() {
         try {
-            return (T) field.get(parentObject);
+            return (T) Objects.requireNonNull(field.get(parentObject));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
