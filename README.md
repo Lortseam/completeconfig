@@ -29,7 +29,7 @@ dependencies {
     modApi 'com.gitlab.Lortseam:completeconfig:Tag'
     include 'com.gitlab.Lortseam:completeconfig:Tag'
     
-    //This includes Cloth Config in your mod's jar which is required for CompleteConfig
+    //This bundles Cloth Config in your mod's jar which is required for CompleteConfig
     //Replace Version with current version
     include 'me.shedaniel.cloth:config-2:Version'
 
