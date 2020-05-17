@@ -115,12 +115,11 @@ public class ConfigManager {
                     field.setAccessible(true);
                 }
                 Entry.Builder builder = Entry.Builder.create(field, container);
-                if (field.isAnnotationPresent(ConfigEntry.TranslationKey.class)) {
-                    String customTranslationKey = field.getDeclaredAnnotation(ConfigEntry.TranslationKey.class).value();
-                    if (StringUtils.isBlank(customTranslationKey)) {
-                        throw new IllegalAnnotationParameterException("Translation key for entry field " + field + " must not be blank");
+                if (field.isAnnotationPresent(ConfigEntry.class)) {
+                    String customTranslationKey = field.getDeclaredAnnotation(ConfigEntry.class).customTranslationKey();
+                    if (!StringUtils.isBlank(customTranslationKey)) {
+                        builder.setCustomTranslationKey(customTranslationKey);
                     }
-                    builder.setCustomTranslationKey(customTranslationKey);
                 }
                 if (field.isAnnotationPresent(ConfigEntry.Integer.Bounded.class)) {
                     if (field.getType() != int.class && field.getType() != Integer.class) {

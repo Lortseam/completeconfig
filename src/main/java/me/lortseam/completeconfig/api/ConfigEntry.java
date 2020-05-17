@@ -12,13 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigEntry {
 
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface TranslationKey {
-
-        String value();
-
-    }
+    String customTranslationKey() default "";
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class Integer {
