@@ -26,6 +26,7 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -267,10 +268,10 @@ public class ConfigManager {
     public Screen getConfigScreen(Screen parentScreen) {
         ConfigBuilder builder = guiBuilder.get();
         builder.setParentScreen(parentScreen)
-                .setTitle(buildTranslationKey("title"))
+                .setTitle(new TranslatableText(buildTranslationKey("title")))
                 .setSavingRunnable(this::save);
         config.forEach((categoryID, category) -> {
-            me.shedaniel.clothconfig2.api.ConfigCategory configCategory = builder.getOrCreateCategory(buildTranslationKey(categoryID));
+            me.shedaniel.clothconfig2.api.ConfigCategory configCategory = builder.getOrCreateCategory(new TranslatableText(buildTranslationKey(categoryID)));
             for (AbstractConfigListEntry entry : buildCollection(categoryID, category)) {
                 configCategory.addEntry(entry);
             }
@@ -286,7 +287,7 @@ public class ConfigManager {
         });
         collection.getCollections().forEach((subcategoryID, c) -> {
             String id = joinIDs(parentID, subcategoryID);
-            SubCategoryBuilder subBuilder = ConfigEntryBuilder.create().startSubCategory(buildTranslationKey(id));
+            SubCategoryBuilder subBuilder = ConfigEntryBuilder.create().startSubCategory(new TranslatableText(buildTranslationKey(id)));
             subBuilder.addAll(buildCollection(id, c));
             list.add(subBuilder.build());
         });
