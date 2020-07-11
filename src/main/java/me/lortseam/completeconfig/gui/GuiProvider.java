@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 @FunctionalInterface
 public interface GuiProvider<T> {
 
+    //TODO: Replace translationKey with Text
     AbstractConfigListEntry<T> build(String translationKey, Field field, T value, T defaultValue, Extras<T> extras, Consumer<T> saveConsumer);
 
 }
