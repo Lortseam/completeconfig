@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 //TODO: Rename to ConfigEntryListener
 public @interface ConfigEntrySaveConsumer {
 
+    //TODO: Automatically detect field name dependening on method name (e.g. setExampleValue -> field name is exampleValue)
     String value();
 
     Class<? extends ConfigEntryContainer> container() default ConfigEntryContainer.class;
