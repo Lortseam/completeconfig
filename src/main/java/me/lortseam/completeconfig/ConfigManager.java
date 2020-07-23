@@ -18,6 +18,7 @@ import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.exception.IllegalReturnValueException;
 import me.lortseam.completeconfig.listener.Listener;
+import me.lortseam.completeconfig.serialization.CollectionSerializer;
 import me.lortseam.completeconfig.serialization.CollectionsDeserializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
@@ -195,7 +196,7 @@ public class ConfigManager {
         if (configMap.containsKey(categoryID)) {
             throw new IllegalStateException("Duplicate category ID found: " + categoryID);
         }
-        Collection collection = new me.lortseam.completeconfig.collection.Collection();
+        Collection collection = new Collection();
         configMap.put(categoryID, collection);
         registerContainer(collection, category);
         if (collection.getEntries().isEmpty() && collection.getCollections().isEmpty()) {
@@ -307,6 +308,7 @@ public class ConfigManager {
         }
         try(Writer writer = new FileWriter(jsonPath.toString())) {
             new GsonBuilder()
+                    .registerTypeAdapter(CollectionSerializer.TYPE, new CollectionSerializer())
                     .registerTypeAdapter(EntrySerializer.TYPE, new EntrySerializer())
                     .setPrettyPrinting()
                     .create()

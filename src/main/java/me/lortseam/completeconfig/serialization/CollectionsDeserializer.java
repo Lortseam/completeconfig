@@ -41,6 +41,7 @@ public class CollectionsDeserializer implements JsonDeserializer<LinkedHashMap<S
         }
         new GsonBuilder()
                 .registerTypeAdapter(CollectionsDeserializer.TYPE, new CollectionsDeserializer(collection.getCollections()))
+                .registerTypeAdapter(CollectionDeserializer.TYPE, new CollectionDeserializer())
                 .registerTypeAdapter(EntriesDeserializer.TYPE, new EntriesDeserializer(collection.getEntries()))
                 .create()
                 .fromJson(element, Collection.class);

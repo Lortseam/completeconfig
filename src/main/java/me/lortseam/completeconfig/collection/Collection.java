@@ -1,17 +1,22 @@
 package me.lortseam.completeconfig.collection;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.entry.Entry;
 
 import java.util.LinkedHashMap;
 
+@AllArgsConstructor
 public class Collection {
 
-    //TODO: Do not save empty maps in json file or completely remove "entries" and "collections" keys in json file
     @Getter
-    private final LinkedHashMap<String, Entry> entries = new LinkedHashMap<>();
+    private final LinkedHashMap<String, Entry> entries;
     @Getter
-    private final LinkedHashMap<String, Collection> collections = new LinkedHashMap<>();
+    private final LinkedHashMap<String, Collection> collections;
+
+    public Collection() {
+        this(new LinkedHashMap<>(), new LinkedHashMap<>());
+    }
 
 }
