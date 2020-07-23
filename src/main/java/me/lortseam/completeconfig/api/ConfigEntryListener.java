@@ -7,14 +7,11 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-//TODO: Rename to ConfigEntryListener
-public @interface ConfigEntrySaveConsumer {
+public @interface ConfigEntryListener {
 
     //TODO: Automatically detect field name dependening on method name (e.g. setExampleValue -> field name is exampleValue)
     String value();
 
     Class<? extends ConfigEntryContainer> container() default ConfigEntryContainer.class;
-
-    //TODO: Add boolean to update field regardless of this save consumer
 
 }

@@ -9,7 +9,7 @@ import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigCategory;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.api.ConfigEntrySaveConsumer;
+import me.lortseam.completeconfig.api.ConfigEntryListener;
 import me.lortseam.completeconfig.collection.Collection;
 import me.lortseam.completeconfig.entry.Entry;
 import me.lortseam.completeconfig.exception.IllegalModifierException;
@@ -17,7 +17,7 @@ import me.lortseam.completeconfig.gui.GuiRegistry;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.exception.IllegalReturnValueException;
-import me.lortseam.completeconfig.saveconsumer.SaveConsumer;
+import me.lortseam.completeconfig.listener.Listener;
 import me.lortseam.completeconfig.serialization.CollectionsDeserializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
@@ -45,7 +45,7 @@ public class ConfigManager {
     private final Path jsonPath;
     private final LinkedHashMap<String, Collection> config = new LinkedHashMap<>();
     private final JsonElement json;
-    private final Set<SaveConsumer> pendingSaveConsumers = new HashSet<>();
+    private final Set<Listener> pendingListeners = new HashSet<>();
     @Getter
     private final GuiRegistry guiRegistry = new GuiRegistry();
     private Supplier<ConfigBuilder> guiBuilder = ConfigBuilder::create;
@@ -71,31 +71,31 @@ public class ConfigManager {
         LinkedHashMap<String, Entry> entries = new LinkedHashMap<>();
         Class clazz = container.getClass();
         while (clazz != null) {
-            Set<SaveConsumer> saveConsumers = new HashSet<>();
-            Iterator<SaveConsumer> iter = pendingSaveConsumers.iterator();
+            List<Listener> listeners = new ArrayList<>();
+            Iterator<Listener> iter = pendingListeners.iterator();
             while (iter.hasNext()) {
-                SaveConsumer saveConsumer = iter.next();
-                if (saveConsumer.getFieldClass() == clazz) {
-                    saveConsumers.add(saveConsumer);
-                    pendingSaveConsumers.remove(saveConsumer);
+                Listener listener = iter.next();
+                if (listener.getFieldClass() == clazz) {
+                    listeners.add(listener);
+                    pendingListeners.remove(listener);
                 }
             }
-            Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntrySaveConsumer.class)).forEach(method -> {
-                ConfigEntrySaveConsumer saveConsumerAnnotation = method.getDeclaredAnnotation(ConfigEntrySaveConsumer.class);
-                String fieldName = saveConsumerAnnotation.value();
-                Class<? extends ConfigEntryContainer> fieldClass = saveConsumerAnnotation.container();
+            Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
+                ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
+                String fieldName = listener.value();
+                Class<? extends ConfigEntryContainer> fieldClass = listener.container();
                 if (fieldClass == ConfigEntryContainer.class) {
-                    saveConsumers.add(new SaveConsumer(method, container, fieldName));
+                    listeners.add(new Listener(method, container, fieldName));
                 } else {
                     Map<String, Entry> fieldClassEntries = findEntries(config, fieldClass);
                     if (fieldClassEntries.isEmpty()) {
-                        pendingSaveConsumers.add(new SaveConsumer(method, container, fieldName, fieldClass));
+                        pendingListeners.add(new Listener(method, container, fieldName, fieldClass));
                     } else {
                         Entry entry = fieldClassEntries.get(fieldName);
                         if (entry == null) {
-                            throw new IllegalAnnotationParameterException("Could not find field " + fieldName + " in " + fieldClass + " requested by save consumer method " + method);
+                            throw new IllegalAnnotationParameterException("Could not find field " + fieldName + " in " + fieldClass + " requested by listener method " + method);
                         }
-                        entry.addSaveConsumer(method, container);
+                        entry.addListener(method, container);
                     }
                 }
             });
@@ -117,10 +117,12 @@ public class ConfigManager {
                 }
                 Entry.Builder builder = Entry.Builder.create(field, container);
                 if (field.isAnnotationPresent(ConfigEntry.class)) {
-                    String customTranslationKey = field.getDeclaredAnnotation(ConfigEntry.class).customTranslationKey();
+                    ConfigEntry entryAnnotation = field.getDeclaredAnnotation(ConfigEntry.class);
+                    String customTranslationKey = entryAnnotation.customTranslationKey();
                     if (!StringUtils.isBlank(customTranslationKey)) {
                         builder.setCustomTranslationKey(customTranslationKey);
                     }
+                    builder.setForceUpdate(entryAnnotation.forceUpdate());
                 }
                 if (field.isAnnotationPresent(ConfigEntry.Integer.Bounded.class)) {
                     if (field.getType() != int.class && field.getType() != Integer.class) {
@@ -152,18 +154,18 @@ public class ConfigManager {
                     throw new UnsupportedOperationException("Could not find gui provider for field type " + entry.getType());
                 }
                 String fieldName = field.getName();
-                saveConsumers.removeIf(saveConsumer -> {
-                    if (!saveConsumer.getFieldName().equals(fieldName)) {
+                listeners.removeIf(listener -> {
+                    if (!listener.getFieldName().equals(fieldName)) {
                         return false;
                     }
-                    entry.addSaveConsumer(saveConsumer.getMethod(), saveConsumer.getParentObject());
+                    entry.addListener(listener.getMethod(), listener.getParentObject());
                     return true;
                 });
                 clazzEntries.put(fieldName, entry);
             });
-            if (!saveConsumers.isEmpty()) {
-                SaveConsumer saveConsumer = saveConsumers.iterator().next();
-                throw new IllegalAnnotationParameterException("Could not find field " + saveConsumer.getFieldName() + " in " + clazz + " requested by save consumer method " + saveConsumer.getMethod());
+            if (!listeners.isEmpty()) {
+                Listener listener = listeners.iterator().next();
+                throw new IllegalAnnotationParameterException("Could not find field " + listener.getFieldName() + " in " + clazz + " requested by listener method " + listener.getMethod());
             }
             clazzEntries.putAll(entries);
             entries = clazzEntries;

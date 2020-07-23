@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.saveconsumer;
+package me.lortseam.completeconfig.listener;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import java.lang.reflect.Method;
 
 @RequiredArgsConstructor
-public class SaveConsumer {
+public class Listener {
 
     @Getter
     private final Method method;
@@ -18,7 +18,7 @@ public class SaveConsumer {
     @Getter
     private final Class<? extends ConfigEntryContainer> fieldClass;
 
-    public SaveConsumer(Method method, ConfigEntryContainer parentObject, String fieldName) {
+    public Listener(Method method, ConfigEntryContainer parentObject, String fieldName) {
         this.method = method;
         this.parentObject = parentObject;
         this.fieldName = fieldName;
