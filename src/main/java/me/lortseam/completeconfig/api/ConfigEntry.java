@@ -14,6 +14,8 @@ public @interface ConfigEntry {
 
     String customTranslationKey() default "";
 
+    String[] customTooltipKeys() default {};
+
     boolean forceUpdate() default false;
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

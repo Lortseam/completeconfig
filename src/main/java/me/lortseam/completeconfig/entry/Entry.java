@@ -27,15 +27,18 @@ public class Entry<T> {
     @Getter
     private final String customTranslationKey;
     @Getter
+    private final String[] customTooltipKeys;
+    @Getter
     private final Extras<T> extras;
     private final List<Listener> listeners = new ArrayList<>();
     private final boolean forceUpdate;
 
-    private Entry(Field field, Class<T> type, ConfigEntryContainer parentObject, String customTranslationKey, Extras<T> extras, boolean forceUpdate) {
+    private Entry(Field field, Class<T> type, ConfigEntryContainer parentObject, String customTranslationKey, String[] customTooltipKeys, Extras<T> extras, boolean forceUpdate) {
         this.field = field;
         this.type = type;
         this.parentObject = parentObject;
         this.customTranslationKey = customTranslationKey;
+        this.customTooltipKeys = customTooltipKeys;
         this.extras = extras;
         this.forceUpdate = forceUpdate;
         defaultValue = getValue();
@@ -123,6 +126,8 @@ public class Entry<T> {
         @Setter
         private String customTranslationKey;
         @Setter
+        private String[] customTooltipKeys;
+        @Setter
         private boolean forceUpdate;
         private Bounds bounds;
 
@@ -132,7 +137,7 @@ public class Entry<T> {
         }
 
         public Entry<?> build() {
-            return new Entry<>(field, field.getType(), parentObject, customTranslationKey, new Extras<>(bounds), forceUpdate);
+            return new Entry<>(field, field.getType(), parentObject, customTranslationKey, customTooltipKeys, new Extras<>(bounds), forceUpdate);
         }
 
     }

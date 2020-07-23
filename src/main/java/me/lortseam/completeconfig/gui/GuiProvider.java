@@ -5,11 +5,12 @@ import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import net.minecraft.text.Text;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @FunctionalInterface
 public interface GuiProvider<T> {
 
-    AbstractConfigListEntry<T> build(Text text, Field field, T value, T defaultValue, Extras<T> extras, Consumer<T> saveConsumer);
+    AbstractConfigListEntry<T> build(Text text, Field field, T value, T defaultValue, Optional<Text[]> tooltip, Extras<T> extras, Consumer<T> saveConsumer);
 
 }

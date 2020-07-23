@@ -28,6 +28,8 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.StringUtils;
 
@@ -129,6 +131,15 @@ public class ConfigManager {
                     String customTranslationKey = entryAnnotation.customTranslationKey();
                     if (!StringUtils.isBlank(customTranslationKey)) {
                         builder.setCustomTranslationKey(customTranslationKey);
+                    }
+                    String[] customTooltipKeys = entryAnnotation.customTooltipKeys();
+                    if (customTooltipKeys.length > 0) {
+                        for (String key : customTooltipKeys) {
+                            if (StringUtils.isBlank(key)) {
+                                throw new IllegalAnnotationParameterException("Tooltip key(s) of entry field " + field + " must not be blank");
+                            }
+                        }
+                        builder.setCustomTooltipKeys(customTooltipKeys);
                     }
                     builder.setForceUpdate(entryAnnotation.forceUpdate());
                 }
@@ -293,7 +304,16 @@ public class ConfigManager {
         List<AbstractConfigListEntry> list = new ArrayList<>();
         collection.getEntries().forEach((entryID, entry) -> {
             String translationKey = entry.getCustomTranslationKey() != null ? buildTranslationKey(entry.getCustomTranslationKey()) : buildTranslationKey(parentID, entryID);
-            list.add(guiRegistry.getProvider(entry).build(new TranslatableText(translationKey), entry.getField(), entry.getValue(), entry.getDefaultValue(), entry.getExtras(), entry::setValue));
+            String[] tooltipKeys = entry.getCustomTooltipKeys();
+            if (tooltipKeys != null) {
+                tooltipKeys = Arrays.stream(tooltipKeys).map(this::buildTranslationKey).toArray(String[]::new);
+            } else {
+                String defaultTooltipKey = joinIDs(translationKey, "tooltip");
+                if (I18n.hasTranslation(defaultTooltipKey)) {
+                    tooltipKeys = new String[] {defaultTooltipKey};
+                }
+            }
+            list.add(guiRegistry.getProvider(entry).build(new TranslatableText(translationKey), entry.getField(), entry.getValue(), entry.getDefaultValue(), tooltipKeys != null ? Optional.of(Arrays.stream(tooltipKeys).map(TranslatableText::new).toArray(Text[]::new)) : Optional.empty(), entry.getExtras(), entry::setValue));
         });
         collection.getCollections().forEach((subcategoryID, c) -> {
             String id = joinIDs(parentID, subcategoryID);

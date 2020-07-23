@@ -39,94 +39,105 @@ public class GuiRegistry {
     }
 
     private void registerDefaultProviders() {
-        registerProvider((GuiProvider<Boolean>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Boolean>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startBooleanToggle(text, value)
                 .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 boolean.class, Boolean.class
         );
-        registerProvider((GuiProvider<Integer>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Integer>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startIntField(text, value)
                 .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 int.class, Integer.class
         );
-        registerBoundedProvider((GuiProvider<Integer>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Integer>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startIntSlider(text, value, extras.getBounds().getMin(), extras.getBounds().getMax())
                 .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 int.class, Integer.class
         );
-        registerProvider((GuiProvider<Long>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Long>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startLongField(text, value)
                 .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 long.class, Long.class
         );
-        registerBoundedProvider((GuiProvider<Long>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Long>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startLongSlider(text, value, extras.getBounds().getMin(), extras.getBounds().getMax())
                 .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 long.class, Long.class
         );
-        registerProvider((GuiProvider<Float>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Float>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startFloatField(text, value)
                 .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 float.class, Float.class
         );
-        registerBoundedProvider((GuiProvider<Float>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Float>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startFloatField(text, value)
                 .setDefaultValue(defaultValue)
                 .setMin(extras.getBounds().getMin())
                 .setMax(extras.getBounds().getMax())
+                .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 float.class, Float.class
         );
-        registerProvider((GuiProvider<Double>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Double>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startDoubleField(text, value)
                 .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 double.class, Double.class
         );
-        registerBoundedProvider((GuiProvider<Double>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Double>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startDoubleField(text, value)
                 .setDefaultValue(defaultValue)
                 .setMin(extras.getBounds().getMin())
                 .setMax(extras.getBounds().getMax())
+                .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 double.class, Double.class
         );
-        registerProvider((GuiProvider<String>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<String>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startStrField(text, value)
                 .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 String.class
         );
-        registerProvider((GuiProvider<? extends Enum>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<? extends Enum>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startEnumSelector(text, (Class<Enum>) field.getType(), value)
                 .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
                                                                                             //TODO: Bad solution; provide custom enum name provider
                 .setEnumNameProvider(e -> new TranslatableText(((TranslatableText) text).getKey() + "." + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, e.name())))
                 .setSaveConsumer(saveConsumer)
