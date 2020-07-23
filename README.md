@@ -33,7 +33,7 @@ dependencies {
     //Replace Version with current version
     include 'me.shedaniel.cloth:config-2:Version'
 
-    //Recommended: Adds ModMenu to your game, so you can easily open your config GUI
+    //Recommended: Adds Mod Menu to your game, so you can easily open and check your config GUI (see the Mod Menu documentation for more information)
     //Replace Version with current version
     modImplementation 'io.github.prospector:modmenu:Version'
 }
