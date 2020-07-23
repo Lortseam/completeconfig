@@ -283,7 +283,7 @@ public class ConfigManager {
         List<AbstractConfigListEntry> list = new ArrayList<>();
         collection.getEntries().forEach((entryID, entry) -> {
             String translationKey = entry.getCustomTranslationKey() != null ? buildTranslationKey(entry.getCustomTranslationKey()) : buildTranslationKey(parentID, entryID);
-            list.add(guiRegistry.getProvider(entry).build(translationKey, entry.getField(), entry.getValue(), entry.getDefaultValue(), entry.getExtras(), entry::setValue));
+            list.add(guiRegistry.getProvider(entry).build(new TranslatableText(translationKey), entry.getField(), entry.getValue(), entry.getDefaultValue(), entry.getExtras(), entry::setValue));
         });
         collection.getCollections().forEach((subcategoryID, c) -> {
             String id = joinIDs(parentID, subcategoryID);

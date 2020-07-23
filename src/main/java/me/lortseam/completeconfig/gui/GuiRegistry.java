@@ -4,6 +4,7 @@ import com.google.common.base.CaseFormat;
 import me.lortseam.completeconfig.entry.Entry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -11,6 +12,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class GuiRegistry {
 
@@ -36,57 +39,57 @@ public class GuiRegistry {
     }
 
     private void registerDefaultProviders() {
-        registerProvider((GuiProvider<Boolean>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Boolean>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startBooleanToggle(new TranslatableText(translationKey), value)
+                .startBooleanToggle(text, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 boolean.class, Boolean.class
         );
-        registerProvider((GuiProvider<Integer>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Integer>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startIntField(new TranslatableText(translationKey), value)
+                .startIntField(text, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 int.class, Integer.class
         );
-        registerBoundedProvider((GuiProvider<Integer>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Integer>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startIntSlider(new TranslatableText(translationKey), value, extras.getBounds().getMin(), extras.getBounds().getMax())
+                .startIntSlider(text, value, extras.getBounds().getMin(), extras.getBounds().getMax())
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 int.class, Integer.class
         );
-        registerProvider((GuiProvider<Long>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Long>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startLongField(new TranslatableText(translationKey), value)
+                .startLongField(text, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 long.class, Long.class
         );
-        registerBoundedProvider((GuiProvider<Long>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Long>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startLongSlider(new TranslatableText(translationKey), value, extras.getBounds().getMin(), extras.getBounds().getMax())
+                .startLongSlider(text, value, extras.getBounds().getMin(), extras.getBounds().getMax())
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 long.class, Long.class
         );
-        registerProvider((GuiProvider<Float>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Float>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startFloatField(new TranslatableText(translationKey), value)
+                .startFloatField(text, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 float.class, Float.class
         );
-        registerBoundedProvider((GuiProvider<Float>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Float>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startFloatField(new TranslatableText(translationKey), value)
+                .startFloatField(text, value)
                 .setDefaultValue(defaultValue)
                 .setMin(extras.getBounds().getMin())
                 .setMax(extras.getBounds().getMax())
@@ -94,17 +97,17 @@ public class GuiRegistry {
                 .build(),
                 float.class, Float.class
         );
-        registerProvider((GuiProvider<Double>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<Double>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startDoubleField(new TranslatableText(translationKey), value)
+                .startDoubleField(text, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 double.class, Double.class
         );
-        registerBoundedProvider((GuiProvider<Double>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerBoundedProvider((GuiProvider<Double>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startDoubleField(new TranslatableText(translationKey), value)
+                .startDoubleField(text, value)
                 .setDefaultValue(defaultValue)
                 .setMin(extras.getBounds().getMin())
                 .setMax(extras.getBounds().getMax())
@@ -112,19 +115,20 @@ public class GuiRegistry {
                 .build(),
                 double.class, Double.class
         );
-        registerProvider((GuiProvider<String>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<String>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startStrField(new TranslatableText(translationKey), value)
+                .startStrField(text, value)
                 .setDefaultValue(defaultValue)
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 String.class
         );
-        registerProvider((GuiProvider<? extends Enum>) (translationKey, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
+        registerProvider((GuiProvider<? extends Enum>) (text, field, value, defaultValue, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
-                .startEnumSelector(new TranslatableText(translationKey), (Class<Enum>) field.getType(), value)
+                .startEnumSelector(text, (Class<Enum>) field.getType(), value)
                 .setDefaultValue(defaultValue)
-                .setEnumNameProvider(e -> new TranslatableText(translationKey + "." + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, e.name())))
+                                                                                            //TODO: Bad solution; provide custom enum name provider
+                .setEnumNameProvider(e -> new TranslatableText(((TranslatableText) text).getKey() + "." + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, e.name())))
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 (field, extras) -> Enum.class.isAssignableFrom(field.getType())
