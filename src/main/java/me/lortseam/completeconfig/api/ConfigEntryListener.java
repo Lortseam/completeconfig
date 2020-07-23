@@ -9,8 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigEntryListener {
 
-    //TODO: Automatically detect field name dependening on method name (e.g. setExampleValue -> field name is exampleValue)
-    String value();
+    String value() default "";
 
     Class<? extends ConfigEntryContainer> container() default ConfigEntryContainer.class;
 

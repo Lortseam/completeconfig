@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig;
 
+import com.google.common.base.CaseFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -84,6 +85,12 @@ public class ConfigManager {
             Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
                 ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
                 String fieldName = listener.value();
+                if (fieldName.equals("")) {
+                    if (!method.getName().startsWith("set") || method.getName().equals("set")) {
+                        throw new IllegalAnnotationParameterException("Could not detect field name for listener method " + method + ", please provide it inside the annotation");
+                    }
+                    fieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName().replaceFirst("set", ""));
+                }
                 Class<? extends ConfigEntryContainer> fieldClass = listener.container();
                 if (fieldClass == ConfigEntryContainer.class) {
                     listeners.add(new Listener(method, container, fieldName));
