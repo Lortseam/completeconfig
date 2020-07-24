@@ -31,6 +31,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -313,6 +314,19 @@ public class ConfigManager {
                 String defaultTooltipKey = joinIDs(translationKey, "tooltip");
                 if (I18n.hasTranslation(defaultTooltipKey)) {
                     tooltipKeys = new String[] {defaultTooltipKey};
+                } else {
+                    for(int i = 0;; i++) {
+                        String key = joinIDs(defaultTooltipKey, String.valueOf(i));
+                        if(I18n.hasTranslation(key)) {
+                            if (tooltipKeys == null) {
+                                tooltipKeys = new String[]{key};
+                            } else {
+                                tooltipKeys = ArrayUtils.add(tooltipKeys, key);
+                            }
+                        } else {
+                            break;
+                        }
+                    }
                 }
             }
             list.add(guiRegistry.getProvider(entry).build(new TranslatableText(translationKey), entry.getField(), entry.getValue(), entry.getDefaultValue(), tooltipKeys != null ? Optional.of(Arrays.stream(tooltipKeys).map(TranslatableText::new).toArray(Text[]::new)) : Optional.empty(), entry.getExtras(), entry::setValue));
