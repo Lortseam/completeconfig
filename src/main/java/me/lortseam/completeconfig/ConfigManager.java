@@ -203,7 +203,9 @@ public class ConfigManager {
     }
 
     public void register(ConfigCategory... categories) {
-        Arrays.stream(categories).forEach(category -> registerCategory(config, category, true));
+        for (ConfigCategory category : categories) {
+            registerCategory(config, category, true);
+        }
     }
 
     private void registerCategory(LinkedHashMap<String, Collection> configMap, ConfigCategory category, boolean applyJson) {
