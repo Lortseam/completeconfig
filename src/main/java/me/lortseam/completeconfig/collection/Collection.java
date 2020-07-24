@@ -2,7 +2,6 @@ package me.lortseam.completeconfig.collection;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.entry.Entry;
 
 import java.util.LinkedHashMap;

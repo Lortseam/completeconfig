@@ -3,8 +3,6 @@ package me.lortseam.completeconfig.gui;
 import com.google.common.base.CaseFormat;
 import me.lortseam.completeconfig.entry.Entry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -12,8 +10,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class GuiRegistry {
 
