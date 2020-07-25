@@ -104,12 +104,6 @@ public class Entry<T> {
     }
 
     public void addListener(Method method, ConfigEntryContainer parentObject) {
-        if (method.getParameterCount() != 1 || method.getParameterTypes()[0] != type) {
-            throw new IllegalArgumentException("Listener method " + method + " has wrong parameter type(s)");
-        }
-        if (!method.isAccessible()) {
-            method.setAccessible(true);
-        }
         listeners.add(new Listener(method, parentObject));
     }
 

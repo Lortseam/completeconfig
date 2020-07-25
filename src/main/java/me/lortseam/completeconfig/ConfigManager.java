@@ -35,6 +35,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -82,7 +83,7 @@ public class ConfigManager {
                 Listener listener = iter.next();
                 if (listener.getFieldClass() == clazz) {
                     listeners.add(listener);
-                    pendingListeners.remove(listener);
+                    iter.remove();
                 }
             }
             Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
@@ -106,7 +107,7 @@ public class ConfigManager {
                         if (entry == null) {
                             throw new IllegalAnnotationParameterException("Could not find field " + fieldName + " in " + fieldClass + " requested by listener method " + method);
                         }
-                        entry.addListener(method, container);
+                        addListenerToEntry(entry, method, container);
                     }
                 }
             });
@@ -178,7 +179,7 @@ public class ConfigManager {
                     if (!listener.getFieldName().equals(fieldName)) {
                         return false;
                     }
-                    entry.addListener(listener.getMethod(), listener.getParentObject());
+                    addListenerToEntry(entry, listener.getMethod(), listener.getParentObject());
                     return true;
                 });
                 clazzEntries.put(fieldName, entry);
@@ -192,6 +193,17 @@ public class ConfigManager {
             clazz = clazz.getSuperclass();
         }
         return entries;
+    }
+
+    //TODO: Create own class for validations like these
+    private void addListenerToEntry(Entry<?> entry, Method method, ConfigEntryContainer container) {
+        if (method.getParameterCount() != 1 || method.getParameterTypes()[0] != entry.getType()) {
+            throw new IllegalArgumentException("Listener method " + method + " has wrong parameter type(s)");
+        }
+        if (!method.isAccessible()) {
+            method.setAccessible(true);
+        }
+        entry.addListener(method, container);
     }
 
     private Map<String, Entry> findEntries(LinkedHashMap<String, Collection> collections, Class<? extends ConfigEntryContainer> parentClass) {
