@@ -197,6 +197,8 @@ public class ConfigManager {
 
     //TODO: Create own class for validations like these
     private void addListenerToEntry(Entry<?> entry, Method method, ConfigEntryContainer container) {
+        //TODO: Add void return type check
+        //TODO: Allow listeners without parameters if forceUpdate equals true or listener is defined in different class
         if (method.getParameterCount() != 1 || method.getParameterTypes()[0] != entry.getType()) {
             throw new IllegalArgumentException("Listener method " + method + " has wrong parameter type(s)");
         }
