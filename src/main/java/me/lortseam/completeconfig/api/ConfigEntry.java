@@ -19,11 +19,11 @@ public @interface ConfigEntry {
     boolean forceUpdate() default false;
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    class Integer {
+    class Bounded {
 
         @Target(ElementType.FIELD)
         @Retention(RetentionPolicy.RUNTIME)
-        public @interface Bounded {
+        public @interface Integer {
 
             int min() default java.lang.Integer.MIN_VALUE;
 
@@ -31,14 +31,9 @@ public @interface ConfigEntry {
 
         }
 
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    class Long {
-
         @Target(ElementType.FIELD)
         @Retention(RetentionPolicy.RUNTIME)
-        public @interface Bounded {
+        public @interface Long {
 
             long min() default java.lang.Long.MIN_VALUE;
 
@@ -46,14 +41,9 @@ public @interface ConfigEntry {
 
         }
 
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    class Float {
-
         @Target(ElementType.FIELD)
         @Retention(RetentionPolicy.RUNTIME)
-        public @interface Bounded {
+        public @interface Float {
 
             float min() default -java.lang.Float.MAX_VALUE;
 
@@ -61,14 +51,9 @@ public @interface ConfigEntry {
 
         }
 
-    }
-
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    class Double {
-
         @Target(ElementType.FIELD)
         @Retention(RetentionPolicy.RUNTIME)
-        public @interface Bounded {
+        public @interface Double {
 
             double min() default -java.lang.Double.MAX_VALUE;
 

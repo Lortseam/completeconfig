@@ -145,29 +145,29 @@ public class ConfigManager {
                     }
                     builder.setForceUpdate(entryAnnotation.forceUpdate());
                 }
-                if (field.isAnnotationPresent(ConfigEntry.Integer.Bounded.class)) {
+                if (field.isAnnotationPresent(ConfigEntry.Bounded.Integer.class)) {
                     if (field.getType() != int.class && field.getType() != Integer.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Integer bound to non Integer field " + field);
                     }
-                    ConfigEntry.Integer.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Integer.Bounded.class);
+                    ConfigEntry.Bounded.Integer bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Integer.class);
                     builder.setBounds(bounds.min(), bounds.max());
-                } else if (field.isAnnotationPresent(ConfigEntry.Long.Bounded.class)) {
+                } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Long.class)) {
                     if (field.getType() != long.class && field.getType() != Long.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Long bound to non Long field " + field);
                     }
-                    ConfigEntry.Long.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Long.Bounded.class);
+                    ConfigEntry.Bounded.Long bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Long.class);
                     builder.setBounds(bounds.min(), bounds.max());
-                } else if (field.isAnnotationPresent(ConfigEntry.Float.Bounded.class)) {
+                } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Float.class)) {
                     if (field.getType() != float.class && field.getType() != Float.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Float bound to non Float field " + field);
                     }
-                    ConfigEntry.Float.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Float.Bounded.class);
+                    ConfigEntry.Bounded.Float bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Float.class);
                     builder.setBounds(bounds.min(), bounds.max());
-                } else if (field.isAnnotationPresent(ConfigEntry.Double.Bounded.class)) {
+                } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Double.class)) {
                     if (field.getType() != double.class && field.getType() != Double.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Double bound to non Double field " + field);
                     }
-                    ConfigEntry.Double.Bounded bounds = field.getDeclaredAnnotation(ConfigEntry.Double.Bounded.class);
+                    ConfigEntry.Bounded.Double bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Double.class);
                     builder.setBounds(bounds.min(), bounds.max());
                 }
                 Entry<?> entry = builder.build();
