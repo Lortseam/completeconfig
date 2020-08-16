@@ -30,7 +30,6 @@ public interface ConfigEntryContainer {
         Class<? extends ConfigEntryContainer> clazz = getClass();
         while (clazz != null) {
             classes.add(clazz);
-            //TODO: Testen: Entries aus Superklassen die nicht ConfigEntryContainer implementieren sollten nun nicht mehr beachtet werden
             if (!ConfigEntryContainer.class.isAssignableFrom(clazz.getSuperclass())) {
                 break;
             }

@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.entry;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import org.apache.commons.lang3.ClassUtils;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class Extras<T> {
@@ -13,7 +13,9 @@ public class Extras<T> {
     private Bounds<T> bounds;
 
     public <N extends Number> void setBounds(N min, N max) {
-        //TODO: Check for correct min/max type
+        if (!ClassUtils.isAssignable(entry.getType(), min.getClass()) || !ClassUtils.isAssignable(entry.getType(), max.getClass())) {
+            throw new IllegalArgumentException();
+        }
         bounds = new Bounds<>((T) min, (T) max);
     }
 

@@ -5,16 +5,15 @@ import me.lortseam.completeconfig.ConfigMap;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigEntryListener;
-import me.lortseam.completeconfig.entry.Bounds;
 import me.lortseam.completeconfig.entry.Entry;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.exception.IllegalModifierException;
-import me.lortseam.completeconfig.listener.Listener;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 
 public class EntryMap extends ConfigMap<Entry> {
 
@@ -126,20 +125,13 @@ public class EntryMap extends ConfigMap<Entry> {
                     ConfigEntry.Bounded.Double bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Double.class);
                     entry.getExtras().setBounds(bounds.min(), bounds.max());
                 }
-                //TODO
-                /*if (guiRegistry.getProvider(entry) == null) {
-                    throw new UnsupportedOperationException("Could not find gui provider for field type " + entry.getType());
-                }*/
                 clazzEntries.put(field.getName(), entry);
             });
-            /*if (!listeners.isEmpty()) {
-                Listener listener = listeners.iterator().next();
-                throw new IllegalAnnotationParameterException("Could not find field " + listener.getFieldName() + " in " + clazz + " requested by listener method " + listener.getMethod());
-            }*/
             //TODO: Quite hacky solution to sort the entries (superclasses first)
             clazzEntries.putAll(containerEntries);
             containerEntries = clazzEntries;
         }
+        putAll(containerEntries);
     }
 
 }

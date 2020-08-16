@@ -6,16 +6,13 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class GuiRegistry {
 
     private final LinkedHashMap<GuiProviderPredicate, GuiProvider> guiProviders = new LinkedHashMap<>();
 
-    public GuiRegistry() {
+    GuiRegistry() {
         registerDefaultProviders();
     }
 
@@ -142,15 +139,15 @@ public class GuiRegistry {
         );
     }
 
-    public <T> GuiProvider<T> getProvider(Entry<T> entry) {
+    <T> Optional<GuiProvider<T>> getProvider(Entry<T> entry) {
         Iterator<Map.Entry<GuiProviderPredicate, GuiProvider>> iter = new LinkedList<>(guiProviders.entrySet()).descendingIterator();
         while (iter.hasNext()) {
             Map.Entry<GuiProviderPredicate, GuiProvider> mapEntry = iter.next();
             if (mapEntry.getKey().test(entry.getField(), entry.getExtras())) {
-                return mapEntry.getValue();
+                return Optional.of(mapEntry.getValue());
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 }

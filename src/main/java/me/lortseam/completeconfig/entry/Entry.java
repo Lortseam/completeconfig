@@ -20,10 +20,9 @@ public class Entry<T> {
 
     public static Entry<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
         try {
-            Field field = parentClass.getField(fieldName);
+            Field field = parentClass.getDeclaredField(fieldName);
             return of(field);
         } catch (NoSuchFieldException e) {
-            //TODO
             throw new RuntimeException(e);
         }
     }
@@ -62,17 +61,6 @@ public class Entry<T> {
     private final List<Listener> listeners = new ArrayList<>();
     @Setter
     private boolean forceUpdate;
-
-    /*private Entry(Field field, Class<T> type, ConfigEntryContainer parentObject, String customTranslationKey, String[] customTooltipKeys, Extras<T> extras, boolean forceUpdate) {
-        this.field = field;
-        this.type = type;
-        this.parentObject = parentObject;
-        this.customTranslationKey = customTranslationKey;
-        this.customTooltipKeys = customTooltipKeys;
-        this.extras = extras;
-        this.forceUpdate = forceUpdate;
-        defaultValue = getValue();
-    }*/
 
     public T getValue() {
         if (updateValueIfNecessary()) {
@@ -122,19 +110,16 @@ public class Entry<T> {
                 throw new RuntimeException(e);
             }
         }
-        if (!listeners.isEmpty()) {
-            for (Listener listener : listeners) {
-                try {
-                    listener.method.invoke(listener.parentObject, value);
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
+        for (Listener listener : listeners) {
+            try {
+                listener.method.invoke(listener.parentObject, value);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
     public void addListener(Method method, ConfigEntryContainer parentObject) {
-
         listeners.add(new Listener(method, parentObject));
     }
 

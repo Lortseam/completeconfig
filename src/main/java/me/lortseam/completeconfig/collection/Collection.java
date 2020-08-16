@@ -24,10 +24,6 @@ public class Collection {
     }
 
     private void fill(ConfigEntryContainer container) {
-        //TODO
-        /*if (!findEntries(config, container.getClass()).isEmpty()) {
-            throw new UnsupportedOperationException("An instance of " + container.getClass() + " is already registered");
-        }*/
         entries.fill(container);
         List<ConfigEntryContainer> containers = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getClasses()) {

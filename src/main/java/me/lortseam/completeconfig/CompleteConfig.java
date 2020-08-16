@@ -3,26 +3,25 @@ package me.lortseam.completeconfig;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Optional;
-import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CompleteConfig {
 
-    private static final Set<ConfigManager> managers = new HashSet<>();
+    private static final HashMap<String, ConfigManager> MANAGERS = new HashMap<>();
 
     public static ConfigManager register(String modID) {
-        if (getManager(modID).isPresent()) {
+        if (MANAGERS.containsKey(modID)) {
             throw new IllegalArgumentException("A manager with this mod ID is already registered");
         }
         ConfigManager manager = new ConfigManager(modID);
-        managers.add(manager);
+        MANAGERS.put(modID, manager);
         return manager;
     }
 
     public static Optional<ConfigManager> getManager(String modID) {
-        return managers.stream().filter(manager -> manager.getModID().equals(modID)).findAny();
+        return Optional.ofNullable(MANAGERS.get(modID));
     }
 
 }
