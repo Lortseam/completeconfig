@@ -3,28 +3,30 @@ package me.lortseam.completeconfig.serialization;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import me.lortseam.completeconfig.collection.Collection;
+import me.lortseam.completeconfig.collection.CollectionMap;
 
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
-public class CollectionsDeserializer implements JsonDeserializer<LinkedHashMap<String, Collection>> {
+public class CollectionMapDeserializer implements JsonDeserializer<CollectionMap> {
 
-    public static final Type TYPE = new TypeToken<LinkedHashMap<String, Collection>>() {}.getType();
+    public static final Type TYPE = new TypeToken<CollectionMap>() {}.getType();
 
-    private final LinkedHashMap<String, Collection> configMap;
+    private final Map<String, Collection> configMap;
     private final String collectionID;
 
-    public CollectionsDeserializer(LinkedHashMap<String, Collection> configMap, String collectionID) {
+    public CollectionMapDeserializer(Map<String, Collection> configMap, String collectionID) {
         this.configMap = configMap;
         this.collectionID = collectionID;
     }
 
-    private CollectionsDeserializer(LinkedHashMap<String, Collection> configMap) {
+    private CollectionMapDeserializer(Map<String, Collection> configMap) {
         this(configMap, null);
     }
 
     @Override
-    public LinkedHashMap<String, Collection> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public CollectionMap deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         LinkedHashMap<String, JsonElement> map = new Gson().fromJson(json, new TypeToken<LinkedHashMap<String, JsonElement>>() {}.getType());
         if (collectionID == null) {
             map.forEach(this::deserialize);
@@ -40,9 +42,9 @@ public class CollectionsDeserializer implements JsonDeserializer<LinkedHashMap<S
             return;
         }
         new GsonBuilder()
-                .registerTypeAdapter(CollectionsDeserializer.TYPE, new CollectionsDeserializer(collection.getCollections()))
                 .registerTypeAdapter(CollectionDeserializer.TYPE, new CollectionDeserializer())
-                .registerTypeAdapter(EntriesDeserializer.TYPE, new EntriesDeserializer(collection.getEntries()))
+                .registerTypeAdapter(CollectionMapDeserializer.TYPE, new CollectionMapDeserializer(collection.getCollections()))
+                .registerTypeAdapter(EntryMapDeserializer.TYPE, new EntryMapDeserializer(collection.getEntries()))
                 .create()
                 .fromJson(element, Collection.class);
     }

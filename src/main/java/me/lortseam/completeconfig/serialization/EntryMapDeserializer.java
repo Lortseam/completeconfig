@@ -2,23 +2,22 @@ package me.lortseam.completeconfig.serialization;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import lombok.RequiredArgsConstructor;
+import me.lortseam.completeconfig.collection.EntryMap;
 import me.lortseam.completeconfig.entry.Entry;
 
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 
-public class EntriesDeserializer implements JsonDeserializer<LinkedHashMap<String, Entry>> {
+@RequiredArgsConstructor
+public class EntryMapDeserializer implements JsonDeserializer<EntryMap> {
 
-    public static final Type TYPE = new TypeToken<LinkedHashMap<String, Entry>>() {}.getType();
+    public static final Type TYPE = new TypeToken<EntryMap>() {}.getType();
 
-    private final LinkedHashMap<String, Entry> configMap;
-
-    public EntriesDeserializer(LinkedHashMap<String, Entry> configMap) {
-        this.configMap = configMap;
-    }
+    private final EntryMap configMap;
 
     @Override
-    public LinkedHashMap<String, Entry> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public EntryMap deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         LinkedHashMap<String, JsonElement> map = new Gson().fromJson(json, new TypeToken<LinkedHashMap<String, JsonElement>>() {}.getType());
         map.forEach((entryID, element) -> {
             Entry<?> entry = configMap.get(entryID);

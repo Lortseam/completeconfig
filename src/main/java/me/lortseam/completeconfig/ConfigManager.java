@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig;
 
-import com.google.common.base.CaseFormat;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -8,19 +7,11 @@ import com.google.gson.JsonNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigCategory;
-import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.api.ConfigEntryListener;
 import me.lortseam.completeconfig.collection.Collection;
 import me.lortseam.completeconfig.entry.Entry;
-import me.lortseam.completeconfig.exception.IllegalModifierException;
 import me.lortseam.completeconfig.gui.GuiRegistry;
-import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
-import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
-import me.lortseam.completeconfig.exception.IllegalReturnValueException;
-import me.lortseam.completeconfig.listener.Listener;
 import me.lortseam.completeconfig.serialization.CollectionSerializer;
-import me.lortseam.completeconfig.serialization.CollectionsDeserializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -32,11 +23,9 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,20 +35,22 @@ import java.util.stream.Collectors;
 
 public class ConfigManager {
 
+    private static String joinIDs(String... ids) {
+        return String.join(".", ids);
+    }
+
     @Getter(AccessLevel.PACKAGE)
     private final String modID;
     private final Path jsonPath;
-    private final LinkedHashMap<String, Collection> config = new LinkedHashMap<>();
-    private final JsonElement json;
-    private final Set<Listener> pendingListeners = new HashSet<>();
+    private final Config config;
     @Getter
     private final GuiRegistry guiRegistry = new GuiRegistry();
     private Supplier<ConfigBuilder> guiBuilder = ConfigBuilder::create;
 
     ConfigManager(String modID) {
         this.modID = modID;
-        jsonPath = Paths.get(FabricLoader.getInstance().getConfigDirectory().toPath().toString(), modID + ".json");
-        json = load();
+        jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), modID + ".json");
+        config = new Config(load());
     }
 
     private JsonElement load() {
@@ -71,128 +62,6 @@ public class ConfigManager {
             }
         }
         return JsonNull.INSTANCE;
-    }
-
-    private LinkedHashMap<String, Entry> getContainerEntries(ConfigEntryContainer container) {
-        LinkedHashMap<String, Entry> entries = new LinkedHashMap<>();
-        Class clazz = container.getClass();
-        while (clazz != null) {
-            List<Listener> listeners = new ArrayList<>();
-            Iterator<Listener> iter = pendingListeners.iterator();
-            while (iter.hasNext()) {
-                Listener listener = iter.next();
-                if (listener.getFieldClass() == clazz) {
-                    listeners.add(listener);
-                    iter.remove();
-                }
-            }
-            Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
-                ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
-                String fieldName = listener.value();
-                if (fieldName.equals("")) {
-                    if (!method.getName().startsWith("set") || method.getName().equals("set")) {
-                        throw new IllegalAnnotationParameterException("Could not detect field name for listener method " + method + ", please provide it inside the annotation");
-                    }
-                    fieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName().replaceFirst("set", ""));
-                }
-                Class<? extends ConfigEntryContainer> fieldClass = listener.container();
-                if (fieldClass == ConfigEntryContainer.class) {
-                    listeners.add(new Listener(method, container, fieldName));
-                } else {
-                    Map<String, Entry> fieldClassEntries = findEntries(config, fieldClass);
-                    if (fieldClassEntries.isEmpty()) {
-                        pendingListeners.add(new Listener(method, container, fieldName, fieldClass));
-                    } else {
-                        Entry entry = fieldClassEntries.get(fieldName);
-                        if (entry == null) {
-                            throw new IllegalAnnotationParameterException("Could not find field " + fieldName + " in " + fieldClass + " requested by listener method " + method);
-                        }
-                        addListenerToEntry(entry, method, container);
-                    }
-                }
-            });
-            LinkedHashMap<String, Entry> clazzEntries = new LinkedHashMap<>();
-            Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
-                if (Modifier.isStatic(field.getModifiers())) {
-                    return false;
-                }
-                if (container.isConfigPOJO()) {
-                    return !ConfigEntryContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntry.Ignore.class);
-                }
-                return field.isAnnotationPresent(ConfigEntry.class);
-            }).forEach(field -> {
-                if (Modifier.isFinal(field.getModifiers())) {
-                    throw new IllegalModifierException("Entry field " + field + " must not be final");
-                }
-                if (!field.isAccessible()) {
-                    field.setAccessible(true);
-                }
-                Entry.Builder builder = Entry.Builder.create(field, container);
-                if (field.isAnnotationPresent(ConfigEntry.class)) {
-                    ConfigEntry entryAnnotation = field.getDeclaredAnnotation(ConfigEntry.class);
-                    String customTranslationKey = entryAnnotation.customTranslationKey();
-                    if (!StringUtils.isBlank(customTranslationKey)) {
-                        builder.setCustomTranslationKey(customTranslationKey);
-                    }
-                    String[] customTooltipKeys = entryAnnotation.customTooltipKeys();
-                    if (customTooltipKeys.length > 0) {
-                        for (String key : customTooltipKeys) {
-                            if (StringUtils.isBlank(key)) {
-                                throw new IllegalAnnotationParameterException("Tooltip key(s) of entry field " + field + " must not be blank");
-                            }
-                        }
-                        builder.setCustomTooltipKeys(customTooltipKeys);
-                    }
-                    builder.setForceUpdate(entryAnnotation.forceUpdate());
-                }
-                if (field.isAnnotationPresent(ConfigEntry.Bounded.Integer.class)) {
-                    if (field.getType() != int.class && field.getType() != Integer.class) {
-                        throw new IllegalAnnotationTargetException("Cannot apply Integer bound to non Integer field " + field);
-                    }
-                    ConfigEntry.Bounded.Integer bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Integer.class);
-                    builder.setBounds(bounds.min(), bounds.max());
-                } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Long.class)) {
-                    if (field.getType() != long.class && field.getType() != Long.class) {
-                        throw new IllegalAnnotationTargetException("Cannot apply Long bound to non Long field " + field);
-                    }
-                    ConfigEntry.Bounded.Long bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Long.class);
-                    builder.setBounds(bounds.min(), bounds.max());
-                } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Float.class)) {
-                    if (field.getType() != float.class && field.getType() != Float.class) {
-                        throw new IllegalAnnotationTargetException("Cannot apply Float bound to non Float field " + field);
-                    }
-                    ConfigEntry.Bounded.Float bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Float.class);
-                    builder.setBounds(bounds.min(), bounds.max());
-                } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Double.class)) {
-                    if (field.getType() != double.class && field.getType() != Double.class) {
-                        throw new IllegalAnnotationTargetException("Cannot apply Double bound to non Double field " + field);
-                    }
-                    ConfigEntry.Bounded.Double bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Double.class);
-                    builder.setBounds(bounds.min(), bounds.max());
-                }
-                Entry<?> entry = builder.build();
-                if (guiRegistry.getProvider(entry) == null) {
-                    throw new UnsupportedOperationException("Could not find gui provider for field type " + entry.getType());
-                }
-                String fieldName = field.getName();
-                listeners.removeIf(listener -> {
-                    if (!listener.getFieldName().equals(fieldName)) {
-                        return false;
-                    }
-                    addListenerToEntry(entry, listener.getMethod(), listener.getParentObject());
-                    return true;
-                });
-                clazzEntries.put(fieldName, entry);
-            });
-            if (!listeners.isEmpty()) {
-                Listener listener = listeners.iterator().next();
-                throw new IllegalAnnotationParameterException("Could not find field " + listener.getFieldName() + " in " + clazz + " requested by listener method " + listener.getMethod());
-            }
-            clazzEntries.putAll(entries);
-            entries = clazzEntries;
-            clazz = clazz.getSuperclass();
-        }
-        return entries;
     }
 
     //TODO: Create own class for validations like these
@@ -208,6 +77,7 @@ public class ConfigManager {
         entry.addListener(method, container);
     }
 
+    //TODO: Löschen
     private Map<String, Entry> findEntries(LinkedHashMap<String, Collection> collections, Class<? extends ConfigEntryContainer> parentClass) {
         Map<String, Entry> entries = new HashMap<>();
         for (Collection collection : collections.values()) {
@@ -219,81 +89,10 @@ public class ConfigManager {
 
     public void register(ConfigCategory... categories) {
         for (ConfigCategory category : categories) {
-            registerCategory(config, category, true);
+            config.registerTopLevelCategory(category);
         }
     }
 
-    private void registerCategory(LinkedHashMap<String, Collection> configMap, ConfigCategory category, boolean applyJson) {
-        String categoryID = category.getConfigCategoryID();
-        if (StringUtils.isBlank(categoryID)) {
-            throw new IllegalReturnValueException("Category ID of " + category.getClass() + " must not be null or blank");
-        }
-        if (configMap.containsKey(categoryID)) {
-            throw new IllegalStateException("Duplicate category ID found: " + categoryID);
-        }
-        Collection collection = new Collection();
-        configMap.put(categoryID, collection);
-        registerContainer(collection, category);
-        if (collection.getEntries().isEmpty() && collection.getCollections().isEmpty()) {
-            configMap.remove(categoryID);
-            return;
-        }
-        if (applyJson) {
-            new GsonBuilder()
-                    .registerTypeAdapter(CollectionsDeserializer.TYPE, new CollectionsDeserializer(configMap, categoryID))
-                    .create()
-                    .fromJson(json, CollectionsDeserializer.TYPE);
-        }
-    }
-
-    private void registerContainer(Collection collection, ConfigEntryContainer container) {
-        if (!findEntries(config, container.getClass()).isEmpty()) {
-            throw new UnsupportedOperationException("An instance of " + container.getClass() + " is already registered");
-        }
-        collection.getEntries().putAll(getContainerEntries(container));
-        List<ConfigEntryContainer> containers = new ArrayList<>();
-        Class clazz = container.getClass();
-        while (clazz != null) {
-            containers.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
-                if (Modifier.isStatic(field.getModifiers())) {
-                    return false;
-                }
-                if (container.isConfigPOJO()) {
-                    return ConfigEntryContainer.class.isAssignableFrom(field.getType());
-                }
-                if (field.isAnnotationPresent(ConfigEntryContainer.Transitive.class)) {
-                    if (!ConfigEntryContainer.class.isAssignableFrom(field.getType())) {
-                        throw new IllegalAnnotationTargetException("Transitive entry " + field + " must implement ConfigEntryContainer");
-                    }
-                    return true;
-                }
-                return false;
-            }).map(field -> {
-                if (!field.isAccessible()) {
-                    field.setAccessible(true);
-                }
-                try {
-                    return (ConfigEntryContainer) field.get(container);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-            }).collect(Collectors.toList()));
-            clazz = clazz.getSuperclass();
-        }
-        containers.addAll(Arrays.asList(container.getTransitiveConfigEntryContainers()));
-        for (ConfigEntryContainer c : containers) {
-            if (c instanceof ConfigCategory) {
-                registerCategory(collection.getCollections(), (ConfigCategory) c, false);
-            } else {
-                registerContainer(collection, c);
-                collection.getEntries().putAll(getContainerEntries(c));
-            }
-        }
-    }
-
-    private String joinIDs(String... ids) {
-        return String.join(".", ids);
-    }
 
     private String buildTranslationKey(String... ids) {
         return joinIDs("config", modID, joinIDs(ids));
@@ -303,6 +102,7 @@ public class ConfigManager {
         this.guiBuilder = guiBuilder;
     }
 
+    //TODO: Rename to buildScreen(Screen parent)
     public Screen getConfigScreen(Screen parentScreen) {
         ConfigBuilder builder = guiBuilder.get();
         builder.setParentScreen(parentScreen)

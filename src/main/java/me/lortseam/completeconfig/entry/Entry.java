@@ -1,7 +1,10 @@
 package me.lortseam.completeconfig.entry;
 
-import lombok.*;
-import lombok.experimental.Accessors;
+import com.google.common.collect.MoreCollectors;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,28 +15,40 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.*;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Entry<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final Set<Entry> entries = new HashSet<>();
+
+    public static Entry<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
+        try {
+            Field field = parentClass.getField(fieldName);
+            return entries.stream().filter(entry -> entry.parentObject.getClass() == parentClass && entry.field == field).collect(MoreCollectors.toOptional()).orElse(new Entry<>(field, parentClass));
+        } catch (NoSuchFieldException e) {
+            //TODO
+            throw new RuntimeException(e);
+        }
+    }
 
     @Getter
     private final Field field;
     @Getter
     private final Class<T> type;
     @Getter
-    private final ConfigEntryContainer parentObject;
+    private ConfigEntryContainer parentObject;
     @Getter
-    private final T defaultValue;
+    private T defaultValue;
     @Getter
-    private final String customTranslationKey;
+    private String customTranslationKey;
     @Getter
-    private final String[] customTooltipKeys;
+    private String[] customTooltipKeys;
     @Getter
-    private final Extras<T> extras;
+    private Extras<T> extras;
     private final List<Listener> listeners = new ArrayList<>();
-    private final boolean forceUpdate;
+    private boolean forceUpdate;
 
-    private Entry(Field field, Class<T> type, ConfigEntryContainer parentObject, String customTranslationKey, String[] customTooltipKeys, Extras<T> extras, boolean forceUpdate) {
+    /*private Entry(Field field, Class<T> type, ConfigEntryContainer parentObject, String customTranslationKey, String[] customTooltipKeys, Extras<T> extras, boolean forceUpdate) {
         this.field = field;
         this.type = type;
         this.parentObject = parentObject;
@@ -42,7 +57,7 @@ public class Entry<T> {
         this.extras = extras;
         this.forceUpdate = forceUpdate;
         defaultValue = getValue();
-    }
+    }*/
 
     public T getValue() {
         if (updateValueIfNecessary()) {
@@ -105,35 +120,6 @@ public class Entry<T> {
 
     public void addListener(Method method, ConfigEntryContainer parentObject) {
         listeners.add(new Listener(method, parentObject));
-    }
-
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    @Accessors(chain = true)
-    public static class Builder {
-
-        public static Builder create(Field field, ConfigEntryContainer parentObject) {
-            return new Builder(field, parentObject);
-        }
-
-        private final Field field;
-        private final ConfigEntryContainer parentObject;
-        @Setter
-        private String customTranslationKey;
-        @Setter
-        private String[] customTooltipKeys;
-        @Setter
-        private boolean forceUpdate;
-        private Bounds bounds;
-
-        public <N extends Number> Builder setBounds(N min, N max) {
-            bounds = new Bounds<>(min, max);
-            return this;
-        }
-
-        public Entry<?> build() {
-            return new Entry<>(field, field.getType(), parentObject, customTranslationKey, customTooltipKeys, new Extras<>(bounds), forceUpdate);
-        }
-
     }
 
     @AllArgsConstructor
