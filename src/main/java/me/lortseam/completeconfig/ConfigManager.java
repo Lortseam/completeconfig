@@ -64,35 +64,11 @@ public class ConfigManager {
         return JsonNull.INSTANCE;
     }
 
-    //TODO: Create own class for validations like these
-    private void addListenerToEntry(Entry<?> entry, Method method, ConfigEntryContainer container) {
-        //TODO: Add void return type check
-        //TODO: Allow listeners without parameters if forceUpdate equals true or listener is defined in different class
-        if (method.getParameterCount() != 1 || method.getParameterTypes()[0] != entry.getType()) {
-            throw new IllegalArgumentException("Listener method " + method + " has wrong parameter type(s)");
-        }
-        if (!method.isAccessible()) {
-            method.setAccessible(true);
-        }
-        entry.addListener(method, container);
-    }
-
-    //TODO: Löschen
-    private Map<String, Entry> findEntries(LinkedHashMap<String, Collection> collections, Class<? extends ConfigEntryContainer> parentClass) {
-        Map<String, Entry> entries = new HashMap<>();
-        for (Collection collection : collections.values()) {
-            entries.putAll(collection.getEntries().entrySet().stream().filter(entry -> entry.getValue().getParentObject().getClass() == parentClass).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-            entries.putAll(findEntries(collection.getCollections(), parentClass));
-        }
-        return entries;
-    }
-
     public void register(ConfigCategory... categories) {
         for (ConfigCategory category : categories) {
             config.registerTopLevelCategory(category);
         }
     }
-
 
     private String buildTranslationKey(String... ids) {
         return joinIDs("config", modID, joinIDs(ids));

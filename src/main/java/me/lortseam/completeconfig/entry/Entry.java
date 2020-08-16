@@ -1,10 +1,7 @@
 package me.lortseam.completeconfig.entry;
 
 import com.google.common.collect.MoreCollectors;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,16 +16,31 @@ import java.util.*;
 public class Entry<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final Set<Entry> entries = new HashSet<>();
+    private static final Set<Entry> ENTRIES = new HashSet<>();
 
     public static Entry<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
         try {
             Field field = parentClass.getField(fieldName);
-            return entries.stream().filter(entry -> entry.parentObject.getClass() == parentClass && entry.field == field).collect(MoreCollectors.toOptional()).orElse(new Entry<>(field, parentClass));
+            return of(field);
         } catch (NoSuchFieldException e) {
             //TODO
             throw new RuntimeException(e);
         }
+    }
+
+    private static <T> Entry<T> of(Field field) {
+        return ENTRIES.stream().filter(entry -> entry.field == field).collect(MoreCollectors.toOptional()).orElseGet(() -> {
+            Entry<T> entry = new Entry<>(field, (Class<T>) field.getType());
+            ENTRIES.add(entry);
+            return entry;
+        });
+    }
+
+    public static <T> Entry<T> of(Field field, ConfigEntryContainer parentObject) {
+        Entry<T> entry = of(field);
+        entry.parentObject = parentObject;
+        entry.defaultValue = entry.getValue();
+        return entry;
     }
 
     @Getter
@@ -40,12 +52,15 @@ public class Entry<T> {
     @Getter
     private T defaultValue;
     @Getter
+    @Setter
     private String customTranslationKey;
     @Getter
+    @Setter
     private String[] customTooltipKeys;
     @Getter
-    private Extras<T> extras;
+    private Extras<T> extras = new Extras<>(this);
     private final List<Listener> listeners = new ArrayList<>();
+    @Setter
     private boolean forceUpdate;
 
     /*private Entry(Field field, Class<T> type, ConfigEntryContainer parentObject, String customTranslationKey, String[] customTooltipKeys, Extras<T> extras, boolean forceUpdate) {
@@ -86,10 +101,10 @@ public class Entry<T> {
         if (extras.getBounds() != null) {
             if (new BigDecimal(value.toString()).compareTo(new BigDecimal(extras.getBounds().getMin().toString())) < 0) {
                 LOGGER.warn("[CompleteConfig] Tried to set value of field " + field + " to a value less than minimum bound, setting to minimum now!");
-                value = extras.getBounds().getMin();
+                value = (T) extras.getBounds().getMin();
             } else if (new BigDecimal(value.toString()).compareTo(new BigDecimal(extras.getBounds().getMax().toString())) > 0) {
                 LOGGER.warn("[CompleteConfig] Tried to set value of field " + field + " to a value greater than maximum bound, setting to maximum now!");
-                value = extras.getBounds().getMax();
+                value = (T) extras.getBounds().getMax();
             }
         }
         if (value.equals(get())) {
@@ -119,6 +134,7 @@ public class Entry<T> {
     }
 
     public void addListener(Method method, ConfigEntryContainer parentObject) {
+
         listeners.add(new Listener(method, parentObject));
     }
 

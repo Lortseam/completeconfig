@@ -1,6 +1,7 @@
 package me.lortseam.completeconfig.collection;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigCategory;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
@@ -9,14 +10,16 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class Collection {
 
     @Getter
-    private final EntryMap entries = new EntryMap();
+    private final EntryMap entries;
     @Getter
-    private final CollectionMap collections = new CollectionMap();
+    private final CollectionMap collections;
 
-    public Collection(ConfigEntryContainer container) {
+    Collection(ConfigEntryContainer container) {
+        this(new EntryMap(), new CollectionMap());
         fill(container);
     }
 

@@ -3,6 +3,8 @@ package me.lortseam.completeconfig.serialization;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import me.lortseam.completeconfig.collection.Collection;
+import me.lortseam.completeconfig.collection.CollectionMap;
+import me.lortseam.completeconfig.collection.EntryMap;
 import me.lortseam.completeconfig.entry.Entry;
 
 import java.lang.reflect.Type;
@@ -24,7 +26,7 @@ public class CollectionDeserializer implements JsonDeserializer<Collection> {
                 entries.add(entry.getKey(), entry.getValue());
             }
         }
-        return new Collection(context.deserialize(collections, new TypeToken<LinkedHashMap<String, Collection>>() {}.getType()), context.deserialize(entries, new TypeToken<LinkedHashMap<String, Entry>>() {}.getType()));
+        return new Collection(context.deserialize(collections, new TypeToken<CollectionMap>() {}.getType()), context.deserialize(entries, new TypeToken<EntryMap>() {}.getType()));
     }
 
 }
