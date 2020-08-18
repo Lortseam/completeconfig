@@ -20,15 +20,6 @@ public class EntryMap extends ConfigMap<Entry> {
     void fill(ConfigEntryContainer container) {
         LinkedHashMap<String, Entry> containerEntries = new LinkedHashMap<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getClasses()) {
-            /*List<Listener> listeners = new ArrayList<>();
-            Iterator<Listener> iter = pendingListeners.iterator();
-            while (iter.hasNext()) {
-                Listener listener = iter.next();
-                if (listener.getFieldClass() == clazz) {
-                    listeners.add(listener);
-                    iter.remove();
-                }
-            }*/
             Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
                 ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
                 String fieldName = listener.value();
@@ -51,20 +42,6 @@ public class EntryMap extends ConfigMap<Entry> {
                     method.setAccessible(true);
                 }
                 Entry.of(fieldName, fieldClass).addListener(method, container);
-                /*if (fieldClass == ConfigEntryContainer.class) {
-                    listeners.add(new Listener(method, container, fieldName));
-                } else {
-                    Map<String, Entry> fieldClassEntries = findEntries(config, fieldClass);
-                    if (fieldClassEntries.isEmpty()) {
-                        pendingListeners.add(new Listener(method, container, fieldName, fieldClass));
-                    } else {
-                        Entry entry = fieldClassEntries.get(fieldName);
-                        if (entry == null) {
-                            throw new IllegalAnnotationParameterException("Could not find field " + fieldName + " in " + fieldClass + " requested by listener method " + method);
-                        }
-                        addListenerToEntry(entry, method, container);
-                    }
-                }*/
             });
             LinkedHashMap<String, Entry> clazzEntries = new LinkedHashMap<>();
             Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
