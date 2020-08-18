@@ -9,6 +9,7 @@ import me.lortseam.completeconfig.entry.Entry;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.exception.IllegalModifierException;
+import me.lortseam.completeconfig.exception.IllegalReturnValueException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Modifier;
@@ -33,15 +34,20 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (fieldClass == ConfigEntryContainer.class) {
                     fieldClass = container.getClass();
                 }
-                //TODO: Check for void return type
-                //TODO: Check for valid parameter type
                 if (method.getParameterCount() != 1) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong number of parameters");
+                }
+                Entry<?> entry = Entry.of(fieldName, fieldClass);
+                if (method.getParameterTypes()[0] != entry.getType()) {
+                    throw new IllegalArgumentException("Listener method " + method + " has wrong argument type");
+                }
+                if (method.getReturnType() != Void.TYPE) {
+                    throw new IllegalReturnValueException("Listener method " + method + " may not return a type other than void");
                 }
                 if (!method.isAccessible()) {
                     method.setAccessible(true);
                 }
-                Entry.of(fieldName, fieldClass).addListener(method, container);
+                entry.addListener(method, container);
             });
             LinkedHashMap<String, Entry> clazzEntries = new LinkedHashMap<>();
             Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
