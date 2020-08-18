@@ -7,6 +7,7 @@ import me.lortseam.completeconfig.Config;
 import me.lortseam.completeconfig.collection.Collection;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
+import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.minecraft.client.gui.screen.Screen;
@@ -49,7 +50,7 @@ public class GuiBuilder {
                 .setTitle(new TranslatableText(buildTranslationKey("title")))
                 .setSavingRunnable(savingRunnable);
         config.forEach((categoryID, category) -> {
-            me.shedaniel.clothconfig2.api.ConfigCategory configCategory = builder.getOrCreateCategory(new TranslatableText(buildTranslationKey(categoryID)));
+            ConfigCategory configCategory = builder.getOrCreateCategory(new TranslatableText(buildTranslationKey(categoryID)));
             for (AbstractConfigListEntry entry : buildCollection(categoryID, category)) {
                 configCategory.addEntry(entry);
             }

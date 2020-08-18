@@ -19,7 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Supplier;
 
-public class ConfigManager {
+public final class ConfigManager {
 
     private final Path jsonPath;
     private final Config config;
