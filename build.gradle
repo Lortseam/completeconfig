@@ -11,12 +11,14 @@ version = project.mod_version
 group = project.maven_group
 
 dependencies {
-	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	modApi "me.shedaniel.cloth:config-2:${project.cloth_config_version}"
+	//Fabric API is only required for Cloth Config which includes old version (1.16) and crashes
+	//TODO: Update Cloth Config, change modImplementation to modApi and remove Fabric API dependency
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.18.0+build.397-1.16"
+	modImplementation "me.shedaniel.cloth:config-2:${project.cloth_config_version}"
 
 	compileOnly "org.projectlombok:lombok:${project.lombok_version}"
 	annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
