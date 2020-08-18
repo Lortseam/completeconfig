@@ -21,6 +21,9 @@ public class Entry<T> {
     public static Entry<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
         try {
             Field field = parentClass.getDeclaredField(fieldName);
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
             return of(field);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
@@ -28,7 +31,7 @@ public class Entry<T> {
     }
 
     private static <T> Entry<T> of(Field field) {
-        return ENTRIES.stream().filter(entry -> entry.field == field).collect(MoreCollectors.toOptional()).orElseGet(() -> {
+        return ENTRIES.stream().filter(entry -> entry.field.equals(field)).collect(MoreCollectors.toOptional()).orElseGet(() -> {
             Entry<T> entry = new Entry<>(field, (Class<T>) field.getType());
             ENTRIES.add(entry);
             return entry;
@@ -66,10 +69,10 @@ public class Entry<T> {
         if (updateValueIfNecessary()) {
             return getValue();
         }
-        return get();
+        return getFieldValue();
     }
 
-    private T get() {
+    private T getFieldValue() {
         try {
             return (T) Objects.requireNonNull(field.get(parentObject));
         } catch (IllegalAccessException e) {
@@ -82,7 +85,7 @@ public class Entry<T> {
     }
 
     private boolean updateValueIfNecessary() {
-        return updateValueIfNecessary(get());
+        return updateValueIfNecessary(getFieldValue());
     }
 
     private boolean updateValueIfNecessary(T value) {
@@ -95,7 +98,7 @@ public class Entry<T> {
                 value = (T) extras.getBounds().getMax();
             }
         }
-        if (value.equals(get())) {
+        if (value.equals(getFieldValue())) {
             return false;
         }
         set(value);
