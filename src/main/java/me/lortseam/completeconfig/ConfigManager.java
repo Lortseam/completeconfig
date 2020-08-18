@@ -56,8 +56,24 @@ public class ConfigManager {
         guiBuilder.setSupplier(supplier);
     }
 
+    /**
+     * @deprecated Use {@link #setCustomGuiSupplier(Supplier)}.
+     */
+    @Deprecated
+    public void setCustomGuiBuilder(Supplier<ConfigBuilder> guiBuilder) {
+        setCustomGuiSupplier(guiBuilder);
+    }
+
     public Screen buildScreen(Screen parent) {
         return guiBuilder.buildScreen(parent, this::save);
+    }
+
+    /**
+     * @deprecated Use {@link #buildScreen(Screen)}.
+     */
+    @Deprecated
+    public Screen getConfigScreen(Screen parentScreen) {
+        return buildScreen(parentScreen);
     }
 
     public void save() {
