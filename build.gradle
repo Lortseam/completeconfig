@@ -16,7 +16,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	//Fabric API is only required for Cloth Config which includes old version (1.16) and crashes
-	//TODO: Update Cloth Config, change modImplementation to modApi and remove Fabric API dependency
+	//TODO: Update Cloth Config and remove Fabric API dependency
 	modImplementation "net.fabricmc.fabric-api:fabric-api:0.18.0+build.397-1.16"
 	modImplementation "me.shedaniel.cloth:config-2:${project.cloth_config_version}"
 
