@@ -6,10 +6,13 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class GuiRegistry {
 
+    //TODO: Create own class with predicate, provider and test method
     private final LinkedHashMap<GuiProviderPredicate, GuiProvider> guiProviders = new LinkedHashMap<>();
 
     GuiRegistry() {
@@ -17,7 +20,13 @@ public class GuiRegistry {
     }
 
     public <T> void registerProvider(GuiProvider<T> provider, GuiProviderPredicate<T> predicate, Class... types) {
-        guiProviders.put(predicate.and((field, extras) -> types.length == 0 || ArrayUtils.contains(types, field.getType())), provider);
+        guiProviders.put(predicate.and((field, extras) -> {
+            if (types.length == 0) {
+                return true;
+            }
+            Type fieldType = field.getGenericType();
+            return ArrayUtils.contains(types, fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getRawType() : fieldType);
+        }), provider);
     }
 
     public void registerProvider(GuiProvider<?> provider, Class... types) {
@@ -29,6 +38,16 @@ public class GuiRegistry {
 
     public void registerBoundedProvider(GuiProvider<?> provider, Class... types) {
         registerProvider(provider, (field, extras) -> extras.getBounds() != null, types);
+    }
+
+    public <T> void registerGenericProvider(GuiProvider<T> provider, Class<?> type, Class... genericTypes) {
+        registerProvider(provider, (field, extras) -> {
+            Type fieldType = field.getGenericType();
+            if (!(fieldType instanceof ParameterizedType)) {
+                return false;
+            }
+            return Arrays.equals(((ParameterizedType) fieldType).getActualTypeArguments(), genericTypes);
+        }, type);
     }
 
     private void registerDefaultProviders() {
@@ -136,6 +155,51 @@ public class GuiRegistry {
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 (field, extras) -> Enum.class.isAssignableFrom(field.getType())
+        );
+        registerGenericProvider((GuiProvider<List<Integer>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
+                        .create()
+                        .startIntList(text, value)
+                        .setDefaultValue(defaultValue)
+                        .setTooltip(tooltip)
+                        .setSaveConsumer(saveConsumer)
+                        .build(),
+                List.class, Integer.class
+        );
+        registerGenericProvider((GuiProvider<List<Long>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
+                        .create()
+                        .startLongList(text, value)
+                        .setDefaultValue(defaultValue)
+                        .setTooltip(tooltip)
+                        .setSaveConsumer(saveConsumer)
+                        .build(),
+                List.class, Long.class
+        );
+        registerGenericProvider((GuiProvider<List<Float>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
+                        .create()
+                        .startFloatList(text, value)
+                        .setDefaultValue(defaultValue)
+                        .setTooltip(tooltip)
+                        .setSaveConsumer(saveConsumer)
+                        .build(),
+                List.class, Float.class
+        );
+        registerGenericProvider((GuiProvider<List<Double>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
+                        .create()
+                        .startDoubleList(text, value)
+                        .setDefaultValue(defaultValue)
+                        .setTooltip(tooltip)
+                        .setSaveConsumer(saveConsumer)
+                        .build(),
+                List.class, Double.class
+        );
+        registerGenericProvider((GuiProvider<List<String>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
+                .create()
+                .startStrList(text, value)
+                .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
+                .setSaveConsumer(saveConsumer)
+                .build(),
+                List.class, String.class
         );
     }
 

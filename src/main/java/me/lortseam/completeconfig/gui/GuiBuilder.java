@@ -85,7 +85,7 @@ public class GuiBuilder {
                 }
             }
             list.add(((Optional<GuiProvider>) CompleteConfig.getManager(modID).get().getGuiRegistry().getProvider(entry)).orElseGet(() -> {
-                throw new UnsupportedOperationException("Could not find gui provider for field type " + entry.getType());
+                throw new UnsupportedOperationException("Could not find gui provider for field " + entry.getField());
             }).build(new TranslatableText(translationKey), entry.getField(), entry.getValue(), entry.getDefaultValue(), tooltipKeys != null ? Optional.of(Arrays.stream(tooltipKeys).map(TranslatableText::new).toArray(Text[]::new)) : Optional.empty(), entry.getExtras(), entry::setValue));
         });
         collection.getCollections().forEach((subcategoryID, c) -> {
