@@ -157,39 +157,39 @@ public class GuiRegistry {
                 (field, extras) -> Enum.class.isAssignableFrom(field.getType())
         );
         registerGenericProvider((GuiProvider<List<Integer>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
-                        .create()
-                        .startIntList(text, value)
-                        .setDefaultValue(defaultValue)
-                        .setTooltip(tooltip)
-                        .setSaveConsumer(saveConsumer)
-                        .build(),
+                .create()
+                .startIntList(text, value)
+                .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
+                .setSaveConsumer(saveConsumer)
+                .build(),
                 List.class, Integer.class
         );
         registerGenericProvider((GuiProvider<List<Long>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
-                        .create()
-                        .startLongList(text, value)
-                        .setDefaultValue(defaultValue)
-                        .setTooltip(tooltip)
-                        .setSaveConsumer(saveConsumer)
-                        .build(),
+                .create()
+                .startLongList(text, value)
+                .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
+                .setSaveConsumer(saveConsumer)
+                .build(),
                 List.class, Long.class
         );
         registerGenericProvider((GuiProvider<List<Float>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
-                        .create()
-                        .startFloatList(text, value)
-                        .setDefaultValue(defaultValue)
-                        .setTooltip(tooltip)
-                        .setSaveConsumer(saveConsumer)
-                        .build(),
+                .create()
+                .startFloatList(text, value)
+                .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
+                .setSaveConsumer(saveConsumer)
+                .build(),
                 List.class, Float.class
         );
         registerGenericProvider((GuiProvider<List<Double>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
-                        .create()
-                        .startDoubleList(text, value)
-                        .setDefaultValue(defaultValue)
-                        .setTooltip(tooltip)
-                        .setSaveConsumer(saveConsumer)
-                        .build(),
+                .create()
+                .startDoubleList(text, value)
+                .setDefaultValue(defaultValue)
+                .setTooltip(tooltip)
+                .setSaveConsumer(saveConsumer)
+                .build(),
                 List.class, Double.class
         );
         registerGenericProvider((GuiProvider<List<String>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
