@@ -11,5 +11,7 @@ public class Bounds<T> {
     private final T min;
     @Getter
     private final T max;
+    @Getter
+    private final boolean slider;
 
 }

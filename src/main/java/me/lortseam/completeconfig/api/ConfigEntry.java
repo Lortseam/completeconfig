@@ -29,6 +29,8 @@ public @interface ConfigEntry {
 
             int max() default java.lang.Integer.MAX_VALUE;
 
+            boolean slider() default true;
+
         }
 
         @Target(ElementType.FIELD)
@@ -38,6 +40,8 @@ public @interface ConfigEntry {
             long min() default java.lang.Long.MIN_VALUE;
 
             long max() default java.lang.Long.MAX_VALUE;
+
+            boolean slider() default true;
 
         }
 

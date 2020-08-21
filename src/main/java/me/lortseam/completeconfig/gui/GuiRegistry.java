@@ -36,8 +36,8 @@ public class GuiRegistry {
         registerProvider(provider, (field, extras) -> true, types);
     }
 
-    public void registerBoundedProvider(GuiProvider<?> provider, Class... types) {
-        registerProvider(provider, (field, extras) -> extras.getBounds() != null, types);
+    public void registerBoundedProvider(GuiProvider<?> provider, boolean slider, Class... types) {
+        registerProvider(provider, (field, extras) -> extras.getBounds() != null && extras.getBounds().isSlider() == slider, types);
     }
 
     public <T> void registerGenericProvider(GuiProvider<T> provider, Class<?> type, Class... genericTypes) {
@@ -71,12 +71,23 @@ public class GuiRegistry {
         );
         registerBoundedProvider((GuiProvider<Integer>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
+                .startIntField(text, value)
+                .setDefaultValue(defaultValue)
+                .setMin(extras.getBounds().getMin())
+                .setMax(extras.getBounds().getMax())
+                .setTooltip(tooltip)
+                .setSaveConsumer(saveConsumer)
+                .build(),
+                false, int.class, Integer.class
+        );
+        registerBoundedProvider((GuiProvider<Integer>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
+                .create()
                 .startIntSlider(text, value, extras.getBounds().getMin(), extras.getBounds().getMax())
                 .setDefaultValue(defaultValue)
                 .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
-                int.class, Integer.class
+                true, int.class, Integer.class
         );
         registerProvider((GuiProvider<Long>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
@@ -89,12 +100,23 @@ public class GuiRegistry {
         );
         registerBoundedProvider((GuiProvider<Long>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
+                .startLongField(text, value)
+                .setDefaultValue(defaultValue)
+                .setMin(extras.getBounds().getMin())
+                .setMax(extras.getBounds().getMax())
+                .setTooltip(tooltip)
+                .setSaveConsumer(saveConsumer)
+                .build(),
+                false, long.class, Long.class
+        );
+        registerBoundedProvider((GuiProvider<Long>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
+                .create()
                 .startLongSlider(text, value, extras.getBounds().getMin(), extras.getBounds().getMax())
                 .setDefaultValue(defaultValue)
                 .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
-                long.class, Long.class
+                true, long.class, Long.class
         );
         registerProvider((GuiProvider<Float>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
@@ -114,7 +136,7 @@ public class GuiRegistry {
                 .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
-                float.class, Float.class
+                false, float.class, Float.class
         );
         registerProvider((GuiProvider<Double>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
@@ -134,7 +156,7 @@ public class GuiRegistry {
                 .setTooltip(tooltip)
                 .setSaveConsumer(saveConsumer)
                 .build(),
-                double.class, Double.class
+                false, double.class, Double.class
         );
         registerProvider((GuiProvider<String>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()

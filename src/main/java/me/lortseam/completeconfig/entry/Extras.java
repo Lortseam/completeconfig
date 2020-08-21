@@ -12,11 +12,11 @@ public class Extras<T> {
     @Getter
     private Bounds<T> bounds;
 
-    public <N extends Number> void setBounds(N min, N max) {
+    public <N extends Number> void setBounds(N min, N max, boolean slider) {
         if (!ClassUtils.isAssignable(entry.getType(), min.getClass()) || !ClassUtils.isAssignable(entry.getType(), max.getClass())) {
             throw new IllegalArgumentException();
         }
-        bounds = new Bounds<>((T) min, (T) max);
+        bounds = new Bounds<>((T) min, (T) max, slider);
     }
 
 }

@@ -88,25 +88,25 @@ public class EntryMap extends ConfigMap<Entry> {
                         throw new IllegalAnnotationTargetException("Cannot apply Integer bound to non Integer field " + field);
                     }
                     ConfigEntry.Bounded.Integer bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Integer.class);
-                    entry.getExtras().setBounds(bounds.min(), bounds.max());
+                    entry.getExtras().setBounds(bounds.min(), bounds.max(), bounds.slider());
                 } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Long.class)) {
                     if (field.getType() != long.class && field.getType() != Long.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Long bound to non Long field " + field);
                     }
                     ConfigEntry.Bounded.Long bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Long.class);
-                    entry.getExtras().setBounds(bounds.min(), bounds.max());
+                    entry.getExtras().setBounds(bounds.min(), bounds.max(), bounds.slider());
                 } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Float.class)) {
                     if (field.getType() != float.class && field.getType() != Float.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Float bound to non Float field " + field);
                     }
                     ConfigEntry.Bounded.Float bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Float.class);
-                    entry.getExtras().setBounds(bounds.min(), bounds.max());
+                    entry.getExtras().setBounds(bounds.min(), bounds.max(), false);
                 } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Double.class)) {
                     if (field.getType() != double.class && field.getType() != Double.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Double bound to non Double field " + field);
                     }
                     ConfigEntry.Bounded.Double bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Double.class);
-                    entry.getExtras().setBounds(bounds.min(), bounds.max());
+                    entry.getExtras().setBounds(bounds.min(), bounds.max(), false);
                 }
                 clazzEntries.put(field.getName(), entry);
             });
