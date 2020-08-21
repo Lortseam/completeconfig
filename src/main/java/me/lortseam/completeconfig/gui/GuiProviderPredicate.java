@@ -8,11 +8,11 @@ import java.util.Objects;
 @FunctionalInterface
 public interface GuiProviderPredicate<T> {
 
-    boolean test(Field field, Extras<T> extras);
+    boolean test(Field field, Extras<?> extras);
 
     default GuiProviderPredicate<T> and(GuiProviderPredicate<T> other) {
         Objects.requireNonNull(other);
-        return (field, extras) -> this.test(field, extras) && other.test(field, extras);
+        return (field, extras) -> test(field, extras) && other.test(field, extras);
     }
 
 }

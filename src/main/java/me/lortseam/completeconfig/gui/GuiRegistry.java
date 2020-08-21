@@ -1,6 +1,7 @@
 package me.lortseam.completeconfig.gui;
 
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.Lists;
 import me.lortseam.completeconfig.entry.Entry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.text.TranslatableText;
@@ -12,21 +13,20 @@ import java.util.*;
 
 public class GuiRegistry {
 
-    //TODO: Create own class with predicate, provider and test method
-    private final LinkedHashMap<GuiProviderPredicate, GuiProvider> guiProviders = new LinkedHashMap<>();
+    private final List<Registration> registrations = new ArrayList<>();
 
     GuiRegistry() {
         registerDefaultProviders();
     }
 
     public <T> void registerProvider(GuiProvider<T> provider, GuiProviderPredicate<T> predicate, Class... types) {
-        guiProviders.put(predicate.and((field, extras) -> {
+        registrations.add(new Registration<>(predicate.and((field, extras) -> {
             if (types.length == 0) {
                 return true;
             }
             Type fieldType = field.getGenericType();
             return ArrayUtils.contains(types, fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getRawType() : fieldType);
-        }), provider);
+        }), provider));
     }
 
     public void registerProvider(GuiProvider<?> provider, Class... types) {
@@ -204,11 +204,9 @@ public class GuiRegistry {
     }
 
     <T> Optional<GuiProvider<T>> getProvider(Entry<T> entry) {
-        Iterator<Map.Entry<GuiProviderPredicate, GuiProvider>> iter = new LinkedList<>(guiProviders.entrySet()).descendingIterator();
-        while (iter.hasNext()) {
-            Map.Entry<GuiProviderPredicate, GuiProvider> mapEntry = iter.next();
-            if (mapEntry.getKey().test(entry.getField(), entry.getExtras())) {
-                return Optional.of(mapEntry.getValue());
+        for (Registration<?> registration : Lists.reverse(registrations)) {
+            if (registration.test(entry)) {
+                return Optional.of((GuiProvider<T>) registration.getProvider());
             }
         }
         return Optional.empty();
