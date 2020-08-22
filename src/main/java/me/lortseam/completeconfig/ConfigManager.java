@@ -1,9 +1,6 @@
 package me.lortseam.completeconfig;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
+import com.google.gson.*;
 import me.lortseam.completeconfig.api.ConfigCategory;
 import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.lortseam.completeconfig.gui.GuiRegistry;
@@ -12,6 +9,8 @@ import me.lortseam.completeconfig.serialization.EntrySerializer;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -21,11 +20,15 @@ import java.util.function.Supplier;
 
 public final class ConfigManager {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private final String modID;
     private final Path jsonPath;
     private final Config config;
     private final GuiBuilder guiBuilder;
 
     ConfigManager(String modID) {
+        this.modID = modID;
         jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), modID + ".json");
         config = new Config(load());
         guiBuilder = new GuiBuilder(modID, config);
@@ -37,6 +40,8 @@ public final class ConfigManager {
                 return new Gson().fromJson(new FileReader(jsonPath.toString()), JsonElement.class);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
+            } catch (JsonSyntaxException e) {
+                LOGGER.warn("An error occurred while trying to load the config for mod " + modID);
             }
         }
         return JsonNull.INSTANCE;
