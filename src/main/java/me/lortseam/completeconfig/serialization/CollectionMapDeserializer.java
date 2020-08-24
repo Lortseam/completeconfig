@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class CollectionMapDeserializer implements JsonDeserializer<CollectionMap> {
 
+    private static final Gson GSON = new Gson();
     public static final Type TYPE = new TypeToken<CollectionMap>() {}.getType();
 
     private final Map<String, Collection> configMap;
@@ -27,7 +28,7 @@ public class CollectionMapDeserializer implements JsonDeserializer<CollectionMap
 
     @Override
     public CollectionMap deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        LinkedHashMap<String, JsonElement> map = new Gson().fromJson(json, new TypeToken<LinkedHashMap<String, JsonElement>>() {}.getType());
+        LinkedHashMap<String, JsonElement> map = GSON.fromJson(json, new TypeToken<LinkedHashMap<String, JsonElement>>() {}.getType());
         if (collectionID == null) {
             map.forEach(this::deserialize);
         } else {

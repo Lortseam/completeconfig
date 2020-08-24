@@ -20,6 +20,11 @@ import java.util.function.Supplier;
 
 public final class ConfigManager {
 
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(CollectionSerializer.TYPE, new CollectionSerializer())
+            .registerTypeAdapter(EntrySerializer.TYPE, new EntrySerializer())
+            .setPrettyPrinting()
+            .create();
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final String modID;
@@ -37,7 +42,7 @@ public final class ConfigManager {
     private JsonElement load() {
         if(Files.exists(jsonPath)) {
             try {
-                return new Gson().fromJson(new FileReader(jsonPath.toString()), JsonElement.class);
+                return GSON.fromJson(new FileReader(jsonPath.toString()), JsonElement.class);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             } catch (JsonSyntaxException e) {
@@ -90,13 +95,8 @@ public final class ConfigManager {
                 throw new RuntimeException(e);
             }
         }
-        try(Writer writer = new FileWriter(jsonPath.toString())) {
-            new GsonBuilder()
-                    .registerTypeAdapter(CollectionSerializer.TYPE, new CollectionSerializer())
-                    .registerTypeAdapter(EntrySerializer.TYPE, new EntrySerializer())
-                    .setPrettyPrinting()
-                    .create()
-                    .toJson(config, writer);
+        try(Writer writer = Files.newBufferedWriter(jsonPath)) {
+            GSON.toJson(config, writer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

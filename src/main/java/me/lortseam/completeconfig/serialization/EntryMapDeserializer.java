@@ -12,13 +12,14 @@ import java.util.LinkedHashMap;
 @RequiredArgsConstructor
 public class EntryMapDeserializer implements JsonDeserializer<EntryMap> {
 
+    private static final Gson GSON = new Gson();
     public static final Type TYPE = new TypeToken<EntryMap>() {}.getType();
 
     private final EntryMap configMap;
 
     @Override
     public EntryMap deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        LinkedHashMap<String, JsonElement> map = new Gson().fromJson(json, new TypeToken<LinkedHashMap<String, JsonElement>>() {}.getType());
+        LinkedHashMap<String, JsonElement> map = GSON.fromJson(json, new TypeToken<LinkedHashMap<String, JsonElement>>() {}.getType());
         map.forEach((entryID, element) -> {
             Entry<?> entry = configMap.get(entryID);
             if (entry == null) {
