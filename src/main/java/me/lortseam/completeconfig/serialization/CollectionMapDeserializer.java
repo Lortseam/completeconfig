@@ -30,14 +30,14 @@ public class CollectionMapDeserializer implements JsonDeserializer<CollectionMap
     public CollectionMap deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         LinkedHashMap<String, JsonElement> map = GSON.fromJson(json, new TypeToken<LinkedHashMap<String, JsonElement>>() {}.getType());
         if (collectionID == null) {
-            map.forEach(this::deserialize);
+            map.forEach(this::deserializeCollection);
         } else {
-            deserialize(collectionID, map.get(collectionID));
+            deserializeCollection(collectionID, map.get(collectionID));
         }
         return null;
     }
 
-    private void deserialize(String collectionID, JsonElement element) {
+    private void deserializeCollection(String collectionID, JsonElement element) {
         Collection collection = configMap.get(collectionID);
         if (collection == null) {
             return;

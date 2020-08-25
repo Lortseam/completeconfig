@@ -1,11 +1,16 @@
 package me.lortseam.completeconfig;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class ConfigMap<T> extends LinkedHashMap<String, T> {
+
+    protected final String modTranslationKey;
 
     @Override
     public T put(String id, T value) {

@@ -3,13 +3,17 @@ package me.lortseam.completeconfig.gui;
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import me.lortseam.completeconfig.entry.Entry;
+import me.lortseam.completeconfig.entry.EnumOptions;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class GuiRegistry {
 
@@ -36,8 +40,12 @@ public class GuiRegistry {
         registerProvider(provider, (field, extras) -> true, types);
     }
 
-    public void registerBoundedProvider(GuiProvider<?> provider, boolean slider, Class... types) {
+    private void registerBoundedProvider(GuiProvider<?> provider, boolean slider, Class... types) {
         registerProvider(provider, (field, extras) -> extras.getBounds() != null && extras.getBounds().isSlider() == slider, types);
+    }
+
+    private void registerEnumProvider(GuiProvider<? extends Enum> provider, EnumOptions.DisplayType enumDisplayType) {
+        registerProvider(provider, (field, extras) -> Enum.class.isAssignableFrom(field.getType()) && extras.getEnumOptions().getDisplayType() == enumDisplayType);
     }
 
     public <T> void registerGenericProvider(GuiProvider<T> provider, Class<?> type, Class... genericTypes) {
@@ -167,7 +175,7 @@ public class GuiRegistry {
                 .build(),
                 String.class
         );
-        registerProvider((GuiProvider<? extends Enum>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
+        registerEnumProvider((GuiProvider<? extends Enum>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startEnumSelector(text, (Class<Enum>) field.getType(), value)
                 .setDefaultValue(defaultValue)
@@ -176,8 +184,9 @@ public class GuiRegistry {
                 .setEnumNameProvider(e -> new TranslatableText(((TranslatableText) text).getKey() + "." + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, e.name())))
                 .setSaveConsumer(saveConsumer)
                 .build(),
-                (field, extras) -> Enum.class.isAssignableFrom(field.getType())
+                EnumOptions.DisplayType.BUTTON
         );
+        //TODO: Enum as dropdown
         registerGenericProvider((GuiProvider<List<Integer>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startIntList(text, value)

@@ -1,8 +1,14 @@
 package me.lortseam.completeconfig.entry;
 
 import com.google.common.collect.MoreCollectors;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.collection.Collection;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,34 +18,33 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.*;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Entry<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Set<Entry> ENTRIES = new HashSet<>();
 
-    public static Entry<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
+    public static Entry<?> of(Collection parent, String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
         try {
             Field field = parentClass.getDeclaredField(fieldName);
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            return of(field);
+            return of(parent, field);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static <T> Entry<T> of(Field field) {
+    private static <T> Entry<T> of(Collection parent, Field field) {
         return ENTRIES.stream().filter(entry -> entry.field.equals(field)).collect(MoreCollectors.toOptional()).orElseGet(() -> {
-            Entry<T> entry = new Entry<>(field, (Class<T>) field.getType());
+            Entry<T> entry = new Entry<>(parent, field, (Class<T>) field.getType());
             ENTRIES.add(entry);
             return entry;
         });
     }
 
-    public static <T> Entry<T> of(Field field, ConfigEntryContainer parentObject) {
-        Entry<T> entry = of(field);
+    public static <T> Entry<T> of(Collection parent, Field field, ConfigEntryContainer parentObject) {
+        Entry<T> entry = of(parent, field);
         entry.parentObject = parentObject;
         entry.defaultValue = entry.getValue();
         return entry;
@@ -53,17 +58,36 @@ public class Entry<T> {
     private ConfigEntryContainer parentObject;
     @Getter
     private T defaultValue;
-    @Getter
-    @Setter
-    private String customTranslationKey;
-    @Getter
-    @Setter
-    private String[] customTooltipKeys;
+    private String translationKey;
+    private String[] tooltipTranslationKeys;
     @Getter
     private Extras<T> extras = new Extras<>(this);
     private final List<Listener> listeners = new ArrayList<>();
     @Setter
     private boolean forceUpdate;
+
+    private Entry(Collection parent, Field field, Class<T> type) {
+        translationKey = parent.getTranslationKey() + "." + field.getName();
+        String defaultTooltipTranslationKey = translationKey + ".tooltip";
+        if (I18n.hasTranslation(defaultTooltipTranslationKey)) {
+            tooltipTranslationKeys = new String[] {defaultTooltipTranslationKey};
+        } else {
+            List<String> defaultTooltipTranslationKeys = new ArrayList<>();
+            for(int i = 0;; i++) {
+                String key = defaultTooltipTranslationKey + "." + i;
+                if(I18n.hasTranslation(key)) {
+                    defaultTooltipTranslationKeys.add(key);
+                } else {
+                    if (!defaultTooltipTranslationKeys.isEmpty()) {
+                        tooltipTranslationKeys = defaultTooltipTranslationKeys.toArray(new String[0]);
+                    }
+                    break;
+                }
+            }
+        }
+        this.field = field;
+        this.type = type;
+    }
 
     public T getValue() {
         if (updateValueIfNecessary()) {
@@ -124,6 +148,22 @@ public class Entry<T> {
 
     public void addListener(Method method, ConfigEntryContainer parentObject) {
         listeners.add(new Listener(method, parentObject));
+    }
+
+    public void setCustomTranslationKey(String translationKey) {
+        this.translationKey = translationKey;
+    }
+
+    public Text getText() {
+        return new TranslatableText(translationKey);
+    }
+
+    public void setCustomTooltipTranslationKeys(String[] tooltipTranslationKeys) {
+        this.tooltipTranslationKeys = tooltipTranslationKeys;
+    }
+
+    public Optional<Text[]> getTooltip() {
+        return tooltipTranslationKeys != null ? Optional.of(Arrays.stream(tooltipTranslationKeys).map(TranslatableText::new).toArray(Text[]::new)) : Optional.empty();
     }
 
     @AllArgsConstructor

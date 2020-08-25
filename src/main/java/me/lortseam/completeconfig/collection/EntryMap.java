@@ -6,6 +6,7 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigEntryListener;
 import me.lortseam.completeconfig.entry.Entry;
+import me.lortseam.completeconfig.entry.EnumOptions;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.exception.IllegalModifierException;
@@ -18,7 +19,11 @@ import java.util.LinkedHashMap;
 
 public class EntryMap extends ConfigMap<Entry> {
 
-    void fill(ConfigEntryContainer container) {
+    EntryMap(String modTranslationKey) {
+        super(modTranslationKey);
+    }
+
+    void fill(Collection parent, ConfigEntryContainer container) {
         LinkedHashMap<String, Entry> containerEntries = new LinkedHashMap<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getClasses()) {
             Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
@@ -37,7 +42,7 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (method.getParameterCount() != 1) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong number of parameters");
                 }
-                Entry<?> entry = Entry.of(fieldName, fieldClass);
+                Entry<?> entry = Entry.of(parent, fieldName, fieldClass);
                 if (method.getParameterTypes()[0] != entry.getType()) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong argument type");
                 }
@@ -65,12 +70,12 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
-                Entry<?> entry = Entry.of(field, container);
+                Entry<?> entry = Entry.of(parent, field, container);
                 if (field.isAnnotationPresent(ConfigEntry.class)) {
                     ConfigEntry entryAnnotation = field.getDeclaredAnnotation(ConfigEntry.class);
                     String customTranslationKey = entryAnnotation.customTranslationKey();
                     if (!StringUtils.isBlank(customTranslationKey)) {
-                        entry.setCustomTranslationKey(customTranslationKey);
+                        entry.setCustomTranslationKey(modTranslationKey + "."  + customTranslationKey);
                     }
                     String[] customTooltipKeys = entryAnnotation.customTooltipKeys();
                     if (customTooltipKeys.length > 0) {
@@ -79,7 +84,7 @@ public class EntryMap extends ConfigMap<Entry> {
                                 throw new IllegalAnnotationParameterException("Tooltip key(s) of entry field " + field + " must not be blank");
                             }
                         }
-                        entry.setCustomTooltipKeys(customTooltipKeys);
+                        entry.setCustomTooltipTranslationKeys(Arrays.stream(customTooltipKeys).map(key -> modTranslationKey + "." + key).toArray(String[]::new));
                     }
                     entry.setForceUpdate(entryAnnotation.forceUpdate());
                 }
@@ -89,24 +94,36 @@ public class EntryMap extends ConfigMap<Entry> {
                     }
                     ConfigEntry.Bounded.Integer bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Integer.class);
                     entry.getExtras().setBounds(bounds.min(), bounds.max(), bounds.slider());
-                } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Long.class)) {
+                }
+                if (field.isAnnotationPresent(ConfigEntry.Bounded.Long.class)) {
                     if (field.getType() != long.class && field.getType() != Long.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Long bound to non Long field " + field);
                     }
                     ConfigEntry.Bounded.Long bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Long.class);
                     entry.getExtras().setBounds(bounds.min(), bounds.max(), bounds.slider());
-                } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Float.class)) {
+                }
+                if (field.isAnnotationPresent(ConfigEntry.Bounded.Float.class)) {
                     if (field.getType() != float.class && field.getType() != Float.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Float bound to non Float field " + field);
                     }
                     ConfigEntry.Bounded.Float bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Float.class);
                     entry.getExtras().setBounds(bounds.min(), bounds.max(), false);
-                } else if (field.isAnnotationPresent(ConfigEntry.Bounded.Double.class)) {
+                }
+                if (field.isAnnotationPresent(ConfigEntry.Bounded.Double.class)) {
                     if (field.getType() != double.class && field.getType() != Double.class) {
                         throw new IllegalAnnotationTargetException("Cannot apply Double bound to non Double field " + field);
                     }
                     ConfigEntry.Bounded.Double bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Double.class);
                     entry.getExtras().setBounds(bounds.min(), bounds.max(), false);
+                }
+                if (Enum.class.isAssignableFrom(field.getType())) {
+                    if (field.isAnnotationPresent(ConfigEntry.EnumOptions.class)) {
+                        entry.getExtras().setEnumOptions(field.getDeclaredAnnotation(ConfigEntry.EnumOptions.class).displayType());
+                    } else {
+                        entry.getExtras().setEnumOptions(EnumOptions.DisplayType.getDefault());
+                    }
+                } else if (field.isAnnotationPresent(ConfigEntry.EnumOptions.class)) {
+                    throw new IllegalAnnotationTargetException("Cannot apply enum options to non enum field " + field);
                 }
                 clazzEntries.put(field.getName(), entry);
             });

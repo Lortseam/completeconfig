@@ -35,8 +35,8 @@ public final class ConfigManager {
     ConfigManager(String modID) {
         this.modID = modID;
         jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), modID + ".json");
-        config = new Config(load());
-        guiBuilder = new GuiBuilder(modID, config);
+        config = new Config(modID, load());
+        guiBuilder = new GuiBuilder(this, config);
     }
 
     private JsonElement load() {
@@ -74,8 +74,8 @@ public final class ConfigManager {
         setCustomGuiSupplier(guiBuilder);
     }
 
-    public Screen buildScreen(Screen parent) {
-        return guiBuilder.buildScreen(parent, this::save);
+    public Screen buildScreen(Screen parentScreen) {
+        return guiBuilder.buildScreen(parentScreen, this::save);
     }
 
     /**

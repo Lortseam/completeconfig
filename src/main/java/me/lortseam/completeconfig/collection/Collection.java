@@ -1,30 +1,47 @@
 package me.lortseam.completeconfig.collection;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigCategory;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 public class Collection {
 
+    private final String modTranslationKey;
+    @Getter
+    private final String translationKey;
     @Getter
     private final EntryMap entries;
     @Getter
     private final CollectionMap collections;
 
-    Collection(ConfigEntryContainer container) {
-        this(new EntryMap(), new CollectionMap());
-        fill(container);
+    Collection(String modTranslationKey, String parentTranslationKey, ConfigCategory category) {
+        this.modTranslationKey = modTranslationKey;
+        String categoryID = category.getConfigCategoryID();
+        if (parentTranslationKey == null) {
+            translationKey = categoryID;
+        } else {
+            translationKey = parentTranslationKey + "." + categoryID;
+        }
+        entries = new EntryMap(modTranslationKey);
+        collections = new CollectionMap(modTranslationKey);
+        fill(category);
+    }
+
+    public Text getText() {
+        return new TranslatableText(translationKey);
     }
 
     private void fill(ConfigEntryContainer container) {
-        entries.fill(container);
+        entries.fill(this, container);
         List<ConfigEntryContainer> containers = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getClasses()) {
             containers.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
@@ -55,7 +72,7 @@ public class Collection {
         containers.addAll(Arrays.asList(container.getTransitiveConfigEntryContainers()));
         for (ConfigEntryContainer c : containers) {
             if (c instanceof ConfigCategory) {
-                collections.fill((ConfigCategory) c);
+                collections.fill(translationKey, (ConfigCategory) c);
             } else {
                 fill(c);
             }

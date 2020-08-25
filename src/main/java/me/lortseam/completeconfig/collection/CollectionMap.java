@@ -9,9 +9,13 @@ public class CollectionMap extends ConfigMap<Collection> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected void fill(ConfigCategory category) {
+    protected CollectionMap(String modTranslationKey) {
+        super(modTranslationKey);
+    }
+
+    protected void fill(String parentTranslationKey, ConfigCategory category) {
         String categoryID = category.getConfigCategoryID();
-        Collection collection = new Collection(category);
+        Collection collection = new Collection(modTranslationKey, parentTranslationKey, category);
         if (collection.getEntries().isEmpty() && collection.getCollections().isEmpty()) {
             LOGGER.warn("[CompleteConfig] Category " + categoryID + " is empty!");
             return;

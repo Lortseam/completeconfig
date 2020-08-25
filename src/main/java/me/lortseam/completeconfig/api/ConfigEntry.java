@@ -2,6 +2,7 @@ package me.lortseam.completeconfig.api;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import me.lortseam.completeconfig.entry.EnumOptions.DisplayType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -64,6 +65,14 @@ public @interface ConfigEntry {
             double max() default java.lang.Double.MAX_VALUE;
 
         }
+
+    }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface EnumOptions {
+
+        DisplayType displayType() default DisplayType.DROPDOWN;
 
     }
 
