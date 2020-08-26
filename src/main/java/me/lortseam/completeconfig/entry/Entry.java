@@ -68,23 +68,6 @@ public class Entry<T> {
 
     private Entry(Collection parent, Field field, Class<T> type) {
         translationKey = parent.getTranslationKey() + "." + field.getName();
-        String defaultTooltipTranslationKey = translationKey + ".tooltip";
-        if (I18n.hasTranslation(defaultTooltipTranslationKey)) {
-            tooltipTranslationKeys = new String[] {defaultTooltipTranslationKey};
-        } else {
-            List<String> defaultTooltipTranslationKeys = new ArrayList<>();
-            for(int i = 0;; i++) {
-                String key = defaultTooltipTranslationKey + "." + i;
-                if(I18n.hasTranslation(key)) {
-                    defaultTooltipTranslationKeys.add(key);
-                } else {
-                    if (!defaultTooltipTranslationKeys.isEmpty()) {
-                        tooltipTranslationKeys = defaultTooltipTranslationKeys.toArray(new String[0]);
-                    }
-                    break;
-                }
-            }
-        }
         this.field = field;
         this.type = type;
     }
@@ -163,6 +146,25 @@ public class Entry<T> {
     }
 
     public Optional<Text[]> getTooltip() {
+        if (tooltipTranslationKeys == null) {
+            String defaultTooltipTranslationKey = translationKey + ".tooltip";
+            if (I18n.hasTranslation(defaultTooltipTranslationKey)) {
+                tooltipTranslationKeys = new String[] {defaultTooltipTranslationKey};
+            } else {
+                List<String> defaultTooltipTranslationKeys = new ArrayList<>();
+                for(int i = 0;; i++) {
+                    String key = defaultTooltipTranslationKey + "." + i;
+                    if(I18n.hasTranslation(key)) {
+                        defaultTooltipTranslationKeys.add(key);
+                    } else {
+                        if (!defaultTooltipTranslationKeys.isEmpty()) {
+                            tooltipTranslationKeys = defaultTooltipTranslationKeys.toArray(new String[0]);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
         return tooltipTranslationKeys != null ? Optional.of(Arrays.stream(tooltipTranslationKeys).map(TranslatableText::new).toArray(Text[]::new)) : Optional.empty();
     }
 
