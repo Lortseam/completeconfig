@@ -74,7 +74,7 @@ public @interface ConfigEntry {
 
         DisplayType displayType() default DisplayType.BUTTON;
 
-        //TODO: Add suggestionMode option
+        //TODO: Add gui suggestionMode option
 
     }
 
