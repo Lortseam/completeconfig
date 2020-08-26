@@ -46,7 +46,7 @@ public final class ConfigManager {
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             } catch (JsonSyntaxException e) {
-                LOGGER.warn("An error occurred while trying to load the config for mod " + modID);
+                LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config for mod " + modID);
             }
         }
         return JsonNull.INSTANCE;

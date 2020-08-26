@@ -28,7 +28,7 @@ public class Config extends CollectionMap {
                     .create()
                     .fromJson(json, CollectionMapDeserializer.TYPE);
         } catch (JsonSyntaxException e) {
-            LOGGER.warn("An error occurred while trying to load the config for category " + category.getClass());
+            LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config for category " + category.getClass());
         }
     }
 

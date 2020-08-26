@@ -28,7 +28,7 @@ public class EntryDeserializer<T> implements JsonDeserializer<Entry<T>> {
             T value = context.deserialize(json, configEntry.getType());
             configEntry.setValue(value);
         } catch (JsonParseException e) {
-            LOGGER.warn("An error occurred while trying to load the config entry's value of field " + configEntry.getField() + ": " + e.getMessage());
+            LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config entry's value of field " + configEntry.getField() + ": " + e.getMessage());
         }
         return configEntry;
     }
