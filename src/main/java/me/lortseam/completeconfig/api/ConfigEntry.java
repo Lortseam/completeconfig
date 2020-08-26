@@ -72,7 +72,9 @@ public @interface ConfigEntry {
     @Retention(RetentionPolicy.RUNTIME)
     @interface EnumOptions {
 
-        DisplayType displayType() default DisplayType.DROPDOWN;
+        DisplayType displayType() default DisplayType.BUTTON;
+
+        //TODO: Add suggestionMode option
 
     }
 

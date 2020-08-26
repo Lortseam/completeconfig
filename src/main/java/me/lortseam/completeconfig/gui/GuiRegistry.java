@@ -1,17 +1,16 @@
 package me.lortseam.completeconfig.gui;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.MoreCollectors;
 import me.lortseam.completeconfig.entry.Entry;
 import me.lortseam.completeconfig.entry.EnumOptions;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class GuiRegistry {
 
@@ -183,7 +182,21 @@ public class GuiRegistry {
                 .build(),
                 EnumOptions.DisplayType.BUTTON
         );
-        //TODO: Enum as dropdown
+        registerEnumProvider((GuiProvider<? extends Enum>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> {
+            List<Enum> enumValues = Arrays.asList(((Class<? extends Enum>) field.getType()).getEnumConstants());
+            return ConfigEntryBuilder
+                    .create()
+                    .startDropdownMenu(text, DropdownMenuBuilder.TopCellElementBuilder.of(
+                            value,
+                            enumTranslation -> enumValues.stream().filter(enumValue -> extras.getEnumOptions().getNameProvider().apply(enumValue).getString().equals(enumTranslation)).collect(MoreCollectors.toOptional()).orElse(null),
+                            extras.getEnumOptions().getNameProvider()
+                    ), DropdownMenuBuilder.CellCreatorBuilder.of(extras.getEnumOptions().getNameProvider()))
+                    .setSelections(enumValues)
+                    .setDefaultValue(defaultValue)
+                    .setSaveConsumer(saveConsumer)
+                    .build();
+            }, EnumOptions.DisplayType.DROPDOWN
+        );
         registerGenericProvider((GuiProvider<List<Integer>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer) -> ConfigEntryBuilder
                 .create()
                 .startIntList(text, value)
