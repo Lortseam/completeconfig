@@ -28,7 +28,7 @@ public class EnumOptions {
 
         static {
             try {
-                defaultValue = (DisplayType) ConfigEntry.EnumGuiOptions.class.getDeclaredMethod("displayType").getDefaultValue();
+                defaultValue = (DisplayType) ConfigEntry.EnumOptions.class.getDeclaredMethod("displayType").getDefaultValue();
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }

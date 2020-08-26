@@ -70,7 +70,7 @@ public @interface ConfigEntry {
 
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
-    @interface EnumGuiOptions {
+    @interface EnumOptions {
 
         DisplayType displayType() default DisplayType.BUTTON;
 
