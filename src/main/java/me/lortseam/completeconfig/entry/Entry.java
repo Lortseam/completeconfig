@@ -1,6 +1,7 @@
 package me.lortseam.completeconfig.entry;
 
 import com.google.common.collect.MoreCollectors;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -58,6 +59,7 @@ public class Entry<T> {
     private ConfigEntryContainer parentObject;
     @Getter
     private T defaultValue;
+    @Getter(AccessLevel.PACKAGE)
     private String translationKey;
     private String[] tooltipTranslationKeys;
     @Getter
@@ -166,6 +168,14 @@ public class Entry<T> {
             }
         }
         return tooltipTranslationKeys != null ? Optional.of(Arrays.stream(tooltipTranslationKeys).map(TranslatableText::new).toArray(Text[]::new)) : Optional.empty();
+    }
+
+    public <N extends Number> void setBounds(N min, N max, boolean slider) {
+        extras.setBounds(min, max, slider);
+    }
+
+    public void setEnumOptions(EnumOptions.DisplayType displayType) {
+        extras.setEnumOptions(displayType);
     }
 
     @AllArgsConstructor

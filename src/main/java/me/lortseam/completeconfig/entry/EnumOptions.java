@@ -1,15 +1,24 @@
 package me.lortseam.completeconfig.entry;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import com.google.common.base.CaseFormat;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+import java.util.function.Function;
+
 public class EnumOptions {
 
     @Getter
     private final DisplayType displayType;
+    @Getter
+    private final Function<Enum, Text> nameProvider;
+
+    EnumOptions(Entry<?> entry, DisplayType displayType) {
+        this.displayType = displayType;
+        nameProvider = enumValue -> new TranslatableText(entry.getTranslationKey() + "." + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, enumValue.name()));
+    }
 
     public enum DisplayType {
 

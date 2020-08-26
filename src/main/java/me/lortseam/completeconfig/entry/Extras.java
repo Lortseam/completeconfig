@@ -14,15 +14,15 @@ public class Extras<T> {
     @Getter
     private EnumOptions enumOptions;
 
-    public <N extends Number> void setBounds(N min, N max, boolean slider) {
+    <N extends Number> void setBounds(N min, N max, boolean slider) {
         if (!ClassUtils.isAssignable(entry.getType(), min.getClass()) || !ClassUtils.isAssignable(entry.getType(), max.getClass())) {
             throw new IllegalArgumentException();
         }
         bounds = new Bounds<>((T) min, (T) max, slider);
     }
 
-    public void setEnumOptions(EnumOptions.DisplayType displayType) {
-        enumOptions = new EnumOptions(displayType);
+    void setEnumOptions(EnumOptions.DisplayType displayType) {
+        enumOptions = new EnumOptions(entry, displayType);
     }
 
 }

@@ -1,11 +1,9 @@
 package me.lortseam.completeconfig.gui;
 
-import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;
 import me.lortseam.completeconfig.entry.Entry;
 import me.lortseam.completeconfig.entry.EnumOptions;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.ParameterizedType;
@@ -180,8 +178,7 @@ public class GuiRegistry {
                 .startEnumSelector(text, (Class<Enum>) field.getType(), value)
                 .setDefaultValue(defaultValue)
                 .setTooltip(tooltip)
-                                                                                            //TODO: Bad solution; provide custom enum name provider
-                .setEnumNameProvider(e -> new TranslatableText(((TranslatableText) text).getKey() + "." + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, e.name())))
+                .setEnumNameProvider(extras.getEnumOptions().getNameProvider())
                 .setSaveConsumer(saveConsumer)
                 .build(),
                 EnumOptions.DisplayType.BUTTON
