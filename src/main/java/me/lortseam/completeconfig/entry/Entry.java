@@ -67,6 +67,8 @@ public class Entry<T> {
     private final List<Listener> listeners = new ArrayList<>();
     @Setter
     private boolean forceUpdate;
+    @Setter
+    private boolean requiresRestart;
 
     private Entry(Collection parent, Field field, Class<T> type) {
         translationKey = parent.getTranslationKey() + "." + field.getName();
@@ -176,6 +178,10 @@ public class Entry<T> {
 
     public void setEnumOptions(EnumOptions.DisplayType displayType) {
         extras.setEnumOptions(displayType);
+    }
+
+    public boolean requiresRestart() {
+        return requiresRestart;
     }
 
     @AllArgsConstructor

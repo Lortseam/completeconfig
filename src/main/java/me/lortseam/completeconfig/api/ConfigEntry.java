@@ -19,6 +19,8 @@ public @interface ConfigEntry {
 
     boolean forceUpdate() default false;
 
+    boolean requiresRestart() default false;
+
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class Bounded {
 

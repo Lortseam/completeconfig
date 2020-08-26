@@ -87,6 +87,7 @@ public class EntryMap extends ConfigMap<Entry> {
                         entry.setCustomTooltipTranslationKeys(Arrays.stream(customTooltipKeys).map(key -> modTranslationKey + "." + key).toArray(String[]::new));
                     }
                     entry.setForceUpdate(entryAnnotation.forceUpdate());
+                    entry.setRequiresRestart(entryAnnotation.requiresRestart());
                 }
                 if (field.isAnnotationPresent(ConfigEntry.Bounded.Integer.class)) {
                     if (field.getType() != int.class && field.getType() != Integer.class) {

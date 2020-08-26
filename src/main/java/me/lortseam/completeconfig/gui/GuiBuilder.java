@@ -50,7 +50,7 @@ public class GuiBuilder {
         List<AbstractConfigListEntry> collectionGui = new ArrayList<>();
         collection.getEntries().values().forEach(entry -> collectionGui.add(((Optional<GuiProvider>) manager.getGuiRegistry().getProvider(entry)).orElseGet(() -> {
             throw new UnsupportedOperationException("Could not find gui provider for field " + entry.getField());
-        }).build(entry.getText(), entry.getField(), entry.getValue(), entry.getDefaultValue(), entry.getTooltip(), entry.getExtras(), entry::setValue)));
+        }).build(entry.getText(), entry.getField(), entry.getValue(), entry.getDefaultValue(), entry.getTooltip(), entry.getExtras(), entry::setValue, entry.requiresRestart())));
         collection.getCollections().values().forEach(c -> {
             SubCategoryBuilder subBuilder = ConfigEntryBuilder.create().startSubCategory(c.getText());
             subBuilder.addAll(buildCollection(c));
