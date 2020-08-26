@@ -117,12 +117,12 @@ public class EntryMap extends ConfigMap<Entry> {
                     entry.setBounds(bounds.min(), bounds.max(), false);
                 }
                 if (Enum.class.isAssignableFrom(field.getType())) {
-                    if (field.isAnnotationPresent(ConfigEntry.EnumOptions.class)) {
-                        entry.setEnumOptions(field.getDeclaredAnnotation(ConfigEntry.EnumOptions.class).displayType());
+                    if (field.isAnnotationPresent(ConfigEntry.EnumGuiOptions.class)) {
+                        entry.setEnumOptions(field.getDeclaredAnnotation(ConfigEntry.EnumGuiOptions.class).displayType());
                     } else {
                         entry.setEnumOptions(EnumOptions.DisplayType.getDefault());
                     }
-                } else if (field.isAnnotationPresent(ConfigEntry.EnumOptions.class)) {
+                } else if (field.isAnnotationPresent(ConfigEntry.EnumGuiOptions.class)) {
                     throw new IllegalAnnotationTargetException("Cannot apply enum options to non enum field " + field);
                 }
                 clazzEntries.put(field.getName(), entry);
