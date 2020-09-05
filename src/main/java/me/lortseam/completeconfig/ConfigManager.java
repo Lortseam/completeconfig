@@ -52,6 +52,10 @@ public final class ConfigManager {
         return JsonNull.INSTANCE;
     }
 
+    /**
+     * Registers one or more top level categories.
+     * @param categories The categories to register
+     */
     public void register(ConfigCategory... categories) {
         for (ConfigCategory category : categories) {
             config.registerTopLevelCategory(category);
@@ -74,6 +78,11 @@ public final class ConfigManager {
         setCustomGuiSupplier(guiBuilder);
     }
 
+    /**
+     * Generates the configuration GUI.
+     * @param parentScreen The parent screen
+     * @return The generated configuration screen
+     */
     public Screen buildScreen(Screen parentScreen) {
         return guiBuilder.buildScreen(parentScreen, this::save);
     }
