@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -17,6 +18,7 @@ public final class CompleteConfig {
      * @return The {@link ConfigManager} for the registered mod
      */
     public static ConfigManager register(String modID) {
+        Objects.requireNonNull(modID);
         if (MANAGERS.containsKey(modID)) {
             throw new IllegalArgumentException("A manager with this mod ID is already registered");
         }
