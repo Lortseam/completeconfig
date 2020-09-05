@@ -15,7 +15,7 @@ public final class CompleteConfig {
     /**
      * Registers a mod
      * @param modID The ID of the mod
-     * @return The {@link ConfigManager} for the registered mod
+     * @return The {@link ConfigManager} for the newly registered mod
      */
     public static ConfigManager register(String modID) {
         Objects.requireNonNull(modID);
