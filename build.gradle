@@ -56,6 +56,16 @@ jar {
 	from "LICENSE"
 }
 
+task javadocs(type: Javadoc) {
+	source = sourceSets.main.allJava
+}
+
+task javadocsJar(type: Jar, dependsOn: javadocs) {
+	classifier = "javadocs"
+	javadocs.failOnError false
+	from javadocs.destinationDir
+}
+
 // configure the maven publication
 publishing {
 	publications {
@@ -67,6 +77,7 @@ publishing {
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
+			artifact javadocsJar
 		}
 	}
 
