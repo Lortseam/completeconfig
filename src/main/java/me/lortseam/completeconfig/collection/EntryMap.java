@@ -10,7 +10,7 @@ import me.lortseam.completeconfig.entry.EnumOptions;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.exception.IllegalModifierException;
-import me.lortseam.completeconfig.exception.IllegalReturnValueException;
+import me.lortseam.completeconfig.exception.IllegalReturnTypeException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Modifier;
@@ -47,7 +47,7 @@ public class EntryMap extends ConfigMap<Entry> {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong argument type");
                 }
                 if (method.getReturnType() != Void.TYPE) {
-                    throw new IllegalReturnValueException("Listener method " + method + " may not return a type other than void");
+                    throw new IllegalReturnTypeException("Listener method " + method + " may not return a type other than void");
                 }
                 if (!method.isAccessible()) {
                     method.setAccessible(true);
