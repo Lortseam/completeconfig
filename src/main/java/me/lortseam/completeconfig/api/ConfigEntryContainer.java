@@ -9,6 +9,9 @@ import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A container of config entries.
+ */
 public interface ConfigEntryContainer {
 
     default ConfigEntryContainer[] getTransitiveConfigEntryContainers() {
