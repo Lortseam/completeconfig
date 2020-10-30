@@ -7,13 +7,16 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Starting class for using the CompleteConfig API.
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CompleteConfig {
 
     private static final HashMap<String, ConfigManager> MANAGERS = new HashMap<>();
 
     /**
-     * Registers a mod
+     * Registers a mod.
      * @param modID The ID of the mod
      * @return The {@link ConfigManager} for the newly registered mod
      */
@@ -28,7 +31,7 @@ public final class CompleteConfig {
     }
 
     /**
-     * Gets the {@link ConfigManager} for the specified mod if that mod was registered before
+     * Gets the {@link ConfigManager} for the specified mod if that mod was registered before.
      * @param modID The ID of the mod
      * @return The {@link ConfigManager} if one was found or else an empty result
      */

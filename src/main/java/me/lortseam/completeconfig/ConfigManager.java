@@ -18,6 +18,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Supplier;
 
+/**
+ * Main interaction class for using the CompleteConfig API. References a single mod.
+ */
 public final class ConfigManager {
 
     private static final Gson GSON = new GsonBuilder()
@@ -95,6 +98,9 @@ public final class ConfigManager {
         return buildScreen(parentScreen);
     }
 
+    /**
+     * Saves the config to a save file.
+     */
     public void save() {
         if (!Files.exists(jsonPath)) {
             try {

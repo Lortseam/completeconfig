@@ -21,20 +21,21 @@ import java.util.function.Function;
 
 public class GuiRegistry {
 
+    //TODO: Only used for setting requireRestart cause that method returns void, should be done differently
     public static <T, A extends AbstractConfigListEntry> A build(Consumer<FieldBuilder<T, A>> fieldBuilderModifier, Function<ConfigEntryBuilder, FieldBuilder<T, A>> builder) {
         FieldBuilder<T, A> fieldBuilder = builder.apply(ConfigEntryBuilder.create());
         fieldBuilderModifier.accept(fieldBuilder);
         return fieldBuilder.build();
     }
 
-    private final List<Registration> registrations = new ArrayList<>();
+    private final List<GuiProviderRegistration> registrations = new ArrayList<>();
 
     GuiRegistry() {
         registerDefaultProviders();
     }
 
     public <T> void registerProvider(GuiProvider<T> provider, GuiProviderPredicate<T> predicate, Class... types) {
-        registrations.add(new Registration<>(predicate.and((field, extras) -> {
+        registrations.add(new GuiProviderRegistration<>(predicate.and((field, extras) -> {
             if (types.length == 0) {
                 return true;
             }
@@ -240,7 +241,7 @@ public class GuiRegistry {
     }
 
     <T> Optional<GuiProvider<T>> getProvider(Entry<T> entry) {
-        for (Registration<?> registration : Lists.reverse(registrations)) {
+        for (GuiProviderRegistration<?> registration : Lists.reverse(registrations)) {
             if (registration.test(entry)) {
                 return Optional.of((GuiProvider<T>) registration.getProvider());
             }

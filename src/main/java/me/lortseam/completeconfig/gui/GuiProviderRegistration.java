@@ -8,7 +8,8 @@ import me.lortseam.completeconfig.entry.Entry;
 import java.util.function.Predicate;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class Registration<T> implements Predicate<Entry<?>> {
+//TODO: Functional interfaces should not get extended
+class GuiProviderRegistration<T> implements Predicate<Entry<?>> {
 
     private final GuiProviderPredicate<T> predicate;
     @Getter(AccessLevel.PACKAGE)
