@@ -63,7 +63,7 @@ public class Entry<T> {
     private String translationKey;
     private String[] tooltipTranslationKeys;
     @Getter
-    private Extras<T> extras = new Extras<>(this);
+    private final Extras<T> extras = new Extras<>(this);
     private final List<Listener> listeners = new ArrayList<>();
     @Setter
     private boolean forceUpdate;
@@ -103,10 +103,10 @@ public class Entry<T> {
         if (extras.getBounds() != null) {
             if (new BigDecimal(value.toString()).compareTo(new BigDecimal(extras.getBounds().getMin().toString())) < 0) {
                 LOGGER.warn("[CompleteConfig] Tried to set value of field " + field + " to a value less than minimum bound, setting to minimum now!");
-                value = (T) extras.getBounds().getMin();
+                value = extras.getBounds().getMin();
             } else if (new BigDecimal(value.toString()).compareTo(new BigDecimal(extras.getBounds().getMax().toString())) > 0) {
                 LOGGER.warn("[CompleteConfig] Tried to set value of field " + field + " to a value greater than maximum bound, setting to maximum now!");
-                value = (T) extras.getBounds().getMax();
+                value = extras.getBounds().getMax();
             }
         }
         if (value.equals(getFieldValue())) {

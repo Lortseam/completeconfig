@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 public class Collection {
 
-    private final String modTranslationKey;
     @Getter
     private final String translationKey;
     @Getter
@@ -24,7 +23,6 @@ public class Collection {
     private final CollectionMap collections;
 
     Collection(String modTranslationKey, String parentTranslationKey, ConfigCategory category) {
-        this.modTranslationKey = modTranslationKey;
         String categoryID = category.getConfigCategoryID();
         if (parentTranslationKey == null) {
             translationKey = categoryID;
