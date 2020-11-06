@@ -19,7 +19,6 @@
   "environment": "client",
 
   "depends": {
-    "minecraft": "1.16.x",
     "fabricloader": ">=0.9.0",
     "cloth-config2": "*"
   }
