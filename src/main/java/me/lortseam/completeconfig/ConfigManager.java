@@ -3,20 +3,23 @@ package me.lortseam.completeconfig;
 import com.google.gson.*;
 import me.lortseam.completeconfig.api.ConfigCategory;
 import me.lortseam.completeconfig.gui.GuiBuilder;
-import me.lortseam.completeconfig.gui.GuiRegistry;
 import me.lortseam.completeconfig.serialization.CollectionSerializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
-import me.shedaniel.clothconfig2.api.ConfigBuilder;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.function.Supplier;
+import java.util.Optional;
 
 /**
  * Main interaction class for using the CompleteConfig API. References a single mod.
@@ -35,11 +38,21 @@ public final class ConfigManager {
     private final Config config;
     private final GuiBuilder guiBuilder;
 
-    ConfigManager(String modID) {
+    /**
+     * Gets the {@link ConfigManager} for the specified mod if that mod was registered before.
+     *
+     * @param modID The ID of the mod
+     * @return The {@link ConfigManager} if one was found or else an empty result
+     */
+    public static Optional<ConfigManager> of(String modID) {
+        return CompleteConfig.getManager(modID);
+    }
+
+    ConfigManager(String modID, GuiBuilder guiBuilder) {
         this.modID = modID;
         jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), modID + ".json");
         config = new Config(modID, load());
-        guiBuilder = new GuiBuilder(this, config);
+        this.guiBuilder = guiBuilder;
     }
 
     private JsonElement load() {
@@ -65,29 +78,17 @@ public final class ConfigManager {
         }
     }
 
-    public GuiRegistry getGuiRegistry() {
-        return guiBuilder.getRegistry();
-    }
-
-    public void setCustomGuiSupplier(Supplier<ConfigBuilder> supplier) {
-        guiBuilder.setSupplier(supplier);
-    }
-
-    /**
-     * @deprecated Use {@link #setCustomGuiSupplier(Supplier)}.
-     */
-    @Deprecated
-    public void setCustomGuiBuilder(Supplier<ConfigBuilder> guiBuilder) {
-        setCustomGuiSupplier(guiBuilder);
-    }
-
     /**
      * Generates the configuration GUI.
      * @param parentScreen The parent screen
      * @return The generated configuration screen
      */
+    @Environment(EnvType.CLIENT)
     public Screen buildScreen(Screen parentScreen) {
-        return guiBuilder.buildScreen(parentScreen, this::save);
+        if(guiBuilder == null) {
+            throw new UnsupportedOperationException("No GUI builder provided");
+        }
+        return guiBuilder.buildScreen(parentScreen, config, this::save);
     }
 
     /**

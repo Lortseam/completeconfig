@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.gui;
+package me.lortseam.completeconfig.gui.cloth;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
@@ -8,6 +8,8 @@ import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import me.shedaniel.clothconfig2.impl.builders.FieldBuilder;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.ParameterizedType;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Environment(EnvType.CLIENT)
 public class GuiRegistry {
 
     //TODO: Only used for setting requireRestart cause that method returns void, should be done differently

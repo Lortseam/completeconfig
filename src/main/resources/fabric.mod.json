@@ -19,7 +19,9 @@
   "environment": "client",
 
   "depends": {
-    "fabricloader": ">=0.9.0",
+    "fabricloader": ">=0.9.0"
+  },
+  "suggests": {
     "cloth-config2": "*"
   }
 }

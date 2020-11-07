@@ -1,10 +1,13 @@
-package me.lortseam.completeconfig.gui;
+package me.lortseam.completeconfig.gui.cloth;
 
 import me.lortseam.completeconfig.entry.Extras;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
 
+@Environment(EnvType.CLIENT)
 @FunctionalInterface
 public interface GuiProviderPredicate<T> {
 
