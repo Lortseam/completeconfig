@@ -2,13 +2,9 @@ package me.lortseam.completeconfig;
 
 import com.google.gson.*;
 import me.lortseam.completeconfig.api.ConfigCategory;
-import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.lortseam.completeconfig.serialization.CollectionSerializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.screen.Screen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +20,7 @@ import java.util.Optional;
 /**
  * Main interaction class for using the CompleteConfig API. References a single mod.
  */
-public final class ConfigManager {
+public abstract class ConfigManager {
 
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(CollectionSerializer.TYPE, new CollectionSerializer())
@@ -35,8 +31,7 @@ public final class ConfigManager {
 
     private final String modID;
     private final Path jsonPath;
-    private final Config config;
-    private final GuiBuilder guiBuilder;
+    protected final Config config;
 
     /**
      * Gets the {@link ConfigManager} for the specified mod if that mod was registered before.
@@ -48,11 +43,10 @@ public final class ConfigManager {
         return CompleteConfig.getManager(modID);
     }
 
-    ConfigManager(String modID, GuiBuilder guiBuilder) {
+    ConfigManager(String modID) {
         this.modID = modID;
         jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), modID + ".json");
         config = new Config(modID, load());
-        this.guiBuilder = guiBuilder;
     }
 
     private JsonElement load() {
@@ -76,27 +70,6 @@ public final class ConfigManager {
         for (ConfigCategory category : categories) {
             config.registerTopLevelCategory(category);
         }
-    }
-
-    /**
-     * Generates the configuration GUI.
-     * @param parentScreen The parent screen
-     * @return The generated configuration screen
-     */
-    @Environment(EnvType.CLIENT)
-    public Screen buildScreen(Screen parentScreen) {
-        if(guiBuilder == null) {
-            throw new UnsupportedOperationException("No GUI builder provided");
-        }
-        return guiBuilder.buildScreen(parentScreen, config, this::save);
-    }
-
-    /**
-     * @deprecated Use {@link #buildScreen(Screen)}.
-     */
-    @Deprecated
-    public Screen getConfigScreen(Screen parentScreen) {
-        return buildScreen(parentScreen);
     }
 
     /**
