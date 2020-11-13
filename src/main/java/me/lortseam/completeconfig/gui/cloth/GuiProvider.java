@@ -14,7 +14,6 @@ import java.util.function.Consumer;
 @FunctionalInterface
 public interface GuiProvider<T> {
 
-    //TODO: Optional should not be used for an argument
     AbstractConfigListEntry<T> build(Text text, Field field, T value, T defaultValue, Optional<Text[]> tooltip, Extras<T> extras, Consumer<T> saveConsumer, boolean requiresRestart);
 
 }

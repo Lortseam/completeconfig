@@ -18,16 +18,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public class GuiRegistry {
 
-    //TODO: Only used for setting requireRestart cause that method returns void, should be done differently
-    public static <T, A extends AbstractConfigListEntry> A build(Consumer<FieldBuilder<T, A>> fieldBuilderModifier, Function<ConfigEntryBuilder, FieldBuilder<T, A>> builder) {
+    public static <T, A extends AbstractConfigListEntry> A build(Function<ConfigEntryBuilder, FieldBuilder<T, A>> builder, boolean requiresRestart) {
         FieldBuilder<T, A> fieldBuilder = builder.apply(ConfigEntryBuilder.create());
-        fieldBuilderModifier.accept(fieldBuilder);
+        fieldBuilder.requireRestart(requiresRestart);
         return fieldBuilder.build();
     }
 
@@ -74,122 +72,121 @@ public class GuiRegistry {
 
     private void registerDefaultProviders() {
        registerProvider((GuiProvider<Boolean>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startBooleanToggle(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), boolean.class, Boolean.class);
        registerProvider((GuiProvider<Integer>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startIntField(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), int.class, Integer.class);
        registerBoundedProvider((GuiProvider<Integer>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startIntField(text, value)
                        .setDefaultValue(defaultValue)
                        .setMin(extras.getBounds().getMin())
                        .setMax(extras.getBounds().getMax())
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), false, int.class, Integer.class);
        registerBoundedProvider((GuiProvider<Integer>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startIntSlider(text, value, extras.getBounds().getMin(), extras.getBounds().getMax())
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), true, int.class, Integer.class);
        registerProvider((GuiProvider<Long>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startLongField(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), long.class, Long.class);
        registerBoundedProvider((GuiProvider<Long>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startLongField(text, value)
                        .setDefaultValue(defaultValue)
                        .setMin(extras.getBounds().getMin())
                        .setMax(extras.getBounds().getMax())
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), false, long.class, Long.class);
        registerBoundedProvider((GuiProvider<Long>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startLongSlider(text, value, extras.getBounds().getMin(), extras.getBounds().getMax())
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), true, long.class, Long.class);
        registerProvider((GuiProvider<Float>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startFloatField(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), float.class, Float.class);
        registerBoundedProvider((GuiProvider<Float>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startFloatField(text, value)
                        .setDefaultValue(defaultValue)
                        .setMin(extras.getBounds().getMin())
                        .setMax(extras.getBounds().getMax())
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), false, float.class, Float.class);
        registerProvider((GuiProvider<Double>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startDoubleField(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), double.class, Double.class);
        registerBoundedProvider((GuiProvider<Double>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startDoubleField(text, value)
                        .setDefaultValue(defaultValue)
                        .setMin(extras.getBounds().getMin())
                        .setMax(extras.getBounds().getMax())
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), false, double.class, Double.class);
        registerProvider((GuiProvider<String>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startStrField(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), String.class);
        registerEnumProvider((GuiProvider<? extends Enum<?>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startEnumSelector(text, (Class<Enum<?>>) field.getType(), value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
                        .setEnumNameProvider(extras.getEnumOptions().getNameProvider())
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), EnumOptions.DisplayType.BUTTON);
        registerEnumProvider((GuiProvider<? extends Enum>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> {
            List<Enum> enumValues = Arrays.asList(((Class<? extends Enum>) field.getType()).getEnumConstants());
            return build(
-                   builder -> builder.requireRestart(requiresRestart),
                    builder -> builder
                            .startDropdownMenu(text, DropdownMenuBuilder.TopCellElementBuilder.of(
                                    value,
@@ -198,48 +195,49 @@ public class GuiRegistry {
                            ), DropdownMenuBuilder.CellCreatorBuilder.of(extras.getEnumOptions().getNameProvider()))
                            .setSelections(enumValues)
                            .setDefaultValue(defaultValue)
-                           .setSaveConsumer(saveConsumer)
+                           .setSaveConsumer(saveConsumer),
+                   requiresRestart
            );
        }, EnumOptions.DisplayType.DROPDOWN);
        registerGenericProvider((GuiProvider<List<Integer>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startIntList(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), List.class, Integer.class);
        registerGenericProvider((GuiProvider<List<Long>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startLongList(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), List.class, Long.class);
        registerGenericProvider((GuiProvider<List<Float>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startFloatList(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), List.class, Float.class);
        registerGenericProvider((GuiProvider<List<Double>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startDoubleList(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), List.class, Double.class);
        registerGenericProvider((GuiProvider<List<String>>) (text, field, value, defaultValue, tooltip, extras, saveConsumer, requiresRestart) -> build(
-               builder -> builder.requireRestart(requiresRestart),
                builder -> builder
                        .startStrList(text, value)
                        .setDefaultValue(defaultValue)
                        .setTooltip(tooltip)
-                       .setSaveConsumer(saveConsumer)
+                       .setSaveConsumer(saveConsumer),
+               requiresRestart
        ), List.class, String.class);
     }
 
