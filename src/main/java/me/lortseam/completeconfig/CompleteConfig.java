@@ -13,6 +13,14 @@ public final class CompleteConfig {
 
     private static final HashMap<String, ConfigManager> MANAGERS = new HashMap<>();
 
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            for (ConfigManager manager : MANAGERS.values()) {
+                manager.save();
+            }
+        }));
+    }
+
     /**
      * Registers a mod.
      *
