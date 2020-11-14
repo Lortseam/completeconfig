@@ -4,6 +4,8 @@ import com.google.gson.*;
 import me.lortseam.completeconfig.api.ConfigCategory;
 import me.lortseam.completeconfig.serialization.CollectionSerializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,6 +43,28 @@ public abstract class ConfigManager {
      */
     public static Optional<ConfigManager> of(String modID) {
         return CompleteConfig.getManager(modID);
+    }
+
+    /**
+     * Gets the {@link ClientConfigManager} for the specified mod if that mod was registered before.
+     *
+     * @param modID The ID of the mod
+     * @return The {@link ClientConfigManager} if one was found or else an empty result
+     */
+    @Environment(EnvType.CLIENT)
+    public static Optional<ClientConfigManager> ofClient(String modID) {
+        return of(modID).map(manager -> (ClientConfigManager) manager);
+    }
+
+    /**
+     * Gets the {@link ServerConfigManager} for the specified mod if that mod was registered before.
+     *
+     * @param modID The ID of the mod
+     * @return The {@link ServerConfigManager} if one was found or else an empty result
+     */
+    @Environment(EnvType.SERVER)
+    public static Optional<ServerConfigManager> ofServer(String modID) {
+        return of(modID).map(manager -> (ServerConfigManager) manager);
     }
 
     ConfigManager(String modID) {
