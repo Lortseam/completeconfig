@@ -62,7 +62,6 @@ task javadocs(type: Javadoc) {
 
 task javadocsJar(type: Jar, dependsOn: javadocs) {
 	classifier = "javadocs"
-	javadocs.failOnError false
 	from javadocs.destinationDir
 }
 
