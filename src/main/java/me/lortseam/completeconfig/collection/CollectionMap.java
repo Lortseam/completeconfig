@@ -13,14 +13,15 @@ public class CollectionMap extends ConfigMap<Collection> {
         super(modTranslationKey);
     }
 
-    protected void fill(String parentTranslationKey, ConfigCategory category) {
+    protected boolean fill(String parentTranslationKey, ConfigCategory category) {
         String categoryID = category.getConfigCategoryID();
         Collection collection = new Collection(modTranslationKey, parentTranslationKey, category);
         if (collection.getEntries().isEmpty() && collection.getCollections().isEmpty()) {
             LOGGER.warn("[CompleteConfig] Category " + categoryID + " is empty!");
-            return;
+            return false;
         }
         put(categoryID, collection);
+        return true;
     }
 
 }

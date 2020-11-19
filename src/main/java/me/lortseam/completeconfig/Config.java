@@ -21,7 +21,9 @@ public class Config extends CollectionMap {
     }
 
     void registerTopLevelCategory(ConfigCategory category) {
-        fill(modTranslationKey, category);
+        if (!fill(modTranslationKey, category)) {
+            return;
+        }
         try {
             new GsonBuilder()
                     .registerTypeAdapter(CollectionMapDeserializer.TYPE, new CollectionMapDeserializer(this, category.getConfigCategoryID()))
