@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Main interaction class for using the CompleteConfig API. References a single mod.
  */
-public abstract class ConfigManager {
+public abstract class ConfigHandler {
 
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(CollectionSerializer.TYPE, new CollectionSerializer())
@@ -36,38 +36,38 @@ public abstract class ConfigManager {
     protected final Config config;
 
     /**
-     * Gets the {@link ConfigManager} for the specified mod if that mod was registered before.
+     * Gets the {@link ConfigHandler} for the specified mod if that mod was registered before.
      *
      * @param modID The ID of the mod
-     * @return The {@link ConfigManager} if one was found or else an empty result
+     * @return The {@link ConfigHandler} if one was found or else an empty result
      */
-    public static Optional<ConfigManager> of(String modID) {
+    public static Optional<ConfigHandler> of(String modID) {
         return CompleteConfig.getManager(modID);
     }
 
     /**
-     * Gets the {@link ClientConfigManager} for the specified mod if that mod was registered before.
+     * Gets the {@link ClientConfigHandler} for the specified mod if that mod was registered before.
      *
      * @param modID The ID of the mod
-     * @return The {@link ClientConfigManager} if one was found or else an empty result
+     * @return The {@link ClientConfigHandler} if one was found or else an empty result
      */
     @Environment(EnvType.CLIENT)
-    public static Optional<ClientConfigManager> ofClient(String modID) {
-        return of(modID).map(manager -> (ClientConfigManager) manager);
+    public static Optional<ClientConfigHandler> ofClient(String modID) {
+        return of(modID).map(manager -> (ClientConfigHandler) manager);
     }
 
     /**
-     * Gets the {@link ServerConfigManager} for the specified mod if that mod was registered before.
+     * Gets the {@link ServerConfigHandler} for the specified mod if that mod was registered before.
      *
      * @param modID The ID of the mod
-     * @return The {@link ServerConfigManager} if one was found or else an empty result
+     * @return The {@link ServerConfigHandler} if one was found or else an empty result
      */
     @Environment(EnvType.SERVER)
-    public static Optional<ServerConfigManager> ofServer(String modID) {
-        return of(modID).map(manager -> (ServerConfigManager) manager);
+    public static Optional<ServerConfigHandler> ofServer(String modID) {
+        return of(modID).map(manager -> (ServerConfigHandler) manager);
     }
 
-    ConfigManager(String modID) {
+    ConfigHandler(String modID) {
         this.modID = modID;
         jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), modID + ".json");
         config = new Config(modID, load());

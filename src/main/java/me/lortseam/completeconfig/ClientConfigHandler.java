@@ -7,11 +7,11 @@ import net.minecraft.client.gui.screen.Screen;
 
 import java.util.Objects;
 
-public final class ClientConfigManager extends ConfigManager {
+public final class ClientConfigHandler extends ConfigHandler {
 
     private GuiBuilder guiBuilder;
 
-    ClientConfigManager(String modID) {
+    ClientConfigHandler(String modID) {
         super(modID);
     }
 

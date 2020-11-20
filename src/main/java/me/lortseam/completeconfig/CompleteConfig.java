@@ -11,11 +11,11 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CompleteConfig {
 
-    private static final HashMap<String, ConfigManager> MANAGERS = new HashMap<>();
+    private static final HashMap<String, ConfigHandler> MANAGERS = new HashMap<>();
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (ConfigManager manager : MANAGERS.values()) {
+            for (ConfigHandler manager : MANAGERS.values()) {
                 manager.save();
             }
         }));
@@ -25,21 +25,21 @@ public final class CompleteConfig {
      * Registers a mod.
      *
      * @param modID      The ID of the mod
-     * @return The {@link ConfigManager} for the newly registered mod
+     * @return The {@link ConfigHandler} for the newly registered mod
      */
-    public static ConfigManager register(String modID) {
+    public static ConfigHandler register(String modID) {
         Objects.requireNonNull(modID);
         if (MANAGERS.containsKey(modID)) {
             throw new IllegalArgumentException("A manager with this mod ID is already registered");
         }
-        ConfigManager manager;
+        ConfigHandler manager;
         switch (FabricLoader.getInstance().getEnvironmentType()) {
             case CLIENT:
-                manager = new ClientConfigManager(modID);
+                manager = new ClientConfigHandler(modID);
                 break;
 
             case SERVER:
-                manager = new ServerConfigManager(modID);
+                manager = new ServerConfigHandler(modID);
                 break;
 
             default:
@@ -49,7 +49,7 @@ public final class CompleteConfig {
         return manager;
     }
 
-    static Optional<ConfigManager> getManager(String modID) {
+    static Optional<ConfigHandler> getManager(String modID) {
         return Optional.ofNullable(MANAGERS.get(modID));
     }
 
