@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * Applied to declare that a field is an entry inside the mod's config. Only required if
  * the {@link ConfigEntryContainer} is not a POJO class.
  *
- * This is also used to change the behaviour of the entry regarding translations, bounds and other
+ * <p>This is also used to change the behaviour of the entry regarding translations, bounds and other
  * miscellaneous options.
  */
 @Target(ElementType.FIELD)
@@ -22,6 +22,7 @@ public @interface ConfigEntry {
 
     /**
      * Specifies a custom translation key for this entry. If empty, the default key will be used.
+     *
      * @return a custom translation key
      */
     String customTranslationKey() default "";
@@ -29,6 +30,7 @@ public @interface ConfigEntry {
     /**
      * Specifies one or more custom translation keys for this entry's tooltip. If empty, the default single-line or
      * multi-line keys will be used, depending on which are declared in the language file(s).
+     *
      * @return an array of custom tooltip translation keys
      */
     String[] customTooltipKeys() default {};
@@ -36,14 +38,16 @@ public @interface ConfigEntry {
     /**
      * Specifies if the entry's field should get updated while at least one listener exists in the entry's class.
      *
-     * By default the entry's field will not get modified when the config is saved, but all listeners will be called
+     * <p>By default the entry's field will not get modified when the config is saved, but all listeners will be called
      * with the updated value. Set this to true to always update the field when saving.
+     *
      * @return true if the field should get updated, else false
      */
     boolean forceUpdate() default false;
 
     /**
      * Specifies whether the game needs to be restarted after modifying this entry.
+     *
      * @return whether the game needs to be restarted after modifying this field's entry
      */
     boolean requiresRestart() default false;
@@ -60,18 +64,21 @@ public @interface ConfigEntry {
 
             /**
              * The minimum bound.
+             *
              * @return the minimum bound
              */
             int min() default java.lang.Integer.MIN_VALUE;
 
             /**
              * The maximum bound.
+             *
              * @return the maximum bound
              */
             int max() default java.lang.Integer.MAX_VALUE;
 
             /**
              * Specifies whether the entry should be rendered as slider.
+             *
              * @return whether the entry should be rendered as slider
              */
             boolean slider() default true;
@@ -87,18 +94,21 @@ public @interface ConfigEntry {
 
             /**
              * The minimum bound.
+             *
              * @return the minimum bound
              */
             long min() default java.lang.Long.MIN_VALUE;
 
             /**
              * The maximum bound.
+             *
              * @return the maximum bound
              */
             long max() default java.lang.Long.MAX_VALUE;
 
             /**
              * Specifies whether the entry should be rendered as slider.
+             *
              * @return whether the entry should be rendered as slider
              */
             boolean slider() default true;
@@ -114,12 +124,14 @@ public @interface ConfigEntry {
 
             /**
              * The minimum bound.
+             *
              * @return the minimum bound
              */
             float min() default -java.lang.Float.MAX_VALUE;
 
             /**
              * The maximum bound.
+             *
              * @return the maximum bound
              */
             float max() default java.lang.Float.MAX_VALUE;
@@ -135,12 +147,14 @@ public @interface ConfigEntry {
 
             /**
              * The minimum bound.
+             *
              * @return the minimum bound
              */
             double min() default -java.lang.Double.MAX_VALUE;
 
             /**
              * The maximum bound.
+             *
              * @return the maximum bound
              */
             double max() default java.lang.Double.MAX_VALUE;
@@ -158,6 +172,7 @@ public @interface ConfigEntry {
 
         /**
          * Specifies how the entry should be rendered.
+         *
          * @return the desired {@link DisplayType}
          */
         DisplayType displayType() default DisplayType.BUTTON;

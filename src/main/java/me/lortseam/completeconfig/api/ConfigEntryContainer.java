@@ -18,7 +18,6 @@ public interface ConfigEntryContainer {
      * Used to register other containers. They will be located on the same level.
      *
      * @return an array of other containers
-     *
      * @see Transitive
      */
     default ConfigEntryContainer[] getTransitiveConfigEntryContainers() {

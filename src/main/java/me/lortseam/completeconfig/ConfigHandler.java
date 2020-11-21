@@ -52,7 +52,7 @@ public final class ConfigHandler {
      * Gets the {@link ConfigHandler} for the specified owner if that owner created a config before.
      *
      * @param owner The owner class of the config
-     * @return The {@link ConfigHandler} if one was found or else an empty result
+     * @return The handler if one was found or else an empty result
      */
     public static Optional<ConfigHandler> of(Class<? extends ConfigOwner> owner) {
         return Optional.ofNullable(HANDLERS.get(owner));
@@ -87,10 +87,12 @@ public final class ConfigHandler {
     }
 
     /**
-     * Sets a custom GUI builder.
+     * Sets a custom client GUI builder.
+     *
      * @param guiBuilder The GUI builder for the mod's config
      */
     @Environment(EnvType.CLIENT)
+    //TODO: Move to ConfigBuilder
     public void setGuiBuilder(GuiBuilder guiBuilder) {
         Objects.requireNonNull(guiBuilder);
         this.guiBuilder = guiBuilder;
@@ -98,6 +100,7 @@ public final class ConfigHandler {
 
     /**
      * Generates the configuration GUI.
+     *
      * @param parentScreen The parent screen
      * @return The generated configuration screen
      */

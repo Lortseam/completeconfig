@@ -22,11 +22,22 @@ public final class ConfigBuilder {
         this.owner = owner;
     }
 
+    /**
+     * Adds one or multiple top-level categories to the config.
+     *
+     * @param categories the top-level categories
+     * @return this config builder
+     */
     public ConfigBuilder add(ConfigCategory... categories) {
         topLevelCategories.addAll(Arrays.asList(categories));
         return this;
     }
 
+    /**
+     * Completes the config creation and registers the config.
+     *
+     * @return the handler associated with the created config
+     */
     public ConfigHandler finish() {
         handler.register(owner, topLevelCategories);
         return handler;
