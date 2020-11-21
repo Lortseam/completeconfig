@@ -1,56 +1,27 @@
 package me.lortseam.completeconfig;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import me.lortseam.completeconfig.api.ConfigOwner;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
-import java.util.HashMap;
 import java.util.Objects;
-import java.util.Optional;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CompleteConfig {
+public final class CompleteConfig implements ModInitializer {
 
-    private static final HashMap<String, ConfigHandler> MANAGERS = new HashMap<>();
-
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (ConfigHandler manager : MANAGERS.values()) {
-                manager.save();
+    @Override
+    public void onInitialize() {
+        for (EntrypointContainer<ConfigOwner> entrypoint : FabricLoader.getInstance().getEntrypointContainers("completeconfig", ConfigOwner.class)) {
+            ConfigOwner owner = entrypoint.getEntrypoint();
+            ConfigBuilder builder = ConfigBuilder.create(entrypoint.getProvider().getMetadata().getId(), Objects.requireNonNull(owner.getConfigBranch()), owner.getClass());
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                owner.onInitializeClientConfig(builder);
             }
-        }));
-    }
-
-    /**
-     * Registers a mod.
-     *
-     * @param modID      The ID of the mod
-     * @return The {@link ConfigHandler} for the newly registered mod
-     */
-    public static ConfigHandler register(String modID) {
-        Objects.requireNonNull(modID);
-        if (MANAGERS.containsKey(modID)) {
-            throw new IllegalArgumentException("A manager with this mod ID is already registered");
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
+                owner.onInitializeServerConfig(builder);
+            }
         }
-        ConfigHandler manager;
-        switch (FabricLoader.getInstance().getEnvironmentType()) {
-            case CLIENT:
-                manager = new ClientConfigHandler(modID);
-                break;
-
-            case SERVER:
-                manager = new ServerConfigHandler(modID);
-                break;
-
-            default:
-                throw new IllegalStateException("Illegal environment");
-        }
-        MANAGERS.put(modID, manager);
-        return manager;
-    }
-
-    static Optional<ConfigHandler> getManager(String modID) {
-        return Optional.ofNullable(MANAGERS.get(modID));
     }
 
 }

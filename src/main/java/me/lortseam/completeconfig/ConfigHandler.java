@@ -2,11 +2,16 @@ package me.lortseam.completeconfig;
 
 import com.google.gson.*;
 import me.lortseam.completeconfig.api.ConfigCategory;
+import me.lortseam.completeconfig.api.ConfigOwner;
+import me.lortseam.completeconfig.gui.GuiBuilder;
+import me.lortseam.completeconfig.gui.cloth.ClothGuiBuilder;
 import me.lortseam.completeconfig.serialization.CollectionSerializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.screen.Screen;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +22,9 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.*;
 
-/**
- * Main interaction class for using the CompleteConfig API. References a single mod.
- */
-public abstract class ConfigHandler {
+public final class ConfigHandler {
 
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(CollectionSerializer.TYPE, new CollectionSerializer())
@@ -30,47 +32,45 @@ public abstract class ConfigHandler {
             .setPrettyPrinting()
             .create();
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final Map<Class<? extends ConfigOwner>, ConfigHandler> HANDLERS = new HashMap<>();
+
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            for (ConfigHandler handler : HANDLERS.values()) {
+                handler.save();
+            }
+        }));
+    }
 
     private final String modID;
     private final Path jsonPath;
-    protected final Config config;
+    protected Config config;
+    @Environment(EnvType.CLIENT)
+    private GuiBuilder guiBuilder;
 
     /**
-     * Gets the {@link ConfigHandler} for the specified mod if that mod was registered before.
+     * Gets the {@link ConfigHandler} for the specified owner if that owner created a config before.
      *
-     * @param modID The ID of the mod
+     * @param owner The owner class of the config
      * @return The {@link ConfigHandler} if one was found or else an empty result
      */
-    public static Optional<ConfigHandler> of(String modID) {
-        return CompleteConfig.getManager(modID);
+    public static Optional<ConfigHandler> of(Class<? extends ConfigOwner> owner) {
+        return Optional.ofNullable(HANDLERS.get(owner));
     }
 
-    /**
-     * Gets the {@link ClientConfigHandler} for the specified mod if that mod was registered before.
-     *
-     * @param modID The ID of the mod
-     * @return The {@link ClientConfigHandler} if one was found or else an empty result
-     */
-    @Environment(EnvType.CLIENT)
-    public static Optional<ClientConfigHandler> ofClient(String modID) {
-        return of(modID).map(manager -> (ClientConfigHandler) manager);
-    }
-
-    /**
-     * Gets the {@link ServerConfigHandler} for the specified mod if that mod was registered before.
-     *
-     * @param modID The ID of the mod
-     * @return The {@link ServerConfigHandler} if one was found or else an empty result
-     */
-    @Environment(EnvType.SERVER)
-    public static Optional<ServerConfigHandler> ofServer(String modID) {
-        return of(modID).map(manager -> (ServerConfigHandler) manager);
-    }
-
-    ConfigHandler(String modID) {
+    ConfigHandler(String modID, String[] branch) {
         this.modID = modID;
-        jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), modID + ".json");
-        config = new Config(modID, load());
+        branch = ArrayUtils.add(branch, 0, modID);
+        branch[branch.length - 1] = branch[branch.length - 1] + ".json";
+        jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), branch);
+    }
+
+    void register(Class<? extends ConfigOwner> owner, List<ConfigCategory> topLevelCategories) {
+        if (HANDLERS.containsKey(owner)) {
+            throw new IllegalArgumentException("The specified owner already created a config!");
+        }
+        HANDLERS.put(owner, this);
+        config = new Config(modID, topLevelCategories, load());
     }
 
     private JsonElement load() {
@@ -80,25 +80,43 @@ public abstract class ConfigHandler {
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             } catch (JsonSyntaxException e) {
-                LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config for mod " + modID);
+                LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config " + jsonPath.toString());
             }
         }
         return JsonNull.INSTANCE;
     }
 
     /**
-     * Registers one or more top level categories.
-     * @param categories The categories to register
+     * Sets a custom GUI builder.
+     * @param guiBuilder The GUI builder for the mod's config
      */
-    public void register(ConfigCategory... categories) {
-        for (ConfigCategory category : categories) {
-            config.registerTopLevelCategory(category);
+    @Environment(EnvType.CLIENT)
+    public void setGuiBuilder(GuiBuilder guiBuilder) {
+        Objects.requireNonNull(guiBuilder);
+        this.guiBuilder = guiBuilder;
+    }
+
+    /**
+     * Generates the configuration GUI.
+     * @param parentScreen The parent screen
+     * @return The generated configuration screen
+     */
+    @Environment(EnvType.CLIENT)
+    public Screen buildScreen(Screen parentScreen) {
+        if (guiBuilder == null) {
+            if (FabricLoader.getInstance().isModLoaded("cloth-config2")) {
+                guiBuilder = new ClothGuiBuilder();
+            } else {
+                throw new UnsupportedOperationException("No GUI builder provided");
+            }
         }
+        return guiBuilder.buildScreen(parentScreen, config, this::save);
     }
 
     /**
      * Saves the config to a save file.
      */
+    //TODO: Needs public access?
     public void save() {
         if (!Files.exists(jsonPath)) {
             try {

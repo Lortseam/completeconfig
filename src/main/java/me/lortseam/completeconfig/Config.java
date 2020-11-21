@@ -9,28 +9,26 @@ import me.lortseam.completeconfig.serialization.CollectionMapDeserializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
+
 public class Config extends CollectionMap {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final JsonElement json;
-
-    Config(String modID, JsonElement json) {
+    Config(String modID, List<ConfigCategory> topLevelCategories, JsonElement json) {
         super("config." + modID);
-        this.json = json;
-    }
-
-    void registerTopLevelCategory(ConfigCategory category) {
-        if (!fill(modTranslationKey, category)) {
-            return;
-        }
-        try {
-            new GsonBuilder()
-                    .registerTypeAdapter(CollectionMapDeserializer.TYPE, new CollectionMapDeserializer(this, category.getConfigCategoryID()))
-                    .create()
-                    .fromJson(json, CollectionMapDeserializer.TYPE);
-        } catch (JsonSyntaxException e) {
-            LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config for category " + category.getClass());
+        for (ConfigCategory category : topLevelCategories) {
+            if (!fill(modTranslationKey, category)) {
+                continue;
+            }
+            try {
+                new GsonBuilder()
+                        .registerTypeAdapter(CollectionMapDeserializer.TYPE, new CollectionMapDeserializer(this, category.getConfigCategoryID()))
+                        .create()
+                        .fromJson(json, CollectionMapDeserializer.TYPE);
+            } catch (JsonSyntaxException e) {
+                LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config for category " + category.getClass());
+            }
         }
     }
 
