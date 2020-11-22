@@ -42,10 +42,35 @@ public final class ConfigHandler {
         }));
     }
 
+    static ConfigHandler registerConfig(String modID, String[] branch, Class<? extends ConfigOwner> owner, List<ConfigCategory> topLevelCategories, GuiBuilder guiBuilder) {
+        if (HANDLERS.containsKey(owner)) {
+            throw new IllegalArgumentException("The specified owner " + owner + " already created a config!");
+        }
+        if (guiBuilder == null) {
+            if (FabricLoader.getInstance().isModLoaded("cloth-config2")) {
+                guiBuilder = new ClothGuiBuilder();
+            } else {
+                throw new UnsupportedOperationException("No GUI builder provided");
+            }
+        }
+        if (topLevelCategories.isEmpty()) {
+            LOGGER.warn("[CompleteConfig] Owner " + owner + " of mod " + modID + " tried to create an empty config!");
+            return null;
+        }
+        String[] subPath = ArrayUtils.add(branch, 0, modID);
+        subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".json";
+        Path jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), subPath);
+        if (HANDLERS.values().stream().anyMatch(handler -> handler.jsonPath.equals(jsonPath))) {
+            throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists!");
+        }
+        ConfigHandler handler = new ConfigHandler(modID, jsonPath, topLevelCategories, guiBuilder);
+        HANDLERS.put(owner, handler);
+        return handler;
+    }
+
     private final Path jsonPath;
     private final Config config;
-    @Environment(EnvType.CLIENT)
-    private GuiBuilder guiBuilder;
+    private final GuiBuilder guiBuilder;
 
     /**
      * Gets the {@link ConfigHandler} for the specified owner if that owner created a config before.
@@ -57,19 +82,11 @@ public final class ConfigHandler {
         return Optional.ofNullable(HANDLERS.get(owner));
     }
 
-    ConfigHandler(String modID, String[] branch, Class<? extends ConfigOwner> owner, List<ConfigCategory> topLevelCategories, GuiBuilder guiBuilder) {
-        branch = ArrayUtils.add(branch, 0, modID);
-        branch[branch.length - 1] = branch[branch.length - 1] + ".json";
-        jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), branch);
-        if (HANDLERS.containsKey(owner)) {
-            throw new IllegalArgumentException("The specified owner " + owner + " already created a config!");
-        }
-        if (HANDLERS.values().stream().anyMatch(handler -> handler.jsonPath.equals(jsonPath))) {
-            throw new IllegalArgumentException("A config of the mod " + modID + "  with the specified branch " + Arrays.toString(branch) + " already exists!");
-        }
-        HANDLERS.put(owner, this);
+    private ConfigHandler(String modID, Path jsonPath, List<ConfigCategory> topLevelCategories, GuiBuilder guiBuilder) {
+        this.jsonPath = jsonPath;
         config = new Config(modID, topLevelCategories, load());
-        this.guiBuilder = guiBuilder;
+        this.guiBuilder = Objects.requireNonNull(guiBuilder);
+
     }
 
     private JsonElement load() {
@@ -93,20 +110,12 @@ public final class ConfigHandler {
      */
     @Environment(EnvType.CLIENT)
     public Screen buildScreen(Screen parentScreen) {
-        if (guiBuilder == null) {
-            if (FabricLoader.getInstance().isModLoaded("cloth-config2")) {
-                guiBuilder = new ClothGuiBuilder();
-            } else {
-                throw new UnsupportedOperationException("No GUI builder provided");
-            }
-        }
         return guiBuilder.buildScreen(parentScreen, config, this::save);
     }
 
     /**
      * Saves the config to a save file.
      */
-    //TODO: Needs public access?
     public void save() {
         if (!Files.exists(jsonPath)) {
             try {

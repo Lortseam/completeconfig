@@ -51,12 +51,12 @@ public final class ConfigBuilder {
     }
 
     /**
-     * Completes the config creation.
+     * Completes the config creation and registers the config.
      *
      * @return the handler associated with the created config
      */
     public ConfigHandler finish() {
-        return new ConfigHandler(modID, branch, owner, topLevelCategories, guiBuilder);
+        return ConfigHandler.registerConfig(modID, branch, owner, topLevelCategories, guiBuilder);
     }
 
 }
