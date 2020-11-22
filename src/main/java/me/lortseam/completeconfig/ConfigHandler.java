@@ -64,6 +64,9 @@ public final class ConfigHandler {
         if (HANDLERS.containsKey(owner)) {
             throw new IllegalArgumentException("The specified owner already created a config!");
         }
+        if (HANDLERS.values().stream().anyMatch(handler -> handler.jsonPath.equals(jsonPath))) {
+            throw new IllegalArgumentException("A config of the mod " + modID + "  with the specified branch " + Arrays.toString(branch) + " already exists!");
+        }
         HANDLERS.put(owner, this);
         config = new Config(modID, topLevelCategories, load());
     }
