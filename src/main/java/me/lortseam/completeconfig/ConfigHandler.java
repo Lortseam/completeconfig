@@ -46,7 +46,7 @@ public final class ConfigHandler {
         if (HANDLERS.containsKey(owner)) {
             throw new IllegalArgumentException("The specified owner " + owner + " already created a config!");
         }
-        if (guiBuilder == null) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && guiBuilder == null) {
             if (FabricLoader.getInstance().isModLoaded("cloth-config2")) {
                 guiBuilder = new ClothGuiBuilder();
             } else {
@@ -85,7 +85,7 @@ public final class ConfigHandler {
     private ConfigHandler(String modID, Path jsonPath, List<ConfigCategory> topLevelCategories, GuiBuilder guiBuilder) {
         this.jsonPath = jsonPath;
         config = new Config(modID, topLevelCategories, load());
-        this.guiBuilder = Objects.requireNonNull(guiBuilder);
+        this.guiBuilder = guiBuilder;
 
     }
 
