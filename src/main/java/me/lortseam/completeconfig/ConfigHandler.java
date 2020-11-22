@@ -69,6 +69,7 @@ public final class ConfigHandler {
         }
         HANDLERS.put(owner, this);
         config = new Config(modID, topLevelCategories, load());
+        this.guiBuilder = guiBuilder;
     }
 
     private JsonElement load() {
