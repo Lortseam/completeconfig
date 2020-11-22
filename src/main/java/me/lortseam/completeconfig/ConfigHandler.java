@@ -62,7 +62,7 @@ public final class ConfigHandler {
         branch[branch.length - 1] = branch[branch.length - 1] + ".json";
         jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), branch);
         if (HANDLERS.containsKey(owner)) {
-            throw new IllegalArgumentException("The specified owner already created a config!");
+            throw new IllegalArgumentException("The specified owner " + owner + " already created a config!");
         }
         if (HANDLERS.values().stream().anyMatch(handler -> handler.jsonPath.equals(jsonPath))) {
             throw new IllegalArgumentException("A config of the mod " + modID + "  with the specified branch " + Arrays.toString(branch) + " already exists!");
