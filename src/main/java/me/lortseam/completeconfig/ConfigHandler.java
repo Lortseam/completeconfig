@@ -42,9 +42,8 @@ public final class ConfigHandler {
         }));
     }
 
-    private final String modID;
     private final Path jsonPath;
-    protected Config config;
+    private final Config config;
     @Environment(EnvType.CLIENT)
     private GuiBuilder guiBuilder;
 
@@ -58,14 +57,10 @@ public final class ConfigHandler {
         return Optional.ofNullable(HANDLERS.get(owner));
     }
 
-    ConfigHandler(String modID, String[] branch) {
-        this.modID = modID;
+    ConfigHandler(String modID, String[] branch, Class<? extends ConfigOwner> owner, List<ConfigCategory> topLevelCategories, GuiBuilder guiBuilder) {
         branch = ArrayUtils.add(branch, 0, modID);
         branch[branch.length - 1] = branch[branch.length - 1] + ".json";
         jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), branch);
-    }
-
-    void register(Class<? extends ConfigOwner> owner, List<ConfigCategory> topLevelCategories) {
         if (HANDLERS.containsKey(owner)) {
             throw new IllegalArgumentException("The specified owner already created a config!");
         }
@@ -84,18 +79,6 @@ public final class ConfigHandler {
             }
         }
         return JsonNull.INSTANCE;
-    }
-
-    /**
-     * Sets a custom client GUI builder.
-     *
-     * @param guiBuilder The GUI builder for the mod's config
-     */
-    @Environment(EnvType.CLIENT)
-    //TODO: Move to ConfigBuilder
-    public void setGuiBuilder(GuiBuilder guiBuilder) {
-        Objects.requireNonNull(guiBuilder);
-        this.guiBuilder = guiBuilder;
     }
 
     /**
