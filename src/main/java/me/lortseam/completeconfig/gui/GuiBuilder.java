@@ -5,9 +5,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
 
-@Environment(EnvType.CLIENT)
 public interface GuiBuilder {
 
+    @Environment(EnvType.CLIENT)
     Screen buildScreen(Screen parentScreen, Config config, Runnable savingRunnable);
 
 }
