@@ -43,7 +43,6 @@ dependencies {
 
 ## Usage
 See the [wiki](https://gitlab.com/Lortseam/completeconfig/-/wikis/home) for usage instructions.  
-You can also take a look at the [example mod](https://gitlab.com/Lortseam/completeconfig-example-mod) which uses many features of this API.
 
 ## License
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
