@@ -68,10 +68,6 @@ public final class ConfigHandler {
         return handler;
     }
 
-    private final Path jsonPath;
-    private final Config config;
-    private final GuiBuilder guiBuilder;
-
     /**
      * Gets the {@link ConfigHandler} for the specified owner if that owner created a config before.
      *
@@ -81,6 +77,10 @@ public final class ConfigHandler {
     public static Optional<ConfigHandler> of(Class<? extends ConfigOwner> owner) {
         return Optional.ofNullable(HANDLERS.get(owner));
     }
+
+    private final Path jsonPath;
+    private final Config config;
+    private final GuiBuilder guiBuilder;
 
     private ConfigHandler(String modID, Path jsonPath, List<ConfigCategory> topLevelCategories, GuiBuilder guiBuilder) {
         this.jsonPath = jsonPath;
