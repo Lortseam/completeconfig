@@ -37,7 +37,7 @@ public class EntryMap extends ConfigMap<Entry> {
                 }
                 Class<? extends ConfigEntryContainer> fieldClass = listener.container();
                 if (fieldClass == ConfigEntryContainer.class) {
-                    fieldClass = container.getClass();
+                    fieldClass = clazz;
                 }
                 if (method.getParameterCount() != 1) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong number of parameters");
