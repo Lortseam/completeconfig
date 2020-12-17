@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "CompleteConfig",
-  "description": "Flexible all-in-one configuration API",
+  "description": "Configuration library",
   "contact": {
     "email": "lortseam@gmail.com",
     "homepage": "https://gitlab.com/Lortseam/completeconfig",
