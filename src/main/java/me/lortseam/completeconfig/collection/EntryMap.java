@@ -25,7 +25,7 @@ public class EntryMap extends ConfigMap<Entry> {
 
     void fill(Collection parent, ConfigEntryContainer container) {
         LinkedHashMap<String, Entry> containerEntries = new LinkedHashMap<>();
-        for (Class<? extends ConfigEntryContainer> clazz : container.getClasses()) {
+        for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
             Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
                 ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
                 String fieldName = listener.value();

@@ -41,7 +41,7 @@ public class Collection {
     private void fill(ConfigEntryContainer container) {
         entries.fill(this, container);
         List<ConfigEntryContainer> containers = new ArrayList<>();
-        for (Class<? extends ConfigEntryContainer> clazz : container.getClasses()) {
+        for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
             containers.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (Modifier.isStatic(field.getModifiers())) {
                     return false;

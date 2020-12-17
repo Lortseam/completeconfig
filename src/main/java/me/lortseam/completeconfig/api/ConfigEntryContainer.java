@@ -40,7 +40,7 @@ public interface ConfigEntryContainer {
 
     }
 
-    default List<Class<? extends ConfigEntryContainer>> getClasses() {
+    default List<Class<? extends ConfigEntryContainer>> getConfigClasses() {
         List<Class<? extends ConfigEntryContainer>> classes = new ArrayList<>();
         Class<? extends ConfigEntryContainer> clazz = getClass();
         while (clazz != null) {
