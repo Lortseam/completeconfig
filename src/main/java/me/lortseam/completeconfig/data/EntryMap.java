@@ -1,7 +1,6 @@
 package me.lortseam.completeconfig.data;
 
 import com.google.common.base.CaseFormat;
-import me.lortseam.completeconfig.ConfigMap;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigEntryListener;
@@ -15,7 +14,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EntryMap extends ConfigMap<Entry> {
 
@@ -134,7 +132,9 @@ public class EntryMap extends ConfigMap<Entry> {
             });
             containerEntries.addAll(0, clazzEntries);
         }
-        putAll(containerEntries.stream().collect(Collectors.toMap(Entry::getID, entry -> entry)));
+        for (Entry<?> entry : containerEntries) {
+            putUnique(entry.getID(), entry);
+        }
     }
 
 }

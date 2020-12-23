@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.data;
 
-import me.lortseam.completeconfig.ConfigMap;
 import me.lortseam.completeconfig.api.ConfigCategory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +19,7 @@ public class CollectionMap extends ConfigMap<Collection> {
             LOGGER.warn("[CompleteConfig] Category " + categoryID + " is empty!");
             return false;
         }
-        put(categoryID, collection);
+        putUnique(categoryID, collection);
         return true;
     }
 
