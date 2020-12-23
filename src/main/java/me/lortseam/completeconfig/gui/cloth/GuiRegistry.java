@@ -2,8 +2,8 @@ package me.lortseam.completeconfig.gui.cloth;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
-import me.lortseam.completeconfig.entry.Entry;
-import me.lortseam.completeconfig.entry.EnumOptions;
+import me.lortseam.completeconfig.data.Entry;
+import me.lortseam.completeconfig.data.EnumOptions;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;

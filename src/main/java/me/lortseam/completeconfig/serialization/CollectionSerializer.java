@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.serialization;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import me.lortseam.completeconfig.collection.Collection;
+import me.lortseam.completeconfig.data.Collection;
 
 import java.lang.reflect.Type;
 

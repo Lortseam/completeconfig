@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.entry;
+package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.MoreCollectors;
 import lombok.AccessLevel;
@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.collection.Collection;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -24,7 +23,7 @@ public class Entry<T> {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Set<Entry> ENTRIES = new HashSet<>();
 
-    public static Entry<?> of(Collection parent, String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
+    static Entry<?> of(Collection parent, String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
         try {
             Field field = parentClass.getDeclaredField(fieldName);
             if (!field.isAccessible()) {
@@ -44,34 +43,37 @@ public class Entry<T> {
         });
     }
 
-    public static <T> Entry<T> of(Collection parent, Field field, ConfigEntryContainer parentObject) {
+    static <T> Entry<T> of(Collection parent, Field field, ConfigEntryContainer parentObject) {
         Entry<T> entry = of(parent, field);
         entry.parentObject = parentObject;
         entry.defaultValue = entry.getValue();
         return entry;
     }
 
+    @Getter(AccessLevel.PACKAGE)
+    private final Collection parent;
     @Getter
     private final Field field;
+    @Setter(AccessLevel.PACKAGE)
+    private String customID;
     @Getter
     private final Class<T> type;
-    @Getter
     private ConfigEntryContainer parentObject;
     @Getter
     private T defaultValue;
-    @Getter(AccessLevel.PACKAGE)
-    private String translationKey;
+    @Setter(AccessLevel.PACKAGE)
+    private String customTranslationKey;
     private String[] tooltipTranslationKeys;
     @Getter
     private final Extras<T> extras = new Extras<>(this);
     private final List<Listener> listeners = new ArrayList<>();
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
     private boolean forceUpdate;
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
     private boolean requiresRestart;
 
     private Entry(Collection parent, Field field, Class<T> type) {
-        translationKey = parent.getTranslationKey() + "." + field.getName();
+        this.parent = parent;
         this.field = field;
         this.type = type;
     }
@@ -133,25 +135,29 @@ public class Entry<T> {
         }
     }
 
-    public void addListener(Method method, ConfigEntryContainer parentObject) {
+    void addListener(Method method, ConfigEntryContainer parentObject) {
         listeners.add(new Listener(method, parentObject));
     }
 
-    public void setCustomTranslationKey(String translationKey) {
-        this.translationKey = translationKey;
+    String getID() {
+        return customID != null ? customID : field.getName();
+    }
+
+    String getTranslationKey() {
+        return customTranslationKey != null ? customTranslationKey : parent.getTranslationKey() + "." + getID();
     }
 
     public Text getText() {
-        return new TranslatableText(translationKey);
+        return new TranslatableText(getTranslationKey());
     }
 
-    public void setCustomTooltipTranslationKeys(String[] tooltipTranslationKeys) {
+    void setCustomTooltipTranslationKeys(String[] tooltipTranslationKeys) {
         this.tooltipTranslationKeys = tooltipTranslationKeys;
     }
 
     public Optional<Text[]> getTooltip() {
         if (tooltipTranslationKeys == null) {
-            String defaultTooltipTranslationKey = translationKey + ".tooltip";
+            String defaultTooltipTranslationKey = getTranslationKey() + ".tooltip";
             if (I18n.hasTranslation(defaultTooltipTranslationKey)) {
                 tooltipTranslationKeys = new String[] {defaultTooltipTranslationKey};
             } else {
@@ -172,11 +178,11 @@ public class Entry<T> {
         return tooltipTranslationKeys != null ? Optional.of(Arrays.stream(tooltipTranslationKeys).map(TranslatableText::new).toArray(Text[]::new)) : Optional.empty();
     }
 
-    public <N extends Number> void setBounds(N min, N max, boolean slider) {
+    <N extends Number> void setBounds(N min, N max, boolean slider) {
         extras.setBounds(min, max, slider);
     }
 
-    public void setEnumOptions(EnumOptions.DisplayType displayType) {
+    void setEnumOptions(EnumOptions.DisplayType displayType) {
         extras.setEnumOptions(displayType);
     }
 

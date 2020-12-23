@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.collection;
+package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.ConfigMap;
 import me.lortseam.completeconfig.api.ConfigCategory;

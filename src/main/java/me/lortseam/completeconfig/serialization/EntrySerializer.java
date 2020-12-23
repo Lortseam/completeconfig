@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.serialization;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import me.lortseam.completeconfig.entry.Entry;
+import me.lortseam.completeconfig.data.Entry;
 
 import java.lang.reflect.Type;
 

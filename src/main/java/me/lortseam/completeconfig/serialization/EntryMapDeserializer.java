@@ -3,8 +3,8 @@ package me.lortseam.completeconfig.serialization;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
-import me.lortseam.completeconfig.collection.EntryMap;
-import me.lortseam.completeconfig.entry.Entry;
+import me.lortseam.completeconfig.data.EntryMap;
+import me.lortseam.completeconfig.data.Entry;
 
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;

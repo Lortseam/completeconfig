@@ -1,12 +1,10 @@
-package me.lortseam.completeconfig.collection;
+package me.lortseam.completeconfig.data;
 
 import com.google.common.base.CaseFormat;
 import me.lortseam.completeconfig.ConfigMap;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigEntryListener;
-import me.lortseam.completeconfig.entry.Entry;
-import me.lortseam.completeconfig.entry.EnumOptions;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.exception.IllegalModifierException;
@@ -14,8 +12,10 @@ import me.lortseam.completeconfig.exception.IllegalReturnTypeException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EntryMap extends ConfigMap<Entry> {
 
@@ -24,7 +24,7 @@ public class EntryMap extends ConfigMap<Entry> {
     }
 
     void fill(Collection parent, ConfigEntryContainer container) {
-        LinkedHashMap<String, Entry> containerEntries = new LinkedHashMap<>();
+        List<Entry> containerEntries = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
             Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
                 ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
@@ -54,7 +54,7 @@ public class EntryMap extends ConfigMap<Entry> {
                 }
                 entry.addListener(method, container);
             });
-            LinkedHashMap<String, Entry> clazzEntries = new LinkedHashMap<>();
+            List<Entry> clazzEntries = new ArrayList<>();
             Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (Modifier.isStatic(field.getModifiers())) {
                     return false;
@@ -73,6 +73,10 @@ public class EntryMap extends ConfigMap<Entry> {
                 Entry<?> entry = Entry.of(parent, field, container);
                 if (field.isAnnotationPresent(ConfigEntry.class)) {
                     ConfigEntry entryAnnotation = field.getDeclaredAnnotation(ConfigEntry.class);
+                    String id = entryAnnotation.value();
+                    if (!StringUtils.isBlank(id)) {
+                        entry.setCustomID(id);
+                    }
                     String customTranslationKey = entryAnnotation.customTranslationKey();
                     if (!StringUtils.isBlank(customTranslationKey)) {
                         entry.setCustomTranslationKey(modTranslationKey + "."  + customTranslationKey);
@@ -126,13 +130,11 @@ public class EntryMap extends ConfigMap<Entry> {
                 } else if (field.isAnnotationPresent(ConfigEntry.EnumOptions.class)) {
                     throw new IllegalAnnotationTargetException("Cannot apply enum options to non enum field " + field);
                 }
-                clazzEntries.put(field.getName(), entry);
+                clazzEntries.add(entry);
             });
-            //TODO: Quite hacky solution to sort the entries (superclasses first)
-            clazzEntries.putAll(containerEntries);
-            containerEntries = clazzEntries;
+            containerEntries.addAll(0, clazzEntries);
         }
-        putAll(containerEntries);
+        putAll(containerEntries.stream().collect(Collectors.toMap(Entry::getID, entry -> entry)));
     }
 
 }

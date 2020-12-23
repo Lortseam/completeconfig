@@ -1,5 +1,6 @@
-package me.lortseam.completeconfig.collection;
+package me.lortseam.completeconfig.data;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigCategory;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class Collection {
 
-    @Getter
+    @Getter(AccessLevel.PACKAGE)
     private final String translationKey;
     @Getter
     private final EntryMap entries;

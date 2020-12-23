@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import me.lortseam.completeconfig.api.ConfigCategory;
-import me.lortseam.completeconfig.collection.CollectionMap;
+import me.lortseam.completeconfig.data.CollectionMap;
 import me.lortseam.completeconfig.serialization.CollectionMapDeserializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

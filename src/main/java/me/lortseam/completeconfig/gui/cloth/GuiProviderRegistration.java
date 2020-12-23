@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.gui.cloth;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import me.lortseam.completeconfig.entry.Entry;
+import me.lortseam.completeconfig.data.Entry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

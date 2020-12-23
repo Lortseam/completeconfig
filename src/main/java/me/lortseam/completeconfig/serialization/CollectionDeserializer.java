@@ -2,9 +2,9 @@ package me.lortseam.completeconfig.serialization;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import me.lortseam.completeconfig.collection.Collection;
-import me.lortseam.completeconfig.collection.CollectionMap;
-import me.lortseam.completeconfig.collection.EntryMap;
+import me.lortseam.completeconfig.data.Collection;
+import me.lortseam.completeconfig.data.CollectionMap;
+import me.lortseam.completeconfig.data.EntryMap;
 
 import java.lang.reflect.Type;
 import java.util.Map;

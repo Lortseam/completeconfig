@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.api;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import me.lortseam.completeconfig.entry.EnumOptions.DisplayType;
+import me.lortseam.completeconfig.data.EnumOptions.DisplayType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,6 +19,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ConfigEntry {
+
+    /**
+     * Specifies the ID of this entry. If empty, the field name will be used by default.
+     *
+     * @return the ID
+     */
+    String value() default "";
 
     /**
      * Specifies a custom translation key for this entry. If empty, the default key will be used.
@@ -177,7 +184,7 @@ public @interface ConfigEntry {
          */
         DisplayType displayType() default DisplayType.BUTTON;
 
-        //TODO: Add gui suggestionMode option
+        //TODO: Add boolean suggestionMode for DisplayType.DROPDOWN
 
     }
 
