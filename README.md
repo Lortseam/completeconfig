@@ -13,7 +13,7 @@ This means:
 ## Setup
 [![](https://jitpack.io/v/com.gitlab.Lortseam/completeconfig.svg)](https://jitpack.io/#com.gitlab.Lortseam/completeconfig)
 
-To use the API, first add the JitPack repository to your `build.gradle`:
+To use the library, first add the JitPack repository to your `build.gradle`:
 ```groovy
 repositories {
     ...
