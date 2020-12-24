@@ -13,8 +13,7 @@ import java.lang.annotation.Target;
  * Applied to declare that a field is an entry inside the mod's config. Only required if
  * the {@link ConfigEntryContainer} is not a POJO class.
  *
- * <p>This is also used to change the behaviour of the entry regarding translations, bounds and other
- * miscellaneous options.
+ * <p>This annotation also contains some options to modify the entry.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
