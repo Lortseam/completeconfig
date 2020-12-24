@@ -46,13 +46,6 @@ public final class ConfigHandler {
         if (HANDLERS.containsKey(owner)) {
             throw new IllegalArgumentException("The specified owner " + owner + " already created a config!");
         }
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && guiBuilder == null) {
-            if (FabricLoader.getInstance().isModLoaded("cloth-config2")) {
-                guiBuilder = new ClothGuiBuilder();
-            } else {
-                throw new UnsupportedOperationException("No GUI builder provided");
-            }
-        }
         if (topLevelCategories.isEmpty()) {
             LOGGER.warn("[CompleteConfig] Owner " + owner + " of mod " + modID + " tried to create an empty config!");
             return null;
@@ -80,13 +73,12 @@ public final class ConfigHandler {
 
     private final Path jsonPath;
     private final Config config;
-    private final GuiBuilder guiBuilder;
+    private GuiBuilder guiBuilder;
 
     private ConfigHandler(String modID, Path jsonPath, List<ConfigCategory> topLevelCategories, GuiBuilder guiBuilder) {
         this.jsonPath = jsonPath;
         config = new Config(modID, topLevelCategories, load());
         this.guiBuilder = guiBuilder;
-
     }
 
     private JsonElement load() {
@@ -110,6 +102,13 @@ public final class ConfigHandler {
      */
     @Environment(EnvType.CLIENT)
     public Screen buildScreen(Screen parentScreen) {
+        if (guiBuilder == null) {
+            if (FabricLoader.getInstance().isModLoaded("cloth-config2")) {
+                guiBuilder = new ClothGuiBuilder();
+            } else {
+                throw new UnsupportedOperationException("No GUI builder provided");
+            }
+        }
         return guiBuilder.buildScreen(parentScreen, config, this::save);
     }
 
