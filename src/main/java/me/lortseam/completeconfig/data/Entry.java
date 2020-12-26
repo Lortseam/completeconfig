@@ -63,7 +63,8 @@ public class Entry<T> {
     private T defaultValue;
     @Setter(AccessLevel.PACKAGE)
     private String customTranslationKey;
-    private String[] tooltipTranslationKeys;
+    @Setter(AccessLevel.PACKAGE)
+    private String[] customTooltipKeys;
     @Getter
     private final Extras<T> extras = new Extras<>(this);
     private final List<Listener> listeners = new ArrayList<>();
@@ -151,15 +152,14 @@ public class Entry<T> {
         return new TranslatableText(getTranslationKey());
     }
 
-    void setCustomTooltipTranslationKeys(String[] tooltipTranslationKeys) {
-        this.tooltipTranslationKeys = tooltipTranslationKeys;
-    }
-
     public Optional<Text[]> getTooltip() {
-        if (tooltipTranslationKeys == null) {
+        String[] keys = null;
+        if (customTooltipKeys != null) {
+            keys = customTooltipKeys;
+        } else {
             String defaultTooltipTranslationKey = getTranslationKey() + ".tooltip";
             if (I18n.hasTranslation(defaultTooltipTranslationKey)) {
-                tooltipTranslationKeys = new String[] {defaultTooltipTranslationKey};
+                keys = new String[] {defaultTooltipTranslationKey};
             } else {
                 List<String> defaultTooltipTranslationKeys = new ArrayList<>();
                 for(int i = 0;; i++) {
@@ -168,14 +168,14 @@ public class Entry<T> {
                         defaultTooltipTranslationKeys.add(key);
                     } else {
                         if (!defaultTooltipTranslationKeys.isEmpty()) {
-                            tooltipTranslationKeys = defaultTooltipTranslationKeys.toArray(new String[0]);
+                            keys = defaultTooltipTranslationKeys.toArray(new String[0]);
                         }
                         break;
                     }
                 }
             }
         }
-        return tooltipTranslationKeys != null ? Optional.of(Arrays.stream(tooltipTranslationKeys).map(TranslatableText::new).toArray(Text[]::new)) : Optional.empty();
+        return keys != null ? Optional.of(Arrays.stream(keys).map(TranslatableText::new).toArray(Text[]::new)) : Optional.empty();
     }
 
     <N extends Number> void setBounds(N min, N max, boolean slider) {

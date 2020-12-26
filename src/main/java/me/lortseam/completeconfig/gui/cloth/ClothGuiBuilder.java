@@ -55,7 +55,7 @@ public class ClothGuiBuilder implements GuiBuilder {
         for (Entry entry : collection.getEntries().values()) {
             collectionGui.add(((Optional<GuiProvider>) registry.getProvider(entry)).orElseGet(() -> {
                 throw new UnsupportedOperationException("Could not find gui provider for field " + entry.getField());
-            }).build(entry.getText(), entry.getField(), entry.getValue(), entry.getDefaultValue(), entry.getTooltip(), entry.getExtras(), entry::setValue, entry.requiresRestart()));
+            }).build(entry));
         }
         for (Collection c : collection.getCollections().values()) {
             SubCategoryBuilder subBuilder = ConfigEntryBuilder.create().startSubCategory(c.getText());
