@@ -86,7 +86,7 @@ public class EntryMap extends ConfigMap<Entry> {
                                 throw new IllegalAnnotationParameterException("Tooltip key(s) of entry field " + field + " must not be blank");
                             }
                         }
-                        entry.setCustomTooltipTranslationKeys(Arrays.stream(customTooltipKeys).map(key -> modTranslationKey + "." + key).toArray(String[]::new));
+                        entry.setCustomTooltipKeys(Arrays.stream(customTooltipKeys).map(key -> modTranslationKey + "." + key).toArray(String[]::new));
                     }
                     entry.setForceUpdate(entryAnnotation.forceUpdate());
                     entry.setRequiresRestart(entryAnnotation.requiresRestart());
