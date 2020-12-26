@@ -53,8 +53,8 @@ public class ClothGuiBuilder implements GuiBuilder {
     private List<AbstractConfigListEntry> buildCollection(Collection collection) {
         List<AbstractConfigListEntry> collectionGui = new ArrayList<>();
         for (Entry entry : collection.getEntries().values()) {
-            collectionGui.add(((Optional<GuiProvider>) registry.getProvider(entry)).orElseGet(() -> {
-                throw new UnsupportedOperationException("Could not find gui provider for field " + entry.getField());
+            collectionGui.add(((Optional<GuiProvider>) registry.getProvider(entry)).orElseThrow(() -> {
+                return new UnsupportedOperationException("Could not find gui provider for field " + entry.getField());
             }).build(entry));
         }
         for (Collection c : collection.getCollections().values()) {
