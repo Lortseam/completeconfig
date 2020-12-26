@@ -4,7 +4,6 @@ import com.google.gson.*;
 import me.lortseam.completeconfig.api.ConfigCategory;
 import me.lortseam.completeconfig.api.ConfigOwner;
 import me.lortseam.completeconfig.gui.GuiBuilder;
-import me.lortseam.completeconfig.gui.cloth.ClothGuiBuilder;
 import me.lortseam.completeconfig.serialization.CollectionSerializer;
 import me.lortseam.completeconfig.serialization.EntrySerializer;
 import net.fabricmc.api.EnvType;
@@ -103,8 +102,8 @@ public final class ConfigHandler {
     @Environment(EnvType.CLIENT)
     public Screen buildScreen(Screen parentScreen) {
         if (guiBuilder == null) {
-            if (FabricLoader.getInstance().isModLoaded("cloth-config2")) {
-                guiBuilder = new ClothGuiBuilder();
+            if (GuiBuilder.DEFAULT != null) {
+                guiBuilder = GuiBuilder.DEFAULT;
             } else {
                 throw new UnsupportedOperationException("No GUI builder provided");
             }
