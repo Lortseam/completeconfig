@@ -79,7 +79,7 @@ public class Entry<T> {
     }
 
     public T getValue() {
-        if (updateValueIfNecessary()) {
+        if (update()) {
             return getValue();
         }
         return getFieldValue();
@@ -94,14 +94,14 @@ public class Entry<T> {
     }
 
     public void setValue(T value) {
-        updateValueIfNecessary(value);
+        update(value);
     }
 
-    private boolean updateValueIfNecessary() {
-        return updateValueIfNecessary(getFieldValue());
+    private boolean update() {
+        return update(getFieldValue());
     }
 
-    private boolean updateValueIfNecessary(T value) {
+    private boolean update(T value) {
         if (extras.getBounds() != null) {
             if (new BigDecimal(value.toString()).compareTo(new BigDecimal(extras.getBounds().getMin().toString())) < 0) {
                 LOGGER.warn("[CompleteConfig] Tried to set value of field " + field + " to a value less than minimum bound, setting to minimum now!");
