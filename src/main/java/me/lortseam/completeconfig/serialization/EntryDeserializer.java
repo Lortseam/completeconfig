@@ -1,20 +1,19 @@
 package me.lortseam.completeconfig.serialization;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import me.lortseam.completeconfig.data.Entry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 
-public class EntryDeserializer<T> implements JsonDeserializer<Entry<T>> {
+public class EntryDeserializer<T> extends JsonDeserializer<Entry<T>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    public static final Type TYPE = new TypeToken<Entry<?>>() {}.getType();
+    public static final Class<Entry> TYPE = Entry.class;
 
     private final Entry<T> configEntry;
 
@@ -23,11 +22,11 @@ public class EntryDeserializer<T> implements JsonDeserializer<Entry<T>> {
     }
 
     @Override
-    public Entry<T> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public Entry<T> deserialize(JsonParser parser, DeserializationContext context) {
         try {
-            T value = context.deserialize(json, configEntry.getType());
+            T value = context.readValue(parser, configEntry.getType());
             configEntry.setValue(value);
-        } catch (JsonParseException e) {
+        } catch (IOException e) {
             LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config entry's value of field " + configEntry.getField() + ": " + e.getMessage());
         }
         return configEntry;

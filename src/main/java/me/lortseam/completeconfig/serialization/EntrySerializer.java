@@ -1,19 +1,19 @@
 package me.lortseam.completeconfig.serialization;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import me.lortseam.completeconfig.data.Entry;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 
-public class EntrySerializer implements JsonSerializer<Entry> {
+public class EntrySerializer extends JsonSerializer<Entry> {
 
-    public static final Type TYPE = Entry.class;
+    public static final Class<Entry> TYPE = Entry.class;
 
     @Override
-    public JsonElement serialize(Entry entry, Type typeOfSrc, JsonSerializationContext context) {
-        return context.serialize(entry.getValue());
+    public void serialize(Entry entry, JsonGenerator generator, SerializerProvider serializers) throws IOException {
+        serializers.defaultSerializeValue(entry.getValue(), generator);
     }
 
 }

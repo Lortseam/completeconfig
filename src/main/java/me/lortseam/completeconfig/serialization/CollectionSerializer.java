@@ -1,21 +1,30 @@
 package me.lortseam.completeconfig.serialization;
 
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import me.lortseam.completeconfig.data.Collection;
+import me.lortseam.completeconfig.data.Entry;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
+import java.util.Map;
 
-public class CollectionSerializer implements JsonSerializer<Collection> {
+public class CollectionSerializer extends JsonSerializer<Collection> {
 
-    public static final Type TYPE = new TypeToken<Collection>() {}.getType();
+    public static final Class<Collection> TYPE = Collection.class;
 
     @Override
-    public JsonElement serialize(Collection src, Type typeOfSrc, JsonSerializationContext context) {
-        JsonObject jsonObject = new JsonObject();
-        src.getCollections().forEach((key, collection) -> jsonObject.add(key, context.serialize(collection)));
-        src.getEntries().forEach((key, entry) -> jsonObject.add(key, context.serialize(entry)));
-        return jsonObject;
+    public void serialize(Collection value, JsonGenerator generator, SerializerProvider serializers) throws IOException {
+        generator.writeStartObject();
+        for (Map.Entry<String, Collection> entry : value.getCollections().entrySet()) {
+            generator.writeFieldName(entry.getKey());
+            serializers.defaultSerializeValue(entry.getValue(), generator);
+        }
+        for (Map.Entry<String, Entry> entry : value.getEntries().entrySet()) {
+            generator.writeFieldName(entry.getKey());
+            serializers.defaultSerializeValue(entry.getValue(), generator);
+        }
+        generator.writeEndObject();
     }
 
 }

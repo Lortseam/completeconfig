@@ -1,6 +1,10 @@
 package me.lortseam.completeconfig;
 
-import com.google.gson.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import me.lortseam.completeconfig.api.ConfigCategory;
 import me.lortseam.completeconfig.api.ConfigOwner;
 import me.lortseam.completeconfig.gui.GuiBuilder;
@@ -14,7 +18,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
@@ -25,11 +28,10 @@ import java.util.*;
 
 public final class ConfigHandler {
 
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(CollectionSerializer.TYPE, new CollectionSerializer())
-            .registerTypeAdapter(EntrySerializer.TYPE, new EntrySerializer())
-            .setPrettyPrinting()
-            .create();
+    private static final ObjectMapper MAPPER = new YAMLMapper().registerModule(new SimpleModule()
+            .addSerializer(CollectionSerializer.TYPE, new CollectionSerializer())
+            .addSerializer(EntrySerializer.TYPE, new EntrySerializer())
+    );
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Map<Class<? extends ConfigOwner>, ConfigHandler> HANDLERS = new HashMap<>();
 
@@ -50,7 +52,7 @@ public final class ConfigHandler {
             return null;
         }
         String[] subPath = ArrayUtils.add(branch, 0, modID);
-        subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".json";
+        subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".yaml";
         Path jsonPath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), subPath);
         if (HANDLERS.values().stream().anyMatch(handler -> handler.jsonPath.equals(jsonPath))) {
             throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists!");
@@ -80,17 +82,15 @@ public final class ConfigHandler {
         this.guiBuilder = guiBuilder;
     }
 
-    private JsonElement load() {
+    private JsonNode load() {
         if(Files.exists(jsonPath)) {
             try {
-                return GSON.fromJson(new FileReader(jsonPath.toString()), JsonElement.class);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            } catch (JsonSyntaxException e) {
+                return MAPPER.readTree(new FileReader(jsonPath.toString()));
+            } catch (IOException e) {
                 LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config " + jsonPath.toString());
             }
         }
-        return JsonNull.INSTANCE;
+        return NullNode.instance;
     }
 
     /**
@@ -124,7 +124,7 @@ public final class ConfigHandler {
             }
         }
         try(Writer writer = Files.newBufferedWriter(jsonPath)) {
-            GSON.toJson(config, writer);
+            MAPPER.writeValue(writer, config);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
