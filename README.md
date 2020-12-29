@@ -16,14 +16,14 @@ This means:
 To use the library, first add the JitPack repository to your `build.gradle`:
 ```groovy
 repositories {
-    ...
+    [...]
     maven { url 'https://jitpack.io' }
 }
 ```
 Then add CompleteConfig as dependency:
 ```groovy
 dependencies {
-    ...
+    [...]
 
     // This adds CompleteConfig and includes it in your mod's jar, so users don't have to install it
     // Replace Tag with the current version you can find above
