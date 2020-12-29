@@ -1,6 +1,6 @@
 # CompleteConfig
-CompleteConfig is a flexible, all-in-one configuration library for [Fabric](https://fabricmc.net/) mods.  
-Because of its object-oriented and annotation-based system, it is very easy to integrate the API into your mod.
+CompleteConfig is a flexible, all-in-one configuration API for [Fabric](https://fabricmc.net/) mods.  
+Because of its object-oriented and annotation-based system, it is very easy to integrate the library into your mod.
 
 ## Features
 * Creating, grouping and observing config entries
