@@ -1,14 +1,11 @@
 # CompleteConfig
 CompleteConfig is a flexible, all-in-one configuration library for [Fabric](https://fabricmc.net/) mods.  
-It takes care of creating and observing config entries, displaying them as GUI, and saving and loading the config.
+Because of its object-oriented and annotation-based system, it is very easy to integrate the API into your mod.
 
-## Goals
-The main goal of this library is to provide a comprehensive configuration system solution.  
-This means:
-* Easy integration into existing code
-* Great flexibility in API usage
-* Full framework, no other libraries are required
-* Works in both client and server environment
+## Features
+* Creating, grouping and observing config entries
+* Building a customizable GUI
+* File saving and loading
 
 ## Setup
 [![](https://jitpack.io/v/com.gitlab.Lortseam/completeconfig.svg)](https://jitpack.io/#com.gitlab.Lortseam/completeconfig)
