@@ -1,40 +1,35 @@
 package me.lortseam.completeconfig.serialization;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
-import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.EntryMap;
+import me.lortseam.completeconfig.data.Entry;
 
-import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
-public class EntryMapDeserializer extends JsonDeserializer<EntryMap> {
+public class EntryMapDeserializer implements JsonDeserializer<EntryMap> {
 
-    private static final YAMLMapper MAPPER = new YAMLMapper();
-    public static final Class<EntryMap> TYPE = EntryMap.class;
+    private static final Gson GSON = new Gson();
+    public static final Type TYPE = new TypeToken<EntryMap>() {}.getType();
 
     private final EntryMap configMap;
 
     @Override
-    public EntryMap deserialize(JsonParser parser, DeserializationContext context) throws IOException {
-        LinkedHashMap<String, JsonNode> map = MAPPER.readValue(parser, TypeFactory.defaultInstance().constructMapType(LinkedHashMap.class, String.class, JsonNode.class));
-        for (Map.Entry<String, JsonNode> mapEntry : map.entrySet()) {
-            Entry<?> entry = configMap.get(mapEntry.getKey());
+    public EntryMap deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        LinkedHashMap<String, JsonElement> map = GSON.fromJson(json, new TypeToken<LinkedHashMap<String, JsonElement>>() {}.getType());
+        map.forEach((entryID, element) -> {
+            Entry<?> entry = configMap.get(entryID);
             if (entry == null) {
-                break;
+                return;
             }
-            new YAMLMapper().registerModule(new SimpleModule()
-                    .addDeserializer(EntryDeserializer.TYPE, new EntryDeserializer<>(entry))
-            ).readValue(mapEntry.getValue().traverse(), Entry.class);
-        }
+            new GsonBuilder()
+                    .registerTypeAdapter(EntryDeserializer.TYPE, new EntryDeserializer<>(entry))
+                    .create()
+                    .fromJson(element, new TypeToken<Entry<?>>() {}.getType());
+        });
         return null;
     }
 
