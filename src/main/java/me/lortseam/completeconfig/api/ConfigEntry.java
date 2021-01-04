@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * Applied to declare that a field is an entry inside the mod's config. Only required if
  * the {@link ConfigEntryContainer} is not a POJO class.
  *
- * <p>This annotation also contains some options to modify the entry.
+ * <p>This annotation also contains various options to modify the entry.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -27,7 +27,7 @@ public @interface ConfigEntry {
     String value() default "";
 
     /**
-     * Specifies a custom translation key for this entry. If empty, the default key will be used.
+     * Specifies a custom translation key for this entry. If empty, the default key for this entry will be used.
      *
      * @return a custom translation key
      */
@@ -47,14 +47,14 @@ public @interface ConfigEntry {
      * <p>By default the entry's field will not get modified when the config is saved, but all listeners will be called
      * with the updated value. Set this to true to always update the field when saving.
      *
-     * @return true if the field should get updated, else false
+     * @return true if the field should always get updated, else false
      */
     boolean forceUpdate() default false;
 
     /**
-     * Specifies whether the game needs to be restarted after modifying this entry.
+     * Specifies whether the game needs to be restarted after modifying the entry.
      *
-     * @return whether the game needs to be restarted after modifying this field's entry
+     * @return whether the game needs to be restarted after modifying the entry
      */
     boolean requiresRestart() default false;
 
@@ -188,8 +188,8 @@ public @interface ConfigEntry {
     }
 
     /**
-     * Can be applied to a field inside a POJO {@link ConfigEntryContainer} class to declare that the field should not
-     * be considered as config entry.
+     * Can be applied to a field inside a POJO {@link ConfigEntryContainer} class to declare that that field should not
+     * be considered to be config entry.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)

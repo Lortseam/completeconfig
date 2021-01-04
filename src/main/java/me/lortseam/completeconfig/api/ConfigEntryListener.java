@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 public @interface ConfigEntryListener {
 
     /**
-     * Specifies the name of the field.
+     * Specifies the name of the entry's field.
      *
      * @return the entry's field name
      */

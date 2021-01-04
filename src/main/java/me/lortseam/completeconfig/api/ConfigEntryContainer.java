@@ -15,7 +15,7 @@ import java.util.List;
 public interface ConfigEntryContainer {
 
     /**
-     * Used to register other containers. They will be located on the same level.
+     * Used to register other containers. They will then be located at the same level as this container.
      *
      * @return an array of other containers
      * @see Transitive
@@ -24,13 +24,19 @@ public interface ConfigEntryContainer {
         return new ConfigEntryContainer[0];
     }
 
+    /**
+     * Specifies whether this class is a POJO. If true, every field inside this class will be considered to be a config
+     * entry.
+     *
+     * @return whether this class is a POJO
+     */
     default boolean isConfigPOJO() {
         return false;
     }
 
     /**
-     * Applied to declare that a field of type {@link ConfigEntryContainer} is transitive. The container will be
-     * registered on the same level.
+     * Applied to declare that a field of type {@link ConfigEntryContainer} is transitive. The container will then be
+     * registered at the same level as this container.
      *
      * @see #getTransitiveConfigEntryContainers()
      */

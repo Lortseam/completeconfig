@@ -5,7 +5,7 @@ import me.lortseam.completeconfig.ConfigBuilder;
 /**
  * This entrypoint is called to create a config in a specific environment or in both environments.
  *
- * <p>In {@code fabric.mod.json}, the entrypoint is defined with {@code completeconfig} key.</p>
+ * <p>In {@code fabric.mod.json}, the entrypoint is defined with the {@code completeconfig} key.</p>
  */
 public interface ConfigOwner {
 
@@ -35,9 +35,9 @@ public interface ConfigOwner {
     }
 
     /**
-     * Used to set a specific branch for the configuration(s) created by this entrypoint.
+     * Used to set a specific branch for the config(s) created using this entrypoint.
      *
-     * <p>A config branch defines the location of the config's save file. The root of this branch is always the mod ID.
+     * <p>A config branch defines the location of the config's save file.
      *
      * @return the config branch
      */

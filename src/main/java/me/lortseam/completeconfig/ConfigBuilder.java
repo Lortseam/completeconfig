@@ -28,9 +28,9 @@ public final class ConfigBuilder {
     }
 
     /**
-     * Adds one or multiple top-level categories to the config.
+     * Adds one or more top-level categories to the config.
      *
-     * @param categories the top-level categories
+     * @param categories one or more top-level categories
      * @return this config builder
      */
     public ConfigBuilder add(ConfigCategory... categories) {
@@ -41,7 +41,7 @@ public final class ConfigBuilder {
     /**
      * Sets a custom client GUI builder for the config.
      *
-     * @param guiBuilder The GUI builder
+     * @param guiBuilder a GUI builder
      * @return this config builder
      */
     public ConfigBuilder setGuiBuilder(GuiBuilder guiBuilder) {
