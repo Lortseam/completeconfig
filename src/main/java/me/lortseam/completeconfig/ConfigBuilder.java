@@ -1,6 +1,6 @@
 package me.lortseam.completeconfig;
 
-import me.lortseam.completeconfig.api.ConfigCategory;
+import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.api.ConfigOwner;
 import me.lortseam.completeconfig.gui.GuiBuilder;
 
@@ -18,7 +18,7 @@ public final class ConfigBuilder {
     private final String modID;
     private final String[] branch;
     private final Class<? extends ConfigOwner> owner;
-    private final List<ConfigCategory> topLevelCategories = new ArrayList<>();
+    private final List<ConfigGroup> topLevelGroups = new ArrayList<>();
     private GuiBuilder guiBuilder;
 
     private ConfigBuilder(String modID, String[] branch, Class<? extends ConfigOwner> owner) {
@@ -28,13 +28,13 @@ public final class ConfigBuilder {
     }
 
     /**
-     * Adds one or more top-level categories to the config.
+     * Adds one or more top-level groups to the config.
      *
-     * @param categories one or more top-level categories
+     * @param groups one or more top-level groups
      * @return this config builder
      */
-    public ConfigBuilder add(ConfigCategory... categories) {
-        topLevelCategories.addAll(Arrays.asList(categories));
+    public ConfigBuilder add(ConfigGroup... groups) {
+        topLevelGroups.addAll(Arrays.asList(groups));
         return this;
     }
 
@@ -56,7 +56,7 @@ public final class ConfigBuilder {
      * @return the handler associated with the created config
      */
     public ConfigHandler finish() {
-        return ConfigHandler.registerConfig(modID, branch, owner, topLevelCategories, guiBuilder);
+        return ConfigHandler.registerConfig(modID, branch, owner, topLevelGroups, guiBuilder);
     }
 
 }

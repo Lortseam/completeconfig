@@ -1,6 +1,6 @@
 package me.lortseam.completeconfig.data;
 
-import me.lortseam.completeconfig.api.ConfigCategory;
+import me.lortseam.completeconfig.api.ConfigGroup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,14 +12,14 @@ public class CollectionMap extends ConfigMap<Collection> {
         super(modTranslationKey);
     }
 
-    protected boolean fill(String parentTranslationKey, ConfigCategory category) {
-        String categoryID = category.getConfigCategoryID();
-        Collection collection = new Collection(modTranslationKey, parentTranslationKey, category);
+    protected boolean fill(String parentTranslationKey, ConfigGroup group) {
+        String groupID = group.getConfigGroupID();
+        Collection collection = new Collection(modTranslationKey, parentTranslationKey, group);
         if (collection.getEntries().isEmpty() && collection.getCollections().isEmpty()) {
-            LOGGER.warn("[CompleteConfig] Category " + categoryID + " is empty!");
+            LOGGER.warn("[CompleteConfig] Group " + groupID + " is empty!");
             return false;
         }
-        putUnique(categoryID, collection);
+        putUnique(groupID, collection);
         return true;
     }
 

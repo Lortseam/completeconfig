@@ -1,7 +1,7 @@
 package me.lortseam.completeconfig;
 
 import com.google.gson.*;
-import me.lortseam.completeconfig.api.ConfigCategory;
+import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.api.ConfigOwner;
 import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.lortseam.completeconfig.serialization.CollectionSerializer;
@@ -41,11 +41,11 @@ public final class ConfigHandler {
         }));
     }
 
-    static ConfigHandler registerConfig(String modID, String[] branch, Class<? extends ConfigOwner> owner, List<ConfigCategory> topLevelCategories, GuiBuilder guiBuilder) {
+    static ConfigHandler registerConfig(String modID, String[] branch, Class<? extends ConfigOwner> owner, List<ConfigGroup> topLevelGroups, GuiBuilder guiBuilder) {
         if (HANDLERS.containsKey(owner)) {
             throw new IllegalArgumentException("The specified owner " + owner + " already created a config!");
         }
-        if (topLevelCategories.isEmpty()) {
+        if (topLevelGroups.isEmpty()) {
             LOGGER.warn("[CompleteConfig] Owner " + owner + " of mod " + modID + " tried to create an empty config!");
             return null;
         }
@@ -55,7 +55,7 @@ public final class ConfigHandler {
         if (HANDLERS.values().stream().anyMatch(handler -> handler.jsonPath.equals(jsonPath))) {
             throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists!");
         }
-        ConfigHandler handler = new ConfigHandler(modID, jsonPath, topLevelCategories, guiBuilder);
+        ConfigHandler handler = new ConfigHandler(modID, jsonPath, topLevelGroups, guiBuilder);
         HANDLERS.put(owner, handler);
         return handler;
     }
@@ -74,9 +74,9 @@ public final class ConfigHandler {
     private final Config config;
     private GuiBuilder guiBuilder;
 
-    private ConfigHandler(String modID, Path jsonPath, List<ConfigCategory> topLevelCategories, GuiBuilder guiBuilder) {
+    private ConfigHandler(String modID, Path jsonPath, List<ConfigGroup> topLevelGroups, GuiBuilder guiBuilder) {
         this.jsonPath = jsonPath;
-        config = new Config(modID, topLevelCategories, load());
+        config = new Config(modID, topLevelGroups, load());
         this.guiBuilder = guiBuilder;
     }
 

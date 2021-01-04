@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import me.lortseam.completeconfig.api.ConfigCategory;
+import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
@@ -23,16 +23,16 @@ public class Collection {
     @Getter
     private final CollectionMap collections;
 
-    Collection(String modTranslationKey, String parentTranslationKey, ConfigCategory category) {
-        String categoryID = category.getConfigCategoryID();
+    Collection(String modTranslationKey, String parentTranslationKey, ConfigGroup group) {
+        String groupID = group.getConfigGroupID();
         if (parentTranslationKey == null) {
-            translationKey = categoryID;
+            translationKey = groupID;
         } else {
-            translationKey = parentTranslationKey + "." + categoryID;
+            translationKey = parentTranslationKey + "." + groupID;
         }
         entries = new EntryMap(modTranslationKey);
         collections = new CollectionMap(modTranslationKey);
-        fill(category);
+        fill(group);
     }
 
     public Text getText() {
@@ -70,8 +70,8 @@ public class Collection {
         }
         containers.addAll(Arrays.asList(container.getTransitiveConfigEntryContainers()));
         for (ConfigEntryContainer c : containers) {
-            if (c instanceof ConfigCategory) {
-                collections.fill(translationKey, (ConfigCategory) c);
+            if (c instanceof ConfigGroup) {
+                collections.fill(translationKey, (ConfigGroup) c);
             } else {
                 fill(c);
             }

@@ -3,7 +3,7 @@ package me.lortseam.completeconfig;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
-import me.lortseam.completeconfig.api.ConfigCategory;
+import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.CollectionMap;
 import me.lortseam.completeconfig.serialization.CollectionMapDeserializer;
 import org.apache.logging.log4j.LogManager;
@@ -15,19 +15,19 @@ public class Config extends CollectionMap {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    Config(String modID, List<ConfigCategory> topLevelCategories, JsonElement json) {
+    Config(String modID, List<ConfigGroup> topLevelGroups, JsonElement json) {
         super("config." + modID);
-        for (ConfigCategory category : topLevelCategories) {
-            if (!fill(modTranslationKey, category)) {
+        for (ConfigGroup group : topLevelGroups) {
+            if (!fill(modTranslationKey, group)) {
                 continue;
             }
             try {
                 new GsonBuilder()
-                        .registerTypeAdapter(CollectionMapDeserializer.TYPE, new CollectionMapDeserializer(this, category.getConfigCategoryID()))
+                        .registerTypeAdapter(CollectionMapDeserializer.TYPE, new CollectionMapDeserializer(this, group.getConfigGroupID()))
                         .create()
                         .fromJson(json, CollectionMapDeserializer.TYPE);
             } catch (JsonSyntaxException e) {
-                LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config for category " + category.getClass());
+                LOGGER.warn("[CompleteConfig] An error occurred while trying to load the config for group " + group.getClass());
             }
         }
     }
