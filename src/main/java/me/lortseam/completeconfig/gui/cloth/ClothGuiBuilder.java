@@ -13,7 +13,6 @@ import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ public class ClothGuiBuilder implements GuiBuilder {
     public Screen buildScreen(Screen parentScreen, Config config, Runnable savingRunnable) {
         ConfigBuilder builder = supplier.get();
         builder.setParentScreen(parentScreen)
-                .setTitle(new TranslatableText(config.getModTranslationKey() + ".title"))
+                .setTitle(config.getTranslation().append("title").translate())
                 .setSavingRunnable(savingRunnable);
         for(Collection collection : config.values()) {
             ConfigCategory configCategory = builder.getOrCreateCategory(collection.getText());

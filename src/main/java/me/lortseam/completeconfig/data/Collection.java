@@ -1,12 +1,12 @@
 package me.lortseam.completeconfig.data;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigGroup;
+import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -14,33 +14,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Collection {
+public class Collection implements DataPart<ConfigEntryContainer> {
 
-    @Getter(AccessLevel.PACKAGE)
-    private final String translationKey;
+    private final TranslationIdentifier translation;
     @Getter
     private final EntryMap entries;
     @Getter
     private final CollectionMap collections;
 
-    Collection(String modTranslationKey, String parentTranslationKey, ConfigGroup group) {
-        String groupID = group.getConfigGroupID();
-        if (parentTranslationKey == null) {
-            translationKey = groupID;
-        } else {
-            translationKey = parentTranslationKey + "." + groupID;
-        }
-        entries = new EntryMap(modTranslationKey);
-        collections = new CollectionMap(modTranslationKey);
-        fill(group);
+    Collection(TranslationIdentifier translation) {
+        this.translation = translation;
+        entries = new EntryMap(translation);
+        collections = new CollectionMap(translation);
     }
 
     public Text getText() {
-        return new TranslatableText(translationKey);
+        return translation.translate();
     }
 
-    private void fill(ConfigEntryContainer container) {
-        entries.fill(this, container);
+    @Override
+    public void resolve(ConfigEntryContainer container) {
+        entries.resolve(container);
         List<ConfigEntryContainer> containers = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
             containers.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
@@ -71,11 +65,23 @@ public class Collection {
         containers.addAll(Arrays.asList(container.getTransitiveConfigEntryContainers()));
         for (ConfigEntryContainer c : containers) {
             if (c instanceof ConfigGroup) {
-                collections.fill(translationKey, (ConfigGroup) c);
+                collections.resolve((ConfigGroup) c);
             } else {
-                fill(c);
+                resolve(c);
             }
         }
+    }
+
+    @Override
+    public void apply(CommentedConfigurationNode node) {
+        entries.apply(node);
+        collections.apply(node);
+    }
+
+    @Override
+    public void fetch(CommentedConfigurationNode node) {
+        entries.fetch(node);
+        collections.fetch(node);
     }
 
 }

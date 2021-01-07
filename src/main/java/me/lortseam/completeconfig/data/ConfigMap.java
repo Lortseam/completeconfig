@@ -2,6 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.LinkedHashMap;
@@ -9,7 +10,7 @@ import java.util.LinkedHashMap;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class ConfigMap<T> extends LinkedHashMap<String, T> {
 
-    protected final String modTranslationKey;
+    protected final TranslationIdentifier translation;
 
     void putUnique(String id, T value) {
         if (StringUtils.isBlank(id)) {

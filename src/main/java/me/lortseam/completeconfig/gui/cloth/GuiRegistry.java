@@ -177,7 +177,7 @@ public class GuiRegistry {
        ), String.class);
        registerEnumProvider((GuiProvider<? extends Enum<?>>) entry -> build(
                builder -> builder
-                       .startEnumSelector(entry.getText(), (Class<Enum<?>>) entry.getField().getType(), entry.getValue())
+                       .startEnumSelector(entry.getText(), entry.getType(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
                        .setTooltip(entry.getTooltip())
                        .setEnumNameProvider(entry.getExtras().getEnumOptions().getNameProvider())
@@ -185,7 +185,7 @@ public class GuiRegistry {
                entry.requiresRestart()
        ), EnumOptions.DisplayType.BUTTON);
        registerEnumProvider((GuiProvider<? extends Enum>) entry -> {
-           List<Enum> enumValues = Arrays.asList(((Class<? extends Enum>) entry.getField().getType()).getEnumConstants());
+           List<Enum> enumValues = Arrays.asList(((Class<? extends Enum>) entry.getType()).getEnumConstants());
            return build(
                    builder -> builder
                            .startDropdownMenu(entry.getText(), DropdownMenuBuilder.TopCellElementBuilder.of(

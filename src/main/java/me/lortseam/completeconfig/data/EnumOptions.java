@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 import java.util.function.Function;
 
@@ -18,25 +17,21 @@ public class EnumOptions {
     private final DisplayType displayType;
 
     public Function<Enum, Text> getNameProvider() {
-        return enumValue -> new TranslatableText(parent.getTranslationKey() + "." + CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, enumValue.name()));
+        return enumValue -> parent.getTranslation().append(CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, enumValue.name())).translate();
     }
 
     public enum DisplayType {
 
         BUTTON, DROPDOWN;
 
-        private static final DisplayType defaultValue;
+        static final DisplayType DEFAULT;
 
         static {
             try {
-                defaultValue = (DisplayType) ConfigEntry.EnumOptions.class.getDeclaredMethod("displayType").getDefaultValue();
+                DEFAULT = (DisplayType) ConfigEntry.EnumOptions.class.getDeclaredMethod("displayType").getDefaultValue();
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-        }
-
-        public static DisplayType getDefault() {
-            return defaultValue;
         }
 
     }

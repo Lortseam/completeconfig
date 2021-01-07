@@ -1,26 +1,43 @@
 package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.api.ConfigGroup;
+import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
-public class CollectionMap extends ConfigMap<Collection> {
+public class CollectionMap extends ConfigMap<Collection> implements DataPart<ConfigGroup> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected CollectionMap(String modTranslationKey) {
-        super(modTranslationKey);
+    protected CollectionMap(TranslationIdentifier translation) {
+        super(translation);
     }
 
-    protected boolean fill(String parentTranslationKey, ConfigGroup group) {
+    @Override
+    public void resolve(ConfigGroup group) {
         String groupID = group.getConfigGroupID();
-        Collection collection = new Collection(modTranslationKey, parentTranslationKey, group);
+        Collection collection = new Collection(translation.append(groupID));
+        collection.resolve(group);
         if (collection.getEntries().isEmpty() && collection.getCollections().isEmpty()) {
             LOGGER.warn("[CompleteConfig] Group " + groupID + " is empty!");
-            return false;
+            return;
         }
         putUnique(groupID, collection);
-        return true;
+    }
+
+    @Override
+    public void apply(CommentedConfigurationNode node) {
+        forEach((id, collection) -> {
+            CommentedConfigurationNode collectionNode = node.node(id);
+            if(collectionNode.virtual()) return;
+            collection.apply(collectionNode);
+        });
+    }
+
+    @Override
+    public void fetch(CommentedConfigurationNode node) {
+        forEach((id, collection) -> collection.fetch(node.node(id)));
     }
 
 }
