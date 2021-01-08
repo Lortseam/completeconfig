@@ -7,7 +7,6 @@ import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
 import me.lortseam.completeconfig.data.part.FlatParentDataPart;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
-import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Collection implements FlatParentDataPart<ConfigMap<?>> {
+public class Collection implements FlatParentDataPart<ConfigMap> {
 
     private final TranslationIdentifier translation;
     @Getter
@@ -73,18 +72,8 @@ public class Collection implements FlatParentDataPart<ConfigMap<?>> {
     }
 
     @Override
-    public Iterable<ConfigMap<?>> getChildren() {
+    public Iterable<ConfigMap> getChildren() {
         return Arrays.asList(entries, collections);
-    }
-
-    @Override
-    public CommentedConfigurationNode navigateToChild(CommentedConfigurationNode node, ConfigMap<?> childValue) {
-        return null;
-    }
-
-    @Override
-    public ConfigMap<?> retrieveChildValue(ConfigMap<?> childValue) {
-        return null;
     }
 
 }
