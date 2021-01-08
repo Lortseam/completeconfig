@@ -67,7 +67,7 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
-                Entry<?> entry = ((Entry.Draft<?>) Entry.of(field)).build(container, translation);
+                Entry<?> entry = Entry.Draft.of(field).build(container, translation);
                 entry.resolve(field);
                 clazzEntries.add(entry);
             });
