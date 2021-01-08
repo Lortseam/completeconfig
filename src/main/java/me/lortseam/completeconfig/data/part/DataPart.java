@@ -1,10 +1,8 @@
-package me.lortseam.completeconfig.data;
+package me.lortseam.completeconfig.data.part;
 
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
-interface DataPart<T> {
-
-    void resolve(T t);
+public interface DataPart {
 
     void apply(CommentedConfigurationNode node);
 

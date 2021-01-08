@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
+import me.lortseam.completeconfig.data.part.DataPart;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
@@ -21,7 +22,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class Entry<T> implements EntryAccessor<T>, DataPart<Field> {
+public class Entry<T> implements EntryAccessor<T>, DataPart {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Map<Field, EntryAccessor> ENTRIES = new HashMap<>();
@@ -167,7 +168,6 @@ public class Entry<T> implements EntryAccessor<T>, DataPart<Field> {
         modifier.accept(this);
     }
 
-    @Override
     public void resolve(Field field) {
         if (field.isAnnotationPresent(ConfigEntry.class)) {
             ConfigEntry annotation = field.getDeclaredAnnotation(ConfigEntry.class);

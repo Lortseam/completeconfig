@@ -8,20 +8,18 @@ import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalModifierException;
 import me.lortseam.completeconfig.exception.IllegalReturnTypeException;
-import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EntryMap extends ConfigMap<Entry> implements DataPart<ConfigEntryContainer> {
+public class EntryMap extends ConfigMap<Entry> {
 
     EntryMap(TranslationIdentifier translation) {
         super(translation);
     }
 
-    @Override
     public void resolve(ConfigEntryContainer container) {
         List<Entry> containerEntries = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
@@ -78,20 +76,6 @@ public class EntryMap extends ConfigMap<Entry> implements DataPart<ConfigEntryCo
         for (Entry<?> entry : containerEntries) {
             putUnique(entry.getID(), entry);
         }
-    }
-
-    @Override
-    public void apply(CommentedConfigurationNode node) {
-        forEach((id, entry) -> {
-            CommentedConfigurationNode entryNode = node.node(id);
-            if(entryNode.virtual()) return;
-            entry.apply(entryNode);
-        });
-    }
-
-    @Override
-    public void fetch(CommentedConfigurationNode node) {
-        forEach((id, entry) -> entry.fetch(node.node(id)));
     }
 
 }

@@ -4,9 +4,8 @@ import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.configurate.CommentedConfigurationNode;
 
-public class CollectionMap extends ConfigMap<Collection> implements DataPart<ConfigGroup> {
+public class CollectionMap extends ConfigMap<Collection> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -14,7 +13,6 @@ public class CollectionMap extends ConfigMap<Collection> implements DataPart<Con
         super(translation);
     }
 
-    @Override
     public void resolve(ConfigGroup group) {
         String groupID = group.getConfigGroupID();
         Collection collection = new Collection(translation.append(groupID));
@@ -24,20 +22,6 @@ public class CollectionMap extends ConfigMap<Collection> implements DataPart<Con
             return;
         }
         putUnique(groupID, collection);
-    }
-
-    @Override
-    public void apply(CommentedConfigurationNode node) {
-        forEach((id, collection) -> {
-            CommentedConfigurationNode collectionNode = node.node(id);
-            if(collectionNode.virtual()) return;
-            collection.apply(collectionNode);
-        });
-    }
-
-    @Override
-    public void fetch(CommentedConfigurationNode node) {
-        forEach((id, collection) -> collection.fetch(node.node(id)));
     }
 
 }

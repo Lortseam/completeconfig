@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
+import me.lortseam.completeconfig.data.part.FlatParentDataPart;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -14,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Collection implements DataPart<ConfigEntryContainer> {
+public class Collection implements FlatParentDataPart<ConfigMap<?>> {
 
     private final TranslationIdentifier translation;
     @Getter
@@ -32,7 +33,6 @@ public class Collection implements DataPart<ConfigEntryContainer> {
         return translation.translate();
     }
 
-    @Override
     public void resolve(ConfigEntryContainer container) {
         entries.resolve(container);
         List<ConfigEntryContainer> containers = new ArrayList<>();
@@ -73,15 +73,18 @@ public class Collection implements DataPart<ConfigEntryContainer> {
     }
 
     @Override
-    public void apply(CommentedConfigurationNode node) {
-        entries.apply(node);
-        collections.apply(node);
+    public Iterable<ConfigMap<?>> getChildren() {
+        return Arrays.asList(entries, collections);
     }
 
     @Override
-    public void fetch(CommentedConfigurationNode node) {
-        entries.fetch(node);
-        collections.fetch(node);
+    public CommentedConfigurationNode navigateToChild(CommentedConfigurationNode node, ConfigMap<?> childValue) {
+        return null;
+    }
+
+    @Override
+    public ConfigMap<?> retrieveChildValue(ConfigMap<?> childValue) {
+        return null;
     }
 
 }
