@@ -24,7 +24,7 @@ dependencies {
 
     // This adds CompleteConfig and includes it in your mod's jar, so users don't have to install it
     // Replace Tag with the current version you can find above
-    modApi 'com.gitlab.Lortseam:completeconfig:Tag'
+    modImplementation 'com.gitlab.Lortseam:completeconfig:Tag'
     include 'com.gitlab.Lortseam:completeconfig:Tag'
     
     // This bundles Cloth Config in your mod's jar
