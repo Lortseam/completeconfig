@@ -109,7 +109,7 @@ public final class ConfigHandler {
      * Saves the config to a save file.
      */
     public void save() {
-        CommentedConfigurationNode root = CommentedConfigurationNode.root();
+        CommentedConfigurationNode root = loader.createNode();
         config.fetch(root);
         try {
             loader.save(root);
