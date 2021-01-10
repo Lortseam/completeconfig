@@ -221,8 +221,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         try {
             setValue((T) node.get(type));
         } catch (SerializationException e) {
-            //TODO
-            e.printStackTrace();
+            LOGGER.error("[CompleteConfig] Failed to apply value to entry!", e);
         }
     }
 
@@ -231,8 +230,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         try {
             node.set(type, getValue());
         } catch (SerializationException e) {
-            //TODO
-            e.printStackTrace();
+            LOGGER.error("[CompleteConfig] Failed to fetch value from entry!", e);
         }
     }
 
@@ -246,7 +244,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         static <T> Draft<T> of(Field field) {
             EntryBase<T> accessor = (EntryBase<T>) Entry.of(field);
             if (!(accessor instanceof Draft)) {
-                throw new UnsupportedOperationException("Entry draft of " + field + " was already built");
+                throw new UnsupportedOperationException("Entry draft of field " + field + " was already built");
             }
             return (Draft<T>) accessor;
         }

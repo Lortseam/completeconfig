@@ -82,8 +82,7 @@ public final class ConfigHandler {
         try {
             return loader.load();
         } catch (ConfigurateException e) {
-            //TODO
-            e.printStackTrace();
+            LOGGER.error("[CompleteConfig] Failed to load config from file!", e);
         }
         return CommentedConfigurationNode.root();
     }
@@ -115,8 +114,7 @@ public final class ConfigHandler {
         try {
             loader.save(root);
         } catch (ConfigurateException e) {
-            //TODO
-            e.printStackTrace();
+            LOGGER.error("[CompleteConfig] Failed to save config to file!", e);
         }
     }
 
