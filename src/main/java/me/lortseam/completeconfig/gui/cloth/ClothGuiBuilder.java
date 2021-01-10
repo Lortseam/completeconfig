@@ -1,7 +1,7 @@
 package me.lortseam.completeconfig.gui.cloth;
 
 import lombok.Getter;
-import me.lortseam.completeconfig.Config;
+import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Collection;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.gui.GuiBuilder;

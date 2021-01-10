@@ -20,7 +20,7 @@ public class EntryMap extends ConfigMap<Entry> {
         super(translation);
     }
 
-    public void resolve(ConfigEntryContainer container) {
+    void resolve(ConfigEntryContainer container) {
         List<Entry> containerEntries = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
             Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {

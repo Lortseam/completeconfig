@@ -32,7 +32,7 @@ public class Collection implements FlatParentDataPart<ConfigMap> {
         return translation.translate();
     }
 
-    public void resolve(ConfigEntryContainer container) {
+    void resolve(ConfigEntryContainer container) {
         entries.resolve(container);
         List<ConfigEntryContainer> containers = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {

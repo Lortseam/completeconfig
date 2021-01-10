@@ -13,7 +13,7 @@ public class CollectionMap extends ConfigMap<Collection> {
         super(translation);
     }
 
-    public void resolve(ConfigGroup group) {
+    void resolve(ConfigGroup group) {
         String groupID = group.getConfigGroupID();
         Collection collection = new Collection(translation.append(groupID));
         collection.resolve(group);

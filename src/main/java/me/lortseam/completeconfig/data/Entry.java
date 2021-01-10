@@ -168,7 +168,7 @@ public class Entry<T> implements EntryAccessor<T>, DataPart {
         modifier.accept(this);
     }
 
-    public void resolve(Field field) {
+    void resolve(Field field) {
         if (field.isAnnotationPresent(ConfigEntry.class)) {
             ConfigEntry annotation = field.getDeclaredAnnotation(ConfigEntry.class);
             String id = annotation.value();
@@ -241,7 +241,6 @@ public class Entry<T> implements EntryAccessor<T>, DataPart {
     @Override
     public void fetch(CommentedConfigurationNode node) {
         try {
-            //TODO: Fails when setting enum value
             node.set(type, getValue());
         } catch (SerializationException e) {
             //TODO

@@ -1,6 +1,6 @@
 package me.lortseam.completeconfig.gui;
 
-import me.lortseam.completeconfig.Config;
+import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.gui.cloth.ClothGuiBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
