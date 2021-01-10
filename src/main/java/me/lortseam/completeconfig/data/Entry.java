@@ -234,11 +234,11 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     public void fetch(CommentedConfigurationNode node) {
         try {
             node.set(type, getValue());
+            if (comment != null) {
+                node.comment(comment);
+            }
         } catch (SerializationException e) {
             LOGGER.error("[CompleteConfig] Failed to fetch value from entry!", e);
-        }
-        if (comment != null) {
-            node.comment(comment);
         }
     }
 
