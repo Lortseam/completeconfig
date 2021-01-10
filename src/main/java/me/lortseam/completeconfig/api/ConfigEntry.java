@@ -183,8 +183,6 @@ public @interface ConfigEntry {
          */
         DisplayType displayType() default DisplayType.BUTTON;
 
-        //TODO: Add boolean suggestionMode for DisplayType.DROPDOWN
-
     }
 
     /**
