@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.gui.cloth;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
-import io.leangen.geantyref.TypeToken;
+import com.google.common.reflect.TypeToken;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.EnumOptions;
 import me.lortseam.completeconfig.util.TypeUtils;
