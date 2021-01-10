@@ -14,7 +14,7 @@ public final class CompleteConfig implements ModInitializer {
     public void onInitialize() {
         for (EntrypointContainer<ConfigOwner> entrypoint : FabricLoader.getInstance().getEntrypointContainers("completeconfig", ConfigOwner.class)) {
             ConfigOwner owner = entrypoint.getEntrypoint();
-            ConfigBuilder builder = ConfigBuilder.create(entrypoint.getProvider().getMetadata().getId(), Objects.requireNonNull(owner.getConfigBranch()), owner.getClass());
+            ConfigBuilder builder = new ConfigBuilder(entrypoint.getProvider().getMetadata().getId(), Objects.requireNonNull(owner.getConfigBranch()), owner.getClass());
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 owner.onInitializeClientConfig(builder);
             }

@@ -34,7 +34,7 @@ public final class ConfigHandler {
         }));
     }
 
-    static ConfigHandler registerConfig(String modID, String[] branch, Class<? extends ConfigOwner> owner, List<ConfigGroup> topLevelGroups, TypeSerializerCollection typeSerializers, GuiBuilder guiBuilder) {
+    static ConfigHandler buildConfig(String modID, String[] branch, Class<? extends ConfigOwner> owner, List<ConfigGroup> topLevelGroups, TypeSerializerCollection typeSerializers, GuiBuilder guiBuilder) {
         if (HANDLERS.containsKey(owner)) {
             throw new IllegalArgumentException("The specified owner " + owner + " already created a config!");
         }

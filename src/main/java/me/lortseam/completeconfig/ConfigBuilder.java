@@ -12,10 +12,6 @@ import java.util.Objects;
 
 public final class ConfigBuilder {
 
-    static ConfigBuilder create(String modID, String[] branch, Class<? extends ConfigOwner> owner) {
-        return new ConfigBuilder(modID, branch, owner);
-    }
-
     private final String modID;
     private final String[] branch;
     private final Class<? extends ConfigOwner> owner;
@@ -23,7 +19,7 @@ public final class ConfigBuilder {
     private TypeSerializerCollection typeSerializers;
     private GuiBuilder guiBuilder;
 
-    private ConfigBuilder(String modID, String[] branch, Class<? extends ConfigOwner> owner) {
+    ConfigBuilder(String modID, String[] branch, Class<? extends ConfigOwner> owner) {
         this.modID = modID;
         this.branch = branch;
         this.owner = owner;
@@ -70,8 +66,16 @@ public final class ConfigBuilder {
      *
      * @return the handler associated with the created config
      */
+    public ConfigHandler build() {
+        return ConfigHandler.buildConfig(modID, branch, owner, topLevelGroups, typeSerializers, guiBuilder);
+    }
+
+    /**
+     * @deprecated Use {@link #build()}
+     */
+    @Deprecated
     public ConfigHandler finish() {
-        return ConfigHandler.registerConfig(modID, branch, owner, topLevelGroups, typeSerializers, guiBuilder);
+        return build();
     }
 
 }
