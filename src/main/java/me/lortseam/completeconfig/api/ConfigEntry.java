@@ -27,6 +27,16 @@ public @interface ConfigEntry {
     String value() default "";
 
     /**
+     * Specifies a comment which describes the purpose of this entry. The comment will only be visible in the config
+     * save file.
+     *
+     * <p>If blank, no comment will be applied to the entry.
+     *
+     * @return a comment
+     */
+    String comment() default "";
+
+    /**
      * Specifies a custom translation key for this entry. If empty, the default key for this entry will be used.
      *
      * @return a custom translation key

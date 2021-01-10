@@ -48,6 +48,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     private boolean requiresRestart;
     @Getter
     private final Extras<T> extras = new Extras<>(this);
+    private String comment;
     private final List<Listener<T>> listeners = new ArrayList<>();
 
     private Entry(Field field, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
@@ -176,6 +177,10 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             }
             forceUpdate = annotation.forceUpdate();
             requiresRestart = annotation.requiresRestart();
+            String comment = annotation.comment();
+            if (!StringUtils.isBlank(comment)) {
+                this.comment = comment;
+            }
         }
         if (field.isAnnotationPresent(ConfigEntry.Bounded.Integer.class)) {
             if (field.getType() != int.class && field.getType() != Integer.class) {
@@ -229,6 +234,9 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     public void fetch(CommentedConfigurationNode node) {
         try {
             node.set(type, getValue());
+            if (comment != null) {
+                node.comment(comment);
+            }
         } catch (SerializationException e) {
             LOGGER.error("[CompleteConfig] Failed to fetch value from entry!", e);
         }
