@@ -39,8 +39,8 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (method.getParameterCount() != 1) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong number of parameters");
                 }
-                EntryAccessor<?> accessor = Entry.of(fieldName, fieldClass);
-                if (method.getParameterTypes()[0] != accessor.getType()) {
+                EntryBase<?> entry = Entry.of(fieldName, fieldClass);
+                if (!method.getParameterTypes()[0].equals(entry.getType())) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong argument type");
                 }
                 if (method.getReturnType() != Void.TYPE) {
@@ -49,7 +49,7 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (!method.isAccessible()) {
                     method.setAccessible(true);
                 }
-                accessor.connect(entry -> entry.addListener(method, container));
+                entry.interact(e -> e.addListener(method, container));
             });
             List<Entry> clazzEntries = new ArrayList<>();
             Arrays.stream(clazz.getDeclaredFields()).filter(field -> {

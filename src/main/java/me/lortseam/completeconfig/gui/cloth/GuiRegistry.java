@@ -2,8 +2,10 @@ package me.lortseam.completeconfig.gui.cloth;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
+import io.leangen.geantyref.TypeToken;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.EnumOptions;
+import me.lortseam.completeconfig.util.TypeUtils;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
@@ -12,7 +14,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,39 +36,28 @@ public class GuiRegistry {
         registerDefaultProviders();
     }
 
-    public <T> void registerProvider(GuiProvider<T> provider, GuiProviderPredicate<T> predicate, Class... types) {
+    public <T> void registerProvider(GuiProvider<T> provider, GuiProviderPredicate<T> predicate, Type... types) {
         registrations.add(new GuiProviderRegistration<>(predicate.and((field, extras) -> {
             if (types.length == 0) {
                 return true;
             }
-            Type fieldType = field.getGenericType();
-            return ArrayUtils.contains(types, fieldType instanceof ParameterizedType ? ((ParameterizedType) fieldType).getRawType() : fieldType);
+            return ArrayUtils.contains(types, TypeUtils.getFieldType(field));
         }), provider));
     }
 
-    public void registerProvider(GuiProvider<?> provider, Class... types) {
+    public void registerProvider(GuiProvider<?> provider, Type... types) {
         if (types.length == 0) {
             throw new IllegalArgumentException("Types must not be empty");
         }
         registerProvider(provider, (field, extras) -> true, types);
     }
 
-    private void registerBoundedProvider(GuiProvider<?> provider, boolean slider, Class... types) {
+    private void registerBoundedProvider(GuiProvider<?> provider, boolean slider, Type... types) {
         registerProvider(provider, (field, extras) -> extras.getBounds() != null && extras.getBounds().isSlider() == slider, types);
     }
 
     private void registerEnumProvider(GuiProvider<? extends Enum> provider, EnumOptions.DisplayType enumDisplayType) {
         registerProvider(provider, (field, extras) -> Enum.class.isAssignableFrom(field.getType()) && extras.getEnumOptions().getDisplayType() == enumDisplayType);
-    }
-
-    public <T> void registerGenericProvider(GuiProvider<T> provider, Class<?> type, Class... genericTypes) {
-        registerProvider(provider, (field, extras) -> {
-            Type fieldType = field.getGenericType();
-            if (!(fieldType instanceof ParameterizedType)) {
-                return false;
-            }
-            return Arrays.equals(((ParameterizedType) fieldType).getActualTypeArguments(), genericTypes);
-        }, type);
     }
 
     private void registerDefaultProviders() {
@@ -177,7 +167,7 @@ public class GuiRegistry {
        ), String.class);
        registerEnumProvider((GuiProvider<? extends Enum<?>>) entry -> build(
                builder -> builder
-                       .startEnumSelector(entry.getText(), entry.getType(), entry.getValue())
+                       .startEnumSelector(entry.getText(), entry.getTypeClass(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
                        .setTooltip(entry.getTooltip())
                        .setEnumNameProvider(entry.getExtras().getEnumOptions().getNameProvider())
@@ -185,7 +175,7 @@ public class GuiRegistry {
                entry.requiresRestart()
        ), EnumOptions.DisplayType.BUTTON);
        registerEnumProvider((GuiProvider<? extends Enum>) entry -> {
-           List<Enum> enumValues = Arrays.asList(((Class<? extends Enum>) entry.getType()).getEnumConstants());
+           List<Enum> enumValues = Arrays.asList(((Class<? extends Enum>) entry.getTypeClass()).getEnumConstants());
            return build(
                    builder -> builder
                            .startDropdownMenu(entry.getText(), DropdownMenuBuilder.TopCellElementBuilder.of(
@@ -199,46 +189,46 @@ public class GuiRegistry {
                    entry.requiresRestart()
            );
        }, EnumOptions.DisplayType.DROPDOWN);
-       registerGenericProvider((GuiProvider<List<Integer>>) entry -> build(
+       registerProvider((GuiProvider<List<Integer>>) entry -> build(
                builder -> builder
                        .startIntList(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
-       ), List.class, Integer.class);
-       registerGenericProvider((GuiProvider<List<Long>>) entry -> build(
+       ), new TypeToken<List<Integer>>() {}.getType());
+       registerProvider((GuiProvider<List<Long>>) entry -> build(
                builder -> builder
                        .startLongList(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
-       ), List.class, Long.class);
-       registerGenericProvider((GuiProvider<List<Float>>) entry -> build(
+       ), new TypeToken<List<Long>>() {}.getType());
+       registerProvider((GuiProvider<List<Float>>) entry -> build(
                builder -> builder
                        .startFloatList(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
-       ), List.class, Float.class);
-       registerGenericProvider((GuiProvider<List<Double>>) entry -> build(
+       ), new TypeToken<List<Float>>() {}.getType());
+       registerProvider((GuiProvider<List<Double>>) entry -> build(
                builder -> builder
                        .startDoubleList(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
-       ), List.class, Double.class);
-       registerGenericProvider((GuiProvider<List<String>>) entry -> build(
+       ), new TypeToken<List<Double>>() {}.getType());
+       registerProvider((GuiProvider<List<String>>) entry -> build(
                builder -> builder
                        .startStrList(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
-       ), List.class, String.class);
+       ), new TypeToken<List<String>>() {}.getType());
     }
 
     <T> Optional<GuiProvider<T>> getProvider(Entry<T> entry) {

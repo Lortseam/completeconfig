@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.data;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.reflect.TypeUtils;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class Extras<T> {
@@ -15,7 +15,7 @@ public class Extras<T> {
     private EnumOptions enumOptions;
 
     <N extends Number> void setBounds(N min, N max, boolean slider) {
-        if (!ClassUtils.isAssignable(entry.getType(), min.getClass()) || !ClassUtils.isAssignable(entry.getType(), max.getClass())) {
+        if (!TypeUtils.isAssignable(entry.getType(), min.getClass()) || !TypeUtils.isAssignable(entry.getType(), max.getClass())) {
             throw new IllegalArgumentException();
         }
         bounds = new Bounds<>((T) min, (T) max, slider);

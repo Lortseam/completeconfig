@@ -1,8 +1,6 @@
 package me.lortseam.completeconfig.data;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
@@ -22,12 +20,12 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class Entry<T> implements EntryAccessor<T>, DataPart {
+public class Entry<T> extends EntryBase<T> implements DataPart {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final Map<Field, EntryAccessor> ENTRIES = new HashMap<>();
+    private static final Map<Field, EntryBase> ENTRIES = new HashMap<>();
 
-    static EntryAccessor<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
+    static EntryBase<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
         try {
             return of(parentClass.getDeclaredField(fieldName));
         } catch (NoSuchFieldException e) {
@@ -35,14 +33,10 @@ public class Entry<T> implements EntryAccessor<T>, DataPart {
         }
     }
 
-    static EntryAccessor<?> of(Field field) {
+    static EntryBase<?> of(Field field) {
         return ENTRIES.computeIfAbsent(field, absentField -> new Draft<>(field));
     }
 
-    @Getter
-    private final Field field;
-    @Getter
-    private final Class<T> type;
     private final ConfigEntryContainer parentObject;
     private String customID;
     @Getter
@@ -56,9 +50,8 @@ public class Entry<T> implements EntryAccessor<T>, DataPart {
     private final Extras<T> extras = new Extras<>(this);
     private final List<Listener<T>> listeners = new ArrayList<>();
 
-    private Entry(Field field, Class<T> type, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
-        this.field = field;
-        this.type = type;
+    private Entry(Field field, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
+        super(field);
         this.parentObject = parentObject;
         defaultValue = getValue();
         this.parentTranslation = parentTranslation;
@@ -163,11 +156,6 @@ public class Entry<T> implements EntryAccessor<T>, DataPart {
         return requiresRestart;
     }
 
-    @Override
-    public void connect(Consumer<Entry<T>> modifier) {
-        modifier.accept(this);
-    }
-
     void resolve(Field field) {
         if (field.isAnnotationPresent(ConfigEntry.class)) {
             ConfigEntry annotation = field.getDeclaredAnnotation(ConfigEntry.class);
@@ -231,7 +219,7 @@ public class Entry<T> implements EntryAccessor<T>, DataPart {
     @Override
     public void apply(CommentedConfigurationNode node) {
         try {
-            setValue(node.get(type));
+            setValue((T) node.get(type));
         } catch (SerializationException e) {
             //TODO
             e.printStackTrace();
@@ -248,34 +236,36 @@ public class Entry<T> implements EntryAccessor<T>, DataPart {
         }
     }
 
-    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    static class Draft<T> implements EntryAccessor<T> {
+    @Override
+    void interact(Consumer<Entry<T>> interaction) {
+        interaction.accept(this);
+    }
+
+    static class Draft<T> extends EntryBase<T> {
 
         static <T> Draft<T> of(Field field) {
-            EntryAccessor<T> accessor = (EntryAccessor<T>) Entry.of(field);
+            EntryBase<T> accessor = (EntryBase<T>) Entry.of(field);
             if (!(accessor instanceof Draft)) {
                 throw new UnsupportedOperationException("Entry draft of " + field + " was already built");
             }
             return (Draft<T>) accessor;
         }
 
-        private final Field field;
-        private final List<Consumer<Entry<T>>> modifiers = new ArrayList<>();
+        private final List<Consumer<Entry<T>>> interactions = new ArrayList<>();
 
-        @Override
-        public Class<T> getType() {
-            return (Class<T>) field.getType();
+        private Draft(Field field) {
+            super(field);
         }
 
         @Override
-        public void connect(Consumer<Entry<T>> modifier) {
-            modifiers.add(modifier);
+        void interact(Consumer<Entry<T>> interaction) {
+            interactions.add(interaction);
         }
 
         Entry<T> build(ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
-            Entry<T> entry = new Entry<>(field, getType(), parentObject, parentTranslation);
-            for (Consumer<Entry<T>> modifier : modifiers) {
-                modifier.accept(entry);
+            Entry<T> entry = new Entry<>(field, parentObject, parentTranslation);
+            for (Consumer<Entry<T>> interaction : interactions) {
+                interaction.accept(entry);
             }
             ENTRIES.put(field, entry);
             return entry;
