@@ -61,8 +61,7 @@ public final class ConfigBuilder {
      * @return this config builder
      */
     public ConfigBuilder setGuiBuilder(GuiBuilder guiBuilder) {
-        Objects.requireNonNull(guiBuilder);
-        this.guiBuilder = guiBuilder;
+        this.guiBuilder = Objects.requireNonNull(guiBuilder);
         return this;
     }
 
