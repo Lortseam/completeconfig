@@ -23,6 +23,7 @@ public final class ConfigHandler {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Map<Class<? extends ConfigOwner>, ConfigHandler> HANDLERS = new HashMap<>();
+    private static final Map<String, List<String[]>> MOD_BRANCHES = new HashMap<>();
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -40,13 +41,14 @@ public final class ConfigHandler {
             LOGGER.warn("[CompleteConfig] Owner " + owner + " of mod " + modID + " tried to create an empty config!");
             return null;
         }
+        List<String[]> branches = MOD_BRANCHES.computeIfAbsent(modID, key -> new ArrayList<>());
+        if (branches.stream().anyMatch(presentBranch -> Arrays.equals(branch, presentBranch))) {
+            throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists!");
+        }
+        branches.add(branch);
         String[] subPath = ArrayUtils.add(branch, 0, modID);
         subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".conf";
         Path filePath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), subPath);
-        //TODO: filePath field was removed
-        /*if (HANDLERS.values().stream().anyMatch(handler -> handler.filePath.equals(filePath))) {
-            throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists!");
-        }*/
         ConfigHandler handler = new ConfigHandler(modID, filePath, topLevelGroups, guiBuilder);
         HANDLERS.put(owner, handler);
         return handler;
