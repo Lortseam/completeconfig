@@ -23,8 +23,8 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
-	// Using modImplementation because implementation does not include dependency inside Maven pom file (see https://github.com/FabricMC/fabric-loom/issues/200)
-	modImplementation("org.spongepowered:configurate-hocon:${project.configurate_version}")
+	// Using modApi because api does not include dependency inside Maven pom file (see https://github.com/FabricMC/fabric-loom/issues/200)
+	modApi("org.spongepowered:configurate-hocon:${project.configurate_version}")
 
 	compileOnly("org.projectlombok:lombok:${project.lombok_version}")
 	annotationProcessor("org.projectlombok:lombok:${project.lombok_version}")

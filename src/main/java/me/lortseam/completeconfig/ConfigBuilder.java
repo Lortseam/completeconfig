@@ -3,6 +3,7 @@ package me.lortseam.completeconfig;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.api.ConfigOwner;
 import me.lortseam.completeconfig.gui.GuiBuilder;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +20,7 @@ public final class ConfigBuilder {
     private final String[] branch;
     private final Class<? extends ConfigOwner> owner;
     private final List<ConfigGroup> topLevelGroups = new ArrayList<>();
+    private TypeSerializerCollection typeSerializers;
     private GuiBuilder guiBuilder;
 
     private ConfigBuilder(String modID, String[] branch, Class<? extends ConfigOwner> owner) {
@@ -35,6 +37,20 @@ public final class ConfigBuilder {
      */
     public ConfigBuilder add(ConfigGroup... groups) {
         topLevelGroups.addAll(Arrays.asList(groups));
+        return this;
+    }
+
+    //TODO: Add javadoc
+    public ConfigBuilder registerTypeSerializers(TypeSerializerCollection typeSerializers) {
+        Objects.requireNonNull(typeSerializers);
+        if (this.typeSerializers == null) {
+            this.typeSerializers = typeSerializers;
+        } else {
+            this.typeSerializers = TypeSerializerCollection.builder()
+                    .registerAll(this.typeSerializers)
+                    .registerAll(typeSerializers)
+                    .build();
+        }
         return this;
     }
 
@@ -56,7 +72,7 @@ public final class ConfigBuilder {
      * @return the handler associated with the created config
      */
     public ConfigHandler finish() {
-        return ConfigHandler.registerConfig(modID, branch, owner, topLevelGroups, guiBuilder);
+        return ConfigHandler.registerConfig(modID, branch, owner, topLevelGroups, typeSerializers, guiBuilder);
     }
 
 }

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,7 +34,7 @@ public final class ConfigHandler {
         }));
     }
 
-    static ConfigHandler registerConfig(String modID, String[] branch, Class<? extends ConfigOwner> owner, List<ConfigGroup> topLevelGroups, GuiBuilder guiBuilder) {
+    static ConfigHandler registerConfig(String modID, String[] branch, Class<? extends ConfigOwner> owner, List<ConfigGroup> topLevelGroups, TypeSerializerCollection typeSerializers, GuiBuilder guiBuilder) {
         if (HANDLERS.containsKey(owner)) {
             throw new IllegalArgumentException("The specified owner " + owner + " already created a config!");
         }
@@ -49,7 +50,7 @@ public final class ConfigHandler {
         String[] subPath = ArrayUtils.add(branch, 0, modID);
         subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".conf";
         Path filePath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), subPath);
-        ConfigHandler handler = new ConfigHandler(modID, filePath, topLevelGroups, guiBuilder);
+        ConfigHandler handler = new ConfigHandler(modID, filePath, topLevelGroups, typeSerializers, guiBuilder);
         HANDLERS.put(owner, handler);
         return handler;
     }
@@ -68,9 +69,10 @@ public final class ConfigHandler {
     private final Config config;
     private GuiBuilder guiBuilder;
 
-    private ConfigHandler(String modID, Path filePath, List<ConfigGroup> topLevelGroups, GuiBuilder guiBuilder) {
+    private ConfigHandler(String modID, Path filePath, List<ConfigGroup> topLevelGroups, TypeSerializerCollection typeSerializers, GuiBuilder guiBuilder) {
         loader = HoconConfigurationLoader.builder()
                 .path(filePath)
+                .defaultOptions(options -> options.serializers(builder -> builder.registerAll(typeSerializers)))
                 .build();
         config = new Config(modID, topLevelGroups);
         CommentedConfigurationNode root = load();
