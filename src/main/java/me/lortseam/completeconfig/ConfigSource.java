@@ -17,11 +17,12 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 final class ConfigSource {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final HashSet<ConfigSource> SOURCES = new HashSet<>();
+    private static final Set<ConfigSource> SOURCES = new HashSet<>();
 
     @Getter(AccessLevel.PACKAGE)
     private final String modID;
