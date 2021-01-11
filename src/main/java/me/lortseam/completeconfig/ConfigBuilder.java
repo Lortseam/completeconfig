@@ -2,6 +2,7 @@ package me.lortseam.completeconfig;
 
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.gui.GuiBuilder;
+import me.lortseam.completeconfig.util.TypeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
@@ -60,15 +61,7 @@ public final class ConfigBuilder {
      * @return this config builder
      */
     public ConfigBuilder registerTypeSerializers(TypeSerializerCollection typeSerializers) {
-        Objects.requireNonNull(typeSerializers);
-        if (this.typeSerializers == null) {
-            this.typeSerializers = typeSerializers;
-        } else {
-            this.typeSerializers = TypeSerializerCollection.builder()
-                    .registerAll(this.typeSerializers)
-                    .registerAll(typeSerializers)
-                    .build();
-        }
+        this.typeSerializers = TypeUtils.mergeSerializers(this.typeSerializers, Objects.requireNonNull(typeSerializers));
         return this;
     }
 

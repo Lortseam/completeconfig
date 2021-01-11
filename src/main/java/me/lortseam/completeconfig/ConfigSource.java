@@ -3,6 +3,7 @@ package me.lortseam.completeconfig;
 import lombok.AccessLevel;
 import lombok.Getter;
 import me.lortseam.completeconfig.data.Config;
+import me.lortseam.completeconfig.util.TypeUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
@@ -23,6 +24,11 @@ final class ConfigSource {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Set<ConfigSource> SOURCES = new HashSet<>();
+    private static TypeSerializerCollection globalTypeSerializers;
+
+    static void registerGlobalTypeSerializers(TypeSerializerCollection typeSerializers) {
+        globalTypeSerializers = TypeUtils.mergeSerializers(globalTypeSerializers, typeSerializers);
+    }
 
     @Getter(AccessLevel.PACKAGE)
     private final String modID;
