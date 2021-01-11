@@ -47,6 +47,9 @@ final class ConfigSource {
         loader = HoconConfigurationLoader.builder()
                 .path(filePath)
                 .defaultOptions(options -> {
+                    if (globalTypeSerializers != null) {
+                        options.serializers(builder -> builder.registerAll(globalTypeSerializers));
+                    }
                     if (typeSerializers != null) {
                         options.serializers(builder -> builder.registerAll(typeSerializers));
                     }
