@@ -13,11 +13,11 @@ import java.util.Set;
 
 public final class ConfigHandler {
 
-    private static final Set<ConfigHandler> HANDLERS = new HashSet<>();
+    private static final Set<ConfigHandler> handlers = new HashSet<>();
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (ConfigHandler handler : HANDLERS) {
+            for (ConfigHandler handler : handlers) {
                 handler.save();
             }
         }));
@@ -31,7 +31,7 @@ public final class ConfigHandler {
         this.source = source;
         config = new Config(source.getModID(), topLevelGroups);
         this.guiBuilder = guiBuilder;
-        HANDLERS.add(this);
+        handlers.add(this);
         source.load(config);
     }
 

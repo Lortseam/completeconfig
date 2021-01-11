@@ -50,6 +50,7 @@ public final class ConfigBuilder {
      * @return this config builder
      */
     public ConfigBuilder add(ConfigGroup... groups) {
+        Arrays.stream(groups).forEach(Objects::requireNonNull);
         topLevelGroups.addAll(Arrays.asList(groups));
         return this;
     }

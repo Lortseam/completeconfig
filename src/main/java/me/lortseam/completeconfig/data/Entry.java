@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 public class Entry<T> extends EntryBase<T> implements DataPart {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final Map<Field, EntryBase> ENTRIES = new HashMap<>();
+    private static final Map<Field, EntryBase> entries = new HashMap<>();
 
     static EntryBase<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
         try {
@@ -34,7 +34,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     }
 
     static EntryBase<?> of(Field field) {
-        return ENTRIES.computeIfAbsent(field, absentField -> new Draft<>(field));
+        return entries.computeIfAbsent(field, absentField -> new Draft<>(field));
     }
 
     private final ConfigEntryContainer parentObject;
@@ -273,7 +273,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             for (Consumer<Entry<T>> interaction : interactions) {
                 interaction.accept(entry);
             }
-            ENTRIES.put(field, entry);
+            entries.put(field, entry);
             return entry;
         }
 

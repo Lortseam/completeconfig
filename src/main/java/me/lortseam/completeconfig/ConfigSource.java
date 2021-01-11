@@ -23,7 +23,7 @@ import java.util.Set;
 final class ConfigSource {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final Set<ConfigSource> SOURCES = new HashSet<>();
+    private static final Set<ConfigSource> sources = new HashSet<>();
     private static TypeSerializerCollection globalTypeSerializers;
 
     static void registerGlobalTypeSerializers(TypeSerializerCollection typeSerializers) {
@@ -38,7 +38,7 @@ final class ConfigSource {
     ConfigSource(String modID, String[] branch, TypeSerializerCollection typeSerializers) {
         this.modID = modID;
         this.branch = branch;
-        if (!SOURCES.add(this)) {
+        if (!sources.add(this)) {
             throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists!");
         }
         String[] subPath = ArrayUtils.add(branch, 0, modID);
