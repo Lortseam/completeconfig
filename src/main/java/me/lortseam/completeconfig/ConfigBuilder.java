@@ -1,8 +1,9 @@
 package me.lortseam.completeconfig;
 
 import me.lortseam.completeconfig.api.ConfigGroup;
-import me.lortseam.completeconfig.api.ConfigOwner;
 import me.lortseam.completeconfig.gui.GuiBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.util.ArrayList;
@@ -12,17 +13,33 @@ import java.util.Objects;
 
 public final class ConfigBuilder {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final String modID;
     private final String[] branch;
-    private final Class<? extends ConfigOwner> owner;
     private final List<ConfigGroup> topLevelGroups = new ArrayList<>();
     private TypeSerializerCollection typeSerializers;
     private GuiBuilder guiBuilder;
 
-    ConfigBuilder(String modID, String[] branch, Class<? extends ConfigOwner> owner) {
+    /**
+     * Creates a new config builder for the specified mod with a custom branch.
+     *
+     * <p>The config branch determines the location of the config's save file.
+     *
+     * @param modID the ID of the mod creating the config
+     */
+    public ConfigBuilder(String modID, String[] branch) {
         this.modID = modID;
         this.branch = branch;
-        this.owner = owner;
+    }
+
+    /**
+     * Creates a new config builder for the specified mod.
+     *
+     * @param modID the ID of the mod creating the config
+     */
+    public ConfigBuilder(String modID) {
+        this(modID, new String[0]);
     }
 
     /**
@@ -67,15 +84,11 @@ public final class ConfigBuilder {
      * @return the handler associated with the created config
      */
     public ConfigHandler build() {
-        return ConfigHandler.buildConfig(modID, branch, owner, topLevelGroups, typeSerializers, guiBuilder);
-    }
-
-    /**
-     * @deprecated Use {@link #build()}
-     */
-    @Deprecated
-    public ConfigHandler finish() {
-        return build();
+        if (topLevelGroups.isEmpty()) {
+            LOGGER.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
+            return null;
+        }
+        return new ConfigHandler(new ConfigSource(modID, branch, typeSerializers), topLevelGroups, guiBuilder);
     }
 
 }
