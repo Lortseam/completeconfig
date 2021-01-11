@@ -54,7 +54,7 @@ public final class ConfigHandler {
     }
 
     /**
-     * Saves the config to a save file.
+     * Saves the config to the dedicated save file.
      */
     public void save() {
         source.save(config);

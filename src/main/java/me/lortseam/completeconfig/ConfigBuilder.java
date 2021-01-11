@@ -53,7 +53,12 @@ public final class ConfigBuilder {
         return this;
     }
 
-    //TODO: Add javadoc
+    /**
+     * Registers custom type serializers for config saving and loading.
+     *
+     * @param typeSerializers the type serializers
+     * @return this config builder
+     */
     public ConfigBuilder registerTypeSerializers(TypeSerializerCollection typeSerializers) {
         Objects.requireNonNull(typeSerializers);
         if (this.typeSerializers == null) {
