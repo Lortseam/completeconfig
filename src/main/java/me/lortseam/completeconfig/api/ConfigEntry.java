@@ -205,6 +205,8 @@ public @interface ConfigEntry {
         /**
          * Specifies whether the color has an alpha value.
          *
+         * <p>This element is only evaluated by GUI providers. It will not restrict the type of this entry.
+         *
          * @return whether the color has an alpha value
          */
         boolean alphaMode() default false;
