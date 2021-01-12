@@ -23,7 +23,6 @@ final class ConfigSource {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Set<ConfigSource> sources = new HashSet<>();
-    private static TypeSerializerCollection globalTypeSerializers;
 
     @Getter(AccessLevel.PACKAGE)
     private final String modID;
@@ -42,9 +41,6 @@ final class ConfigSource {
         loader = HoconConfigurationLoader.builder()
                 .path(filePath)
                 .defaultOptions(options -> {
-                    if (globalTypeSerializers != null) {
-                        options.serializers(builder -> builder.registerAll(globalTypeSerializers));
-                    }
                     if (typeSerializers != null) {
                         options.serializers(builder -> builder.registerAll(typeSerializers));
                     }
