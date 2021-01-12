@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Environment(EnvType.CLIENT)
-public class GuiRegistry {
+public final class GuiRegistry {
 
     public static <T, A extends AbstractConfigListEntry> A build(Function<ConfigEntryBuilder, FieldBuilder<T, A>> builder, boolean requiresRestart) {
         FieldBuilder<T, A> fieldBuilder = builder.apply(ConfigEntryBuilder.create());

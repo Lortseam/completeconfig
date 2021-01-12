@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 
 @Environment(EnvType.CLIENT)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class GuiProviderRegistration {
+final class GuiProviderRegistration {
 
     private final Predicate<Entry<?>> predicate;
     @Getter(AccessLevel.PACKAGE)
