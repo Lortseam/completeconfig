@@ -7,16 +7,18 @@ import me.lortseam.completeconfig.data.Entry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+import java.util.function.Predicate;
+
 @Environment(EnvType.CLIENT)
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class GuiProviderRegistration<T> {
+class GuiProviderRegistration {
 
-    private final GuiProviderPredicate<T> predicate;
+    private final Predicate<Entry<?>> predicate;
     @Getter(AccessLevel.PACKAGE)
-    private final GuiProvider<T> provider;
+    private final GuiProvider<?> provider;
 
-    public boolean test(Entry<?> entry) {
-        return predicate.test(entry.getField(), entry.getExtras());
+    boolean test(Entry<?> entry) {
+        return predicate.test(entry);
     }
 
 }

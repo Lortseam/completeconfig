@@ -3,9 +3,9 @@ package me.lortseam.completeconfig.gui.cloth;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
+import me.lortseam.completeconfig.data.BoundedEntry;
 import me.lortseam.completeconfig.data.Entry;
-import me.lortseam.completeconfig.data.EnumOptions;
-import me.lortseam.completeconfig.util.TypeUtils;
+import me.lortseam.completeconfig.data.EnumEntry;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 @Environment(EnvType.CLIENT)
 public class GuiRegistry {
@@ -36,12 +37,12 @@ public class GuiRegistry {
         registerDefaultProviders();
     }
 
-    public <T> void registerProvider(GuiProvider<T> provider, GuiProviderPredicate<T> predicate, Type... types) {
-        registrations.add(new GuiProviderRegistration<>(predicate.and((field, extras) -> {
+    public void registerProvider(GuiProvider<?> provider, Predicate<Entry<?>> predicate, Type... types) {
+        registrations.add(new GuiProviderRegistration(predicate.and(entry -> {
             if (types.length == 0) {
                 return true;
             }
-            return ArrayUtils.contains(types, TypeUtils.getFieldType(field));
+            return ArrayUtils.contains(types, entry.getType());
         }), provider));
     }
 
@@ -49,19 +50,19 @@ public class GuiRegistry {
         if (types.length == 0) {
             throw new IllegalArgumentException("Types must not be empty");
         }
-        registerProvider(provider, (field, extras) -> true, types);
+        registerProvider(provider, entry -> true, types);
     }
 
-    private void registerBoundedProvider(GuiProvider<?> provider, boolean slider, Type... types) {
-        registerProvider(provider, (field, extras) -> extras.getBounds() != null && extras.getBounds().isSlider() == slider, types);
+    private void registerBoundedProvider(GuiProvider<? extends BoundedEntry<?>> provider, boolean slider, Type... types) {
+        registerProvider(provider, entry -> entry instanceof BoundedEntry && ((BoundedEntry<?>) entry).isSlider() == slider, types);
     }
 
-    private void registerEnumProvider(GuiProvider<? extends Enum> provider, EnumOptions.DisplayType enumDisplayType) {
-        registerProvider(provider, (field, extras) -> Enum.class.isAssignableFrom(field.getType()) && extras.getEnumOptions().getDisplayType() == enumDisplayType);
+    private void registerEnumProvider(GuiProvider<? extends EnumEntry<?>> provider, EnumEntry.DisplayType enumDisplayType) {
+        registerProvider(provider, entry -> entry instanceof EnumEntry && ((EnumEntry<?>) entry).getDisplayType() == enumDisplayType);
     }
 
     private void registerDefaultProviders() {
-       registerProvider((GuiProvider<Boolean>) entry -> build(
+       registerProvider((Entry<Boolean> entry) -> build(
                builder -> builder
                        .startBooleanToggle(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -69,7 +70,7 @@ public class GuiRegistry {
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), boolean.class, Boolean.class);
-       registerProvider((GuiProvider<Integer>) entry -> build(
+       registerProvider((Entry<Integer> entry) -> build(
                builder -> builder
                        .startIntField(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -77,25 +78,25 @@ public class GuiRegistry {
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), int.class, Integer.class);
-       registerBoundedProvider((GuiProvider<Integer>) entry -> build(
+       registerBoundedProvider((BoundedEntry<Integer> entry) -> build(
                builder -> builder
                        .startIntField(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
-                       .setMin(entry.getExtras().getBounds().getMin())
-                       .setMax(entry.getExtras().getBounds().getMax())
+                       .setMin(entry.getMin())
+                       .setMax(entry.getMax())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), false, int.class, Integer.class);
-       registerBoundedProvider((GuiProvider<Integer>) entry -> build(
+       registerBoundedProvider((BoundedEntry<Integer> entry) -> build(
                builder -> builder
-                       .startIntSlider(entry.getText(), entry.getValue(), entry.getExtras().getBounds().getMin(), entry.getExtras().getBounds().getMax())
+                       .startIntSlider(entry.getText(), entry.getValue(), entry.getMin(), entry.getMax())
                        .setDefaultValue(entry.getDefaultValue())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), true, int.class, Integer.class);
-       registerProvider((GuiProvider<Long>) entry -> build(
+       registerProvider((Entry<Long> entry) -> build(
                builder -> builder
                        .startLongField(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -103,25 +104,25 @@ public class GuiRegistry {
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), long.class, Long.class);
-       registerBoundedProvider((GuiProvider<Long>) entry -> build(
+       registerBoundedProvider((BoundedEntry<Long> entry) -> build(
                builder -> builder
                        .startLongField(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
-                       .setMin(entry.getExtras().getBounds().getMin())
-                       .setMax(entry.getExtras().getBounds().getMax())
+                       .setMin(entry.getMin())
+                       .setMax(entry.getMax())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), false, long.class, Long.class);
-       registerBoundedProvider((GuiProvider<Long>) entry -> build(
+       registerBoundedProvider((BoundedEntry<Long> entry) -> build(
                builder -> builder
-                       .startLongSlider(entry.getText(), entry.getValue(), entry.getExtras().getBounds().getMin(), entry.getExtras().getBounds().getMax())
+                       .startLongSlider(entry.getText(), entry.getValue(), entry.getMin(), entry.getMax())
                        .setDefaultValue(entry.getDefaultValue())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), true, long.class, Long.class);
-       registerProvider((GuiProvider<Float>) entry -> build(
+       registerProvider((Entry<Float> entry) -> build(
                builder -> builder
                        .startFloatField(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -129,17 +130,17 @@ public class GuiRegistry {
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), float.class, Float.class);
-       registerBoundedProvider((GuiProvider<Float>) entry -> build(
+       registerBoundedProvider((BoundedEntry<Float> entry) -> build(
                builder -> builder
                        .startFloatField(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
-                       .setMin(entry.getExtras().getBounds().getMin())
-                       .setMax(entry.getExtras().getBounds().getMax())
+                       .setMin(entry.getMin())
+                       .setMax(entry.getMax())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), false, float.class, Float.class);
-       registerProvider((GuiProvider<Double>) entry -> build(
+       registerProvider((Entry<Double> entry) -> build(
                builder -> builder
                        .startDoubleField(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -147,17 +148,17 @@ public class GuiRegistry {
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), double.class, Double.class);
-       registerBoundedProvider((GuiProvider<Double>) entry -> build(
+       registerBoundedProvider((BoundedEntry<Double> entry) -> build(
                builder -> builder
                        .startDoubleField(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
-                       .setMin(entry.getExtras().getBounds().getMin())
-                       .setMax(entry.getExtras().getBounds().getMax())
+                       .setMin(entry.getMin())
+                       .setMax(entry.getMax())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), false, double.class, Double.class);
-       registerProvider((GuiProvider<String>) entry -> build(
+       registerProvider((Entry<String> entry) -> build(
                builder -> builder
                        .startStrField(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -165,31 +166,31 @@ public class GuiRegistry {
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), String.class);
-       registerEnumProvider((GuiProvider<? extends Enum<?>>) entry -> build(
+       registerEnumProvider((EnumEntry<Enum<?>> entry) -> build(
                builder -> builder
                        .startEnumSelector(entry.getText(), entry.getTypeClass(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
                        .setTooltip(entry.getTooltip())
-                       .setEnumNameProvider(entry.getExtras().getEnumOptions().getNameProvider())
+                       .setEnumNameProvider(entry.getEnumNameProvider())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
-       ), EnumOptions.DisplayType.BUTTON);
-       registerEnumProvider((GuiProvider<? extends Enum>) entry -> {
-           List<Enum> enumValues = Arrays.asList(((Class<? extends Enum>) entry.getTypeClass()).getEnumConstants());
+       ), EnumEntry.DisplayType.BUTTON);
+       registerEnumProvider((EnumEntry<Enum<?>> entry) -> {
+           List<Enum> enumValues = Arrays.asList(((Class<? extends Enum<?>>) entry.getTypeClass()).getEnumConstants());
            return build(
                    builder -> builder
                            .startDropdownMenu(entry.getText(), DropdownMenuBuilder.TopCellElementBuilder.of(
                                    entry.getValue(),
-                                   enumTranslation -> enumValues.stream().filter(enumValue -> entry.getExtras().getEnumOptions().getNameProvider().apply(enumValue).getString().equals(enumTranslation)).collect(MoreCollectors.toOptional()).orElse(null),
-                                   entry.getExtras().getEnumOptions().getNameProvider()
-                           ), DropdownMenuBuilder.CellCreatorBuilder.of(entry.getExtras().getEnumOptions().getNameProvider()))
+                                   enumTranslation -> enumValues.stream().filter(enumValue -> entry.getEnumNameProvider().apply(enumValue).getString().equals(enumTranslation)).collect(MoreCollectors.toOptional()).orElse(null),
+                                   entry.getEnumNameProvider()
+                           ), DropdownMenuBuilder.CellCreatorBuilder.of(entry.getEnumNameProvider()))
                            .setSelections(enumValues)
                            .setDefaultValue(entry.getDefaultValue())
                            .setSaveConsumer(entry::setValue),
                    entry.requiresRestart()
            );
-       }, EnumOptions.DisplayType.DROPDOWN);
-       registerProvider((GuiProvider<List<Integer>>) entry -> build(
+       }, EnumEntry.DisplayType.DROPDOWN);
+       registerProvider((Entry<List<Integer>> entry) -> build(
                builder -> builder
                        .startIntList(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -197,7 +198,7 @@ public class GuiRegistry {
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), new TypeToken<List<Integer>>() {}.getType());
-       registerProvider((GuiProvider<List<Long>>) entry -> build(
+       registerProvider((Entry<List<Long>> entry) -> build(
                builder -> builder
                        .startLongList(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -205,7 +206,7 @@ public class GuiRegistry {
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), new TypeToken<List<Long>>() {}.getType());
-       registerProvider((GuiProvider<List<Float>>) entry -> build(
+       registerProvider((Entry<List<Float>> entry) -> build(
                builder -> builder
                        .startFloatList(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -213,7 +214,7 @@ public class GuiRegistry {
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), new TypeToken<List<Float>>() {}.getType());
-       registerProvider((GuiProvider<List<Double>>) entry -> build(
+       registerProvider((Entry<List<Double>> entry) -> build(
                builder -> builder
                        .startDoubleList(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -221,7 +222,7 @@ public class GuiRegistry {
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
        ), new TypeToken<List<Double>>() {}.getType());
-       registerProvider((GuiProvider<List<String>>) entry -> build(
+       registerProvider((Entry<List<String>> entry) -> build(
                builder -> builder
                        .startStrList(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
@@ -231,10 +232,10 @@ public class GuiRegistry {
        ), new TypeToken<List<String>>() {}.getType());
     }
 
-    <T> Optional<GuiProvider<T>> getProvider(Entry<T> entry) {
-        for (GuiProviderRegistration<?> registration : Lists.reverse(registrations)) {
+    <E extends Entry<?>> Optional<GuiProvider<E>> getProvider(E entry) {
+        for (GuiProviderRegistration registration : Lists.reverse(registrations)) {
             if (registration.test(entry)) {
-                return Optional.of((GuiProvider<T>) registration.getProvider());
+                return Optional.of((GuiProvider<E>) registration.getProvider());
             }
         }
         return Optional.empty();

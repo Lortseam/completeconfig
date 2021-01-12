@@ -7,8 +7,8 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 @FunctionalInterface
-public interface GuiProvider<T> {
+public interface GuiProvider<E extends Entry<?>> {
 
-    AbstractConfigListEntry<T> build(Entry<T> entry);
+    AbstractConfigListEntry<?> build(E entry);
 
 }

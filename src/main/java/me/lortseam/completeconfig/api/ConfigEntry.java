@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.api;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import me.lortseam.completeconfig.data.EnumOptions.DisplayType;
+import me.lortseam.completeconfig.data.EnumEntry;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -189,9 +189,9 @@ public @interface ConfigEntry {
         /**
          * Specifies how the entry should be rendered.
          *
-         * @return the desired {@link DisplayType}
+         * @return the desired {@link EnumEntry.DisplayType}
          */
-        DisplayType displayType() default DisplayType.BUTTON;
+        EnumEntry.DisplayType displayType() default EnumEntry.DisplayType.BUTTON;
 
     }
 

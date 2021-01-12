@@ -1,8 +1,8 @@
 package me.lortseam.completeconfig.gui.cloth;
 
 import lombok.Getter;
-import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Collection;
+import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
@@ -16,7 +16,6 @@ import net.minecraft.client.gui.screen.Screen;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
@@ -52,7 +51,7 @@ public class ClothGuiBuilder implements GuiBuilder {
     private List<AbstractConfigListEntry> buildCollection(Collection collection) {
         List<AbstractConfigListEntry> collectionGui = new ArrayList<>();
         for (Entry entry : collection.getEntries().values()) {
-            collectionGui.add(((Optional<GuiProvider>) registry.getProvider(entry)).orElseThrow(() -> {
+            collectionGui.add((registry.getProvider(entry)).orElseThrow(() -> {
                 return new UnsupportedOperationException("Could not find gui provider for field " + entry.getField());
             }).build(entry));
         }
