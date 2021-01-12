@@ -28,6 +28,7 @@ public final class ConfigBuilder {
      * <p>The config branch determines the location of the config's save file.
      *
      * @param modID the ID of the mod creating the config
+     * @param branch the branch
      */
     public ConfigBuilder(String modID, String[] branch) {
         this.modID = modID;
