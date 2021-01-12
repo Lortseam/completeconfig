@@ -72,6 +72,8 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             } else {
                 return new EnumEntry<>(field, parentObject, parentTranslation);
             }
+        } else if (field.isAnnotationPresent(ConfigEntry.EnumOptions.class)) {
+            throw new IllegalAnnotationTargetException("Cannot apply enum options to non enum field " + field);
         }
         return new Entry<>(field, parentObject, parentTranslation);
     }
