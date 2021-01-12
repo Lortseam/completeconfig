@@ -56,7 +56,7 @@ public final class ConfigBuilder {
     }
 
     /**
-     * Registers custom type serializers for config saving and loading.
+     * Registers custom type serializers, applied only to this config.
      *
      * @param typeSerializers the type serializers
      * @return this config builder
