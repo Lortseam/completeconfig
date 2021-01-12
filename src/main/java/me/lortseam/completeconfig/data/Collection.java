@@ -4,7 +4,7 @@ import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
-import me.lortseam.completeconfig.data.part.FlatParentDataPart;
+import me.lortseam.completeconfig.data.part.FlatDataPart;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
 
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Collection implements FlatParentDataPart<ConfigMap> {
+public class Collection implements FlatDataPart<ConfigMap> {
 
     private final TranslationIdentifier translation;
     @Getter
