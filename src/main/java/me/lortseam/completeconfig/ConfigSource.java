@@ -2,6 +2,7 @@ package me.lortseam.completeconfig;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.Config;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
@@ -22,6 +23,9 @@ import java.util.Set;
 final class ConfigSource {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final TypeSerializerCollection CUSTOM_SERIALIZERS = TypeSerializerCollection.builder()
+            .registerExact(ColorEntry.TEXT_COLOR_SERIALIZER)
+            .build();
     private static final Set<ConfigSource> sources = new HashSet<>();
 
     @Getter(AccessLevel.PACKAGE)
@@ -40,12 +44,12 @@ final class ConfigSource {
         Path filePath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), subPath);
         loader = HoconConfigurationLoader.builder()
                 .path(filePath)
-                .defaultOptions(options -> {
+                .defaultOptions(options -> options.serializers(builder -> {
+                    builder.registerAll(CUSTOM_SERIALIZERS);
                     if (typeSerializers != null) {
-                        options.serializers(builder -> builder.registerAll(typeSerializers));
+                        builder.registerAll(typeSerializers);
                     }
-                    return options;
-                })
+                }))
                 .build();
     }
 

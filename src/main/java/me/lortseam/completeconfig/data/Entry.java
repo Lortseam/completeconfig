@@ -75,6 +75,9 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         } else if (field.isAnnotationPresent(ConfigEntry.EnumOptions.class)) {
             throw new IllegalAnnotationTargetException("Cannot apply enum options to non enum field " + field);
         }
+        if (field.isAnnotationPresent(ConfigEntry.Color.class)) {
+            return new ColorEntry<>(field, parentObject, parentTranslation, field.getDeclaredAnnotation(ConfigEntry.Color.class).alphaMode());
+        }
         return new Entry<>(field, parentObject, parentTranslation);
     }
 

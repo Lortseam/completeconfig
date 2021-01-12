@@ -196,6 +196,22 @@ public @interface ConfigEntry {
     }
 
     /**
+     * Specifies that the annotated field is a color entry.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Color {
+
+        /**
+         * Specifies whether the color has an alpha value.
+         *
+         * @return whether the color has an alpha value
+         */
+        boolean alphaMode() default false;
+
+    }
+
+    /**
      * Can be applied to a field inside a POJO {@link ConfigEntryContainer} class to declare that that field should not
      * be considered to be config entry.
      */
