@@ -3,6 +3,7 @@ package me.lortseam.completeconfig;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.gui.GuiBuilder;
+import me.lortseam.completeconfig.io.ConfigSource;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
@@ -23,16 +24,14 @@ public final class ConfigHandler {
         }));
     }
 
-    private final ConfigSource source;
     private final Config config;
     private GuiBuilder guiBuilder;
 
     ConfigHandler(ConfigSource source, List<ConfigGroup> topLevelGroups, GuiBuilder guiBuilder) {
-        this.source = source;
-        config = new Config(source.getModID(), topLevelGroups);
+        config = new Config(source, topLevelGroups);
         this.guiBuilder = guiBuilder;
         handlers.add(this);
-        source.load(config);
+        config.load();
     }
 
     /**
@@ -57,7 +56,7 @@ public final class ConfigHandler {
      * Saves the config to the dedicated save file.
      */
     public void save() {
-        source.save(config);
+        config.save();
     }
 
 }

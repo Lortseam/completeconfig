@@ -1,8 +1,7 @@
-package me.lortseam.completeconfig;
+package me.lortseam.completeconfig.io;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import me.lortseam.completeconfig.data.ColorEntry;
+import me.lortseam.completeconfig.ModController;
 import me.lortseam.completeconfig.data.Config;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
@@ -20,21 +19,18 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-final class ConfigSource {
+public final class ConfigSource {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final TypeSerializerCollection CUSTOM_SERIALIZERS = TypeSerializerCollection.builder()
-            .registerExact(ColorEntry.TEXT_COLOR_SERIALIZER)
-            .build();
     private static final Set<ConfigSource> sources = new HashSet<>();
 
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private final String modID;
     private final String[] branch;
     private final HoconConfigurationLoader loader;
 
-    ConfigSource(String modID, String[] branch, TypeSerializerCollection typeSerializers) {
-        this.modID = modID;
+    public ConfigSource(ModController mod, String[] branch, TypeSerializerCollection typeSerializers) {
+        this.modID = mod.getID();
         this.branch = branch;
         if (!sources.add(this)) {
             throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists!");
@@ -45,7 +41,7 @@ final class ConfigSource {
         loader = HoconConfigurationLoader.builder()
                 .path(filePath)
                 .defaultOptions(options -> options.serializers(builder -> {
-                    builder.registerAll(CUSTOM_SERIALIZERS);
+                    builder.registerAll(mod.getTypeSerializers());
                     if (typeSerializers != null) {
                         builder.registerAll(typeSerializers);
                     }
@@ -53,7 +49,7 @@ final class ConfigSource {
                 .build();
     }
 
-    void load(Config config) {
+    public void load(Config config) {
         try {
             CommentedConfigurationNode root = loader.load();
             if (!root.virtual()) {
@@ -64,7 +60,7 @@ final class ConfigSource {
         }
     }
 
-    void save(Config config) {
+    public void save(Config config) {
         CommentedConfigurationNode root = loader.createNode();
         config.fetch(root);
         try {

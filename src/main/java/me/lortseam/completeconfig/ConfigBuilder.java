@@ -2,6 +2,7 @@ package me.lortseam.completeconfig;
 
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.gui.GuiBuilder;
+import me.lortseam.completeconfig.io.ConfigSource;
 import me.lortseam.completeconfig.util.TypeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,7 +89,7 @@ public final class ConfigBuilder {
             LOGGER.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
             return null;
         }
-        return new ConfigHandler(new ConfigSource(modID, branch, typeSerializers), topLevelGroups, guiBuilder);
+        return new ConfigHandler(new ConfigSource(ModController.of(modID), branch, typeSerializers), topLevelGroups, guiBuilder);
     }
 
 }
