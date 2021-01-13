@@ -44,7 +44,7 @@ public final class ConfigHandler {
     public Screen buildScreen(Screen parentScreen) {
         if (guiBuilder == null) {
             if (GuiBuilder.DEFAULT != null) {
-                guiBuilder = GuiBuilder.DEFAULT;
+                guiBuilder = GuiBuilder.DEFAULT.get();
             } else {
                 throw new UnsupportedOperationException("No GUI builder provided");
             }
