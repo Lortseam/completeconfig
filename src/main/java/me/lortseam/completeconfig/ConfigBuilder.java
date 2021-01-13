@@ -4,6 +4,8 @@ import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.lortseam.completeconfig.io.ConfigSource;
 import me.lortseam.completeconfig.util.TypeUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
@@ -74,13 +76,14 @@ public final class ConfigBuilder {
      * @param guiBuilder a GUI builder
      * @return this config builder
      */
+    @Environment(EnvType.CLIENT)
     public ConfigBuilder setGuiBuilder(GuiBuilder guiBuilder) {
         this.guiBuilder = Objects.requireNonNull(guiBuilder);
         return this;
     }
 
     /**
-     * Completes the config creation and registers the config.
+     * Completes the config creation.
      *
      * @return the handler associated with the created config
      */
