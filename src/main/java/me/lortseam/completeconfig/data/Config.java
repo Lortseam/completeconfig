@@ -97,6 +97,9 @@ public class Config extends CollectionMap {
         /**
          * Registers custom type serializers, applied only to this config.
          *
+         * <p>To register type serializers for every config of your mod, use
+         * {@link ModController#registerTypeSerializers(TypeSerializerCollection)}.
+         *
          * @param typeSerializers the type serializers
          * @return this builder
          */
