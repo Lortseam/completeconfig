@@ -18,7 +18,7 @@ public final class ModController {
 
     private static final Map<String, ModController> controllers = new HashMap<>();
     private static final TypeSerializerCollection GLOBAL_TYPE_SERIALIZERS = TypeSerializerCollection.builder()
-            .registerExact(ColorEntry.TEXT_COLOR_SERIALIZER)
+            .registerExact(ColorEntry.Serializers.TEXT_COLOR)
             .build();
 
     /**
