@@ -1,8 +1,6 @@
 package me.lortseam.completeconfig;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.util.TypeUtils;
@@ -13,8 +11,8 @@ import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ModController {
 
     private static final Map<String, ModController> controllers = new HashMap<>();
@@ -43,7 +41,12 @@ public final class ModController {
     @Getter
     private final ModMetadata metadata;
     @Getter
-    private TypeSerializerCollection typeSerializers = TypeSerializerCollection.builder().registerAll(GLOBAL_TYPE_SERIALIZERS).build();
+    private TypeSerializerCollection typeSerializers;
+
+    private ModController(ModMetadata metadata) {
+        this.metadata = metadata;
+        registerTypeSerializers(GLOBAL_TYPE_SERIALIZERS);
+    }
 
     public String getID() {
         return metadata.getId();
@@ -62,7 +65,7 @@ public final class ModController {
      * @param typeSerializers the type serializers
      */
     public void registerTypeSerializers(TypeSerializerCollection typeSerializers) {
-        this.typeSerializers = TypeUtils.mergeSerializers(this.typeSerializers, typeSerializers);
+        this.typeSerializers = TypeUtils.mergeSerializers(this.typeSerializers, Objects.requireNonNull(typeSerializers));
     }
 
 }
