@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.data;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.data.part.DataPart;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;

@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.data.gui;
+package me.lortseam.completeconfig.data.text;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

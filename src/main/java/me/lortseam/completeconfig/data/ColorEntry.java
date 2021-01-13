@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import net.minecraft.text.TextColor;
 import org.spongepowered.configurate.serialize.CoercionFailedException;
 import org.spongepowered.configurate.serialize.ScalarSerializer;

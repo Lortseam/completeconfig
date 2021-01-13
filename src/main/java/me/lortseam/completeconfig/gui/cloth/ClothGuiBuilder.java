@@ -5,7 +5,7 @@ import me.lortseam.completeconfig.ModController;
 import me.lortseam.completeconfig.data.Collection;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
-import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;

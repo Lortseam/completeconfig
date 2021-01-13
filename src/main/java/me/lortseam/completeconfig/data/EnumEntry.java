@@ -4,7 +4,7 @@ import com.google.common.base.CaseFormat;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import net.minecraft.text.Text;
 
 import java.lang.reflect.Field;

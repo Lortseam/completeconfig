@@ -5,7 +5,7 @@ import me.lortseam.completeconfig.ModController;
 import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.lortseam.completeconfig.io.ConfigSource;
 import me.lortseam.completeconfig.api.ConfigGroup;
-import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.util.TypeUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
