@@ -1,15 +1,12 @@
 package me.lortseam.completeconfig;
 
-import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.gui.GuiBuilder;
-import me.lortseam.completeconfig.io.ConfigSource;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public final class ConfigHandler {
@@ -27,8 +24,8 @@ public final class ConfigHandler {
     private final Config config;
     private GuiBuilder guiBuilder;
 
-    ConfigHandler(ConfigSource source, List<ConfigGroup> topLevelGroups, GuiBuilder guiBuilder) {
-        config = new Config(source, topLevelGroups);
+    public ConfigHandler(Config config, GuiBuilder guiBuilder) {
+        this.config = config;
         this.guiBuilder = guiBuilder;
         handlers.add(this);
         config.load();
