@@ -115,14 +115,14 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
 
     private T getFieldValue() {
         try {
-            return (T) Objects.requireNonNull(field.get(parentObject));
+            return (T) Objects.requireNonNull(field.get(parentObject), "Entry field value may never be null: " + field);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void setValue(T value) {
-        update(value);
+        update(Objects.requireNonNull(value, "Entry value may never be null: " + field));
     }
 
     private boolean update() {
@@ -229,7 +229,10 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     @Override
     public void apply(CommentedConfigurationNode node) {
         try {
-            setValue((T) node.get(type));
+            T value = (T) node.get(type);
+            // value could be null despite the virtual() check (see https://github.com/SpongePowered/Configurate/issues/187)
+            if(value == null) return;
+            setValue(value);
         } catch (SerializationException e) {
             LOGGER.error("[CompleteConfig] Failed to apply value to entry!", e);
         }

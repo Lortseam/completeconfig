@@ -1,9 +1,11 @@
 package me.lortseam.completeconfig.gui.cloth;
 
 import lombok.Getter;
+import me.lortseam.completeconfig.ModController;
 import me.lortseam.completeconfig.data.Collection;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
+import me.lortseam.completeconfig.data.gui.TranslationIdentifier;
 import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -13,6 +15,7 @@ import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +38,11 @@ public class ClothGuiBuilder implements GuiBuilder {
 
     @Override
     public Screen buildScreen(Screen parentScreen, Config config, Runnable savingRunnable) {
-        ConfigBuilder builder = supplier.get();
-        builder.setParentScreen(parentScreen)
-                .setTitle(config.getTranslation().append("title").translate())
+        ConfigBuilder builder = supplier.get()
+                .setParentScreen(parentScreen)
                 .setSavingRunnable(savingRunnable);
+        TranslationIdentifier customTranslation = config.getTranslation().append("title");
+        builder.setTitle(customTranslation.exists() ? customTranslation.translate() : new TranslatableText("completeconfig.gui.defaultTitle", ModController.of(config.getModID()).getName()));
         for(Collection collection : config.values()) {
             ConfigCategory configCategory = builder.getOrCreateCategory(collection.getText());
             for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {

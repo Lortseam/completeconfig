@@ -18,6 +18,10 @@ public class Config extends CollectionMap {
         }
     }
 
+    public String getModID() {
+        return source.getModID();
+    }
+
     public TranslationIdentifier getTranslation() {
         return translation;
     }

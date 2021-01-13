@@ -39,12 +39,17 @@ public final class ModController {
         return controllers.get(metadata.getId());
     }
 
+    @Getter
     private final ModMetadata metadata;
     @Getter
-    private TypeSerializerCollection typeSerializers = GLOBAL_TYPE_SERIALIZERS.childBuilder().build();
+    private TypeSerializerCollection typeSerializers = TypeSerializerCollection.builder().registerAll(GLOBAL_TYPE_SERIALIZERS).build();
 
     public String getID() {
         return metadata.getId();
+    }
+
+    public String getName() {
+        return metadata.getName();
     }
 
     /**
