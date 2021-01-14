@@ -14,7 +14,7 @@ abstract class EntryBase<T> {
     @Getter
     protected final Type type;
     @Getter
-    private final Class<T> typeClass;
+    protected final Class<T> typeClass;
 
     protected EntryBase(Field field) {
         this.field = field;

@@ -3,11 +3,12 @@ package me.lortseam.completeconfig.data;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.data.part.DataPart;
+import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,36 +38,38 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         return entries.computeIfAbsent(field, absentField -> new Draft<>(field));
     }
 
-    private static Entry<?> create(Field field, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
+    private static Entry<?> create(EntryBase<?> base, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
+        Field field = base.field;
+        Class<?> typeClass = base.typeClass;
         if (field.isAnnotationPresent(ConfigEntry.Bounded.Integer.class)) {
-            if (field.getType() != int.class && field.getType() != Integer.class) {
+            if (typeClass != int.class && typeClass != Integer.class) {
                 throw new IllegalAnnotationTargetException("Cannot apply Integer bound to non Integer field " + field);
             }
             ConfigEntry.Bounded.Integer bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Integer.class);
             return new BoundedEntry<>(field, parentObject, parentTranslation, bounds.min(), bounds.max(), bounds.slider());
         }
         if (field.isAnnotationPresent(ConfigEntry.Bounded.Long.class)) {
-            if (field.getType() != long.class && field.getType() != Long.class) {
+            if (typeClass != long.class && typeClass != Long.class) {
                 throw new IllegalAnnotationTargetException("Cannot apply Long bound to non Long field " + field);
             }
             ConfigEntry.Bounded.Long bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Long.class);
             return new BoundedEntry<>(field, parentObject, parentTranslation, bounds.min(), bounds.max(), bounds.slider());
         }
         if (field.isAnnotationPresent(ConfigEntry.Bounded.Float.class)) {
-            if (field.getType() != float.class && field.getType() != Float.class) {
+            if (typeClass != float.class && typeClass != Float.class) {
                 throw new IllegalAnnotationTargetException("Cannot apply Float bound to non Float field " + field);
             }
             ConfigEntry.Bounded.Float bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Float.class);
             return new BoundedEntry<>(field, parentObject, parentTranslation, bounds.min(), bounds.max());
         }
         if (field.isAnnotationPresent(ConfigEntry.Bounded.Double.class)) {
-            if (field.getType() != double.class && field.getType() != Double.class) {
+            if (typeClass != double.class && typeClass != Double.class) {
                 throw new IllegalAnnotationTargetException("Cannot apply Double bound to non Double field " + field);
             }
             ConfigEntry.Bounded.Double bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Double.class);
             return new BoundedEntry<>(field, parentObject, parentTranslation, bounds.min(), bounds.max());
         }
-        if (Enum.class.isAssignableFrom(field.getType())) {
+        if (Enum.class.isAssignableFrom(base.getTypeClass())) {
             if (field.isAnnotationPresent(ConfigEntry.Enum.class)) {
                 return new EnumEntry<>(field, parentObject, parentTranslation, field.getDeclaredAnnotation(ConfigEntry.Enum.class).displayType());
             } else {
@@ -77,6 +80,8 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }
         if (field.isAnnotationPresent(ConfigEntry.Color.class)) {
             return new ColorEntry<>(field, parentObject, parentTranslation, field.getDeclaredAnnotation(ConfigEntry.Color.class).alphaMode());
+        } else if (typeClass == TextColor.class) {
+            return new ColorEntry<>(field, parentObject, parentTranslation, false);
         }
         return new Entry<>(field, parentObject, parentTranslation);
     }
@@ -277,7 +282,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }
 
         Entry<T> build(ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
-            Entry<T> entry = (Entry<T>) create(field, parentObject, parentTranslation);
+            Entry<T> entry = (Entry<T>) create(this, parentObject, parentTranslation);
             for (Consumer<Entry<T>> interaction : interactions) {
                 interaction.accept(entry);
             }
