@@ -181,6 +181,8 @@ public @interface ConfigEntry {
 
     /**
      * Applied to an entry of type Enum to change the render behaviour.
+     *
+     * <p>This annotation is optional.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
