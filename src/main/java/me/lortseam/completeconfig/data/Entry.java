@@ -80,7 +80,8 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }
         if (field.isAnnotationPresent(ConfigEntry.Color.class)) {
             return new ColorEntry<>(field, parentObject, parentTranslation, field.getDeclaredAnnotation(ConfigEntry.Color.class).alphaMode());
-        } else if (typeClass == TextColor.class) {
+        }
+        if (typeClass == TextColor.class) {
             return new ColorEntry<>(field, parentObject, parentTranslation, false);
         }
         return new Entry<>(field, parentObject, parentTranslation);
