@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.gui.cloth;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
 import me.lortseam.completeconfig.data.BoundedEntry;
@@ -40,7 +39,7 @@ public final class GuiRegistry {
     }
 
     public void registerProvider(GuiProvider<?> provider, Predicate<Entry<?>> predicate, Type... types) {
-        registrations.add(new GuiProviderRegistration(predicate.and(entry -> {
+        registrations.add(0, new GuiProviderRegistration(predicate.and(entry -> {
             if (types.length == 0) {
                 return true;
             }
@@ -55,15 +54,15 @@ public final class GuiRegistry {
         registerProvider(provider, entry -> true, types);
     }
 
-    private void registerBoundedProvider(GuiProvider<? extends BoundedEntry<?>> provider, boolean slider, Type... types) {
+    public void registerBoundedProvider(GuiProvider<? extends BoundedEntry<?>> provider, boolean slider, Type... types) {
         registerProvider(provider, entry -> entry instanceof BoundedEntry && ((BoundedEntry<?>) entry).isSlider() == slider, types);
     }
 
-    private void registerEnumProvider(GuiProvider<? extends EnumEntry<?>> provider, EnumEntry.DisplayType enumDisplayType) {
+    public void registerEnumProvider(GuiProvider<? extends EnumEntry<?>> provider, EnumEntry.DisplayType enumDisplayType) {
         registerProvider(provider, entry -> entry instanceof EnumEntry && ((EnumEntry<?>) entry).getDisplayType() == enumDisplayType);
     }
 
-    private void registerColorProvider(GuiProvider<? extends ColorEntry<?>> provider, boolean alphaModeSupported, Type... types) {
+    public void registerColorProvider(GuiProvider<? extends ColorEntry<?>> provider, boolean alphaModeSupported, Type... types) {
         registerProvider(provider, entry -> entry instanceof ColorEntry<?> && (!((ColorEntry) entry).isAlphaMode() || alphaModeSupported), types);
     }
 
@@ -256,12 +255,9 @@ public final class GuiRegistry {
     }
 
     <E extends Entry<?>> Optional<GuiProvider<E>> getProvider(E entry) {
-        for (GuiProviderRegistration registration : Lists.reverse(registrations)) {
-            if (registration.test(entry)) {
-                return Optional.of((GuiProvider<E>) registration.getProvider());
-            }
-        }
-        return Optional.empty();
+        return registrations.stream().filter(registration -> registration.test(entry)).findFirst().map(registration -> {
+            return (GuiProvider<E>) registration.getProvider();
+        });
     }
 
 }
