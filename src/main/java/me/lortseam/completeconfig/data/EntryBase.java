@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.function.Consumer;
 
-abstract class EntryBase<T> {
+public abstract class EntryBase<T> {
 
     @Getter
     protected final Field field;

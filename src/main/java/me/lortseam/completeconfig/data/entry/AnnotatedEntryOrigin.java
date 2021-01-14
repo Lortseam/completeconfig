@@ -1,0 +1,20 @@
+package me.lortseam.completeconfig.data.entry;
+
+import lombok.Getter;
+import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+
+public class AnnotatedEntryOrigin<A extends Annotation> extends EntryOrigin {
+
+    @Getter
+    private final A annotation;
+
+    AnnotatedEntryOrigin(Field field, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation, A annotation) {
+        super(field, parentObject, parentTranslation);
+        this.annotation = annotation;
+    }
+
+}

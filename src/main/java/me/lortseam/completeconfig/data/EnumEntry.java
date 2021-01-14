@@ -3,11 +3,9 @@ package me.lortseam.completeconfig.data;
 import com.google.common.base.CaseFormat;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.entry.EntryOrigin;
 import net.minecraft.text.Text;
 
-import java.lang.reflect.Field;
 import java.util.function.Function;
 
 public class EnumEntry<T extends Enum> extends Entry<T> {
@@ -15,13 +13,13 @@ public class EnumEntry<T extends Enum> extends Entry<T> {
     @Getter
     private final DisplayType displayType;
 
-    EnumEntry(Field field, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation, DisplayType displayType) {
-        super(field, parentObject, parentTranslation);
+    public EnumEntry(EntryOrigin origin, DisplayType displayType) {
+        super(origin);
         this.displayType = displayType;
     }
 
-    EnumEntry(Field field, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
-        this(field, parentObject, parentTranslation, DisplayType.DEFAULT);
+    public EnumEntry(EntryOrigin origin) {
+        this(origin, DisplayType.DEFAULT);
     }
 
     public Function<Enum, Text> getEnumNameProvider() {

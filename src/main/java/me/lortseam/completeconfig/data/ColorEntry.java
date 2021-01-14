@@ -3,22 +3,19 @@ package me.lortseam.completeconfig.data;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.entry.EntryOrigin;
 import net.minecraft.text.TextColor;
 import org.spongepowered.configurate.serialize.CoercionFailedException;
 import org.spongepowered.configurate.serialize.ScalarSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializer;
-
-import java.lang.reflect.Field;
 
 public class ColorEntry<T> extends Entry<T> {
 
     @Getter
     private final boolean alphaMode;
 
-    protected ColorEntry(Field field, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation, boolean alphaMode) {
-        super(field, parentObject, parentTranslation);
+    public ColorEntry(EntryOrigin origin, boolean alphaMode) {
+        super(origin);
         this.alphaMode = alphaMode;
     }
 

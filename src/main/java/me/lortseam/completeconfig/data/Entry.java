@@ -1,12 +1,14 @@
 package me.lortseam.completeconfig.data;
 
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.data.entry.EntryOrigin;
+import me.lortseam.completeconfig.data.entry.Transformation;
 import me.lortseam.completeconfig.data.part.DataPart;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
-import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +26,28 @@ import java.util.function.UnaryOperator;
 public class Entry<T> extends EntryBase<T> implements DataPart {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final List<Transformation> transformations = Lists.newArrayList(
+            Transformation.ofAnnotation(ConfigEntry.Bounded.Integer.class, origin -> {
+                ConfigEntry.Bounded.Integer bounds = origin.getAnnotation();
+                return new BoundedEntry<>(origin, bounds.min(), bounds.max(), bounds.slider());
+            }, int.class, Integer.class),
+            Transformation.ofAnnotation(ConfigEntry.Bounded.Long.class, origin -> {
+                ConfigEntry.Bounded.Long bounds = origin.getAnnotation();
+                return new BoundedEntry<>(origin, bounds.min(), bounds.max(), bounds.slider());
+            }, long.class, Long.class),
+            Transformation.ofAnnotation(ConfigEntry.Bounded.Float.class, origin -> {
+                ConfigEntry.Bounded.Float bounds = origin.getAnnotation();
+                return new BoundedEntry<>(origin, bounds.min(), bounds.max());
+            }, float.class, Float.class),
+            Transformation.ofAnnotation(ConfigEntry.Bounded.Double.class, origin -> {
+                ConfigEntry.Bounded.Double bounds = origin.getAnnotation();
+                return new BoundedEntry<>(origin, bounds.min(), bounds.max());
+            }, double.class, Double.class),
+            Transformation.of(base -> Enum.class.isAssignableFrom(base.typeClass), EnumEntry::new),
+            Transformation.ofAnnotation(ConfigEntry.Enum.class, origin -> new EnumEntry<>(origin, origin.getAnnotation().displayType()), base -> Enum.class.isAssignableFrom(base.typeClass)),
+            Transformation.ofAnnotation(ConfigEntry.Color.class, origin -> new ColorEntry<>(origin, origin.getAnnotation().alphaMode())),
+            Transformation.ofType(TextColor.class, origin -> new ColorEntry<>(origin, false))
+    );
     private static final Map<Field, EntryBase> entries = new HashMap<>();
 
     static EntryBase<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
@@ -38,53 +62,8 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         return entries.computeIfAbsent(field, absentField -> new Draft<>(field));
     }
 
-    private static Entry<?> create(EntryBase<?> base, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
-        Field field = base.field;
-        Class<?> typeClass = base.typeClass;
-        if (field.isAnnotationPresent(ConfigEntry.Bounded.Integer.class)) {
-            if (typeClass != int.class && typeClass != Integer.class) {
-                throw new IllegalAnnotationTargetException("Cannot apply Integer bound to non Integer field " + field);
-            }
-            ConfigEntry.Bounded.Integer bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Integer.class);
-            return new BoundedEntry<>(field, parentObject, parentTranslation, bounds.min(), bounds.max(), bounds.slider());
-        }
-        if (field.isAnnotationPresent(ConfigEntry.Bounded.Long.class)) {
-            if (typeClass != long.class && typeClass != Long.class) {
-                throw new IllegalAnnotationTargetException("Cannot apply Long bound to non Long field " + field);
-            }
-            ConfigEntry.Bounded.Long bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Long.class);
-            return new BoundedEntry<>(field, parentObject, parentTranslation, bounds.min(), bounds.max(), bounds.slider());
-        }
-        if (field.isAnnotationPresent(ConfigEntry.Bounded.Float.class)) {
-            if (typeClass != float.class && typeClass != Float.class) {
-                throw new IllegalAnnotationTargetException("Cannot apply Float bound to non Float field " + field);
-            }
-            ConfigEntry.Bounded.Float bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Float.class);
-            return new BoundedEntry<>(field, parentObject, parentTranslation, bounds.min(), bounds.max());
-        }
-        if (field.isAnnotationPresent(ConfigEntry.Bounded.Double.class)) {
-            if (typeClass != double.class && typeClass != Double.class) {
-                throw new IllegalAnnotationTargetException("Cannot apply Double bound to non Double field " + field);
-            }
-            ConfigEntry.Bounded.Double bounds = field.getDeclaredAnnotation(ConfigEntry.Bounded.Double.class);
-            return new BoundedEntry<>(field, parentObject, parentTranslation, bounds.min(), bounds.max());
-        }
-        if (Enum.class.isAssignableFrom(base.getTypeClass())) {
-            if (field.isAnnotationPresent(ConfigEntry.Enum.class)) {
-                return new EnumEntry<>(field, parentObject, parentTranslation, field.getDeclaredAnnotation(ConfigEntry.Enum.class).displayType());
-            } else {
-                return new EnumEntry<>(field, parentObject, parentTranslation);
-            }
-        } else if (field.isAnnotationPresent(ConfigEntry.Enum.class)) {
-            throw new IllegalAnnotationTargetException("Cannot apply enum options to non enum field " + field);
-        }
-        if (field.isAnnotationPresent(ConfigEntry.Color.class)) {
-            return new ColorEntry<>(field, parentObject, parentTranslation, field.getDeclaredAnnotation(ConfigEntry.Color.class).alphaMode());
-        }
-        if (typeClass == TextColor.class) {
-            return new ColorEntry<>(field, parentObject, parentTranslation, false);
-        }
-        return new Entry<>(field, parentObject, parentTranslation);
+    public static void registerTransformation(Transformation<?> transformation) {
+        transformations.add(0, transformation);
     }
 
     private final ConfigEntryContainer parentObject;
@@ -100,16 +79,16 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     private final UnaryOperator<T> modifier;
     private final List<Listener<T>> listeners = new ArrayList<>();
 
-    protected Entry(Field field, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation, UnaryOperator<T> modifier) {
-        super(field);
-        this.parentObject = parentObject;
-        this.parentTranslation = parentTranslation;
+    protected Entry(EntryOrigin origin, UnaryOperator<T> modifier) {
+        super(origin.getField());
+        parentObject = origin.getParentObject();
+        parentTranslation = origin.getParentTranslation();
         this.modifier = modifier;
         defaultValue = getValue();
     }
 
-    protected Entry(Field field, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
-        this(field, parentObject, parentTranslation, null);
+    protected Entry(EntryOrigin origin) {
+        this(origin, null);
     }
 
     public T getValue() {
@@ -283,7 +262,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }
 
         Entry<T> build(ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
-            Entry<T> entry = (Entry<T>) create(this, parentObject, parentTranslation);
+            Entry<T> entry = transformations.stream().filter(transformation -> transformation.test(this)).findFirst().orElse(Transformation.of(base -> true, Entry::new)).transform(this, parentObject, parentTranslation);
             for (Consumer<Entry<T>> interaction : interactions) {
                 interaction.accept(entry);
             }
