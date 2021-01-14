@@ -1,7 +1,6 @@
 package me.lortseam.completeconfig;
 
 import lombok.Getter;
-import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.util.TypeUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -67,9 +66,6 @@ public final class ModController {
 
     /**
      * Registers custom type serializers, applied to all following mod configs.
-     *
-     * <p>To register type serializers for a specific config only, use
-     * {@link Config.Builder#registerTypeSerializers(TypeSerializerCollection)}.
      *
      * @param typeSerializers the type serializers
      */

@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
-import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,7 +28,7 @@ public final class ConfigSource {
     private final String[] branch;
     private final HoconConfigurationLoader loader;
 
-    public ConfigSource(ModController mod, String[] branch, TypeSerializerCollection typeSerializers) {
+    public ConfigSource(ModController mod, String[] branch) {
         this.modID = mod.getID();
         this.branch = branch;
         if (!sources.add(this)) {
@@ -40,12 +39,7 @@ public final class ConfigSource {
         Path filePath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), subPath);
         loader = HoconConfigurationLoader.builder()
                 .path(filePath)
-                .defaultOptions(options -> options.serializers(builder -> {
-                    builder.registerAll(mod.getTypeSerializers());
-                    if (typeSerializers != null) {
-                        builder.registerAll(typeSerializers);
-                    }
-                }))
+                .defaultOptions(options -> options.serializers(builder -> builder.registerAll(mod.getTypeSerializers())))
                 .build();
     }
 
