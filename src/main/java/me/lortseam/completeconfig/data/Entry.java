@@ -67,12 +67,12 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             return new BoundedEntry<>(field, parentObject, parentTranslation, bounds.min(), bounds.max());
         }
         if (Enum.class.isAssignableFrom(field.getType())) {
-            if (field.isAnnotationPresent(ConfigEntry.EnumOptions.class)) {
-                return new EnumEntry<>(field, parentObject, parentTranslation, field.getDeclaredAnnotation(ConfigEntry.EnumOptions.class).displayType());
+            if (field.isAnnotationPresent(ConfigEntry.Enum.class)) {
+                return new EnumEntry<>(field, parentObject, parentTranslation, field.getDeclaredAnnotation(ConfigEntry.Enum.class).displayType());
             } else {
                 return new EnumEntry<>(field, parentObject, parentTranslation);
             }
-        } else if (field.isAnnotationPresent(ConfigEntry.EnumOptions.class)) {
+        } else if (field.isAnnotationPresent(ConfigEntry.Enum.class)) {
             throw new IllegalAnnotationTargetException("Cannot apply enum options to non enum field " + field);
         }
         if (field.isAnnotationPresent(ConfigEntry.Color.class)) {

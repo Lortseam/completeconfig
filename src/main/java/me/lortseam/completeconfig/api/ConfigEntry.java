@@ -184,7 +184,7 @@ public @interface ConfigEntry {
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
-    @interface EnumOptions {
+    @interface Enum {
 
         /**
          * Specifies how the entry should be rendered.

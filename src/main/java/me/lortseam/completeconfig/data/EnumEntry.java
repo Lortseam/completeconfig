@@ -10,7 +10,7 @@ import net.minecraft.text.Text;
 import java.lang.reflect.Field;
 import java.util.function.Function;
 
-public class EnumEntry<T extends Enum<?>> extends Entry<T> {
+public class EnumEntry<T extends Enum> extends Entry<T> {
 
     @Getter
     private final DisplayType displayType;
@@ -36,7 +36,7 @@ public class EnumEntry<T extends Enum<?>> extends Entry<T> {
 
         static {
             try {
-                DEFAULT = (DisplayType) ConfigEntry.EnumOptions.class.getDeclaredMethod("displayType").getDefaultValue();
+                DEFAULT = (DisplayType) ConfigEntry.Enum.class.getDeclaredMethod("displayType").getDefaultValue();
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
