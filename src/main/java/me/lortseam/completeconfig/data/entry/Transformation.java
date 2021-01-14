@@ -15,7 +15,7 @@ import java.lang.reflect.Type;
 import java.util.function.Predicate;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class Transformation<O extends EntryOrigin> {
+public final class Transformation<O extends EntryOrigin> {
 
     public static Transformation<EntryOrigin> of(Predicate<EntryBase<?>> predicate, Transformer<EntryOrigin> transformer) {
         return new Transformation<>(predicate, EntryOrigin::new, transformer);

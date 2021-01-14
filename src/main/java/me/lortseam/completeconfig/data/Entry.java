@@ -100,14 +100,14 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
 
     private T getFieldValue() {
         try {
-            return (T) Objects.requireNonNull(field.get(parentObject), "Entry field value may never be null: " + field);
+            return (T) Objects.requireNonNull(field.get(parentObject), "Entry field value must never be null: " + field);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void setValue(T value) {
-        update(Objects.requireNonNull(value, "Entry value may never be null: " + field));
+        update(Objects.requireNonNull(value, "Entry value must never be null: " + field));
     }
 
     private boolean update() {
