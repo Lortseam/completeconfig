@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.io;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.lortseam.completeconfig.ModManager;
 import me.lortseam.completeconfig.data.Config;
@@ -16,9 +17,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class ConfigSource {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -27,8 +28,10 @@ public final class ConfigSource {
             .build();
     private static final Set<ConfigSource> sources = new HashSet<>();
 
+    @EqualsAndHashCode.Include
     @Getter
     private final String modID;
+    @EqualsAndHashCode.Include
     private final String[] branch;
     private final HoconConfigurationLoader loader;
 
@@ -69,21 +72,6 @@ public final class ConfigSource {
         } catch (ConfigurateException e) {
             LOGGER.error("[CompleteConfig] Failed to save config to file!", e);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ConfigSource that = (ConfigSource) o;
-        return modID.equals(that.modID) && Arrays.equals(branch, that.branch);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(modID);
-        result = 31 * result + Arrays.hashCode(branch);
-        return result;
     }
 
 }
