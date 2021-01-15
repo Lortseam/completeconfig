@@ -2,8 +2,9 @@ package me.lortseam.completeconfig.io;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import me.lortseam.completeconfig.ModManager;
+import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.Config;
+import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -35,8 +37,8 @@ public final class ConfigSource {
     private final String[] branch;
     private final HoconConfigurationLoader loader;
 
-    public ConfigSource(ModManager mod, String[] branch) {
-        this.modID = mod.getID();
+    public ConfigSource(String modID, String[] branch) {
+        this.modID = modID;
         this.branch = branch;
         if (!sources.add(this)) {
             throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists!");
@@ -48,7 +50,7 @@ public final class ConfigSource {
                 .path(filePath)
                 .defaultOptions(options -> options.serializers(builder -> {
                     builder.registerAll(GLOBAL_TYPE_SERIALIZERS);
-                    builder.registerAll(mod.getTypeSerializers());
+                    CompleteConfig.getExtensions().stream().map(CompleteConfigExtension::getTypeSerializers).filter(Objects::nonNull).forEach(builder::registerAll);
                 }))
                 .build();
     }

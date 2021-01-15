@@ -2,6 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
+import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.data.entry.EntryOrigin;
@@ -9,6 +10,7 @@ import me.lortseam.completeconfig.data.entry.Transformation;
 import me.lortseam.completeconfig.data.part.DataPart;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
+import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +52,12 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     );
     private static final Map<Field, EntryBase> entries = new HashMap<>();
 
+    static {
+        CompleteConfig.getExtensions().stream().map(CompleteConfigExtension::getTransformations).filter(Objects::nonNull).forEach(extensionTransformations -> {
+            transformations.addAll(0, extensionTransformations);
+        });
+    }
+
     static EntryBase<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
         try {
             return of(parentClass.getDeclaredField(fieldName));
@@ -60,10 +68,6 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
 
     static EntryBase<?> of(Field field) {
         return entries.computeIfAbsent(field, absentField -> new Draft<>(field));
-    }
-
-    public static void registerTransformation(Transformation<?> transformation) {
-        transformations.add(0, transformation);
     }
 
     private final ConfigEntryContainer parentObject;

@@ -1,13 +1,13 @@
 package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.ConfigHandler;
-import me.lortseam.completeconfig.ModManager;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.lortseam.completeconfig.io.ConfigSource;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +24,9 @@ public class Config extends CollectionMap {
      * @param modID the ID of the mod creating the config
      */
     public static Builder builder(String modID) {
+        if (!FabricLoader.getInstance().isModLoaded(Objects.requireNonNull(modID))) {
+            throw new IllegalArgumentException("Mod " + modID + " is not loaded");
+        }
         return new Builder(modID);
     }
 
@@ -63,7 +66,7 @@ public class Config extends CollectionMap {
         private GuiBuilder guiBuilder;
 
         private Builder(String modID) {
-            this.modID = Objects.requireNonNull(modID);
+            this.modID = modID;
         }
 
         /**
@@ -113,7 +116,7 @@ public class Config extends CollectionMap {
                 LOGGER.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
                 return null;
             }
-            return new ConfigHandler(new Config(new ConfigSource(ModManager.of(modID), branch), topLevelGroups), guiBuilder);
+            return new ConfigHandler(new Config(new ConfigSource(modID, branch), topLevelGroups), guiBuilder);
         }
 
     }

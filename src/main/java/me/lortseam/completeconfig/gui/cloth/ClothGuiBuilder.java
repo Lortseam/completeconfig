@@ -1,7 +1,5 @@
 package me.lortseam.completeconfig.gui.cloth;
 
-import lombok.Getter;
-import me.lortseam.completeconfig.ModManager;
 import me.lortseam.completeconfig.data.Collection;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
@@ -14,6 +12,7 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.TranslatableText;
 
@@ -25,8 +24,6 @@ import java.util.function.Supplier;
 public class ClothGuiBuilder implements GuiBuilder {
 
     private final Supplier<ConfigBuilder> supplier;
-    @Getter
-    private final GuiRegistry registry = new GuiRegistry();
 
     public ClothGuiBuilder(Supplier<ConfigBuilder> supplier) {
         this.supplier = supplier;
@@ -42,7 +39,7 @@ public class ClothGuiBuilder implements GuiBuilder {
                 .setParentScreen(parentScreen)
                 .setSavingRunnable(savingRunnable);
         TranslationIdentifier customTranslation = config.getTranslation().append("title");
-        builder.setTitle(customTranslation.exists() ? customTranslation.translate() : new TranslatableText("completeconfig.gui.defaultTitle", ModManager.of(config.getModID()).getName()));
+        builder.setTitle(customTranslation.exists() ? customTranslation.translate() : new TranslatableText("completeconfig.gui.defaultTitle", FabricLoader.getInstance().getModContainer(config.getModID()).get().getMetadata().getName()));
         for(Collection collection : config.values()) {
             ConfigCategory configCategory = builder.getOrCreateCategory(collection.getText());
             for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {
@@ -55,7 +52,7 @@ public class ClothGuiBuilder implements GuiBuilder {
     private List<AbstractConfigListEntry> buildCollection(Collection collection) {
         List<AbstractConfigListEntry> collectionGui = new ArrayList<>();
         for (Entry entry : collection.getEntries().values()) {
-            collectionGui.add((registry.getProvider(entry)).orElseThrow(() -> {
+            collectionGui.add((GuiRegistry.getInstance().getProvider(entry)).orElseThrow(() -> {
                 return new UnsupportedOperationException("Could not find GUI provider for field " + entry.getField());
             }).build(entry));
         }
