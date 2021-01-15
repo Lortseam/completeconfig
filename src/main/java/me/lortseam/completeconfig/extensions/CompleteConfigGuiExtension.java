@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.gui.cloth.extensions;
+package me.lortseam.completeconfig.extensions;
 
 import me.lortseam.completeconfig.gui.cloth.GuiRegistry;
 

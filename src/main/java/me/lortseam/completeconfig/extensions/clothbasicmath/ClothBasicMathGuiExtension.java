@@ -1,16 +1,16 @@
-package me.lortseam.completeconfig.gui.cloth.extensions.clothbasicmath;
+package me.lortseam.completeconfig.extensions.clothbasicmath;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.gui.cloth.GuiRegistry;
-import me.lortseam.completeconfig.gui.cloth.extensions.CompleteConfigGuiExtension;
+import me.lortseam.completeconfig.extensions.CompleteConfigGuiExtension;
 import me.shedaniel.math.Color;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ClothBasicMathGuiExtension implements CompleteConfigGuiExtension {
+final class ClothBasicMathGuiExtension implements CompleteConfigGuiExtension {
 
-    public static final ClothBasicMathGuiExtension INSTANCE = new ClothBasicMathGuiExtension();
+    static final ClothBasicMathGuiExtension INSTANCE = new ClothBasicMathGuiExtension();
 
     @Override
     public void registerProviders(GuiRegistry registry) {
