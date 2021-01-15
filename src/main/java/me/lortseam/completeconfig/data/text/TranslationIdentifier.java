@@ -6,6 +6,9 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -28,7 +31,7 @@ public final class TranslationIdentifier {
         return builder.toString();
     }
 
-    public TranslationIdentifier getModTranslation() {
+    public TranslationIdentifier root() {
         return new TranslationIdentifier(modKey, new String[0]);
     }
 
@@ -46,6 +49,27 @@ public final class TranslationIdentifier {
 
     public TranslationIdentifier appendKey(String key) {
         return new TranslationIdentifier(modKey, key.split(Pattern.quote(".")));
+    }
+
+    public Optional<TranslationIdentifier[]> appendTooltip() {
+        TranslationIdentifier baseTranslation = append("tooltip");
+        if (baseTranslation.exists()) {
+            return Optional.of(new TranslationIdentifier[] {baseTranslation});
+        } else {
+            List<TranslationIdentifier> multiLineTranslation = new ArrayList<>();
+            for(int i = 0;; i++) {
+                TranslationIdentifier key = baseTranslation.append(Integer.toString(i));
+                if(key.exists()) {
+                    multiLineTranslation.add(key);
+                } else {
+                    if (!multiLineTranslation.isEmpty()) {
+                        return Optional.of(multiLineTranslation.toArray(new TranslationIdentifier[0]));
+                    }
+                    break;
+                }
+            }
+        }
+        return Optional.empty();
     }
 
 }

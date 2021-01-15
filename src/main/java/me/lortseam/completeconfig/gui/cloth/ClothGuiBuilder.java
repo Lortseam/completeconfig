@@ -38,12 +38,13 @@ public class ClothGuiBuilder implements GuiBuilder {
         ConfigBuilder builder = supplier.get()
                 .setParentScreen(parentScreen)
                 .setSavingRunnable(savingRunnable);
-        TranslationIdentifier customTranslation = config.getTranslation().append("title");
-        builder.setTitle(customTranslation.exists() ? customTranslation.translate() : new TranslatableText("completeconfig.gui.defaultTitle", FabricLoader.getInstance().getModContainer(config.getModID()).get().getMetadata().getName()));
+        TranslationIdentifier customTitle = config.getTranslation().append("title");
+        builder.setTitle(customTitle.exists() ? customTitle.translate() : new TranslatableText("completeconfig.gui.defaultTitle", FabricLoader.getInstance().getModContainer(config.getModID()).get().getMetadata().getName()));
         for(Collection collection : config.values()) {
-            ConfigCategory configCategory = builder.getOrCreateCategory(collection.getText());
+            ConfigCategory category = builder.getOrCreateCategory(collection.getText());
+            //TODO: Add tooltip (description)
             for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {
-                configCategory.addEntry(entry);
+                category.addEntry(entry);
             }
         }
         return builder.build();

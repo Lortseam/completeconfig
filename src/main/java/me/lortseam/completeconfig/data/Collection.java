@@ -3,8 +3,8 @@ package me.lortseam.completeconfig.data;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.data.part.FlatDataPart;
+import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
 
@@ -12,27 +12,40 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Collection implements FlatDataPart<ConfigMap> {
 
     private final TranslationIdentifier translation;
+    private final TranslationIdentifier[] tooltipTranslation;
     @Getter
     private final EntryMap entries;
     @Getter
     private final CollectionMap collections;
 
-    Collection(TranslationIdentifier translation) {
-        this.translation = translation;
+    Collection(TranslationIdentifier parentTranslation, ConfigGroup group) {
+        translation = parentTranslation.append(group.getConfigGroupID());
         entries = new EntryMap(translation);
         collections = new CollectionMap(translation);
+        String[] customTooltipKeys = group.getCustomTooltipKeys();
+        if (customTooltipKeys != null && customTooltipKeys.length > 0) {
+            tooltipTranslation = Arrays.stream(customTooltipKeys).map(key -> translation.root().append(key)).toArray(TranslationIdentifier[]::new);
+        } else {
+            tooltipTranslation = translation.appendTooltip().orElse(null);
+        }
+        resolve(group);
     }
 
     public Text getText() {
         return translation.translate();
     }
 
-    void resolve(ConfigEntryContainer container) {
+    public Optional<TranslationIdentifier[]> getTooltip() {
+        return Optional.ofNullable(tooltipTranslation);
+    }
+
+    private void resolve(ConfigEntryContainer container) {
         entries.resolve(container);
         List<ConfigEntryContainer> containers = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {

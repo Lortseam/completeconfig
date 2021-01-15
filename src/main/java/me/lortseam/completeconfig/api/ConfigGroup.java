@@ -18,4 +18,8 @@ public interface ConfigGroup extends ConfigEntryContainer {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, getClass().getSimpleName());
     }
 
+    default String[] getCustomTooltipKeys() {
+        return null;
+    }
+
 }
