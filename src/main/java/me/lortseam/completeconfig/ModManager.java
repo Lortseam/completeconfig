@@ -16,7 +16,7 @@ public final class ModManager {
     private static final Map<String, ModManager> controllers = new HashMap<>();
 
     /**
-     * Gets the mod controller of a loaded mod.
+     * Gets the mod manager of a loaded mod.
      *
      * @param id the ID of the mod
      * @return the corresponding mod controller
