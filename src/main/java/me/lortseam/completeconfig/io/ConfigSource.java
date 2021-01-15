@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +22,9 @@ import java.util.Set;
 public final class ConfigSource {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final TypeSerializerCollection GLOBAL_TYPE_SERIALIZERS = TypeSerializerCollection.builder()
+            .registerExact(TextColorSerializer.INSTANCE)
+            .build();
     private static final Set<ConfigSource> sources = new HashSet<>();
 
     @Getter
@@ -39,7 +43,10 @@ public final class ConfigSource {
         Path filePath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), subPath);
         loader = HoconConfigurationLoader.builder()
                 .path(filePath)
-                .defaultOptions(options -> options.serializers(builder -> builder.registerAll(mod.getTypeSerializers())))
+                .defaultOptions(options -> options.serializers(builder -> {
+                    builder.registerAll(GLOBAL_TYPE_SERIALIZERS);
+                    builder.registerAll(mod.getTypeSerializers());
+                }))
                 .build();
     }
 

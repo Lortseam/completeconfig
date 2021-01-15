@@ -5,9 +5,6 @@ import me.lortseam.completeconfig.util.TypeUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.text.TextColor;
-import org.spongepowered.configurate.serialize.CoercionFailedException;
-import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.util.HashMap;
@@ -17,16 +14,6 @@ import java.util.Objects;
 public final class ModController {
 
     private static final Map<String, ModController> controllers = new HashMap<>();
-    private static final TypeSerializerCollection GLOBAL_TYPE_SERIALIZERS = TypeSerializerCollection.builder()
-            .registerExact(TypeSerializer.of(TextColor.class, (item, typeSupported) -> {
-                return item.getRgb();
-            }, value -> {
-                if (value instanceof Integer) {
-                    return TextColor.fromRgb((int) value);
-                }
-                throw new CoercionFailedException(value, "TextColor");
-            }))
-            .build();
 
     /**
      * Gets the mod controller of a loaded mod.
@@ -53,7 +40,6 @@ public final class ModController {
 
     private ModController(ModMetadata metadata) {
         this.metadata = metadata;
-        registerTypeSerializers(GLOBAL_TYPE_SERIALIZERS);
     }
 
     public String getID() {
