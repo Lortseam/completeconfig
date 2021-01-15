@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.entry.Transformation;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
-import me.lortseam.completeconfig.extensions.CompleteConfigGuiExtension;
 import me.shedaniel.math.Color;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
@@ -32,7 +31,7 @@ public final class ClothBasicMathExtension implements CompleteConfigExtension {
     }
 
     @Override
-    public CompleteConfigGuiExtension gui() {
+    public Gui gui() {
         return ClothBasicMathGuiExtension.INSTANCE;
     }
 

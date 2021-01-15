@@ -3,12 +3,12 @@ package me.lortseam.completeconfig.extensions.clothbasicmath;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
+import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.gui.cloth.GuiRegistry;
-import me.lortseam.completeconfig.extensions.CompleteConfigGuiExtension;
 import me.shedaniel.math.Color;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class ClothBasicMathGuiExtension implements CompleteConfigGuiExtension {
+final class ClothBasicMathGuiExtension implements CompleteConfigExtension.Gui {
 
     static final ClothBasicMathGuiExtension INSTANCE = new ClothBasicMathGuiExtension();
 

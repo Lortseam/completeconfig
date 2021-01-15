@@ -1,6 +1,7 @@
 package me.lortseam.completeconfig.extensions;
 
 import me.lortseam.completeconfig.data.entry.Transformation;
+import me.lortseam.completeconfig.gui.cloth.GuiRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
@@ -18,8 +19,14 @@ public interface CompleteConfigExtension {
     }
 
     @Environment(EnvType.CLIENT)
-    default CompleteConfigGuiExtension gui() {
+    default Gui gui() {
         return null;
+    }
+
+    interface Gui {
+
+        void registerProviders(GuiRegistry registry);
+
     }
 
 }
