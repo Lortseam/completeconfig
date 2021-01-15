@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public final class ModController {
+public final class ModManager {
 
-    private static final Map<String, ModController> controllers = new HashMap<>();
+    private static final Map<String, ModManager> controllers = new HashMap<>();
 
     /**
      * Gets the mod controller of a loaded mod.
@@ -21,12 +21,12 @@ public final class ModController {
      * @param id the ID of the mod
      * @return the corresponding mod controller
      */
-    public static ModController of(String id) {
+    public static ModManager of(String id) {
         ModMetadata metadata = FabricLoader.getInstance().getModContainer(id).map(ModContainer::getMetadata).orElseThrow(() -> {
             return new IllegalArgumentException("Mod " + id + " is not loaded");
         });
         if (!controllers.containsKey(metadata.getId())) {
-            ModController controller = new ModController(metadata);
+            ModManager controller = new ModManager(metadata);
             controllers.put(metadata.getId(), controller);
             return controller;
         }
@@ -38,7 +38,7 @@ public final class ModController {
     @Getter
     private TypeSerializerCollection typeSerializers;
 
-    private ModController(ModMetadata metadata) {
+    private ModManager(ModMetadata metadata) {
         this.metadata = metadata;
     }
 

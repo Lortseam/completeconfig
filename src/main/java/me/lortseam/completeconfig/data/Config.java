@@ -1,7 +1,7 @@
 package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.ConfigHandler;
-import me.lortseam.completeconfig.ModController;
+import me.lortseam.completeconfig.ModManager;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.gui.GuiBuilder;
@@ -10,7 +10,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,7 +113,7 @@ public class Config extends CollectionMap {
                 LOGGER.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
                 return null;
             }
-            return new ConfigHandler(new Config(new ConfigSource(ModController.of(modID), branch), topLevelGroups), guiBuilder);
+            return new ConfigHandler(new Config(new ConfigSource(ModManager.of(modID), branch), topLevelGroups), guiBuilder);
         }
 
     }

@@ -1,7 +1,7 @@
 package me.lortseam.completeconfig.gui.cloth;
 
 import lombok.Getter;
-import me.lortseam.completeconfig.ModController;
+import me.lortseam.completeconfig.ModManager;
 import me.lortseam.completeconfig.data.Collection;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
@@ -42,7 +42,7 @@ public class ClothGuiBuilder implements GuiBuilder {
                 .setParentScreen(parentScreen)
                 .setSavingRunnable(savingRunnable);
         TranslationIdentifier customTranslation = config.getTranslation().append("title");
-        builder.setTitle(customTranslation.exists() ? customTranslation.translate() : new TranslatableText("completeconfig.gui.defaultTitle", ModController.of(config.getModID()).getName()));
+        builder.setTitle(customTranslation.exists() ? customTranslation.translate() : new TranslatableText("completeconfig.gui.defaultTitle", ModManager.of(config.getModID()).getName()));
         for(Collection collection : config.values()) {
             ConfigCategory configCategory = builder.getOrCreateCategory(collection.getText());
             for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {

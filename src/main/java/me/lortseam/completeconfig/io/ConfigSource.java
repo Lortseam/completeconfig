@@ -1,7 +1,7 @@
 package me.lortseam.completeconfig.io;
 
 import lombok.Getter;
-import me.lortseam.completeconfig.ModController;
+import me.lortseam.completeconfig.ModManager;
 import me.lortseam.completeconfig.data.Config;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
@@ -32,7 +32,7 @@ public final class ConfigSource {
     private final String[] branch;
     private final HoconConfigurationLoader loader;
 
-    public ConfigSource(ModController mod, String[] branch) {
+    public ConfigSource(ModManager mod, String[] branch) {
         this.modID = mod.getID();
         this.branch = branch;
         if (!sources.add(this)) {
