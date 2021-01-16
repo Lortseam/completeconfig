@@ -22,7 +22,7 @@ Then add CompleteConfig as dependency:
 dependencies {
     [...]
 
-    // The following lines add CompleteConfig and include the required dependencies in your mod's jar, so users don't have to download them
+    // The following lines add CompleteConfig and include the required dependencies in your mod's jar
     // Replace Tag with the current version you can find above
     modImplementation ("com.gitlab.Lortseam:completeconfig:Tag")
     include("com.gitlab.Lortseam:completeconfig:Tag")
