@@ -61,6 +61,7 @@ public final class ConfigSource {
             if (!root.virtual()) {
                 config.apply(root);
             }
+            save(config);
         } catch (ConfigurateException e) {
             LOGGER.error("[CompleteConfig] Failed to load config from file!", e);
         }
