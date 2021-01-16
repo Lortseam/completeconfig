@@ -42,7 +42,6 @@ public class ClothGuiBuilder implements GuiBuilder {
         builder.setTitle(customTitle.exists() ? customTitle.translate() : new TranslatableText("completeconfig.gui.defaultTitle", FabricLoader.getInstance().getModContainer(config.getModID()).get().getMetadata().getName()));
         for(Collection collection : config.values()) {
             ConfigCategory category = builder.getOrCreateCategory(collection.getText());
-            //TODO: Add tooltip (description)
             for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {
                 category.addEntry(entry);
             }

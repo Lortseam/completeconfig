@@ -163,7 +163,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         if (customTooltipTranslation != null) {
             translation = customTooltipTranslation;
         } else {
-            Optional<TranslationIdentifier[]> defaultTooltip = TranslationIdentifier.defaultTooltip(getTranslation());
+            Optional<TranslationIdentifier[]> defaultTooltip = getTranslation().appendTooltip();
             if (defaultTooltip.isPresent()) {
                 translation = defaultTooltip.get();
             } else {
@@ -188,12 +188,12 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             if (!StringUtils.isBlank(customTranslationKey)) {
                 customTranslation = parentTranslation.root().appendKey(customTranslationKey);
             }
-            String[] customTooltipKeys = annotation.tooltipTranslationKeys();
-            if (customTooltipKeys.length > 0) {
-                if (Arrays.stream(customTooltipKeys).anyMatch(StringUtils::isBlank)) {
-                    throw new IllegalAnnotationParameterException("Entry tooltip key(s) must not be blank");
+            String[] customTooltipTranslationKeys = annotation.tooltipTranslationKeys();
+            if (customTooltipTranslationKeys.length > 0) {
+                if (Arrays.stream(customTooltipTranslationKeys).anyMatch(StringUtils::isBlank)) {
+                    throw new IllegalAnnotationParameterException("Entry tooltip translation key(s) must not be blank");
                 }
-                customTooltipTranslation = Arrays.stream(customTooltipKeys).map(key -> parentTranslation.root().appendKey(key)).toArray(TranslationIdentifier[]::new);
+                customTooltipTranslation = Arrays.stream(customTooltipTranslationKeys).map(key -> parentTranslation.root().appendKey(key)).toArray(TranslationIdentifier[]::new);
             }
             forceUpdate = annotation.forceUpdate();
             requiresRestart = annotation.requiresRestart();

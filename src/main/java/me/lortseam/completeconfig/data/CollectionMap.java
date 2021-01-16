@@ -14,7 +14,7 @@ public class CollectionMap extends ConfigMap<Collection> {
     }
 
     void resolve(ConfigGroup group) {
-        String groupID = group.getConfigGroupID();
+        String groupID = group.getGroupID();
         Collection collection = new Collection(translation, group);
         if (collection.getEntries().isEmpty() && collection.getCollections().isEmpty()) {
             LOGGER.warn("[CompleteConfig] Group " + groupID + " is empty!");

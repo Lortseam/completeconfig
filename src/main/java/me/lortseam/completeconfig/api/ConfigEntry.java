@@ -211,7 +211,7 @@ public @interface ConfigEntry {
          *
          * @return whether the color has an alpha value
          */
-        boolean alphaMode() default false;
+        boolean alphaMode();
 
     }
 

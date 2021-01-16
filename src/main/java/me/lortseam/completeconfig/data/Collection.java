@@ -12,37 +12,25 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Collection implements FlatDataPart<ConfigMap> {
 
     private final TranslationIdentifier translation;
-    private final TranslationIdentifier[] tooltipTranslation;
     @Getter
     private final EntryMap entries;
     @Getter
     private final CollectionMap collections;
 
     Collection(TranslationIdentifier parentTranslation, ConfigGroup group) {
-        translation = parentTranslation.append(group.getConfigGroupID());
+        translation = parentTranslation.append(group.getGroupID());
         entries = new EntryMap(translation);
         collections = new CollectionMap(translation);
-        String[] customTooltipKeys = group.getCustomTooltipKeys();
-        if (customTooltipKeys != null && customTooltipKeys.length > 0) {
-            tooltipTranslation = Arrays.stream(customTooltipKeys).map(key -> translation.root().append(key)).toArray(TranslationIdentifier[]::new);
-        } else {
-            tooltipTranslation = translation.appendTooltip().orElse(null);
-        }
         resolve(group);
     }
 
     public Text getText() {
         return translation.translate();
-    }
-
-    public Optional<TranslationIdentifier[]> getTooltip() {
-        return Optional.ofNullable(tooltipTranslation);
     }
 
     private void resolve(ConfigEntryContainer container) {
@@ -74,7 +62,7 @@ public class Collection implements FlatDataPart<ConfigMap> {
                 }
             }).collect(Collectors.toList()));
         }
-        containers.addAll(Arrays.asList(container.getTransitiveConfigEntryContainers()));
+        containers.addAll(Arrays.asList(container.getTransitiveContainers()));
         for (ConfigEntryContainer c : containers) {
             if (c instanceof ConfigGroup) {
                 collections.resolve((ConfigGroup) c);

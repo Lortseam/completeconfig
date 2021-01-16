@@ -14,12 +14,8 @@ public interface ConfigGroup extends ConfigEntryContainer {
      *
      * @return the ID of this group
      */
-    default String getConfigGroupID() {
+    default String getGroupID() {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, getClass().getSimpleName());
-    }
-
-    default String[] getCustomTooltipKeys() {
-        return null;
     }
 
 }
