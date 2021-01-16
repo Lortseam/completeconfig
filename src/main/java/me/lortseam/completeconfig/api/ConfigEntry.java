@@ -1,7 +1,5 @@
 package me.lortseam.completeconfig.api;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.EnumEntry;
 
 import java.lang.annotation.ElementType;
@@ -68,114 +66,109 @@ public @interface ConfigEntry {
      */
     boolean requiresRestart() default false;
 
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    class Bounded {
+    /**
+     * Applies bounds to an entry of type Integer.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface BoundedInteger {
 
         /**
-         * Applies bounds to an entry of type Integer.
+         * The minimum bound.
+         *
+         * @return the minimum bound
          */
-        @Target(ElementType.FIELD)
-        @Retention(RetentionPolicy.RUNTIME)
-        public @interface Integer {
-
-            /**
-             * The minimum bound.
-             *
-             * @return the minimum bound
-             */
-            int min() default java.lang.Integer.MIN_VALUE;
-
-            /**
-             * The maximum bound.
-             *
-             * @return the maximum bound
-             */
-            int max() default java.lang.Integer.MAX_VALUE;
-
-            /**
-             * Specifies whether the entry should be rendered as slider.
-             *
-             * @return whether the entry should be rendered as slider
-             */
-            boolean slider() default true;
-
-        }
+        int min() default java.lang.Integer.MIN_VALUE;
 
         /**
-         * Applies bounds to an entry of type Long.
+         * The maximum bound.
+         *
+         * @return the maximum bound
          */
-        @Target(ElementType.FIELD)
-        @Retention(RetentionPolicy.RUNTIME)
-        public @interface Long {
-
-            /**
-             * The minimum bound.
-             *
-             * @return the minimum bound
-             */
-            long min() default java.lang.Long.MIN_VALUE;
-
-            /**
-             * The maximum bound.
-             *
-             * @return the maximum bound
-             */
-            long max() default java.lang.Long.MAX_VALUE;
-
-            /**
-             * Specifies whether the entry should be rendered as slider.
-             *
-             * @return whether the entry should be rendered as slider
-             */
-            boolean slider() default true;
-
-        }
+        int max() default java.lang.Integer.MAX_VALUE;
 
         /**
-         * Applies bounds to an entry of type Float.
+         * Specifies whether the entry should be rendered as slider.
+         *
+         * @return whether the entry should be rendered as slider
          */
-        @Target(ElementType.FIELD)
-        @Retention(RetentionPolicy.RUNTIME)
-        public @interface Float {
+        boolean slider() default true;
 
-            /**
-             * The minimum bound.
-             *
-             * @return the minimum bound
-             */
-            float min() default -java.lang.Float.MAX_VALUE;
+    }
 
-            /**
-             * The maximum bound.
-             *
-             * @return the maximum bound
-             */
-            float max() default java.lang.Float.MAX_VALUE;
-
-        }
+    /**
+     * Applies bounds to an entry of type Long.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface BoundedLong {
 
         /**
-         * Applies bounds to an entry of type Double.
+         * The minimum bound.
+         *
+         * @return the minimum bound
          */
-        @Target(ElementType.FIELD)
-        @Retention(RetentionPolicy.RUNTIME)
-        public @interface Double {
+        long min() default java.lang.Long.MIN_VALUE;
 
-            /**
-             * The minimum bound.
-             *
-             * @return the minimum bound
-             */
-            double min() default -java.lang.Double.MAX_VALUE;
+        /**
+         * The maximum bound.
+         *
+         * @return the maximum bound
+         */
+        long max() default java.lang.Long.MAX_VALUE;
 
-            /**
-             * The maximum bound.
-             *
-             * @return the maximum bound
-             */
-            double max() default java.lang.Double.MAX_VALUE;
+        /**
+         * Specifies whether the entry should be rendered as slider.
+         *
+         * @return whether the entry should be rendered as slider
+         */
+        boolean slider() default true;
 
-        }
+    }
+
+    /**
+     * Applies bounds to an entry of type Float.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface BoundedFloat {
+
+        /**
+         * The minimum bound.
+         *
+         * @return the minimum bound
+         */
+        float min() default -java.lang.Float.MAX_VALUE;
+
+        /**
+         * The maximum bound.
+         *
+         * @return the maximum bound
+         */
+        float max() default java.lang.Float.MAX_VALUE;
+
+    }
+
+    /**
+     * Applies bounds to an entry of type Double.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface BoundedDouble {
+
+        /**
+         * The minimum bound.
+         *
+         * @return the minimum bound
+         */
+        double min() default -java.lang.Double.MAX_VALUE;
+
+        /**
+         * The maximum bound.
+         *
+         * @return the maximum bound
+         */
+        double max() default java.lang.Double.MAX_VALUE;
 
     }
 

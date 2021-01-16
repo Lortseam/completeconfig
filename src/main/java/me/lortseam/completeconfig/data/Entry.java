@@ -29,20 +29,20 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final List<Transformation> transformations = Lists.newArrayList(
-            Transformation.ofAnnotation(ConfigEntry.Bounded.Integer.class, origin -> {
-                ConfigEntry.Bounded.Integer bounds = origin.getAnnotation();
+            Transformation.ofAnnotation(ConfigEntry.BoundedInteger.class, origin -> {
+                ConfigEntry.BoundedInteger bounds = origin.getAnnotation();
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max(), bounds.slider());
             }, int.class, Integer.class),
-            Transformation.ofAnnotation(ConfigEntry.Bounded.Long.class, origin -> {
-                ConfigEntry.Bounded.Long bounds = origin.getAnnotation();
+            Transformation.ofAnnotation(ConfigEntry.BoundedLong.class, origin -> {
+                ConfigEntry.BoundedLong bounds = origin.getAnnotation();
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max(), bounds.slider());
             }, long.class, Long.class),
-            Transformation.ofAnnotation(ConfigEntry.Bounded.Float.class, origin -> {
-                ConfigEntry.Bounded.Float bounds = origin.getAnnotation();
+            Transformation.ofAnnotation(ConfigEntry.BoundedFloat.class, origin -> {
+                ConfigEntry.BoundedFloat bounds = origin.getAnnotation();
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max());
             }, float.class, Float.class),
-            Transformation.ofAnnotation(ConfigEntry.Bounded.Double.class, origin -> {
-                ConfigEntry.Bounded.Double bounds = origin.getAnnotation();
+            Transformation.ofAnnotation(ConfigEntry.BoundedDouble.class, origin -> {
+                ConfigEntry.BoundedDouble bounds = origin.getAnnotation();
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max());
             }, double.class, Double.class),
             Transformation.of(base -> Enum.class.isAssignableFrom(base.typeClass), EnumEntry::new),
