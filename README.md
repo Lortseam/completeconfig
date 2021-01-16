@@ -22,19 +22,17 @@ Then add CompleteConfig as dependency:
 dependencies {
     [...]
 
-    // This adds CompleteConfig and includes it in your mod's jar, so users don't have to install it
+    // The following lines add CompleteConfig and include the required dependencies in your mod's jar, so users don't have to download them
     // Replace Tag with the current version you can find above
-    modImplementation 'com.gitlab.Lortseam:completeconfig:Tag'
-    include 'com.gitlab.Lortseam:completeconfig:Tag'
+    modImplementation ("com.gitlab.Lortseam:completeconfig:Tag")
+    include("com.gitlab.Lortseam:completeconfig:Tag")
+    // Replace Version with the current version
+    include("org.spongepowered:configurate-hocon:Version")
     
     // This bundles Cloth Config in your mod's jar
     // Only required if you want to display a GUI based on your mod's config and don't provide your own GUI generation
     // Replace Version with the current version
-    include 'me.shedaniel.cloth:config-2:Version'
-
-    // Recommended: Adds Mod Menu to your game, so you can easily open and check your config GUI (see the Mod Menu documentation for more information)
-    // Replace Version with current version
-    modImplementation 'io.github.prospector:modmenu:Version'
+    include("me.shedaniel.cloth:config-2:Version")
 }
 ```
 
