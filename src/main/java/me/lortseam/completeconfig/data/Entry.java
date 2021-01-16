@@ -184,11 +184,11 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             if (!StringUtils.isBlank(id)) {
                 customID = id;
             }
-            String customTranslationKey = annotation.customTranslationKey();
+            String customTranslationKey = annotation.translationKey();
             if (!StringUtils.isBlank(customTranslationKey)) {
                 customTranslation = parentTranslation.root().appendKey(customTranslationKey);
             }
-            String[] customTooltipKeys = annotation.customTooltipKeys();
+            String[] customTooltipKeys = annotation.tooltipTranslationKeys();
             if (customTooltipKeys.length > 0) {
                 if (Arrays.stream(customTooltipKeys).anyMatch(StringUtils::isBlank)) {
                     throw new IllegalAnnotationParameterException("Entry tooltip key(s) must not be blank");

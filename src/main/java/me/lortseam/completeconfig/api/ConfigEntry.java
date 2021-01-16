@@ -41,7 +41,7 @@ public @interface ConfigEntry {
      *
      * @return a custom translation key
      */
-    String customTranslationKey() default "";
+    String translationKey() default "";
 
     /**
      * Specifies one or more custom translation keys for this entry's tooltip. If empty, the default single-line or
@@ -49,7 +49,7 @@ public @interface ConfigEntry {
      *
      * @return an array of custom tooltip translation keys
      */
-    String[] customTooltipKeys() default {};
+    String[] tooltipTranslationKeys() default {};
 
     /**
      * Specifies if the entry's field should get updated while at least one listener exists in the entry's class.
