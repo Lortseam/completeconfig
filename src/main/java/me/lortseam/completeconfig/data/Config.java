@@ -70,7 +70,8 @@ public class Config extends CollectionMap {
         }
 
         /**
-         * Sets the branch.
+         * Sets the branch. Every config of a mod needs a unique branch, therefore setting a branch is only required
+         * when using more than one config.
          *
          * <p>The branch determines the location of the config's save file.
          *
@@ -95,7 +96,7 @@ public class Config extends CollectionMap {
         }
 
         /**
-         * Sets a custom client GUI builder for the config.
+         * Sets a custom client GUI builder.
          *
          * @param guiBuilder a GUI builder
          * @return this builder

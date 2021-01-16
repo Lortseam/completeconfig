@@ -44,18 +44,18 @@ public @interface ConfigEntry {
     String translationKey() default "";
 
     /**
-     * Specifies one or more custom translation keys for this entry's tooltip. If empty, the default single-line or
-     * multi-line keys will be used, depending on which are declared in the language file(s).
+     * Specifies one or more custom translation keys for this entry's tooltip, declared line by line. If empty, the
+     * default single-line or multi-line keys will be used, depending on which are defined in the language file(s).
      *
      * @return an array of custom tooltip translation keys
      */
     String[] tooltipTranslationKeys() default {};
 
     /**
-     * Specifies if the entry's field should get updated while at least one listener exists in the entry's class.
+     * Specifies if the entry's field should get updated while at least one listener exists in the field's class.
      *
-     * <p>By default the entry's field will not get modified when the config is saved, but all listeners will be called
-     * with the updated value. Set this to true to always update the field when saving.
+     * <p>In that case, by default, the entry's field will not get modified when the config is saved, but all listeners
+     * will be called. Set this to true to always update the field when saving.
      *
      * @return true if the field should always get updated, else false
      */
@@ -191,7 +191,7 @@ public @interface ConfigEntry {
         /**
          * Specifies how the entry should be rendered.
          *
-         * @return the desired {@link EnumEntry.DisplayType}
+         * @return the desired {@link me.lortseam.completeconfig.data.EnumEntry.DisplayType}
          */
         EnumEntry.DisplayType displayType() default EnumEntry.DisplayType.BUTTON;
 
@@ -199,6 +199,9 @@ public @interface ConfigEntry {
 
     /**
      * Specifies that the annotated field is a color entry.
+     *
+     * <p>This annotation is optional for known color types, such as {@link net.minecraft.text.TextColor}, but is
+     * required for unknown types.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
@@ -217,7 +220,7 @@ public @interface ConfigEntry {
 
     /**
      * Can be applied to a field inside a POJO {@link ConfigEntryContainer} class to declare that that field should not
-     * be considered to be config entry.
+     * be considered to be a config entry.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)

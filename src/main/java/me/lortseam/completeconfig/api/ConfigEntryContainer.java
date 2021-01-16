@@ -38,7 +38,7 @@ public interface ConfigEntryContainer {
     }
 
     /**
-     * Used to register other containers. They will then be located at the same level as this container.
+     * Used to register other containers. They will then be registered at the same level as this container.
      *
      * @return an array of other containers
      * @see Transitive
@@ -50,6 +50,9 @@ public interface ConfigEntryContainer {
     /**
      * Applied to declare that a field of type {@link ConfigEntryContainer} is transitive. The container will then be
      * registered at the same level as this container.
+     *
+     * <p>This annotation is only required inside non-POJO classes. POJO classes will always register every field of
+     * type {@link ConfigEntryContainer}.
      *
      * @see #getTransitiveContainers()
      */

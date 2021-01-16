@@ -3,14 +3,12 @@ package me.lortseam.completeconfig.api;
 import com.google.common.base.CaseFormat;
 
 /**
- * A group of config entries. Every group has a unique identifier inside its parent node.
+ * A group of config entries. Inside its parent node, every group is uniquely defined by an identifier.
  */
 public interface ConfigGroup extends ConfigEntryContainer {
 
     /**
      * Used to identify this group. Defaults to the class name.
-     *
-     * <p>Override this method to set a custom ID.
      *
      * @return the ID of this group
      */
