@@ -22,12 +22,10 @@ Then add CompleteConfig as dependency:
 dependencies {
     [...]
 
-    // The following lines add CompleteConfig and include the required dependencies in your mod's jar
+    // The following lines add CompleteConfig and includes it in your mod's jar
     // Replace Tag with the current version you can find above
     modImplementation ("com.gitlab.Lortseam:completeconfig:Tag")
     include("com.gitlab.Lortseam:completeconfig:Tag")
-    // Replace Version with the current version
-    include("org.spongepowered:configurate-hocon:Version")
     
     // This bundles Cloth Config in your mod's jar
     // Only required if you want to display a GUI based on your mod's config and don't provide your own GUI generation
