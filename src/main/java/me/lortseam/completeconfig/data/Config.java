@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.data;
 
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.ConfigHandler;
 import me.lortseam.completeconfig.api.ConfigGroup;
@@ -22,8 +23,8 @@ public class Config extends CollectionMap {
      *
      * @param modID the ID of the mod creating the config
      */
-    public static Builder builder(String modID) {
-        if (!FabricLoader.getInstance().isModLoaded(Objects.requireNonNull(modID))) {
+    public static Builder builder(@NonNull String modID) {
+        if (!FabricLoader.getInstance().isModLoaded(modID)) {
             throw new IllegalArgumentException("Mod " + modID + " is not loaded");
         }
         return new Builder(modID);
@@ -76,8 +77,8 @@ public class Config extends CollectionMap {
          * @param branch the branch
          * @return this builder
          */
-        public Builder setBranch(String[] branch) {
-            this.branch = Objects.requireNonNull(branch);
+        public Builder setBranch(@NonNull String[] branch) {
+            this.branch = branch;
             return this;
         }
 
@@ -100,8 +101,8 @@ public class Config extends CollectionMap {
          * @return this builder
          */
         @Environment(EnvType.CLIENT)
-        public Builder setGuiBuilder(GuiBuilder guiBuilder) {
-            this.guiBuilder = Objects.requireNonNull(guiBuilder);
+        public Builder setGuiBuilder(@NonNull GuiBuilder guiBuilder) {
+            this.guiBuilder = guiBuilder;
             return this;
         }
 
