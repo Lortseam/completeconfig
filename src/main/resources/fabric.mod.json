@@ -24,5 +24,9 @@
     "cloth-config2": "*",
     "confabricate": "*",
     "cloth-basic-math": "*"
+  },
+
+  "custom": {
+    "modmenu:api": true
   }
 }
