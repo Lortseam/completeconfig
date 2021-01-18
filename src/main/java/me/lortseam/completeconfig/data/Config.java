@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.data;
 
+import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.ConfigHandler;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
@@ -8,8 +9,6 @@ import me.lortseam.completeconfig.io.ConfigSource;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,9 +55,8 @@ public class Config extends CollectionMap {
         source.save(this);
     }
 
+    @Log4j2
     public final static class Builder {
-
-        private static final Logger LOGGER = LogManager.getLogger();
 
         private final String modID;
         private String[] branch = new String[0];
@@ -114,7 +112,7 @@ public class Config extends CollectionMap {
          */
         public ConfigHandler build() {
             if (topLevelGroups.isEmpty()) {
-                LOGGER.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
+                logger.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
                 return null;
             }
             return new ConfigHandler(new Config(new ConfigSource(modID, branch), topLevelGroups), guiBuilder);

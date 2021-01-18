@@ -2,6 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
@@ -14,8 +15,6 @@ import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -25,9 +24,9 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
+@Log4j2
 public class Entry<T> extends EntryBase<T> implements DataPart {
 
-    private static final Logger LOGGER = LogManager.getLogger();
     private static final List<Transformation> transformations = Lists.newArrayList(
             Transformation.ofAnnotation(ConfigEntry.BoundedInteger.class, origin -> {
                 ConfigEntry.BoundedInteger bounds = origin.getAnnotation();
@@ -212,7 +211,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             if(value == null) return;
             setValue(value);
         } catch (SerializationException e) {
-            LOGGER.error("[CompleteConfig] Failed to apply value to entry!", e);
+            logger.error("[CompleteConfig] Failed to apply value to entry!", e);
         }
     }
 
@@ -224,7 +223,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
                 node.comment(comment);
             }
         } catch (SerializationException e) {
-            LOGGER.error("[CompleteConfig] Failed to fetch value from entry!", e);
+            logger.error("[CompleteConfig] Failed to fetch value from entry!", e);
         }
     }
 

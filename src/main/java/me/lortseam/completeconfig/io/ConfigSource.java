@@ -2,13 +2,12 @@ package me.lortseam.completeconfig.io;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
@@ -21,10 +20,10 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Log4j2
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class ConfigSource {
 
-    private static final Logger LOGGER = LogManager.getLogger();
     private static final TypeSerializerCollection GLOBAL_TYPE_SERIALIZERS = TypeSerializerCollection.builder()
             .registerExact(TextColorSerializer.INSTANCE)
             .build();
@@ -63,7 +62,7 @@ public final class ConfigSource {
             }
             save(config);
         } catch (ConfigurateException e) {
-            LOGGER.error("[CompleteConfig] Failed to load config from file!", e);
+            logger.error("[CompleteConfig] Failed to load config from file!", e);
         }
     }
 
@@ -73,7 +72,7 @@ public final class ConfigSource {
         try {
             loader.save(root);
         } catch (ConfigurateException e) {
-            LOGGER.error("[CompleteConfig] Failed to save config to file!", e);
+            logger.error("[CompleteConfig] Failed to save config to file!", e);
         }
     }
 

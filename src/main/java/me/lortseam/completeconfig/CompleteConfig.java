@@ -1,11 +1,10 @@
 package me.lortseam.completeconfig;
 
+import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.extensions.clothbasicmath.ClothBasicMathExtension;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -14,9 +13,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+@Log4j2
 public final class CompleteConfig {
 
-    private static final Logger LOGGER = LogManager.getLogger();
     private static final Map<String, CompleteConfigExtension> extensions = new HashMap<>();
 
     static {
@@ -35,7 +34,7 @@ public final class CompleteConfig {
             }
             extensions.put(modID, constructor.newInstance());
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            LOGGER.error("[CompleteConfig] Failed to instantiate extension " + modID, e);
+            logger.error("[CompleteConfig] Failed to instantiate extension " + modID, e);
         }
     }
 
