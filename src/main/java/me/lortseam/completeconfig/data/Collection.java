@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.data;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
-import me.lortseam.completeconfig.data.part.FlatDataPart;
+import me.lortseam.completeconfig.data.structure.FlatDataPart;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
@@ -30,7 +30,7 @@ public class Collection implements FlatDataPart<ConfigMap> {
     }
 
     public Text getText() {
-        return translation.translate();
+        return translation.toText();
     }
 
     private void resolve(ConfigEntryContainer container) {

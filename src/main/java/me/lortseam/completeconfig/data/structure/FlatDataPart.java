@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.data.part;
+package me.lortseam.completeconfig.data.structure;
 
 import org.spongepowered.configurate.CommentedConfigurationNode;
 

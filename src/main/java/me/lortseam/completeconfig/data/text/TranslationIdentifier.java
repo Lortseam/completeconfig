@@ -3,6 +3,7 @@ package me.lortseam.completeconfig.data.text;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -39,7 +40,7 @@ public final class TranslationIdentifier {
         return I18n.hasTranslation(getKey());
     }
 
-    public TranslatableText translate() {
+    public Text toText() {
         return new TranslatableText(getKey());
     }
 

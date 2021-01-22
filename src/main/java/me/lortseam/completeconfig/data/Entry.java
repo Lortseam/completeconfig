@@ -8,7 +8,7 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.data.entry.EntryOrigin;
 import me.lortseam.completeconfig.data.entry.Transformation;
-import me.lortseam.completeconfig.data.part.DataPart;
+import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
@@ -154,7 +154,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     }
 
     public Text getText() {
-        return getTranslation().translate();
+        return getTranslation().toText();
     }
 
     public Optional<Text[]> getTooltip() {
@@ -169,7 +169,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
                 return Optional.empty();
             }
         }
-        return Optional.of(Arrays.stream(translation).map(TranslationIdentifier::translate).toArray(Text[]::new));
+        return Optional.of(Arrays.stream(translation).map(TranslationIdentifier::toText).toArray(Text[]::new));
     }
 
     public boolean requiresRestart() {

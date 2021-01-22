@@ -3,8 +3,8 @@ package me.lortseam.completeconfig.data;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
-import me.lortseam.completeconfig.data.part.DataPart;
-import me.lortseam.completeconfig.data.part.ParentDataPart;
+import me.lortseam.completeconfig.data.structure.DataPart;
+import me.lortseam.completeconfig.data.structure.ParentDataPart;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 

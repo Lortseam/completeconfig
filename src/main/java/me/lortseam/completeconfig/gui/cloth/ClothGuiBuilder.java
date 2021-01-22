@@ -39,7 +39,7 @@ public class ClothGuiBuilder implements GuiBuilder {
                 .setParentScreen(parentScreen)
                 .setSavingRunnable(savingRunnable);
         TranslationIdentifier customTitle = config.getTranslation().append("title");
-        builder.setTitle(customTitle.exists() ? customTitle.translate() : new TranslatableText("completeconfig.gui.defaultTitle", FabricLoader.getInstance().getModContainer(config.getModID()).get().getMetadata().getName()));
+        builder.setTitle(customTitle.exists() ? customTitle.toText() : new TranslatableText("completeconfig.gui.defaultTitle", FabricLoader.getInstance().getModContainer(config.getModID()).get().getMetadata().getName()));
         for(Collection collection : config.values()) {
             ConfigCategory category = builder.getOrCreateCategory(collection.getText());
             for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {

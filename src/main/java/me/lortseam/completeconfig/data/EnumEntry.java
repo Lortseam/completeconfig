@@ -23,7 +23,7 @@ public class EnumEntry<T extends Enum> extends Entry<T> {
     }
 
     public Function<Enum, Text> getEnumNameProvider() {
-        return enumValue -> getTranslation().append(CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, enumValue.name())).translate();
+        return enumValue -> getTranslation().append(CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, enumValue.name())).toText();
     }
 
     public enum DisplayType {
