@@ -1,5 +1,7 @@
 package me.lortseam.completeconfig.data;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
@@ -49,7 +51,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             Transformation.ofAnnotation(ConfigEntry.Color.class, origin -> new ColorEntry<>(origin, origin.getAnnotation().alphaMode())),
             Transformation.ofType(TextColor.class, origin -> new ColorEntry<>(origin, false))
     );
-    private static final Map<Key, EntryBase> entries = new HashMap<>();
+    private static final BiMap<Key, EntryBase> entries = HashBiMap.create();
 
     static {
         CompleteConfig.getExtensions().stream().map(CompleteConfigExtension::getTransformations).filter(Objects::nonNull).forEach(extensionTransformations -> {
@@ -267,7 +269,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             for (Consumer<Entry<T>> interaction : interactions) {
                 interaction.accept(entry);
             }
-            entries.put(new Key(field, parentObject.getClass()), entry);
+            entries.put(entries.inverse().get(this), entry);
             return entry;
         }
 

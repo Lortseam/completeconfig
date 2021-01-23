@@ -39,12 +39,12 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
-                Entry<?> entry = Entry.Draft.of(field, container.getClass()).build(container, translation);
+                Entry<?> entry = Entry.Draft.of(field, container.getClass()).build(Modifier.isStatic(field.getModifiers()) ? null : container, translation);
                 entry.resolve(field);
                 clazzEntries.add(entry);
             });
             containerEntries.addAll(0, clazzEntries);
-            Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
+            Arrays.stream(clazz.getDeclaredMethods()).filter(method -> (clazz == container.getClass() || !Modifier.isStatic(method.getModifiers())) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
                 ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
                 String fieldName = listener.value();
                 if (fieldName.equals("")) {
@@ -70,7 +70,7 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (!method.isAccessible()) {
                     method.setAccessible(true);
                 }
-                entry.interact(e -> e.addListener(method, container));
+                entry.interact(e -> e.addListener(method, Modifier.isStatic(method.getModifiers()) ? null : container));
             });
         }
         for (Entry<?> entry : containerEntries) {
