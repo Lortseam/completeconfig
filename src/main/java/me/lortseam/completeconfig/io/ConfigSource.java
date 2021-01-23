@@ -2,6 +2,7 @@ package me.lortseam.completeconfig.io;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.Config;
@@ -22,6 +23,7 @@ import java.util.Set;
 
 @Log4j2
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 public final class ConfigSource {
 
     private static final TypeSerializerCollection GLOBAL_TYPE_SERIALIZERS = TypeSerializerCollection.builder()
@@ -30,9 +32,11 @@ public final class ConfigSource {
     private static final Set<ConfigSource> sources = new HashSet<>();
 
     @EqualsAndHashCode.Include
+    @ToString.Include
     @Getter
     private final String modID;
     @EqualsAndHashCode.Include
+    @ToString.Include
     private final String[] branch;
     private final HoconConfigurationLoader loader;
 

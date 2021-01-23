@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
+@Log4j2
 public class Config extends Collection {
 
     /**
@@ -35,6 +36,9 @@ public class Config extends Collection {
         super(new TranslationIdentifier(source.getModID()));
         this.source = source;
         resolve(children);
+        if (isEmpty()) {
+            logger.warn("[CompleteConfig] Config " + source + " is empty!");
+        }
     }
 
     public String getModID() {

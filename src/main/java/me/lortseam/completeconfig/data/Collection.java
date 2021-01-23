@@ -95,4 +95,8 @@ public class Collection implements FlatDataPart<ConfigMap> {
         return Arrays.asList(entries, collections);
     }
 
+    boolean isEmpty() {
+        return entries.isEmpty() && collections.isEmpty();
+    }
+
 }
