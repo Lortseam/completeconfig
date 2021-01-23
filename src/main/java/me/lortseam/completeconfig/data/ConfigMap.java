@@ -16,7 +16,7 @@ public abstract class ConfigMap<T extends DataPart> extends LinkedHashMap<String
 
     protected final TranslationIdentifier translation;
 
-    void putUnique(String id, T value) {
+    public void putUnique(String id, T value) {
         if (StringUtils.isBlank(id)) {
             throw new IllegalArgumentException("ID must not be null or blank");
         }
