@@ -9,10 +9,12 @@ import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.exception.IllegalModifierException;
 import me.lortseam.completeconfig.exception.IllegalReturnTypeException;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class EntryMap extends ConfigMap<Entry> {
 
@@ -44,18 +46,31 @@ public class EntryMap extends ConfigMap<Entry> {
                 clazzEntries.add(entry);
             });
             containerEntries.addAll(0, clazzEntries);
-            Arrays.stream(clazz.getDeclaredMethods()).filter(method -> (clazz == container.getClass() || !Modifier.isStatic(method.getModifiers())) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
-                ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
-                String fieldName = listener.value();
-                if (fieldName.equals("")) {
-                    if (!method.getName().startsWith("set") || method.getName().equals("set")) {
-                        throw new IllegalAnnotationParameterException("Could not detect field name for listener method " + method + ", please provide it inside the annotation");
-                    }
-                    fieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName().replaceFirst("set", ""));
+            Arrays.stream(clazz.getDeclaredMethods()).filter(method -> {
+                if (clazz != container.getClass() && Modifier.isStatic(method.getModifiers())) {
+                    return false;
                 }
-                Class<? extends ConfigEntryContainer> fieldClass = listener.container();
-                if (fieldClass == ConfigEntryContainer.class) {
-                    fieldClass = clazz;
+                return method.isAnnotationPresent(ConfigEntryListener.class) || container.isConfigPOJO() && method.getName().startsWith("set");
+            }).forEach(method -> {
+                String fieldName = null;
+                Class<? extends ConfigEntryContainer> fieldClass = clazz;
+                if (method.isAnnotationPresent(ConfigEntryListener.class)) {
+                    ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
+                    if (!listener.value().equals("")) {
+                        fieldName = listener.value();
+                    }
+                    if (listener.container() != ConfigEntryContainer.class) {
+                        fieldClass = listener.container();
+                    }
+                }
+                if (fieldName == null && fieldClass == clazz && method.getName().startsWith("set")) {
+                    try {
+                        Field field = fieldClass.getDeclaredField(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName().replaceFirst(Pattern.quote("set"), "")));
+                        fieldName = field.getName();
+                    } catch (NoSuchFieldException ignore) {}
+                }
+                if (fieldName == null) {
+                    throw new IllegalAnnotationParameterException("Could not detect field name for listener method " + method);
                 }
                 if (method.getParameterCount() != 1) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong number of parameters");
