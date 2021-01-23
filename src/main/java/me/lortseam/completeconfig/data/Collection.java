@@ -1,6 +1,7 @@
 package me.lortseam.completeconfig.data;
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.FlatDataPart;
@@ -8,12 +9,15 @@ import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
 
-import java.lang.reflect.Modifier;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Log4j2
 public class Collection implements FlatDataPart<ConfigMap> {
 
     protected final TranslationIdentifier translation;
@@ -37,9 +41,6 @@ public class Collection implements FlatDataPart<ConfigMap> {
         List<ConfigEntryContainer> containers = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
             containers.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
-                if (Modifier.isStatic(field.getModifiers())) {
-                    return false;
-                }
                 if (container.isConfigPOJO()) {
                     return ConfigEntryContainer.class.isAssignableFrom(field.getType());
                 }
@@ -60,6 +61,20 @@ public class Collection implements FlatDataPart<ConfigMap> {
                     throw new RuntimeException(e);
                 }
             }).collect(Collectors.toList()));
+            if (container.isConfigPOJO()) {
+                resolve(Arrays.stream(clazz.getDeclaredClasses()).filter(ConfigEntryContainer.class::isAssignableFrom).map(innerClass -> {
+                    try {
+                        Constructor<? extends ConfigEntryContainer> constructor = (Constructor<? extends ConfigEntryContainer>) innerClass.getDeclaredConstructor();
+                        if (!constructor.isAccessible()) {
+                            constructor.setAccessible(true);
+                        }
+                        return constructor.newInstance();
+                    } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                        logger.error("Failed to instantiate inner config entry container class", e);
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(Collectors.toList()));
+            }
         }
         containers.addAll(Arrays.asList(container.getTransitiveContainers()));
         resolve(containers);
