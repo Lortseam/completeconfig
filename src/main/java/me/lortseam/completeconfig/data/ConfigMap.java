@@ -16,14 +16,15 @@ public abstract class ConfigMap<T extends DataPart> extends LinkedHashMap<String
 
     protected final TranslationIdentifier translation;
 
-    public void putUnique(String id, T value) {
+    @Override
+    public T put(String id, T value) {
         if (StringUtils.isBlank(id)) {
             throw new IllegalArgumentException("ID must not be null or blank");
         }
         if (containsKey(id)) {
             throw new IllegalArgumentException("Duplicate ID: " + id);
         }
-        put(id, value);
+        return super.put(id, value);
     }
 
     @Override

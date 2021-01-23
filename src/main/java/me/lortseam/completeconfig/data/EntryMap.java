@@ -74,7 +74,7 @@ public class EntryMap extends ConfigMap<Entry> {
             containerEntries.addAll(0, clazzEntries);
         }
         for (Entry<?> entry : containerEntries) {
-            putUnique(entry.getID(), entry);
+            put(entry.getID(), entry);
         }
     }
 

@@ -19,7 +19,7 @@ public class CollectionMap extends ConfigMap<Collection> {
             logger.warn("[CompleteConfig] Group " + groupID + " is empty!");
             return;
         }
-        putUnique(groupID, collection);
+        put(groupID, collection);
     }
 
 }
