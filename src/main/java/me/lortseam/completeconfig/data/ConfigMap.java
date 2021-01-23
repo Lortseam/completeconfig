@@ -18,10 +18,10 @@ public abstract class ConfigMap<T extends DataPart> extends LinkedHashMap<String
 
     void putUnique(String id, T value) {
         if (StringUtils.isBlank(id)) {
-            throw new IllegalArgumentException("ID of type " + value.getClass().getSimpleName() + " must not be null or blank");
+            throw new IllegalArgumentException("ID must not be null or blank");
         }
         if (containsKey(id)) {
-            throw new UnsupportedOperationException("A value of type " + value.getClass().getSimpleName() + " with ID " + id + " already exists in the corresponding structure");
+            throw new IllegalArgumentException("Duplicate ID: " + id);
         }
         put(id, value);
     }

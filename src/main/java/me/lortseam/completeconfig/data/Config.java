@@ -117,7 +117,6 @@ public class Config extends Collection {
                 logger.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
                 return null;
             }
-
             return new ConfigHandler(new Config(new ConfigSource(modID, branch), children), guiBuilder);
         }
 
