@@ -23,6 +23,27 @@ public class EntryMap extends ConfigMap<Entry> {
     void resolve(ConfigEntryContainer container) {
         List<Entry> containerEntries = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
+            List<Entry> clazzEntries = new ArrayList<>();
+            Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
+                if (clazz != container.getClass() && Modifier.isStatic(field.getModifiers())) {
+                    return false;
+                }
+                if (container.isConfigPOJO()) {
+                    return !ConfigEntryContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntry.Ignore.class);
+                }
+                return field.isAnnotationPresent(ConfigEntry.class);
+            }).forEach(field -> {
+                if (Modifier.isFinal(field.getModifiers())) {
+                    throw new IllegalModifierException("Entry field " + field + " must not be final");
+                }
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
+                Entry<?> entry = Entry.Draft.of(field, container.getClass()).build(container, translation);
+                entry.resolve(field);
+                clazzEntries.add(entry);
+            });
+            containerEntries.addAll(0, clazzEntries);
             Arrays.stream(clazz.getDeclaredMethods()).filter(method -> !Modifier.isStatic(method.getModifiers()) && method.isAnnotationPresent(ConfigEntryListener.class)).forEach(method -> {
                 ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
                 String fieldName = listener.value();
@@ -51,27 +72,6 @@ public class EntryMap extends ConfigMap<Entry> {
                 }
                 entry.interact(e -> e.addListener(method, container));
             });
-            List<Entry> clazzEntries = new ArrayList<>();
-            Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
-                if (clazz != container.getClass() && Modifier.isStatic(field.getModifiers())) {
-                    return false;
-                }
-                if (container.isConfigPOJO()) {
-                    return !ConfigEntryContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntry.Ignore.class);
-                }
-                return field.isAnnotationPresent(ConfigEntry.class);
-            }).forEach(field -> {
-                if (Modifier.isFinal(field.getModifiers())) {
-                    throw new IllegalModifierException("Entry field " + field + " must not be final");
-                }
-                if (!field.isAccessible()) {
-                    field.setAccessible(true);
-                }
-                Entry<?> entry = Entry.Draft.of(field, container.getClass()).build(container, translation);
-                entry.resolve(field);
-                clazzEntries.add(entry);
-            });
-            containerEntries.addAll(0, clazzEntries);
         }
         for (Entry<?> entry : containerEntries) {
             put(entry.getID(), entry);
