@@ -2,6 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigEntry;
@@ -109,8 +110,8 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }
     }
 
-    public void setValue(T value) {
-        update(Objects.requireNonNull(value, "Entry value must never be null: " + field));
+    public void setValue(@NonNull T value) {
+        update(value);
     }
 
     private boolean update() {
