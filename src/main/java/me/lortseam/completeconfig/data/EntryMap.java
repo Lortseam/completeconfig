@@ -53,7 +53,7 @@ public class EntryMap extends ConfigMap<Entry> {
             });
             List<Entry> clazzEntries = new ArrayList<>();
             Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
-                if (Modifier.isStatic(field.getModifiers())) {
+                if (clazz != container.getClass() && Modifier.isStatic(field.getModifiers())) {
                     return false;
                 }
                 if (container.isConfigPOJO()) {
