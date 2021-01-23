@@ -261,9 +261,9 @@ public final class GuiRegistry {
        ), false, TextColor.class);
     }
 
-    <E extends Entry<?>> Optional<GuiProvider<E>> getProvider(E entry) {
+    Optional<GuiProvider<Entry<?>>> getProvider(Entry<?> entry) {
         return registrations.stream().filter(registration -> registration.test(entry)).findFirst().map(registration -> {
-            return (GuiProvider<E>) registration.getProvider();
+            return (GuiProvider<Entry<?>>) registration.getProvider();
         });
     }
 

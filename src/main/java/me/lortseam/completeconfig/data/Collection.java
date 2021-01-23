@@ -16,24 +16,23 @@ import java.util.stream.Collectors;
 
 public class Collection implements FlatDataPart<ConfigMap> {
 
-    private final TranslationIdentifier translation;
+    protected final TranslationIdentifier translation;
     @Getter
     private final EntryMap entries;
     @Getter
     private final CollectionMap collections;
 
-    Collection(TranslationIdentifier parentTranslation, ConfigGroup group) {
-        translation = parentTranslation.append(group.getGroupID());
+    Collection(TranslationIdentifier translation) {
+        this.translation = translation;
         entries = new EntryMap(translation);
         collections = new CollectionMap(translation);
-        resolve(group);
     }
 
     public Text getText() {
         return translation.toText();
     }
 
-    private void resolve(ConfigEntryContainer container) {
+    void resolve(ConfigEntryContainer container) {
         entries.resolve(container);
         List<ConfigEntryContainer> containers = new ArrayList<>();
         for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
@@ -63,6 +62,10 @@ public class Collection implements FlatDataPart<ConfigMap> {
             }).collect(Collectors.toList()));
         }
         containers.addAll(Arrays.asList(container.getTransitiveContainers()));
+        resolve(containers);
+    }
+
+    protected void resolve(java.util.Collection<ConfigEntryContainer> containers) {
         for (ConfigEntryContainer c : containers) {
             if (c instanceof ConfigGroup) {
                 collections.resolve((ConfigGroup) c);

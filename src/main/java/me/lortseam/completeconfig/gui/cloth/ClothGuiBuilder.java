@@ -40,7 +40,13 @@ public class ClothGuiBuilder implements GuiBuilder {
                 .setSavingRunnable(savingRunnable);
         TranslationIdentifier customTitle = config.getTranslation().append("title");
         builder.setTitle(customTitle.exists() ? customTitle.toText() : new TranslatableText("completeconfig.gui.defaultTitle", FabricLoader.getInstance().getModContainer(config.getModID()).get().getMetadata().getName()));
-        for(Collection collection : config.values()) {
+        if (!config.getEntries().isEmpty()) {
+            ConfigCategory category = builder.getOrCreateCategory(config.getText());
+            for (Entry<?> entry : config.getEntries().values()) {
+                category.addEntry(buildEntry(entry));
+            }
+        }
+        for(Collection collection : config.getCollections().values()) {
             ConfigCategory category = builder.getOrCreateCategory(collection.getText());
             for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {
                 category.addEntry(entry);
@@ -49,12 +55,16 @@ public class ClothGuiBuilder implements GuiBuilder {
         return builder.build();
     }
 
+    private AbstractConfigListEntry<?> buildEntry(Entry<?> entry) {
+        return GuiRegistry.getInstance().getProvider(entry).orElseThrow(() -> {
+            return new UnsupportedOperationException("Could not find GUI provider for field " + entry.getField());
+        }).build(entry);
+    }
+
     private List<AbstractConfigListEntry> buildCollection(Collection collection) {
         List<AbstractConfigListEntry> collectionGui = new ArrayList<>();
-        for (Entry entry : collection.getEntries().values()) {
-            collectionGui.add((GuiRegistry.getInstance().getProvider(entry)).orElseThrow(() -> {
-                return new UnsupportedOperationException("Could not find GUI provider for field " + entry.getField());
-            }).build(entry));
+        for (Entry<?> entry : collection.getEntries().values()) {
+            collectionGui.add(buildEntry(entry));
         }
         for (Collection c : collection.getCollections().values()) {
             SubCategoryBuilder subBuilder = ConfigEntryBuilder.create().startSubCategory(c.getText());

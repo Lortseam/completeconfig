@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.data;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.ConfigHandler;
-import me.lortseam.completeconfig.api.ConfigGroup;
+import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.lortseam.completeconfig.io.ConfigSource;
@@ -11,12 +11,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 
-public class Config extends CollectionMap {
+public class Config extends Collection {
 
     /**
      * Creates a new config builder for the specified mod.
@@ -32,12 +31,10 @@ public class Config extends CollectionMap {
 
     private final ConfigSource source;
 
-    private Config(ConfigSource source, List<ConfigGroup> topLevelGroups) {
+    private Config(ConfigSource source, LinkedHashSet<ConfigEntryContainer> children) {
         super(new TranslationIdentifier(source.getModID()));
         this.source = source;
-        for (ConfigGroup group : topLevelGroups) {
-            resolve(group);
-        }
+        resolve(children);
     }
 
     public String getModID() {
@@ -61,7 +58,7 @@ public class Config extends CollectionMap {
 
         private final String modID;
         private String[] branch = new String[0];
-        private final List<ConfigGroup> topLevelGroups = new ArrayList<>();
+        private final LinkedHashSet<ConfigEntryContainer> children = new LinkedHashSet<>();
         private GuiBuilder guiBuilder;
 
         private Builder(String modID) {
@@ -83,14 +80,18 @@ public class Config extends CollectionMap {
         }
 
         /**
-         * Adds one or more top-level groups to the config.
+         * Adds one or more entry containers to the config.
          *
-         * @param groups one or more top-level groups
+         * @param containers one or more entry containers
          * @return this builder
          */
-        public Builder add(ConfigGroup... groups) {
-            Arrays.stream(groups).forEach(Objects::requireNonNull);
-            topLevelGroups.addAll(Arrays.asList(groups));
+        public Builder add(ConfigEntryContainer... containers) {
+            Arrays.stream(containers).forEach(Objects::requireNonNull);
+            for (ConfigEntryContainer container : containers) {
+                if (!children.add(container)) {
+                    throw new IllegalArgumentException("Duplicate container");
+                }
+            }
             return this;
         }
 
@@ -112,11 +113,12 @@ public class Config extends CollectionMap {
          * @return the handler associated with the created config
          */
         public ConfigHandler build() {
-            if (topLevelGroups.isEmpty()) {
+            if (children.isEmpty()) {
                 logger.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
                 return null;
             }
-            return new ConfigHandler(new Config(new ConfigSource(modID, branch), topLevelGroups), guiBuilder);
+
+            return new ConfigHandler(new Config(new ConfigSource(modID, branch), children), guiBuilder);
         }
 
     }
