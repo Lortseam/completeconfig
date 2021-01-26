@@ -43,11 +43,11 @@ public class ClothConfigScreenBuilder implements ConfigScreenBuilder {
         builder.setTitle(customTitle.exists() ? customTitle.toText() : new TranslatableText("completeconfig.gui.defaultTitle", FabricLoader.getInstance().getModContainer(config.getModID()).get().getMetadata().getName()));
         if (!config.getEntries().isEmpty()) {
             ConfigCategory category = builder.getOrCreateCategory(config.getText());
-            for (Entry<?> entry : config.getEntries().values()) {
+            for (Entry<?> entry : config.getEntries()) {
                 category.addEntry(buildEntry(entry));
             }
         }
-        for(Collection collection : config.getCollections().values()) {
+        for(Collection collection : config.getCollections()) {
             ConfigCategory category = builder.getOrCreateCategory(collection.getText());
             for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {
                 category.addEntry(entry);
@@ -64,10 +64,10 @@ public class ClothConfigScreenBuilder implements ConfigScreenBuilder {
 
     private List<AbstractConfigListEntry> buildCollection(Collection collection) {
         List<AbstractConfigListEntry> collectionGui = new ArrayList<>();
-        for (Entry<?> entry : collection.getEntries().values()) {
+        for (Entry<?> entry : collection.getEntries()) {
             collectionGui.add(buildEntry(entry));
         }
-        for (Collection c : collection.getCollections().values()) {
+        for (Collection c : collection.getCollections()) {
             SubCategoryBuilder subBuilder = ConfigEntryBuilder.create().startSubCategory(c.getText());
             subBuilder.addAll(buildCollection(c));
             collectionGui.add(subBuilder.build());

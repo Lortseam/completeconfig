@@ -5,7 +5,6 @@ import me.lortseam.completeconfig.containers.*;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.EntryBase;
-import me.lortseam.completeconfig.data.EntryMap;
 import me.lortseam.completeconfig.io.ConfigSource;
 import nl.altindag.log.LogCaptor;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
@@ -92,33 +91,33 @@ public class ConfigTest {
 
                 @Test
                 public void includeAnnotatedFieldOnlyIfNonPOJO() throws NoSuchFieldException {
-                    EntryMap entries = builder.add(new ContainerWithSingleEntry()).build().getEntries();
-                    assertEquals(1, entries.size());
-                    assertEquals(entries.values().iterator().next().getField(), ContainerWithSingleEntry.class.getDeclaredField("entry"));
+                    Config config = builder.add(new ContainerWithSingleEntry()).build();
+                    assertEquals(1, config.getEntries().size());
+                    assertEquals(config.getEntries().iterator().next().getField(), ContainerWithSingleEntry.class.getDeclaredField("entry"));
                 }
 
                 @Test
                 public void includeFieldIfPOJO() {
-                    EntryMap entries = builder.add(new POJOContainerWithSingleEntry()).build().getEntries();
-                    assertEquals(1, entries.size());
+                    Config config = builder.add(new POJOContainerWithSingleEntry()).build();
+                    assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
                 public void ignoreFieldIfAnnotatedWithIgnore() {
-                    EntryMap entries = builder.add(new POJOContainerWithSingleIgnoredField()).build().getEntries();
-                    assertEquals(0, entries.size());
+                    Config config = builder.add(new POJOContainerWithSingleIgnoredField()).build();
+                    assertEquals(0, config.getEntries().size());
                 }
 
                 @Test
                 public void includeSuperclassField() {
-                    EntryMap entries = builder.add(new SubclassOfContainerWithSingleEntry()).build().getEntries();
-                    assertEquals(1, entries.size());
+                    Config config = builder.add(new SubclassOfContainerWithSingleEntry()).build();
+                    assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
                 public void excludeStaticSuperclassField() {
-                    EntryMap entries = builder.add(new SubclassOfContainerWithSingleStaticEntry()).build().getEntries();
-                    assertEquals(0, entries.size());
+                    Config config = builder.add(new SubclassOfContainerWithSingleStaticEntry()).build();
+                    assertEquals(0, config.getEntries().size());
                 }
 
             }

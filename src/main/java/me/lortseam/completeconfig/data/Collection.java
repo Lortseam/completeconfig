@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.data;
 
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
@@ -11,19 +10,14 @@ import net.minecraft.text.Text;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
 public class Collection implements FlatDataPart<ConfigMap> {
 
     protected final TranslationIdentifier translation;
-    @Getter
     private final EntryMap entries;
-    @Getter
     private final CollectionMap collections;
 
     Collection(TranslationIdentifier translation) {
@@ -34,6 +28,14 @@ public class Collection implements FlatDataPart<ConfigMap> {
 
     public Text getText() {
         return translation.toText();
+    }
+
+    public java.util.Collection<Entry> getEntries() {
+        return Collections.unmodifiableCollection(entries.values());
+    }
+
+    public java.util.Collection<Collection> getCollections() {
+        return Collections.unmodifiableCollection(collections.values());
     }
 
     void resolve(ConfigEntryContainer container) {
