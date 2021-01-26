@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.gui.cloth;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
 import me.lortseam.completeconfig.data.BoundedEntry;
@@ -27,10 +28,10 @@ import java.util.function.Predicate;
 @Environment(EnvType.CLIENT)
 public final class GuiRegistry {
 
-    private static final List<Consumer<GuiRegistry>> globalProviders = new ArrayList<>();
+    private static final List<Consumer<GuiRegistry>> globalProviders = Lists.newArrayList(GuiRegistry::registerDefaultProviders);
 
-    public static void addGlobalProviders(Consumer<GuiRegistry> providersRegistration) {
-        globalProviders.add(providersRegistration);
+    public static void addGlobalProviders(Consumer<GuiRegistry> registrations) {
+        globalProviders.add(registrations);
     }
 
     public static <T, A extends AbstractConfigListEntry> A build(Function<ConfigEntryBuilder, FieldBuilder<T, A>> builder, boolean requiresRestart) {
@@ -42,9 +43,8 @@ public final class GuiRegistry {
     private final List<GuiProviderRegistration> registrations = new ArrayList<>();
 
     GuiRegistry() {
-        registerDefaultProviders();
-        for (Consumer<GuiRegistry> providersRegistration : globalProviders) {
-            providersRegistration.accept(this);
+        for (Consumer<GuiRegistry> registrations : globalProviders) {
+            registrations.accept(this);
         }
     }
 
