@@ -90,34 +90,97 @@ public class ConfigTest {
             public class Entry {
 
                 @Test
-                public void includeAnnotatedFieldOnlyIfNonPOJO() throws NoSuchFieldException {
-                    Config config = builder.add(new ContainerWithSingleEntry()).build();
+                public void includeAnnotatedFieldIfNonPOJO() {
+                    Config config = builder.add(new ContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
-                    assertEquals(config.getEntries().iterator().next().getField(), ContainerWithSingleEntry.class.getDeclaredField("entry"));
+                }
+
+                @Test
+                public void excludeNonAnnotatedFieldIfNonPOJO() {
+                    Config config = builder.add(new ContainerWithField()).build();
+                    assertEquals(0, config.getEntries().size());
                 }
 
                 @Test
                 public void includeFieldIfPOJO() {
-                    Config config = builder.add(new POJOContainerWithSingleEntry()).build();
+                    Config config = builder.add(new POJOContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
-                public void ignoreFieldIfAnnotatedWithIgnore() {
-                    Config config = builder.add(new POJOContainerWithSingleIgnoredField()).build();
+                public void excludeContainerFieldIfPOJO() {
+                    Config config = builder.add(new POJOContainerWithEmptyContainer()).build();
+                    assertEquals(0, config.getEntries().size());
+                }
+
+                @Test
+                public void ignoreFieldIfAnnotatedWithIgnoreAndPOJO() {
+                    Config config = builder.add(new POJOContainerWithIgnoredField()).build();
                     assertEquals(0, config.getEntries().size());
                 }
 
                 @Test
                 public void includeSuperclassField() {
-                    Config config = builder.add(new SubclassOfContainerWithSingleEntry()).build();
+                    Config config = builder.add(new SubclassOfContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
                 public void excludeStaticSuperclassField() {
-                    Config config = builder.add(new SubclassOfContainerWithSingleStaticEntry()).build();
+                    Config config = builder.add(new SubclassOfContainerWithStaticEntry()).build();
                     assertEquals(0, config.getEntries().size());
+                }
+
+            }
+
+            @Nested
+            public class Container {
+
+                @Test
+                public void includeAnnotatedFieldIfNonPOJO() {
+                    Config config = builder.add(new ContainerWithContainerWithEntry()).build();
+                    assertEquals(1, config.getEntries().size());
+                }
+
+                @Test
+                public void excludeNonAnnotatedFieldIfNonPOJO() {
+                    Config config = builder.add(new ContainerWithNonAnnotatedContainerWithEntry()).build();
+                    assertEquals(0, config.getEntries().size());
+                }
+
+                @Test
+                public void includeFieldIfPOJO() {
+                    Config config = builder.add(new POJOContainerWithContainerWithEntry()).build();
+                    assertEquals(1, config.getEntries().size());
+                }
+
+                @Test
+                public void includeSuperclassField() {
+                    Config config = builder.add(new SubclassOfContainerWithContainerWithEntry()).build();
+                    assertEquals(1, config.getEntries().size());
+                }
+
+                @Test
+                public void includeOfMethod() {
+                    Config config = builder.add(new ContainerIncludingContainerWithEntry()).build();
+                    assertEquals(1, config.getEntries().size());
+                }
+
+            }
+
+            @Nested
+            public class Group {
+
+                @Test
+                public void includeField() {
+                    Config config = builder.add(new ContainerWithGroupWithEntry()).build();
+                    assertEquals(1, config.getCollections().size());
+                }
+
+                @Test
+                public void includeOfMethod() {
+                    Config config = builder.add(new ContainerIncludingGroupWithEntry()).build();
+                    assertEquals(1, config.getCollections().size());
                 }
 
             }

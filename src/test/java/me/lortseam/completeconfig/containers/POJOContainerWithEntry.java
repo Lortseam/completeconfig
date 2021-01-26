@@ -1,12 +1,10 @@
 package me.lortseam.completeconfig.containers;
 
-import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 
-public class POJOContainerWithSingleIgnoredField implements ConfigEntryContainer {
+public class POJOContainerWithEntry implements ConfigEntryContainer {
 
-    @ConfigEntry.Ignore
-    private boolean noEntry;
+    private boolean entry;
 
     @Override
     public boolean isConfigPOJO() {
