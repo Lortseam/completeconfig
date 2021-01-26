@@ -75,7 +75,7 @@ public class Collection implements FlatDataPart<ConfigMap> {
                         }
                         return constructor.newInstance();
                     } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                        throw new RuntimeException("Failed to instantiate inner config entry container class", e);
+                        throw new RuntimeException("Failed to instantiate nested config entry container class", e);
                     }
                 }).filter(Objects::nonNull).collect(Collectors.toList()));
             }
