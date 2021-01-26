@@ -73,7 +73,7 @@ public class ConfigTest {
         public void build_logWarningAndReturnNullIfChildrenEmpty() {
             LogCaptor logCaptor = LogCaptor.forRoot();
             assertNull(builder.build());
-            assertThat(logCaptor.getWarnLogs()).containsExactly("[CompleteConfig] Mod " + MOD_ID + " tried to create an empty config!");
+            assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Mod " + MOD_ID + " tried to create an empty config!");
         }
 
         @Nested
@@ -188,6 +188,13 @@ public class ConfigTest {
 
             @Nested
             public class Group {
+
+                @Test
+                public void logWarningIfEmpty() {
+                    LogCaptor logCaptor = LogCaptor.forRoot();
+                    builder.add(new EmptyGroup()).build();
+                    assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Group " + "emptyGroup" + " is empty!");
+                }
 
                 @Test
                 public void includeField() {
