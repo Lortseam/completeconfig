@@ -4,7 +4,7 @@ import me.lortseam.completeconfig.data.Collection;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
-import me.lortseam.completeconfig.gui.GuiBuilder;
+import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
@@ -21,23 +21,23 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
-public class ClothGuiBuilder implements GuiBuilder {
+public class ClothConfigScreenBuilder implements ConfigScreenBuilder {
 
     private final Supplier<ConfigBuilder> supplier;
 
-    public ClothGuiBuilder(Supplier<ConfigBuilder> supplier) {
+    public ClothConfigScreenBuilder(Supplier<ConfigBuilder> supplier) {
         this.supplier = supplier;
     }
 
-    public ClothGuiBuilder() {
+    public ClothConfigScreenBuilder() {
         this(ConfigBuilder::create);
     }
 
     @Override
-    public Screen buildScreen(Screen parentScreen, Config config, Runnable savingRunnable) {
+    public Screen build(Screen parentScreen, Config config) {
         ConfigBuilder builder = supplier.get()
                 .setParentScreen(parentScreen)
-                .setSavingRunnable(savingRunnable);
+                .setSavingRunnable(config::save);
         TranslationIdentifier customTitle = config.getTranslation().append("title");
         builder.setTitle(customTitle.exists() ? customTitle.toText() : new TranslatableText("completeconfig.gui.defaultTitle", FabricLoader.getInstance().getModContainer(config.getModID()).get().getMetadata().getName()));
         if (!config.getEntries().isEmpty()) {
