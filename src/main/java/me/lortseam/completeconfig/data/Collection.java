@@ -10,6 +10,7 @@ import net.minecraft.text.Text;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,9 @@ public class Collection implements FlatDataPart<ConfigMap> {
                 }
             }).collect(Collectors.toList()));
             if (container.isConfigPOJO()) {
-                resolve(Arrays.stream(clazz.getDeclaredClasses()).filter(ConfigEntryContainer.class::isAssignableFrom).map(innerClass -> {
+                resolve(Arrays.stream(clazz.getDeclaredClasses()).filter(nestedClass -> {
+                    return ConfigEntryContainer.class.isAssignableFrom(nestedClass) && Modifier.isStatic(nestedClass.getModifiers());
+                }).map(innerClass -> {
                     try {
                         Constructor<? extends ConfigEntryContainer> constructor = (Constructor<? extends ConfigEntryContainer>) innerClass.getDeclaredConstructor();
                         if (!constructor.isAccessible()) {
@@ -72,8 +75,7 @@ public class Collection implements FlatDataPart<ConfigMap> {
                         }
                         return constructor.newInstance();
                     } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                        logger.error("Failed to instantiate inner config entry container class", e);
-                        return null;
+                        throw new RuntimeException("Failed to instantiate inner config entry container class", e);
                     }
                 }).filter(Objects::nonNull).collect(Collectors.toList()));
             }
