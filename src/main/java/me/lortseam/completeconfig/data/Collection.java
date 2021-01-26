@@ -67,9 +67,9 @@ public class Collection implements FlatDataPart<ConfigMap> {
             if (container.isConfigPOJO()) {
                 resolve(Arrays.stream(clazz.getDeclaredClasses()).filter(nestedClass -> {
                     return ConfigEntryContainer.class.isAssignableFrom(nestedClass) && Modifier.isStatic(nestedClass.getModifiers());
-                }).map(innerClass -> {
+                }).map(nestedClass -> {
                     try {
-                        Constructor<? extends ConfigEntryContainer> constructor = (Constructor<? extends ConfigEntryContainer>) innerClass.getDeclaredConstructor();
+                        Constructor<? extends ConfigEntryContainer> constructor = (Constructor<? extends ConfigEntryContainer>) nestedClass.getDeclaredConstructor();
                         if (!constructor.isAccessible()) {
                             constructor.setAccessible(true);
                         }
