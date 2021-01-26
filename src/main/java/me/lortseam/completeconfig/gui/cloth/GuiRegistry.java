@@ -2,14 +2,10 @@ package me.lortseam.completeconfig.gui.cloth;
 
 import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
-import lombok.AccessLevel;
-import lombok.Getter;
-import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.BoundedEntry;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.EnumEntry;
-import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
@@ -20,15 +16,22 @@ import net.minecraft.text.TextColor;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Environment(EnvType.CLIENT)
 public final class GuiRegistry {
 
-    @Getter(AccessLevel.PACKAGE)
-    private static final GuiRegistry instance = new GuiRegistry();
+    private static final List<Consumer<GuiRegistry>> globalProviders = new ArrayList<>();
+
+    public static void addGlobalProviders(Consumer<GuiRegistry> providersRegistration) {
+        globalProviders.add(providersRegistration);
+    }
 
     public static <T, A extends AbstractConfigListEntry> A build(Function<ConfigEntryBuilder, FieldBuilder<T, A>> builder, boolean requiresRestart) {
         FieldBuilder<T, A> fieldBuilder = builder.apply(ConfigEntryBuilder.create());
@@ -38,11 +41,11 @@ public final class GuiRegistry {
 
     private final List<GuiProviderRegistration> registrations = new ArrayList<>();
 
-    private GuiRegistry() {
+    GuiRegistry() {
         registerDefaultProviders();
-        CompleteConfig.getExtensions().stream().map(CompleteConfigExtension::gui).filter(Objects::nonNull).forEach(guiExtension -> {
-            guiExtension.registerProviders(this);
-        });
+        for (Consumer<GuiRegistry> providersRegistration : globalProviders) {
+            providersRegistration.accept(this);
+        }
     }
 
     public void registerProvider(GuiProvider<?> provider, Predicate<Entry<?>> predicate, Type... types) {

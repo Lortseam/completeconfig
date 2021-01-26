@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 public class ClothConfigScreenBuilder implements ConfigScreenBuilder {
 
     private final Supplier<ConfigBuilder> supplier;
+    private final GuiRegistry registry = new GuiRegistry();
 
     public ClothConfigScreenBuilder(Supplier<ConfigBuilder> supplier) {
         this.supplier = supplier;
@@ -56,7 +57,7 @@ public class ClothConfigScreenBuilder implements ConfigScreenBuilder {
     }
 
     private AbstractConfigListEntry<?> buildEntry(Entry<?> entry) {
-        return GuiRegistry.getInstance().getProvider(entry).orElseThrow(() -> {
+        return registry.getProvider(entry).orElseThrow(() -> {
             return new UnsupportedOperationException("Could not find GUI provider for field " + entry.getField());
         }).build(entry);
     }
