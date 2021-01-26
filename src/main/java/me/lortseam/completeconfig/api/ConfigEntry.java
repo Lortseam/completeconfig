@@ -211,14 +211,4 @@ public @interface ConfigEntry {
 
     }
 
-    /**
-     * Can be applied to a field inside a POJO {@link ConfigEntryContainer} class to declare that that field should not
-     * be considered to be a config entry.
-     */
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface Ignore {
-
-    }
-
 }

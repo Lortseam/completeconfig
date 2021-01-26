@@ -31,7 +31,7 @@ public class EntryMap extends ConfigMap<Entry> {
                     return false;
                 }
                 if (container.isConfigPOJO()) {
-                    return !ConfigEntryContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntry.Ignore.class);
+                    return !ConfigEntryContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntryContainer.Ignore.class);
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
             }).forEach(field -> {
