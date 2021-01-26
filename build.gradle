@@ -30,6 +30,13 @@ dependencies {
 
 	compileOnly("org.projectlombok:lombok:${project.lombok_version}")
 	annotationProcessor("org.projectlombok:lombok:${project.lombok_version}")
+
+	testImplementation("org.junit.jupiter:junit-jupiter:${project.junit_version}")
+	testImplementation("org.assertj:assertj-core:${project.assertj_version}")
+	testImplementation("org.mockito:mockito-inline:${project.mockito_version}")
+	testImplementation("org.mockito:mockito-junit-jupiter:${project.mockito_junit_version}")
+	testImplementation("io.github.hakky54:logcaptor:${project.logcaptor_version}")
+	testImplementation("com.google.jimfs:jimfs:${project.jimfs_version}")
 }
 
 processResources {
@@ -65,6 +72,10 @@ shadowJar {
 remapJar {
 	dependsOn(shadowJar)
 	input.set(shadowJar.archiveFile)
+}
+
+test {
+	useJUnitPlatform()
 }
 
 javadoc {
