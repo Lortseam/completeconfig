@@ -166,6 +166,24 @@ public class ConfigTest {
                     assertEquals(1, config.getEntries().size());
                 }
 
+                @Test
+                public void excludeNested() {
+                    Config config = builder.add(new POJOContainerNestingContainerWithEntry()).build();
+                    assertEquals(0, config.getEntries().size());
+                }
+
+                @Test
+                public void includeNestedStaticIfPOJO() {
+                    Config config = builder.add(new POJOContainerNestingStaticContainerWithEntry()).build();
+                    assertEquals(1, config.getEntries().size());
+                }
+
+                @Test
+                public void excludeNestedStaticIfNonPOJO() {
+                    Config config = builder.add(new ContainerNestingStaticContainerWithEntry()).build();
+                    assertEquals(0, config.getEntries().size());
+                }
+
             }
 
             @Nested
