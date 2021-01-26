@@ -15,7 +15,6 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -46,11 +45,14 @@ public final class ConfigSource {
         if (!sources.add(this)) {
             throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists!");
         }
+        Path path = FabricLoader.getInstance().getConfigDir();
         String[] subPath = ArrayUtils.add(branch, 0, modID);
         subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".conf";
-        Path filePath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), subPath);
+        for (String child : subPath) {
+            path = path.resolve(child);
+        }
         loader = HoconConfigurationLoader.builder()
-                .path(filePath)
+                .path(path)
                 .defaultOptions(options -> options.serializers(builder -> {
                     builder.registerAll(GLOBAL_TYPE_SERIALIZERS);
                     CompleteConfig.getExtensions().stream().map(CompleteConfigExtension::getTypeSerializers).filter(Objects::nonNull).forEach(builder::registerAll);
