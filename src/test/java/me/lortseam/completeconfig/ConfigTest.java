@@ -193,7 +193,7 @@ public class ConfigTest {
                 public void logWarningIfEmpty() {
                     LogCaptor logCaptor = LogCaptor.forRoot();
                     builder.add(new EmptyGroup()).build();
-                    assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Group " + "emptyGroup" + " is empty!");
+                    assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Group emptyGroup is empty!");
                 }
 
                 @Test
