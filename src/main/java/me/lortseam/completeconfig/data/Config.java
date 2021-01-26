@@ -2,21 +2,25 @@ package me.lortseam.completeconfig.data;
 
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
-import me.lortseam.completeconfig.ConfigHandler;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
-import me.lortseam.completeconfig.gui.GuiBuilder;
 import me.lortseam.completeconfig.io.ConfigSource;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Objects;
+import java.util.*;
 
 @Log4j2
 public class Config extends Collection {
+
+    private static final Set<Config> configs = new HashSet<>();
+
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            for (Config config : configs) {
+                config.save();
+            }
+        }));
+    }
 
     /**
      * Creates a new config builder for the specified mod.
@@ -37,8 +41,11 @@ public class Config extends Collection {
         this.source = source;
         resolve(children);
         if (isEmpty()) {
-            logger.warn("[CompleteConfig] Config " + source + " is empty!");
+            logger.warn("[CompleteConfig] Config of " + source + " is empty!");
+            return;
         }
+        source.load(this);
+        configs.add(this);
     }
 
     public String getModID() {
@@ -47,10 +54,6 @@ public class Config extends Collection {
 
     public TranslationIdentifier getTranslation() {
         return translation;
-    }
-
-    public void load() {
-        source.load(this);
     }
 
     public void save() {
@@ -63,7 +66,6 @@ public class Config extends Collection {
         private final String modID;
         private String[] branch = new String[0];
         private final LinkedHashSet<ConfigEntryContainer> children = new LinkedHashSet<>();
-        private GuiBuilder guiBuilder;
 
         private Builder(String modID) {
             this.modID = modID;
@@ -79,6 +81,7 @@ public class Config extends Collection {
          * @return this builder
          */
         public Builder setBranch(@NonNull String[] branch) {
+            Arrays.stream(branch).forEach(Objects::requireNonNull);
             this.branch = branch;
             return this;
         }
@@ -89,7 +92,7 @@ public class Config extends Collection {
          * @param containers one or more entry containers
          * @return this builder
          */
-        public Builder add(ConfigEntryContainer... containers) {
+        public Builder add(@NonNull ConfigEntryContainer... containers) {
             Arrays.stream(containers).forEach(Objects::requireNonNull);
             for (ConfigEntryContainer container : containers) {
                 if (!children.add(container)) {
@@ -100,28 +103,16 @@ public class Config extends Collection {
         }
 
         /**
-         * Sets a custom client GUI builder.
-         *
-         * @param guiBuilder a GUI builder
-         * @return this builder
-         */
-        @Environment(EnvType.CLIENT)
-        public Builder setGuiBuilder(@NonNull GuiBuilder guiBuilder) {
-            this.guiBuilder = guiBuilder;
-            return this;
-        }
-
-        /**
          * Completes the config creation.
          *
          * @return the handler associated with the created config
          */
-        public ConfigHandler build() {
+        public Config build() {
             if (children.isEmpty()) {
                 logger.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
                 return null;
             }
-            return new ConfigHandler(new Config(new ConfigSource(modID, branch), children), guiBuilder);
+            return new Config(new ConfigSource(modID, branch), children);
         }
 
     }
