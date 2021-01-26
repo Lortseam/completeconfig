@@ -167,7 +167,7 @@ public class ConfigTest {
                 }
 
                 @Test
-                public void excludeNested() {
+                public void excludeNestedIfPOJO() {
                     Config config = builder.add(new POJOContainerNestingContainerWithEntry()).build();
                     assertEquals(0, config.getEntries().size());
                 }
