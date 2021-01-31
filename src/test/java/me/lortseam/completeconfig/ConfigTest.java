@@ -5,6 +5,7 @@ import me.lortseam.completeconfig.containers.*;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.EntryBase;
+import me.lortseam.completeconfig.groups.EmptyGroup;
 import me.lortseam.completeconfig.io.ConfigSource;
 import nl.altindag.log.LogCaptor;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
@@ -90,43 +91,43 @@ public class ConfigTest {
             public class Entry {
 
                 @Test
-                public void includeAnnotatedFieldIfNonPOJO() {
+                public void includeFieldInNonPOJOIfAnnotated() {
                     Config config = builder.add(new ContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
-                public void excludeNonAnnotatedFieldIfNonPOJO() {
+                public void excludeFieldInNonPOJOIfNotAnnotated() {
                     Config config = builder.add(new ContainerWithField()).build();
                     assertEquals(0, config.getEntries().size());
                 }
 
                 @Test
-                public void includeFieldIfPOJO() {
+                public void includeFieldInPOJO() {
                     Config config = builder.add(new POJOContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
-                public void excludeContainerFieldIfPOJO() {
+                public void excludeFieldInPOJOIfContainer() {
                     Config config = builder.add(new POJOContainerWithEmptyContainer()).build();
                     assertEquals(0, config.getEntries().size());
                 }
 
                 @Test
-                public void ignoreFieldIfAnnotatedWithIgnoreAndPOJO() {
+                public void excludeFieldInPOJOIfIgnoreAnnotated() {
                     Config config = builder.add(new POJOContainerWithIgnoredField()).build();
                     assertEquals(0, config.getEntries().size());
                 }
 
                 @Test
-                public void includeSuperclassField() {
+                public void includeSuperclassFieldIfNonStatic() {
                     Config config = builder.add(new SubclassOfContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
-                public void excludeStaticSuperclassField() {
+                public void excludeSuperclassFieldIfStatic() {
                     Config config = builder.add(new SubclassOfContainerWithStaticEntry()).build();
                     assertEquals(0, config.getEntries().size());
                 }
@@ -137,19 +138,19 @@ public class ConfigTest {
             public class Container {
 
                 @Test
-                public void includeAnnotatedFieldIfNonPOJO() {
+                public void includeFieldInNonPOJOIfAnnotated() {
                     Config config = builder.add(new ContainerWithContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
-                public void excludeNonAnnotatedFieldIfNonPOJO() {
+                public void excludeFieldInNonPOJOIfNotAnnotated() {
                     Config config = builder.add(new ContainerWithNonAnnotatedContainerWithEntry()).build();
                     assertEquals(0, config.getEntries().size());
                 }
 
                 @Test
-                public void includeFieldIfPOJO() {
+                public void includeFieldInPOJO() {
                     Config config = builder.add(new POJOContainerWithContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
@@ -167,19 +168,19 @@ public class ConfigTest {
                 }
 
                 @Test
-                public void excludeNestedIfPOJO() {
+                public void excludeNestedInPOJOIfNonStatic() {
                     Config config = builder.add(new POJOContainerNestingContainerWithEntry()).build();
                     assertEquals(0, config.getEntries().size());
                 }
 
                 @Test
-                public void includeNestedStaticIfPOJO() {
+                public void includeNestedIfStaticAndPOJO() {
                     Config config = builder.add(new POJOContainerNestingStaticContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
-                public void excludeNestedStaticIfNonPOJO() {
+                public void excludeStaticNestedIfNonPOJO() {
                     Config config = builder.add(new ContainerNestingStaticContainerWithEntry()).build();
                     assertEquals(0, config.getEntries().size());
                 }
