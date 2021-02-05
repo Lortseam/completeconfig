@@ -25,7 +25,7 @@ import java.util.function.Supplier;
  * A screen builder based on the Cloth Config API.
  */
 @Environment(EnvType.CLIENT)
-public class ClothConfigScreenBuilder implements ConfigScreenBuilder {
+public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
 
     private final Supplier<ConfigBuilder> supplier;
     @Getter
