@@ -7,12 +7,16 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 
-import java.util.function.Supplier;
+import java.util.Optional;
 
 public interface ConfigScreenBuilder {
 
-    @Environment(EnvType.CLIENT)
-    Supplier<ConfigScreenBuilder> DEFAULT = FabricLoader.getInstance().isModLoaded("cloth-config2") ? ClothConfigScreenBuilder::new : null;
+    static Optional<ConfigScreenBuilder> getDefault() {
+        if (FabricLoader.getInstance().isModLoaded("cloth-config2")) {
+            return Optional.of(new ClothConfigScreenBuilder());
+        }
+        return Optional.empty();
+    }
 
     @Environment(EnvType.CLIENT)
     Screen build(Screen parentScreen, Config config);
