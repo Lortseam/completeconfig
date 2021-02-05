@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.containers;
+package me.lortseam.completeconfig.data.containers;
 
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryContainer;

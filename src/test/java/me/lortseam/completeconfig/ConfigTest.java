@@ -1,11 +1,12 @@
 package me.lortseam.completeconfig;
 
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.containers.*;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.EntryBase;
-import me.lortseam.completeconfig.groups.EmptyGroup;
+import me.lortseam.completeconfig.data.containers.*;
+import me.lortseam.completeconfig.data.groups.EmptyGroup;
+import me.lortseam.completeconfig.data.listeners.*;
 import me.lortseam.completeconfig.io.ConfigSource;
 import nl.altindag.log.LogCaptor;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
@@ -207,6 +208,56 @@ public class ConfigTest {
                 public void includeOfMethod() {
                     Config config = builder.add(new ContainerIncludingGroupWithEntry()).build();
                     assertEquals(1, config.getCollections().size());
+                }
+
+            }
+
+            @Nested
+            public class Listener {
+
+                @Test
+                public void listenSetter() {
+                    SetterListener listener = new SetterListener();
+                    Config config = builder.add(listener).build();
+                    boolean value = !listener.getValue();
+                    config.getEntries().iterator().next().setValue(value);
+                    assertEquals(value, listener.getValue());
+                }
+
+                @Test
+                public void listenCustom() {
+                    CustomListener listener = new CustomListener();
+                    Config config = builder.add(listener).build();
+                    boolean value = !listener.getValue();
+                    config.getEntries().iterator().next().setValue(value);
+                    assertEquals(value, listener.getValue());
+                }
+
+                @Test
+                public void doNotUpdateField() {
+                    EmptyListener listener = new EmptyListener();
+                    Config config = builder.add(listener).build();
+                    boolean oldValue = listener.getValue();
+                    config.getEntries().iterator().next().setValue(!oldValue);
+                    assertEquals(oldValue, listener.getValue());
+                }
+
+                @Test
+                public void forceUpdate() {
+                    ForceUpdateListener listener = new ForceUpdateListener();
+                    Config config = builder.add(listener).build();
+                    boolean value = !listener.getValue();
+                    config.getEntries().iterator().next().setValue(value);
+                    assertEquals(value, listener.getValue());
+                }
+
+                @Test
+                public void listenOutside() {
+                    OutsideListener listener = new OutsideListener();
+                    Config config = builder.add(listener).build();
+                    boolean value = !listener.getValue();
+                    config.getEntries().iterator().next().setValue(value);
+                    assertEquals(value, listener.getValue());
                 }
 
             }

@@ -1,7 +1,7 @@
-package me.lortseam.completeconfig.containers;
+package me.lortseam.completeconfig.data.containers;
 
 import me.lortseam.completeconfig.api.ConfigEntryContainer;
-import me.lortseam.completeconfig.groups.GroupWithEntry;
+import me.lortseam.completeconfig.data.groups.GroupWithEntry;
 
 public class ContainerWithGroupWithEntry implements ConfigEntryContainer {
 
