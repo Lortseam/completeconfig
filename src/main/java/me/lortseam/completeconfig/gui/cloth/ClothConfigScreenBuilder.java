@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * A screen builder based on the Cloth Config API.
+ */
 @Environment(EnvType.CLIENT)
 public class ClothConfigScreenBuilder implements ConfigScreenBuilder {
 

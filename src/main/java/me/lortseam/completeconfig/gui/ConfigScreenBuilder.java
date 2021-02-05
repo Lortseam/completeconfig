@@ -11,6 +11,13 @@ import java.util.Optional;
 
 public interface ConfigScreenBuilder {
 
+    /**
+     * Returns a new instance of the default screen builder, if present.
+     *
+     * <p>More specifically, if installed, the {@link ClothConfigScreenBuilder} is used by default.
+     *
+     * @return the default screen builder or an empty value if absent
+     */
     static Optional<ConfigScreenBuilder> getDefault() {
         if (FabricLoader.getInstance().isModLoaded("cloth-config2")) {
             return Optional.of(new ClothConfigScreenBuilder());
@@ -18,6 +25,13 @@ public interface ConfigScreenBuilder {
         return Optional.empty();
     }
 
+    /**
+     * Builds a screen based on a config.
+     *
+     * @param parentScreen the parent screen
+     * @param config the config to build the screen of
+     * @return the built screen
+     */
     @Environment(EnvType.CLIENT)
     Screen build(Screen parentScreen, Config config);
 
