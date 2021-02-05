@@ -87,9 +87,9 @@ public class Config extends Collection {
         }
 
         /**
-         * Adds one or more entry containers to the config.
+         * Adds one or more containers to the config.
          *
-         * @param containers one or more entry containers
+         * @param containers one or more containers
          * @return this builder
          */
         public Builder add(@NonNull ConfigContainer... containers) {

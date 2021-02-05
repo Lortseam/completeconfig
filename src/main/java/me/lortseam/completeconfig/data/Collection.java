@@ -49,7 +49,7 @@ public class Collection implements FlatDataPart<ConfigMap> {
                 }
                 if (field.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(field.getType())) {
-                        throw new IllegalAnnotationTargetException("Transitive entry " + field + " must implement ConfigEntryContainer");
+                        throw new IllegalAnnotationTargetException("Transitive entry " + field + " must implement " + ConfigContainer.class.getSimpleName());
                     }
                     return true;
                 }
@@ -75,7 +75,7 @@ public class Collection implements FlatDataPart<ConfigMap> {
                         }
                         return constructor.newInstance();
                     } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                        throw new RuntimeException("Failed to instantiate nested config entry container class", e);
+                        throw new RuntimeException("Failed to instantiate nested class " + nestedClass, e);
                     }
                 }).filter(Objects::nonNull).collect(Collectors.toList()));
             }
