@@ -38,9 +38,6 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (Modifier.isFinal(field.getModifiers())) {
                     throw new IllegalModifierException("Entry field " + field + " must not be final");
                 }
-                if (!field.isAccessible()) {
-                    field.setAccessible(true);
-                }
                 Entry<?> entry = Entry.Draft.of(field, container.getClass()).build(Modifier.isStatic(field.getModifiers()) ? null : container, translation);
                 entry.resolve(field);
                 clazzEntries.add(entry);

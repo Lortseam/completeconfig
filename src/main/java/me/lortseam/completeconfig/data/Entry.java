@@ -86,6 +86,9 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
 
     protected Entry(EntryOrigin origin, UnaryOperator<T> modifier) {
         super(origin.getField());
+        if (!field.isAccessible()) {
+            field.setAccessible(true);
+        }
         parentObject = origin.getParentObject();
         parentTranslation = origin.getParentTranslation();
         this.modifier = modifier;
