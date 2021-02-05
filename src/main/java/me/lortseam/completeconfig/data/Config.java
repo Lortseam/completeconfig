@@ -105,7 +105,7 @@ public class Config extends Collection {
         /**
          * Completes the config creation.
          *
-         * @return the handler associated with the created config
+         * @return the created config
          */
         public Config build() {
             if (children.isEmpty()) {
