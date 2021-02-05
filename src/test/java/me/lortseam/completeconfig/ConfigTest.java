@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig;
 
+import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
@@ -220,7 +221,7 @@ public class ConfigTest {
                     SetterListener listener = new SetterListener();
                     Config config = builder.add(listener).build();
                     boolean value = !listener.getValue();
-                    config.getEntries().iterator().next().setValue(value);
+                    Iterables.getOnlyElement(config.getEntries()).setValue(value);
                     assertEquals(value, listener.getValue());
                 }
 
@@ -229,7 +230,7 @@ public class ConfigTest {
                     CustomListener listener = new CustomListener();
                     Config config = builder.add(listener).build();
                     boolean value = !listener.getValue();
-                    config.getEntries().iterator().next().setValue(value);
+                    Iterables.getOnlyElement(config.getEntries()).setValue(value);
                     assertEquals(value, listener.getValue());
                 }
 
@@ -238,7 +239,7 @@ public class ConfigTest {
                     EmptyListener listener = new EmptyListener();
                     Config config = builder.add(listener).build();
                     boolean oldValue = listener.getValue();
-                    config.getEntries().iterator().next().setValue(!oldValue);
+                    Iterables.getOnlyElement(config.getEntries()).setValue(!oldValue);
                     assertEquals(oldValue, listener.getValue());
                 }
 
@@ -247,7 +248,7 @@ public class ConfigTest {
                     ForceUpdateListener listener = new ForceUpdateListener();
                     Config config = builder.add(listener).build();
                     boolean value = !listener.getValue();
-                    config.getEntries().iterator().next().setValue(value);
+                    Iterables.getOnlyElement(config.getEntries()).setValue(value);
                     assertEquals(value, listener.getValue());
                 }
 
@@ -256,7 +257,7 @@ public class ConfigTest {
                     OutsideListener listener = new OutsideListener();
                     Config config = builder.add(listener).build();
                     boolean value = !listener.getValue();
-                    config.getEntries().iterator().next().setValue(value);
+                    Iterables.getOnlyElement(config.getEntries()).setValue(value);
                     assertEquals(value, listener.getValue());
                 }
 
