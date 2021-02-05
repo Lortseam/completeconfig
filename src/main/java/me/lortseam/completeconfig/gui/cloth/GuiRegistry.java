@@ -28,10 +28,10 @@ import java.util.function.Predicate;
 @Environment(EnvType.CLIENT)
 public final class GuiRegistry {
 
-    private static final List<Consumer<GuiRegistry>> globalProviders = Lists.newArrayList(GuiRegistry::registerDefaultProviders);
+    private static final List<Consumer<GuiRegistry>> globalRegistrars = Lists.newArrayList(GuiRegistry::registerDefaultProviders);
 
-    public static void addGlobalProviders(Consumer<GuiRegistry> registrations) {
-        globalProviders.add(registrations);
+    public static void addGlobalRegistrar(Consumer<GuiRegistry> registrar) {
+        globalRegistrars.add(registrar);
     }
 
     public static <T, A extends AbstractConfigListEntry> A build(Function<ConfigEntryBuilder, FieldBuilder<T, A>> builder, boolean requiresRestart) {
@@ -43,7 +43,7 @@ public final class GuiRegistry {
     private final List<GuiProviderRegistration> registrations = new ArrayList<>();
 
     GuiRegistry() {
-        for (Consumer<GuiRegistry> registrations : globalProviders) {
+        for (Consumer<GuiRegistry> registrations : globalRegistrars) {
             registrations.accept(this);
         }
     }

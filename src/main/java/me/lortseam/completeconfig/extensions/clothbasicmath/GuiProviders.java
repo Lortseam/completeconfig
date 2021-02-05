@@ -7,7 +7,7 @@ import me.shedaniel.math.Color;
 final class GuiProviders {
 
     static void register() {
-        GuiRegistry.addGlobalProviders(registry -> registry.registerColorProvider((ColorEntry<Color> entry) -> GuiRegistry.build(
+        GuiRegistry.addGlobalRegistrar(registry -> registry.registerColorProvider((ColorEntry<Color> entry) -> GuiRegistry.build(
                 builder -> builder
                         .startColorField(entry.getText(), entry.getValue())
                         .setAlphaMode(entry.isAlphaMode())
