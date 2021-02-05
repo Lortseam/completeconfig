@@ -1,10 +1,10 @@
 package me.lortseam.completeconfig.data.listeners;
 
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntryListener;
 
-public class ForceUpdateListener implements ConfigEntryContainer {
+public class ForceUpdateListener implements ConfigContainer {
 
     @ConfigEntry(forceUpdate = true)
     private boolean value;

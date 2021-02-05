@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data.entry;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.EntryBase;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
@@ -46,14 +46,14 @@ public final class Transformation<O extends EntryOrigin> {
         return predicate.test(base);
     }
 
-    public Entry<?> transform(EntryBase<?> base, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
+    public Entry<?> transform(EntryBase<?> base, ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
         return transformer.transform(originCreator.create(base.getField(), parentObject, parentTranslation));
     }
 
     @FunctionalInterface
     private interface OriginCreator<O extends EntryOrigin> {
 
-        O create(Field field, ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation);
+        O create(Field field, ConfigContainer parentObject, TranslationIdentifier parentTranslation);
 
     }
 

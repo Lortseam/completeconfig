@@ -7,7 +7,7 @@ import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.entry.EntryOrigin;
 import me.lortseam.completeconfig.data.entry.Transformation;
 import me.lortseam.completeconfig.data.structure.DataPart;
@@ -59,7 +59,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         });
     }
 
-    static EntryBase<?> of(String fieldName, Class<? extends ConfigEntryContainer> parentClass) {
+    static EntryBase<?> of(String fieldName, Class<? extends ConfigContainer> parentClass) {
         try {
             return of(parentClass.getDeclaredField(fieldName), parentClass);
         } catch (NoSuchFieldException e) {
@@ -67,11 +67,11 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }
     }
 
-    static EntryBase<?> of(Field field, Class<? extends ConfigEntryContainer> parentClass) {
+    static EntryBase<?> of(Field field, Class<? extends ConfigContainer> parentClass) {
         return entries.computeIfAbsent(new Key(field, parentClass), absentField -> new Draft<>(field));
     }
 
-    private final ConfigEntryContainer parentObject;
+    private final ConfigContainer parentObject;
     private String customID;
     @Getter
     private final T defaultValue;
@@ -146,7 +146,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }
     }
 
-    void addListener(Method method, ConfigEntryContainer parentObject) {
+    void addListener(Method method, ConfigContainer parentObject) {
         listeners.add(new Listener<>(method, parentObject));
     }
 
@@ -242,13 +242,13 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     private static class Key {
 
         private final Field field;
-        private final Class<? extends ConfigEntryContainer> parentClass;
+        private final Class<? extends ConfigContainer> parentClass;
 
     }
 
     static class Draft<T> extends EntryBase<T> {
 
-        static <T> Draft<T> of(Field field, Class<? extends ConfigEntryContainer> parentClass) {
+        static <T> Draft<T> of(Field field, Class<? extends ConfigContainer> parentClass) {
             EntryBase<T> accessor = (EntryBase<T>) Entry.of(field, parentClass);
             if (!(accessor instanceof Draft)) {
                 throw new UnsupportedOperationException("Entry draft of field " + field + " was already built");
@@ -267,7 +267,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             interactions.add(interaction);
         }
 
-        Entry<T> build(ConfigEntryContainer parentObject, TranslationIdentifier parentTranslation) {
+        Entry<T> build(ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
             Entry<T> entry = transformations.stream().filter(transformation -> transformation.test(this)).findFirst().orElse(Transformation.of(base -> true, Entry::new)).transform(this, parentObject, parentTranslation);
             for (Consumer<Entry<T>> interaction : interactions) {
                 interaction.accept(entry);

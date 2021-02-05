@@ -1,9 +1,9 @@
 package me.lortseam.completeconfig.data.containers;
 
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 
-public class ContainerWithStaticEntry implements ConfigEntryContainer {
+public class ContainerWithStaticEntry implements ConfigContainer {
 
     @ConfigEntry
     private static boolean entry;

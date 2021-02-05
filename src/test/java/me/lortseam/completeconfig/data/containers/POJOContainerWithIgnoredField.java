@@ -1,8 +1,8 @@
 package me.lortseam.completeconfig.data.containers;
 
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 
-public class POJOContainerWithIgnoredField implements ConfigEntryContainer {
+public class POJOContainerWithIgnoredField implements ConfigContainer {
 
     @Ignore
     private boolean noEntry;

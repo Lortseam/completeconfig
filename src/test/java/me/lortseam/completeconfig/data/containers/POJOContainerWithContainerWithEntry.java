@@ -1,8 +1,8 @@
 package me.lortseam.completeconfig.data.containers;
 
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 
-public class POJOContainerWithContainerWithEntry implements ConfigEntryContainer {
+public class POJOContainerWithContainerWithEntry implements ConfigContainer {
 
     private final ContainerWithEntry container = new ContainerWithEntry();
 

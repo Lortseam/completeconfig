@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.io.ConfigSource;
 import net.fabricmc.loader.api.FabricLoader;
@@ -36,7 +36,7 @@ public class Config extends Collection {
 
     private final ConfigSource source;
 
-    private Config(ConfigSource source, LinkedHashSet<ConfigEntryContainer> children) {
+    private Config(ConfigSource source, LinkedHashSet<ConfigContainer> children) {
         super(new TranslationIdentifier(source.getModID()));
         this.source = source;
         resolve(children);
@@ -65,7 +65,7 @@ public class Config extends Collection {
 
         private final String modID;
         private String[] branch = new String[0];
-        private final LinkedHashSet<ConfigEntryContainer> children = new LinkedHashSet<>();
+        private final LinkedHashSet<ConfigContainer> children = new LinkedHashSet<>();
 
         private Builder(String modID) {
             this.modID = modID;
@@ -92,9 +92,9 @@ public class Config extends Collection {
          * @param containers one or more entry containers
          * @return this builder
          */
-        public Builder add(@NonNull ConfigEntryContainer... containers) {
+        public Builder add(@NonNull ConfigContainer... containers) {
             Arrays.stream(containers).forEach(Objects::requireNonNull);
-            for (ConfigEntryContainer container : containers) {
+            for (ConfigContainer container : containers) {
                 if (!children.add(container)) {
                     throw new IllegalArgumentException("Duplicate container");
                 }

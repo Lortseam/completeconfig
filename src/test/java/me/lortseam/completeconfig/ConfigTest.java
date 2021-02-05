@@ -1,6 +1,6 @@
 package me.lortseam.completeconfig;
 
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.EntryBase;
@@ -62,13 +62,13 @@ public class ConfigTest {
 
         @Test
         public void add_throwIfContainersNull() {
-            NullPointerException exception = assertThrows(NullPointerException.class, () -> builder.add((ConfigEntryContainer[]) null));
+            NullPointerException exception = assertThrows(NullPointerException.class, () -> builder.add((ConfigContainer[]) null));
             assertEquals("containers is marked non-null but is null", exception.getMessage());
         }
 
         @Test
         public void add_throwIfContainersContainNullElement() {
-            assertThrows(NullPointerException.class, () -> builder.add((ConfigEntryContainer) null));
+            assertThrows(NullPointerException.class, () -> builder.add((ConfigContainer) null));
         }
 
         @Test

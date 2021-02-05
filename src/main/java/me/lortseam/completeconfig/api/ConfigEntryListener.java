@@ -28,6 +28,6 @@ public @interface ConfigEntryListener {
      *
      * @return the entry's parent class
      */
-    Class<? extends ConfigEntryContainer> container() default ConfigEntryContainer.class;
+    Class<? extends ConfigContainer> container() default ConfigContainer.class;
 
 }

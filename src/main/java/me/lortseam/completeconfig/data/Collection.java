@@ -1,7 +1,7 @@
 package me.lortseam.completeconfig.data;
 
 import lombok.extern.log4j.Log4j2;
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.FlatDataPart;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
@@ -39,16 +39,16 @@ public class Collection implements FlatDataPart<ConfigMap> {
         return Collections.unmodifiableCollection(collections.values());
     }
 
-    void resolve(ConfigEntryContainer container) {
+    void resolve(ConfigContainer container) {
         entries.resolve(container);
-        List<ConfigEntryContainer> containers = new ArrayList<>();
-        for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
+        List<ConfigContainer> containers = new ArrayList<>();
+        for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
             containers.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (container.isConfigPOJO()) {
-                    return ConfigEntryContainer.class.isAssignableFrom(field.getType());
+                    return ConfigContainer.class.isAssignableFrom(field.getType());
                 }
-                if (field.isAnnotationPresent(ConfigEntryContainer.Transitive.class)) {
-                    if (!ConfigEntryContainer.class.isAssignableFrom(field.getType())) {
+                if (field.isAnnotationPresent(ConfigContainer.Transitive.class)) {
+                    if (!ConfigContainer.class.isAssignableFrom(field.getType())) {
                         throw new IllegalAnnotationTargetException("Transitive entry " + field + " must implement ConfigEntryContainer");
                     }
                     return true;
@@ -59,17 +59,17 @@ public class Collection implements FlatDataPart<ConfigMap> {
                     field.setAccessible(true);
                 }
                 try {
-                    return (ConfigEntryContainer) field.get(container);
+                    return (ConfigContainer) field.get(container);
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
             }).collect(Collectors.toList()));
             if (container.isConfigPOJO()) {
                 resolve(Arrays.stream(clazz.getDeclaredClasses()).filter(nestedClass -> {
-                    return ConfigEntryContainer.class.isAssignableFrom(nestedClass) && Modifier.isStatic(nestedClass.getModifiers());
+                    return ConfigContainer.class.isAssignableFrom(nestedClass) && Modifier.isStatic(nestedClass.getModifiers());
                 }).map(nestedClass -> {
                     try {
-                        Constructor<? extends ConfigEntryContainer> constructor = (Constructor<? extends ConfigEntryContainer>) nestedClass.getDeclaredConstructor();
+                        Constructor<? extends ConfigContainer> constructor = (Constructor<? extends ConfigContainer>) nestedClass.getDeclaredConstructor();
                         if (!constructor.isAccessible()) {
                             constructor.setAccessible(true);
                         }
@@ -84,8 +84,8 @@ public class Collection implements FlatDataPart<ConfigMap> {
         resolve(containers);
     }
 
-    protected void resolve(java.util.Collection<ConfigEntryContainer> containers) {
-        for (ConfigEntryContainer c : containers) {
+    protected void resolve(java.util.Collection<ConfigContainer> containers) {
+        for (ConfigContainer c : containers) {
             if (c instanceof ConfigGroup) {
                 collections.resolve((ConfigGroup) c);
             } else {

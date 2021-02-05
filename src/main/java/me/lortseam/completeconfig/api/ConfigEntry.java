@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * Applied to declare that a field is an entry inside the mod's config. Only required if
- * the {@link ConfigEntryContainer} is not a POJO class.
+ * the {@link ConfigContainer} is not a POJO class.
  *
  * <p>This annotation also contains various options to modify the entry.
  */

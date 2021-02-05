@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * A container of config entries.
  */
-public interface ConfigEntryContainer {
+public interface ConfigContainer {
 
     /**
      * Specifies whether this class is a POJO. If true, every field inside this class will be considered to be a config
@@ -24,15 +24,15 @@ public interface ConfigEntryContainer {
         return false;
     }
 
-    default List<Class<? extends ConfigEntryContainer>> getConfigClasses() {
-        List<Class<? extends ConfigEntryContainer>> classes = new ArrayList<>();
-        Class<? extends ConfigEntryContainer> clazz = getClass();
+    default List<Class<? extends ConfigContainer>> getConfigClasses() {
+        List<Class<? extends ConfigContainer>> classes = new ArrayList<>();
+        Class<? extends ConfigContainer> clazz = getClass();
         while (clazz != null) {
             classes.add(clazz);
-            if (!ConfigEntryContainer.class.isAssignableFrom(clazz.getSuperclass())) {
+            if (!ConfigContainer.class.isAssignableFrom(clazz.getSuperclass())) {
                 break;
             }
-            clazz = (Class<? extends ConfigEntryContainer>) clazz.getSuperclass();
+            clazz = (Class<? extends ConfigContainer>) clazz.getSuperclass();
         }
         return ImmutableList.copyOf(classes);
     }
@@ -43,16 +43,16 @@ public interface ConfigEntryContainer {
      * @return an array of other containers
      * @see Transitive
      */
-    default ConfigEntryContainer[] getTransitiveContainers() {
-        return new ConfigEntryContainer[0];
+    default ConfigContainer[] getTransitiveContainers() {
+        return new ConfigContainer[0];
     }
 
     /**
-     * Applied to declare that a field of type {@link ConfigEntryContainer} is transitive. The container will then be
+     * Applied to declare that a field of type {@link ConfigContainer} is transitive. The container will then be
      * registered at the same level as this container.
      *
      * <p>This annotation is only required inside non-POJO classes. POJO classes will always register every field of
-     * type {@link ConfigEntryContainer}.
+     * type {@link ConfigContainer}.
      *
      * @see #getTransitiveContainers()
      */
@@ -63,7 +63,7 @@ public interface ConfigEntryContainer {
     }
 
     /**
-     * Can be applied to a field inside a POJO {@link ConfigEntryContainer} class to declare that that field should not
+     * Can be applied to a field inside a POJO {@link ConfigContainer} class to declare that that field should not
      * be considered to be a config entry.
      */
     @Target(ElementType.FIELD)

@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import com.google.common.base.CaseFormat;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntryListener;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
@@ -22,16 +22,16 @@ public class EntryMap extends ConfigMap<Entry> {
         super(translation);
     }
 
-    void resolve(ConfigEntryContainer container) {
+    void resolve(ConfigContainer container) {
         List<Entry> containerEntries = new ArrayList<>();
-        for (Class<? extends ConfigEntryContainer> clazz : container.getConfigClasses()) {
+        for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
             List<Entry> clazzEntries = new ArrayList<>();
             Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (clazz != container.getClass() && Modifier.isStatic(field.getModifiers())) {
                     return false;
                 }
                 if (container.isConfigPOJO()) {
-                    return !ConfigEntryContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntryContainer.Ignore.class);
+                    return !ConfigContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigContainer.Ignore.class);
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
             }).forEach(field -> {
@@ -50,13 +50,13 @@ public class EntryMap extends ConfigMap<Entry> {
                 return method.isAnnotationPresent(ConfigEntryListener.class) || container.isConfigPOJO() && method.getName().startsWith("set");
             }).forEach(method -> {
                 String fieldName = null;
-                Class<? extends ConfigEntryContainer> fieldClass = clazz;
+                Class<? extends ConfigContainer> fieldClass = clazz;
                 if (method.isAnnotationPresent(ConfigEntryListener.class)) {
                     ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
                     if (!listener.value().equals("")) {
                         fieldName = listener.value();
                     }
-                    if (listener.container() != ConfigEntryContainer.class) {
+                    if (listener.container() != ConfigContainer.class) {
                         fieldClass = listener.container();
                     }
                 }

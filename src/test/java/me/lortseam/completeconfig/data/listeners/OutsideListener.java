@@ -1,10 +1,10 @@
 package me.lortseam.completeconfig.data.listeners;
 
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntryListener;
 import me.lortseam.completeconfig.data.containers.ContainerWithEntry;
 
-public class OutsideListener implements ConfigEntryContainer {
+public class OutsideListener implements ConfigContainer {
 
     @Transitive
     private final ContainerWithEntry container = new ContainerWithEntry();

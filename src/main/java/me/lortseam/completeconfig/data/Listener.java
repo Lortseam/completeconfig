@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.data;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,7 +13,7 @@ public class Listener<T> {
 
     private final Method method;
     @Getter(AccessLevel.PACKAGE)
-    private final ConfigEntryContainer parentObject;
+    private final ConfigContainer parentObject;
 
     void invoke(T value) {
         try {

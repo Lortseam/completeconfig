@@ -5,7 +5,7 @@ import com.google.common.base.CaseFormat;
 /**
  * A group of config entries. Inside its parent node, every group is uniquely defined by an identifier.
  */
-public interface ConfigGroup extends ConfigEntryContainer {
+public interface ConfigGroup extends ConfigContainer {
 
     /**
      * Used to identify this group. Defaults to the class name.

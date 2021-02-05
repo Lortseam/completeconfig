@@ -1,12 +1,12 @@
 package me.lortseam.completeconfig.data.containers;
 
-import me.lortseam.completeconfig.api.ConfigEntryContainer;
+import me.lortseam.completeconfig.api.ConfigContainer;
 
-public class ContainerIncludingContainerWithEntry implements ConfigEntryContainer {
+public class ContainerIncludingContainerWithEntry implements ConfigContainer {
 
     @Override
-    public ConfigEntryContainer[] getTransitiveContainers() {
-        return new ConfigEntryContainer[]{new ContainerWithEntry()};
+    public ConfigContainer[] getTransitiveContainers() {
+        return new ConfigContainer[]{new ContainerWithEntry()};
     }
 
 }
