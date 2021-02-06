@@ -1,41 +1,42 @@
 # CompleteConfig
 CompleteConfig is a flexible, all-in-one configuration API for [Fabric](https://fabricmc.net/) mods.  
-Because of its object-oriented and annotation-based system, it is very easy to integrate the library into your mod.
+Because of its object-oriented approach and annotation-based system, it's easy to integrate the library into your mod.
 
 ## Features
 * Creating, grouping and observing config entries
-* Building a customizable GUI
-* File saving and loading
+* Building a customizable GUI (optional)
+* Configurable file saving and loading
+* Extension system
 
 ## Setup
 [![](https://jitpack.io/v/com.gitlab.Lortseam/completeconfig.svg)](https://jitpack.io/#com.gitlab.Lortseam/completeconfig)
 
-To use the library, first add the JitPack repository to your `build.gradle`:
+To use the library, first add the JitPack repository to your `build.gradle` file:
 ```groovy
 repositories {
     [...]
     maven { url 'https://jitpack.io' }
 }
 ```
-Then add CompleteConfig as dependency:
+Then add CompleteConfig to the dependencies:
 ```groovy
 dependencies {
     [...]
 
-    // The following lines add CompleteConfig and includes it in your mod's jar
+    // Adds CompleteConfig and bundles it within the mod's jar file
     // Replace Tag with the current version you can find above
     modImplementation ("com.gitlab.Lortseam:completeconfig:Tag")
     include("com.gitlab.Lortseam:completeconfig:Tag")
     
-    // This bundles Cloth Config in your mod's jar
-    // Only required if you want to display a GUI based on your mod's config and don't provide your own GUI generation
+    // Bundles Cloth Config within the mod's jar file
+    // Only required if you want to display a config GUI and don't provide your own screen builder
     // Replace Version with the current version
     include("me.shedaniel.cloth:config-2:Version")
 }
 ```
 
 ## Usage
-See the [wiki](https://gitlab.com/Lortseam/completeconfig/-/wikis/home) for usage instructions.  
+Usage instructions can be found in the [wiki](https://gitlab.com/Lortseam/completeconfig/-/wikis/home).
 
 ## License
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
