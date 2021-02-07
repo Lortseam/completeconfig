@@ -1,9 +1,11 @@
 package me.lortseam.completeconfig.extensions.clothbasicmath;
 
+import lombok.experimental.UtilityClass;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.gui.cloth.GuiRegistry;
 import me.shedaniel.math.Color;
 
+@UtilityClass
 final class GuiProviders {
 
     static void register() {
