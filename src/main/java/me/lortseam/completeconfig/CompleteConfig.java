@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.extensions.clothbasicmath.ClothBasicMathExtension;
-import me.lortseam.completeconfig.extensions.confabricate.ConfabricateExtension;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 
@@ -22,7 +21,6 @@ public final class CompleteConfig {
 
     static {
         registerExternalExtension("cloth-basic-math", ClothBasicMathExtension.class);
-        registerExternalExtension("confabricate", ConfabricateExtension.class);
         for (EntrypointContainer<CompleteConfigExtension> entrypoint : FabricLoader.getInstance().getEntrypointContainers("completeconfig-extension", CompleteConfigExtension.class)) {
             extensions.put(entrypoint.getProvider().getMetadata().getId(), entrypoint.getEntrypoint());
         }
