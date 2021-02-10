@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig;
 
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.extensions.clothbasicmath.ClothBasicMathExtension;
@@ -25,7 +26,7 @@ public final class CompleteConfig {
         }
     }
 
-    public static void registerExternalExtension(String modID, Class<? extends CompleteConfigExtension> extensionClass) {
+    public static void registerExternalExtension(@NonNull String modID, @NonNull Class<? extends CompleteConfigExtension> extensionClass) {
         if(!FabricLoader.getInstance().isModLoaded(modID)) return;
         try {
             Constructor<? extends CompleteConfigExtension> constructor = extensionClass.getDeclaredConstructor();
