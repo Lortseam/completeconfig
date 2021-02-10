@@ -12,6 +12,7 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+	mavenCentral()
 	jcenter()
 }
 
@@ -21,6 +22,9 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
 
 	modApi("me.shedaniel.cloth:config-2:${project.cloth_config_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modImplementation("ca.stellardrift:confabricate:${project.confabricate_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
