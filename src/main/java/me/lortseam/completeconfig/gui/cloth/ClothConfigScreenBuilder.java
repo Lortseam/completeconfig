@@ -31,17 +31,16 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
     @Getter
     private final GuiRegistry registry = new GuiRegistry();
 
-    public ClothConfigScreenBuilder(Config config, Supplier<ConfigBuilder> supplier) {
-        super(config);
+    public ClothConfigScreenBuilder(Supplier<ConfigBuilder> supplier) {
         this.supplier = supplier;
     }
 
-    public ClothConfigScreenBuilder(Config config) {
-        this(config, ConfigBuilder::create);
+    public ClothConfigScreenBuilder() {
+        this(ConfigBuilder::create);
     }
 
     @Override
-    public Screen build(Screen parentScreen) {
+    public Screen build(Screen parentScreen, Config config) {
         ConfigBuilder builder = supplier.get()
                 .setParentScreen(parentScreen)
                 .setSavingRunnable(config::save);
