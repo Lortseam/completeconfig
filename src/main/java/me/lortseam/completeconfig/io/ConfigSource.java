@@ -66,10 +66,10 @@ public final class ConfigSource {
             if (!root.virtual()) {
                 config.apply(root);
             }
-            save(config);
         } catch (ConfigurateException e) {
             logger.error("[CompleteConfig] Failed to load config from file!", e);
         }
+        save(config);
     }
 
     public void save(Config config) {
