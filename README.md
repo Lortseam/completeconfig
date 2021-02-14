@@ -31,11 +31,6 @@ dependencies {
     // Replace Tag with the current version you can find above
     modImplementation ("com.gitlab.Lortseam:completeconfig:Tag")
     include("com.gitlab.Lortseam:completeconfig:Tag")
-    
-    // Bundles Cloth Config within the mod's jar file
-    // Only required if you want to display a config GUI and don't provide your own screen builder
-    // Replace Version with the current version
-    include("me.shedaniel.cloth:config-2:Version")
 }
 ```
 
