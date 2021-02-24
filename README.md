@@ -26,10 +26,10 @@ Then add CompleteConfig to the dependencies:
 ```groovy
 dependencies {
     [...]
-
-    // Adds CompleteConfig and bundles it within the mod's jar file
+    
     // Replace Tag with the current version you can find above
-    modImplementation ("com.gitlab.Lortseam:completeconfig:Tag")
+    modImplementation("com.gitlab.Lortseam:completeconfig:Tag")
+    // Optional: Bundles the library within the mod's jar file, so users don't have to download it seperately
     include("com.gitlab.Lortseam:completeconfig:Tag")
 }
 ```
