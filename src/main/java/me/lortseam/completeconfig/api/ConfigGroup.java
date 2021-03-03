@@ -16,4 +16,8 @@ public interface ConfigGroup extends ConfigContainer {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, getClass().getSimpleName());
     }
 
+    default String[] getTooltipTranslationKeys() {
+        return null;
+    }
+
 }

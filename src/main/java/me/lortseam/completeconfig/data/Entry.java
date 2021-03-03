@@ -163,18 +163,9 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     }
 
     public Optional<Text[]> getTooltip() {
-        TranslationIdentifier[] translation;
-        if (customTooltipTranslation != null) {
-            translation = customTooltipTranslation;
-        } else {
-            Optional<TranslationIdentifier[]> defaultTooltip = getTranslation().appendTooltip();
-            if (defaultTooltip.isPresent()) {
-                translation = defaultTooltip.get();
-            } else {
-                return Optional.empty();
-            }
-        }
-        return Optional.of(Arrays.stream(translation).map(TranslationIdentifier::toText).toArray(Text[]::new));
+        return (customTooltipTranslation != null ? Optional.of(customTooltipTranslation) : getTranslation().appendTooltip()).map(lines -> {
+            return Arrays.stream(lines).map(TranslationIdentifier::toText).toArray(Text[]::new);
+        });
     }
 
     public boolean requiresRestart() {

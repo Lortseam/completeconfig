@@ -15,9 +15,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.StringVisitable;
 import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -54,6 +56,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
         }
         for(Collection collection : config.getCollections()) {
             ConfigCategory category = builder.getOrCreateCategory(collection.getText());
+            category.setDescription(() -> collection.getTooltipTranslation().map(lines -> Arrays.stream(lines).map(line -> (StringVisitable) line).toArray(StringVisitable[]::new)));
             for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {
                 category.addEntry(entry);
             }
@@ -72,9 +75,10 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
         for (Entry<?> entry : collection.getEntries()) {
             collectionGui.add(buildEntry(entry));
         }
-        for (Collection c : collection.getCollections()) {
-            SubCategoryBuilder subBuilder = ConfigEntryBuilder.create().startSubCategory(c.getText());
-            subBuilder.addAll(buildCollection(c));
+        for (Collection subCollection : collection.getCollections()) {
+            SubCategoryBuilder subBuilder = ConfigEntryBuilder.create().startSubCategory(subCollection.getText());
+            subBuilder.setTooltip(subCollection.getTooltipTranslation());
+            subBuilder.addAll(buildCollection(subCollection));
             collectionGui.add(subBuilder.build());
         }
         return collectionGui;
