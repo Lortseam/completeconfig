@@ -66,6 +66,16 @@ public @interface ConfigEntry {
      */
     boolean requiresRestart() default false;
 
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Boolean {
+
+        String trueTranslationKey() default "";
+
+        String falseTranslationKey() default "";
+        
+    }
+
     /**
      * Applies bounds to an entry of type Integer.
      */

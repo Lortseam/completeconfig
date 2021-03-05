@@ -1,13 +1,14 @@
 package me.lortseam.completeconfig.data;
 
+import com.google.common.base.Predicates;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
-import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigContainer;
+import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.entry.EntryOrigin;
 import me.lortseam.completeconfig.data.entry.Transformation;
 import me.lortseam.completeconfig.data.structure.DataPart;
@@ -30,26 +31,28 @@ import java.util.function.UnaryOperator;
 public class Entry<T> extends EntryBase<T> implements DataPart {
 
     private static final List<Transformation> transformations = Lists.newArrayList(
-            Transformation.ofAnnotation(ConfigEntry.BoundedInteger.class, origin -> {
+            Transformation.byAnnotation(ConfigEntry.Boolean.class).andType(boolean.class, Boolean.class).transforms(BooleanEntry::new),
+            Transformation.byType(boolean.class, Boolean.class).transforms(BooleanEntry::new),
+            Transformation.byAnnotation(ConfigEntry.BoundedInteger.class).andType(int.class, Integer.class).transforms(origin -> {
                 ConfigEntry.BoundedInteger bounds = origin.getAnnotation();
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max(), bounds.slider());
-            }, int.class, Integer.class),
-            Transformation.ofAnnotation(ConfigEntry.BoundedLong.class, origin -> {
+            }),
+            Transformation.byAnnotation(ConfigEntry.BoundedLong.class).andType(long.class, Long.class).transforms(origin -> {
                 ConfigEntry.BoundedLong bounds = origin.getAnnotation();
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max(), bounds.slider());
-            }, long.class, Long.class),
-            Transformation.ofAnnotation(ConfigEntry.BoundedFloat.class, origin -> {
+            }),
+            Transformation.byAnnotation(ConfigEntry.BoundedFloat.class).andType(float.class, Float.class).transforms(origin -> {
                 ConfigEntry.BoundedFloat bounds = origin.getAnnotation();
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max());
-            }, float.class, Float.class),
-            Transformation.ofAnnotation(ConfigEntry.BoundedDouble.class, origin -> {
+            }),
+            Transformation.byAnnotation(ConfigEntry.BoundedDouble.class).andType(double.class, Double.class).transforms(origin -> {
                 ConfigEntry.BoundedDouble bounds = origin.getAnnotation();
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max());
-            }, double.class, Double.class),
-            Transformation.of(base -> Enum.class.isAssignableFrom(base.typeClass), EnumEntry::new),
-            Transformation.ofAnnotation(ConfigEntry.Enum.class, origin -> new EnumEntry<>(origin, origin.getAnnotation().displayType()), base -> Enum.class.isAssignableFrom(base.typeClass)),
-            Transformation.ofAnnotation(ConfigEntry.Color.class, origin -> new ColorEntry<>(origin, origin.getAnnotation().alphaMode())),
-            Transformation.ofType(TextColor.class, origin -> new ColorEntry<>(origin, false))
+            }),
+            Transformation.by(base -> Enum.class.isAssignableFrom(base.typeClass)).transforms(EnumEntry::new),
+            Transformation.byAnnotation(ConfigEntry.Enum.class).and(base -> Enum.class.isAssignableFrom(base.typeClass)).transforms(origin -> new EnumEntry<>(origin, origin.getAnnotation().displayType())),
+            Transformation.byAnnotation(ConfigEntry.Color.class).transforms(ColorEntry::new),
+            Transformation.byType(TextColor.class).transforms(origin -> new ColorEntry<>(origin, false))
     );
     private static final BiMap<Key, EntryBase> entries = HashBiMap.create();
 
@@ -259,7 +262,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }
 
         Entry<T> build(ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
-            Entry<T> entry = transformations.stream().filter(transformation -> transformation.test(this)).findFirst().orElse(Transformation.of(base -> true, Entry::new)).transform(this, parentObject, parentTranslation);
+            Entry<T> entry = transformations.stream().filter(transformation -> transformation.test(this)).findFirst().orElse(Transformation.by(Predicates.alwaysTrue()).transforms(Entry::new)).transform(this, parentObject, parentTranslation);
             for (Consumer<Entry<T>> interaction : interactions) {
                 interaction.accept(entry);
             }

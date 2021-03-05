@@ -3,10 +3,7 @@ package me.lortseam.completeconfig.gui.cloth;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
-import me.lortseam.completeconfig.data.BoundedEntry;
-import me.lortseam.completeconfig.data.ColorEntry;
-import me.lortseam.completeconfig.data.Entry;
-import me.lortseam.completeconfig.data.EnumEntry;
+import me.lortseam.completeconfig.data.*;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
@@ -77,10 +74,11 @@ public final class GuiRegistry {
     }
 
     private void registerDefaultProviders() {
-       registerProvider((Entry<Boolean> entry) -> build(
+       registerProvider((BooleanEntry entry) -> build(
                builder -> builder
                        .startBooleanToggle(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
+                       .setYesNoTextSupplier(entry.getTrueFalseTextSupplier())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
