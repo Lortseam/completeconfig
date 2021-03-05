@@ -20,4 +20,8 @@ public interface ConfigGroup extends ConfigContainer {
         return null;
     }
 
+    default String getComment() {
+        return null;
+    }
+
 }

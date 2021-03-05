@@ -13,7 +13,7 @@ public class CollectionMap extends ConfigMap<Collection> {
 
     void resolve(ConfigGroup group) {
         String groupID = group.getGroupID();
-        Collection collection = new Collection(translation.append(groupID), group.getTooltipTranslationKeys());
+        Collection collection = new Collection(translation.append(groupID), group.getTooltipTranslationKeys(), group.getComment());
         collection.resolve(group);
         if (collection.isEmpty()) {
             logger.warn("[CompleteConfig] Group " + groupID + " is empty!");
