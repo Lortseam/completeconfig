@@ -43,8 +43,8 @@ public final class GuiRegistry {
     private final List<GuiProviderRegistration> registrations = new ArrayList<>();
 
     GuiRegistry() {
-        for (Consumer<GuiRegistry> registrations : globalRegistrars) {
-            registrations.accept(this);
+        for (Consumer<GuiRegistry> registrar : globalRegistrars) {
+            registrar.accept(this);
         }
     }
 
