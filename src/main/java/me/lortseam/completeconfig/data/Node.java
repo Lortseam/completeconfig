@@ -42,7 +42,7 @@ abstract class Node implements FlatDataPart<ConfigMap> {
         List<ConfigContainer> containers = new ArrayList<>();
         for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
             containers.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
-                if (container.isConfigPOJO()) {
+                if (container.isConfigObject()) {
                     return ConfigContainer.class.isAssignableFrom(field.getType());
                 }
                 if (field.isAnnotationPresent(ConfigContainer.Transitive.class)) {
@@ -62,7 +62,7 @@ abstract class Node implements FlatDataPart<ConfigMap> {
                     throw new RuntimeException(e);
                 }
             }).collect(Collectors.toList()));
-            if (container.isConfigPOJO()) {
+            if (container.isConfigObject()) {
                 resolve(Arrays.stream(clazz.getDeclaredClasses()).filter(nestedClass -> {
                     return ConfigContainer.class.isAssignableFrom(nestedClass) && Modifier.isStatic(nestedClass.getModifiers());
                 }).map(nestedClass -> {

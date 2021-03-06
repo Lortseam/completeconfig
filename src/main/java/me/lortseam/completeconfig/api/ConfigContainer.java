@@ -15,12 +15,11 @@ import java.util.List;
 public interface ConfigContainer {
 
     /**
-     * Specifies whether this class is a POJO. If true, every field inside this class will be considered to be a config
-     * entry.
+     * Specifies whether this class was solely created for config use.
      *
-     * @return whether this class is a POJO
+     * @return whether this class is a config class
      */
-    default boolean isConfigPOJO() {
+    default boolean isConfigObject() {
         return false;
     }
 
@@ -34,6 +33,7 @@ public interface ConfigContainer {
             }
             clazz = (Class<? extends ConfigContainer>) clazz.getSuperclass();
         }
+        // TODO: Add nested static classes here instead of in Node#resolve
         return ImmutableList.copyOf(classes);
     }
 
@@ -51,8 +51,8 @@ public interface ConfigContainer {
      * Applied to declare that a field of type {@link ConfigContainer} is transitive. The container will then be
      * registered at the same level as this container.
      *
-     * <p>This annotation is only required inside non-POJO classes. POJO classes will always register every field of
-     * type {@link ConfigContainer}.
+     * <p>If {@link #isConfigObject()} returns {@code true}, all fields of type {@link ConfigContainer} will be
+     * resolved. Therefore, the use of this annotation is no longer required in that case.
      *
      * @see #getTransitiveContainers()
      */
@@ -63,8 +63,9 @@ public interface ConfigContainer {
     }
 
     /**
-     * Can be applied to a field inside a POJO {@link ConfigContainer} class to declare that that field should not
-     * be considered to be a config entry.
+     * Applied to declare that a field should not be resolved as config entry.
+     *
+     * <p>Only required if {@link #isConfigObject()} returns {@code true}.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)

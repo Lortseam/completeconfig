@@ -6,7 +6,7 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 public class POJOContainerNestingContainerWithEntry implements ConfigContainer {
 
     @Override
-    public boolean isConfigPOJO() {
+    public boolean isConfigObject() {
         return true;
     }
 

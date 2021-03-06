@@ -8,10 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Applied to declare that a field is an entry inside the mod's config. Only required if
- * the {@link ConfigContainer} is not a POJO class.
- *
- * <p>This annotation also contains various options to modify the entry.
+ * Applied to declare that a field is an entry inside the mod's config.
+ * Also contains various options to modify the entry.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

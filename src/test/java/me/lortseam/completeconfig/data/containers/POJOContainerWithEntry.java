@@ -7,7 +7,7 @@ public class POJOContainerWithEntry implements ConfigContainer {
     private boolean entry;
 
     @Override
-    public boolean isConfigPOJO() {
+    public boolean isConfigObject() {
         return true;
     }
 

@@ -8,7 +8,7 @@ public class POJOContainerWithIgnoredField implements ConfigContainer {
     private boolean noEntry;
 
     @Override
-    public boolean isConfigPOJO() {
+    public boolean isConfigObject() {
         return true;
     }
 

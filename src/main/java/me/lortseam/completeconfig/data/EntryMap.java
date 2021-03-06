@@ -30,7 +30,7 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (clazz != container.getClass() && Modifier.isStatic(field.getModifiers())) {
                     return false;
                 }
-                if (container.isConfigPOJO()) {
+                if (container.isConfigObject()) {
                     return !ConfigContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigContainer.Ignore.class);
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
@@ -47,7 +47,7 @@ public class EntryMap extends ConfigMap<Entry> {
                 if (clazz != container.getClass() && Modifier.isStatic(method.getModifiers())) {
                     return false;
                 }
-                return method.isAnnotationPresent(ConfigEntryListener.class) || container.isConfigPOJO() && method.getName().startsWith("set");
+                return method.isAnnotationPresent(ConfigEntryListener.class) || container.isConfigObject() && method.getName().startsWith("set");
             }).forEach(method -> {
                 String fieldName = null;
                 Class<? extends ConfigContainer> fieldClass = clazz;

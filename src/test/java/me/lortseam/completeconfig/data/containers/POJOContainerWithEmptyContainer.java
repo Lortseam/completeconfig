@@ -7,7 +7,7 @@ public class POJOContainerWithEmptyContainer implements ConfigContainer {
     private EmptyContainer container = new EmptyContainer();
 
     @Override
-    public boolean isConfigPOJO() {
+    public boolean isConfigObject() {
         return true;
     }
 
