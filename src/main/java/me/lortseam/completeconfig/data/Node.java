@@ -13,7 +13,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 
-abstract class Node implements FlatDataPart<ConfigMap> {
+abstract class Node implements FlatDataPart<DataMap> {
 
     protected final TranslationIdentifier translation;
     private final EntryMap entries;
@@ -93,7 +93,7 @@ abstract class Node implements FlatDataPart<ConfigMap> {
     }
 
     @Override
-    public Iterable<ConfigMap> getChildren() {
+    public Iterable<DataMap> getChildren() {
         return Arrays.asList(entries, collections);
     }
 

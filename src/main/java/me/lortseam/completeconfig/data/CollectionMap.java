@@ -5,7 +5,7 @@ import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 
 @Log4j2
-public class CollectionMap extends ConfigMap<Collection> {
+public class CollectionMap extends DataMap<Collection> {
 
     protected CollectionMap(TranslationIdentifier translation) {
         super(translation);

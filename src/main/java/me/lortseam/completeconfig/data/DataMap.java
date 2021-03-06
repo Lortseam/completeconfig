@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class ConfigMap<T extends DataPart> extends LinkedHashMap<String, T> implements ParentDataPart<Map.Entry<String, T>, T> {
+public abstract class DataMap<T extends DataPart> extends LinkedHashMap<String, T> implements ParentDataPart<Map.Entry<String, T>, T> {
 
     protected final TranslationIdentifier translation;
 

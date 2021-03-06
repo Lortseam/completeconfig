@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class EntryMap extends ConfigMap<Entry> {
+public class EntryMap extends DataMap<Entry> {
 
     EntryMap(TranslationIdentifier translation) {
         super(translation);
