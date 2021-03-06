@@ -33,7 +33,6 @@ public interface ConfigContainer {
             }
             clazz = (Class<? extends ConfigContainer>) clazz.getSuperclass();
         }
-        // TODO: Add nested static classes here instead of in Node#resolve
         return ImmutableList.copyOf(classes);
     }
 
