@@ -12,7 +12,7 @@ public interface ConfigGroup extends ConfigContainer {
      *
      * @return the ID of this group
      */
-    default String getGroupID() {
+    default String getID() {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, getClass().getSimpleName());
     }
 
