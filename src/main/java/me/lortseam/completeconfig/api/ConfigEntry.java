@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Applied to declare that a field is an entry inside the mod's config.
+ * Applied to declare that a field is an entry inside a config.
  * Also contains various options to modify the entry.
  */
 @Target(ElementType.FIELD)
