@@ -38,7 +38,7 @@ public interface ConfigContainer {
     }
 
     /**
-     * Used to register other containers, located at the same level as this container.
+     * Used to register other containers, located at the level of this container.
      *
      * @return an array of other containers
      * @see Transitive
@@ -48,8 +48,8 @@ public interface ConfigContainer {
     }
 
     /**
-     * Applied to declare that a field of type {@link ConfigContainer} is transitive. The container will then be
-     * registered at the same level as this container.
+     * Applied to declare that a field of type {@link ConfigContainer} is transitive, which means the object will be
+     * registered the level of this container.
      *
      * <p>If {@link #isConfigObject()} returns {@code true}, all fields of type {@link ConfigContainer} will be
      * resolved. Therefore, the use of this annotation is no longer needed in that case.
