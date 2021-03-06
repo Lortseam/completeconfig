@@ -78,7 +78,7 @@ abstract class Node implements FlatDataPart<ConfigMap> {
                 }).filter(Objects::nonNull).collect(Collectors.toList()));
             }
         }
-        containers.addAll(Arrays.asList(container.getTransitiveContainers()));
+        containers.addAll(Arrays.asList(container.getTransitives()));
         resolve(containers);
     }
 

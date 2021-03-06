@@ -38,12 +38,12 @@ public interface ConfigContainer {
     }
 
     /**
-     * Used to register other containers. They will then be registered at the same level as this container.
+     * Used to register other containers, located at the same level as this container.
      *
      * @return an array of other containers
      * @see Transitive
      */
-    default ConfigContainer[] getTransitiveContainers() {
+    default ConfigContainer[] getTransitives() {
         return new ConfigContainer[0];
     }
 
@@ -54,7 +54,7 @@ public interface ConfigContainer {
      * <p>If {@link #isConfigObject()} returns {@code true}, all fields of type {@link ConfigContainer} will be
      * resolved. Therefore, the use of this annotation is no longer needed in that case.
      *
-     * @see #getTransitiveContainers()
+     * @see #getTransitives()
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)

@@ -5,7 +5,7 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 public class ContainerIncludingContainerWithEntry implements ConfigContainer {
 
     @Override
-    public ConfigContainer[] getTransitiveContainers() {
+    public ConfigContainer[] getTransitives() {
         return new ConfigContainer[]{new ContainerWithEntry()};
     }
 
