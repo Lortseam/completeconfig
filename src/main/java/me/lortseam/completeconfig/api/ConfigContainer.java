@@ -52,7 +52,7 @@ public interface ConfigContainer {
      * registered at the same level as this container.
      *
      * <p>If {@link #isConfigObject()} returns {@code true}, all fields of type {@link ConfigContainer} will be
-     * resolved. Therefore, the use of this annotation is no longer required in that case.
+     * resolved. Therefore, the use of this annotation is no longer needed in that case.
      *
      * @see #getTransitiveContainers()
      */
