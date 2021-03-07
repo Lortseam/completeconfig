@@ -30,7 +30,7 @@ public class EntryMap extends DataMap<Entry> {
                     return false;
                 }
                 if (clazz.isAnnotationPresent(ConfigEntries.class)) {
-                    return !ConfigContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigContainer.Ignore.class);
+                    return !ConfigContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigContainer.Ignore.class) && !Modifier.isTransient(field.getModifiers());
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
             }).map(field -> {
