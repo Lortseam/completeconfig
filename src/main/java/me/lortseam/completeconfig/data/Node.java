@@ -39,15 +39,11 @@ abstract class Node implements FlatDataPart<DataMap> {
 
     void resolve(ConfigContainer container) {
         entries.resolve(container);
-        List<ConfigContainer> containers = new ArrayList<>();
         for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
-            containers.addAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
-                if (container.isConfigObject()) {
-                    return ConfigContainer.class.isAssignableFrom(field.getType());
-                }
+            resolve(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (field.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(field.getType())) {
-                        throw new IllegalAnnotationTargetException("Transitive entry " + field + " must implement " + ConfigContainer.class.getSimpleName());
+                        throw new IllegalAnnotationTargetException("Transitive field " + field + " must implement " + ConfigContainer.class.getSimpleName());
                     }
                     return true;
                 }
@@ -62,27 +58,33 @@ abstract class Node implements FlatDataPart<DataMap> {
                     throw new RuntimeException(e);
                 }
             }).collect(Collectors.toList()));
-            if (container.isConfigObject()) {
-                resolve(Arrays.stream(clazz.getDeclaredClasses()).filter(nestedClass -> {
-                    return ConfigContainer.class.isAssignableFrom(nestedClass) && Modifier.isStatic(nestedClass.getModifiers());
-                }).map(nestedClass -> {
-                    try {
-                        Constructor<? extends ConfigContainer> constructor = (Constructor<? extends ConfigContainer>) nestedClass.getDeclaredConstructor();
-                        if (!constructor.isAccessible()) {
-                            constructor.setAccessible(true);
-                        }
-                        return constructor.newInstance();
-                    } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                        throw new RuntimeException("Failed to instantiate nested class " + nestedClass, e);
+            resolve(Arrays.stream(clazz.getDeclaredClasses()).filter(nestedClass -> {
+                if (nestedClass.isAnnotationPresent(ConfigContainer.Transitive.class)) {
+                    if (!ConfigContainer.class.isAssignableFrom(nestedClass)) {
+                        throw new IllegalAnnotationTargetException("Transitive class " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
                     }
-                }).filter(Objects::nonNull).collect(Collectors.toList()));
-            }
+                    if (!Modifier.isStatic(nestedClass.getModifiers())) {
+                        throw new IllegalAnnotationTargetException("Transitive class " + nestedClass + " must be static");
+                    }
+                    return true;
+                }
+                return false;
+            }).map(nestedClass -> {
+                try {
+                    Constructor<? extends ConfigContainer> constructor = (Constructor<? extends ConfigContainer>) nestedClass.getDeclaredConstructor();
+                    if (!constructor.isAccessible()) {
+                        constructor.setAccessible(true);
+                    }
+                    return constructor.newInstance();
+                } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                    throw new RuntimeException("Failed to instantiate nested class " + nestedClass, e);
+                }
+            }).collect(Collectors.toList()));
         }
-        containers.addAll(Arrays.asList(container.getTransitives()));
-        resolve(containers);
+        resolve(Arrays.asList(container.getTransitives()));
     }
 
-    protected void resolve(java.util.Collection<ConfigContainer> containers) {
+    protected void resolve(Iterable<ConfigContainer> containers) {
         for (ConfigContainer c : containers) {
             if (c instanceof ConfigGroup) {
                 collections.resolve((ConfigGroup) c);

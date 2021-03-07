@@ -1,8 +1,9 @@
 package me.lortseam.completeconfig.data;
 
 import com.google.common.base.CaseFormat;
-import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigContainer;
+import me.lortseam.completeconfig.api.ConfigEntries;
+import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigEntryListener;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
@@ -11,10 +12,10 @@ import me.lortseam.completeconfig.exception.IllegalReturnTypeException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class EntryMap extends DataMap<Entry> {
 
@@ -23,31 +24,28 @@ public class EntryMap extends DataMap<Entry> {
     }
 
     void resolve(ConfigContainer container) {
-        List<Entry> containerEntries = new ArrayList<>();
         for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
-            List<Entry> clazzEntries = new ArrayList<>();
-            Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
+            putAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (clazz != container.getClass() && Modifier.isStatic(field.getModifiers())) {
                     return false;
                 }
-                if (container.isConfigObject()) {
+                if (clazz.isAnnotationPresent(ConfigEntries.class)) {
                     return !ConfigContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigContainer.Ignore.class);
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
-            }).forEach(field -> {
+            }).map(field -> {
                 if (Modifier.isFinal(field.getModifiers())) {
                     throw new IllegalModifierException("Entry field " + field + " must not be final");
                 }
                 Entry<?> entry = Entry.Draft.of(field, container.getClass()).build(Modifier.isStatic(field.getModifiers()) ? null : container, translation);
                 entry.resolve(field);
-                clazzEntries.add(entry);
-            });
-            containerEntries.addAll(0, clazzEntries);
+                return entry;
+            }).collect(Collectors.toMap(Entry::getID, Function.identity())));
             Arrays.stream(clazz.getDeclaredMethods()).filter(method -> {
                 if (clazz != container.getClass() && Modifier.isStatic(method.getModifiers())) {
                     return false;
                 }
-                return method.isAnnotationPresent(ConfigEntryListener.class) || container.isConfigObject() && method.getName().startsWith("set");
+                return method.isAnnotationPresent(ConfigEntryListener.class);
             }).forEach(method -> {
                 String fieldName = null;
                 Class<? extends ConfigContainer> fieldClass = clazz;
@@ -84,9 +82,6 @@ public class EntryMap extends DataMap<Entry> {
                 }
                 entry.interact(e -> e.addListener(method, Modifier.isStatic(method.getModifiers()) ? null : container));
             });
-        }
-        for (Entry<?> entry : containerEntries) {
-            put(entry.getID(), entry);
         }
     }
 

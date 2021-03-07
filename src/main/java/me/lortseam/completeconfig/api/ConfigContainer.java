@@ -1,6 +1,7 @@
 package me.lortseam.completeconfig.api;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,15 +15,6 @@ import java.util.List;
  */
 public interface ConfigContainer {
 
-    /**
-     * Specifies whether this class was solely created for config use.
-     *
-     * @return whether this class is a config class
-     */
-    default boolean isConfigObject() {
-        return false;
-    }
-
     default List<Class<? extends ConfigContainer>> getConfigClasses() {
         List<Class<? extends ConfigContainer>> classes = new ArrayList<>();
         Class<? extends ConfigContainer> clazz = getClass();
@@ -33,7 +25,7 @@ public interface ConfigContainer {
             }
             clazz = (Class<? extends ConfigContainer>) clazz.getSuperclass();
         }
-        return ImmutableList.copyOf(classes);
+        return Lists.reverse(ImmutableList.copyOf(classes));
     }
 
     /**
@@ -48,14 +40,11 @@ public interface ConfigContainer {
 
     /**
      * Applied to declare that a field of type {@link ConfigContainer} is transitive, which means the object will be
-     * registered the level of this container.
-     *
-     * <p>If {@link #isConfigObject()} returns {@code true}, all fields of type {@link ConfigContainer} will be
-     * resolved. Therefore, the use of this annotation is no longer needed in that case.
+     * registered at the level of this container.
      *
      * @see #getTransitives()
      */
-    @Target(ElementType.FIELD)
+    @Target({ElementType.FIELD, ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @interface Transitive {
 
@@ -63,8 +52,7 @@ public interface ConfigContainer {
 
     /**
      * Applied to declare that a field should not be resolved as config entry.
-     *
-     * <p>Only required if {@link #isConfigObject()} returns {@code true}.
+     * This annotation is needed to exclude fields if the {@link ConfigEntries} annotation was applied to the class.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
