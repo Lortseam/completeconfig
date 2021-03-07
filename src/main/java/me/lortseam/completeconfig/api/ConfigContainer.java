@@ -39,8 +39,8 @@ public interface ConfigContainer {
     }
 
     /**
-     * Applied to declare that a field of type {@link ConfigContainer} is transitive, which means the object will be
-     * registered at the level of this container.
+     * Applied to declare that a field or a class of type {@link ConfigContainer} is transitive, which means the object
+     * will be registered at the level of this container.
      *
      * @see #getTransitives()
      */
