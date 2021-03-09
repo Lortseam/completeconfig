@@ -61,10 +61,10 @@ abstract class Node implements FlatDataPart<DataMap> {
             resolve(Arrays.stream(clazz.getDeclaredClasses()).filter(nestedClass -> {
                 if (nestedClass.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(nestedClass)) {
-                        throw new IllegalAnnotationTargetException("Transitive class " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
+                        throw new IllegalAnnotationTargetException("Transitive " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
                     }
                     if (!Modifier.isStatic(nestedClass.getModifiers())) {
-                        throw new IllegalAnnotationTargetException("Transitive class " + nestedClass + " must be static");
+                        throw new IllegalAnnotationTargetException("Transitive " + nestedClass + " must be static");
                     }
                     return true;
                 }
