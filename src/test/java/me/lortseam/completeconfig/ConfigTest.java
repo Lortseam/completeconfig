@@ -81,7 +81,7 @@ public class ConfigTest {
         }
 
         @Nested
-        public class Resolving {
+        public class Resolution {
 
             @Test
             public void logWarningIfEmpty() {
