@@ -8,6 +8,7 @@ import me.lortseam.completeconfig.data.EntryBase;
 import me.lortseam.completeconfig.data.containers.*;
 import me.lortseam.completeconfig.data.groups.EmptyGroup;
 import me.lortseam.completeconfig.data.listeners.*;
+import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.io.ConfigSource;
 import nl.altindag.log.LogCaptor;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
@@ -93,32 +94,38 @@ public class ConfigTest {
             public class Entry {
 
                 @Test
-                public void includeFieldInNonPOJOIfAnnotated() {
+                public void includeFieldIfAnnotated() {
                     Config config = builder.add(new ContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
-                public void excludeFieldInNonPOJOIfNotAnnotated() {
+                public void excludeFieldIfNotAnnotated() {
                     Config config = builder.add(new ContainerWithField()).build();
                     assertEquals(0, config.getEntries().size());
                 }
 
                 @Test
-                public void includeFieldInPOJO() {
-                    Config config = builder.add(new POJOContainerWithEntry()).build();
+                public void includeFieldInEntries() {
+                    Config config = builder.add(new EntriesContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
-                public void excludeFieldInPOJOIfContainer() {
-                    Config config = builder.add(new POJOContainerWithEmptyContainer()).build();
+                public void excludeFieldInEntriesIfContainer() {
+                    Config config = builder.add(new EntriesContainerWithEmptyContainer()).build();
                     assertEquals(0, config.getEntries().size());
                 }
 
                 @Test
-                public void excludeFieldInPOJOIfIgnoreAnnotated() {
-                    Config config = builder.add(new POJOContainerWithIgnoredField()).build();
+                public void excludeFieldInEntriesIfIgnoreAnnotated() {
+                    Config config = builder.add(new EntriesContainerWithIgnoredField()).build();
+                    assertEquals(0, config.getEntries().size());
+                }
+
+                @Test
+                public void excludeFieldInEntriesIfTransient() {
+                    Config config = builder.add(new EntriesContainerWithTransientField()).build();
                     assertEquals(0, config.getEntries().size());
                 }
 
@@ -140,20 +147,8 @@ public class ConfigTest {
             public class Container {
 
                 @Test
-                public void includeFieldInNonPOJOIfAnnotated() {
+                public void includeField() {
                     Config config = builder.add(new ContainerWithContainerWithEntry()).build();
-                    assertEquals(1, config.getEntries().size());
-                }
-
-                @Test
-                public void excludeFieldInNonPOJOIfNotAnnotated() {
-                    Config config = builder.add(new ContainerWithNonAnnotatedContainerWithEntry()).build();
-                    assertEquals(0, config.getEntries().size());
-                }
-
-                @Test
-                public void includeFieldInPOJO() {
-                    Config config = builder.add(new POJOContainerWithContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
@@ -170,21 +165,21 @@ public class ConfigTest {
                 }
 
                 @Test
-                public void excludeNestedInPOJOIfNonStatic() {
-                    Config config = builder.add(new POJOContainerNestingContainerWithEntry()).build();
-                    assertEquals(0, config.getEntries().size());
-                }
-
-                @Test
-                public void includeNestedIfStaticAndPOJO() {
-                    Config config = builder.add(new POJOContainerNestingStaticContainerWithEntry()).build();
+                public void includeNestedIfStatic() {
+                    Config config = builder.add(new ContainerNestingStaticContainerWithEntry()).build();
                     assertEquals(1, config.getEntries().size());
                 }
 
                 @Test
-                public void excludeStaticNestedIfNonPOJO() {
-                    Config config = builder.add(new ContainerNestingStaticContainerWithEntry()).build();
-                    assertEquals(0, config.getEntries().size());
+                public void throwIfNestedNonContainer() {
+                    IllegalAnnotationTargetException exception = assertThrows(IllegalAnnotationTargetException.class, () -> builder.add(new ContainerNestingStaticClass()).build());
+                    assertEquals("Transitive " + ContainerNestingStaticClass.Class.class + " must implement " + ConfigContainer.class.getSimpleName(), exception.getMessage());
+                }
+
+                @Test
+                public void throwIfNestedNonStatic() {
+                    IllegalAnnotationTargetException exception = assertThrows(IllegalAnnotationTargetException.class, () -> builder.add(new ContainerNestingContainerWithEntry()).build());
+                    assertEquals("Transitive " + ContainerNestingContainerWithEntry.ContainerWithEntry.class + " must be static", exception.getMessage());
                 }
 
             }
@@ -244,7 +239,7 @@ public class ConfigTest {
                 }
 
                 @Test
-                public void forceUpdate() {
+                public void updateFieldIfForceUpdate() {
                     ForceUpdateListener listener = new ForceUpdateListener();
                     Config config = builder.add(listener).build();
                     boolean value = !listener.getValue();
