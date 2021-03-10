@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "testmod",
+  "version": "${version}",
+  "name": "CompleteConfig Test Mod",
+  "authors": [
+    "Lortseam"
+  ],
+  "license": "Apache-2.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.lortseam.completeconfig.testmod.TestMod"
+    ],
+    "modmenu": [
+      "me.lortseam.completeconfig.testmod.ModMenuIntegration"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.7.4"
+  }
+}

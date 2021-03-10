@@ -11,13 +11,25 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+sourceSets {
+	testMod {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+		annotationProcessorPath += main.annotationProcessorPath
+	}
+}
+
 repositories {
 	maven {
 		url "https://maven.shedaniel.me/"
 	}
+	maven {
+		url "https://maven.terraformersmc.com/"
+	}
 }
 
 dependencies {
+	// --- Main ---
 	minecraft("com.mojang:minecraft:${project.minecraft_version}")
 	mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
 	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
@@ -33,12 +45,17 @@ dependencies {
 	compileOnly("org.projectlombok:lombok:${project.lombok_version}")
 	annotationProcessor("org.projectlombok:lombok:${project.lombok_version}")
 
+	// --- Test ---
 	testImplementation("org.junit.jupiter:junit-jupiter:${project.junit_version}")
 	testImplementation("org.assertj:assertj-core:${project.assertj_version}")
 	testImplementation("org.mockito:mockito-inline:${project.mockito_version}")
 	testImplementation("org.mockito:mockito-junit-jupiter:${project.mockito_junit_version}")
 	testImplementation("io.github.hakky54:logcaptor:${project.logcaptor_version}")
 	testImplementation("com.google.jimfs:jimfs:${project.jimfs_version}")
+
+	// --- Test Mod ---
+	testModImplementation(sourceSets.main.output)
+	modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
 }
 
 processResources {

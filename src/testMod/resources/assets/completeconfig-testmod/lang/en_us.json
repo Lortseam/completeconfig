@@ -1,0 +1,23 @@
+{
+  "config.testmod.dataTypes": "Data types",
+  "config.testmod.dataTypes.bool": "Boolean",
+  "config.testmod.dataTypes.integer": "Integer",
+  "config.testmod.dataTypes.boundedInt": "Bounded Integer",
+  "config.testmod.dataTypes.aLong": "Long",
+  "config.testmod.dataTypes.boundedLong": "Bounded Long",
+  "config.testmod.dataTypes.aFloat": "Float",
+  "config.testmod.dataTypes.aDouble": "Double",
+  "config.testmod.dataTypes.string": "String",
+  "config.testmod.dataTypes.anEnum": "Enum",
+  "config.testmod.dataTypes.anEnum.foo": "Foo",
+  "config.testmod.dataTypes.anEnum.bar": "Bar",
+  "config.testmod.dataTypes.anEnum.baz": "Baz",
+  "config.testmod.dataTypes.list": "List",
+  "config.testmod.dataTypes.color": "Color",
+  "config.testmod.tooltips": "Tooltips",
+  "config.testmod.tooltips.defaultOneLine.tooltip": "A tooltip with a single line",
+  "config.testmod.tooltips.defaultMultiLine.tooltip.0": "A tooltip with multiple lines, this is the first line...",
+  "config.testmod.tooltips.defaultMultiLine.tooltip.1": "... and this is the second one",
+  "config.testmod.customTooltipLine1": "A tooltip specified with custom keys, line 1...",
+  "config.testmod.customTooltipLine2": "... and line 2"
+}
