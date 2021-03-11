@@ -153,7 +153,8 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         listeners.add(new Listener<>(method, parentObject));
     }
 
-    String getID() {
+    @Override
+    public String getID() {
         return customID != null ? customID : field.getName();
     }
 

@@ -1,28 +1,32 @@
 package me.lortseam.completeconfig.data;
 
+import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
-import me.lortseam.completeconfig.data.structure.FlatDataPart;
+import me.lortseam.completeconfig.data.structure.DataPart;
+import me.lortseam.completeconfig.data.structure.ParentDataPart;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import net.minecraft.text.Text;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
-abstract class Node implements FlatDataPart<DataMap> {
+abstract class Node implements ParentDataPart<DataPart> {
 
     protected final TranslationIdentifier translation;
-    private final EntryMap entries;
-    private final CollectionMap collections;
+    private final EntrySet entries;
+    private final CollectionSet collections;
 
     Node(TranslationIdentifier translation) {
         this.translation = translation;
-        entries = new EntryMap(translation);
-        collections = new CollectionMap(translation);
+        entries = new EntrySet(translation);
+        collections = new CollectionSet(translation);
     }
 
     public Text getText() {
@@ -30,11 +34,11 @@ abstract class Node implements FlatDataPart<DataMap> {
     }
 
     public java.util.Collection<Entry> getEntries() {
-        return Collections.unmodifiableCollection(entries.values());
+        return Collections.unmodifiableCollection(entries);
     }
 
     public java.util.Collection<Collection> getCollections() {
-        return Collections.unmodifiableCollection(collections.values());
+        return Collections.unmodifiableCollection(collections);
     }
 
     void resolve(ConfigContainer container) {
@@ -58,7 +62,9 @@ abstract class Node implements FlatDataPart<DataMap> {
                     throw new RuntimeException(e);
                 }
             }).collect(Collectors.toList()));
-            resolve(Arrays.stream(clazz.getDeclaredClasses()).filter(nestedClass -> {
+            Class<?>[] nestedClasses = clazz.getDeclaredClasses();
+            ArrayUtils.reverse(nestedClasses);
+            resolve(Arrays.stream(nestedClasses).filter(nestedClass -> {
                 if (nestedClass.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(nestedClass)) {
                         throw new IllegalAnnotationTargetException("Transitive " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
@@ -95,12 +101,12 @@ abstract class Node implements FlatDataPart<DataMap> {
     }
 
     @Override
-    public Iterable<DataMap> getChildren() {
-        return Arrays.asList(entries, collections);
+    public Iterable<DataPart> getChildren() {
+        return Iterables.concat(entries, collections);
     }
 
     boolean isEmpty() {
-        return entries.isEmpty() && collections.isEmpty();
+        return Iterables.size(getChildren()) == 0;
     }
 
 }

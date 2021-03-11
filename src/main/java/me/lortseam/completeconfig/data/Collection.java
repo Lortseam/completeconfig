@@ -14,12 +14,14 @@ import java.util.Optional;
 @Log4j2
 public class Collection extends Node {
 
+    private final String id;
     private final TranslationIdentifier[] customTooltipTranslation;
     @Getter
     private final String comment;
 
-    Collection(TranslationIdentifier translation, String[] customTooltipTranslationKeys, String comment) {
+    Collection(String id, TranslationIdentifier translation, String[] customTooltipTranslationKeys, String comment) {
         super(translation);
+        this.id = id;
         customTooltipTranslation = ArrayUtils.isNotEmpty(customTooltipTranslationKeys) ? Arrays.stream(customTooltipTranslationKeys).map(key -> translation.root().appendKey(key)).toArray(TranslationIdentifier[]::new) : null;
         this.comment = !StringUtils.isBlank(comment) ? comment : null;
     }
@@ -36,6 +38,11 @@ public class Collection extends Node {
             node.comment(comment);
         }
         super.fetch(node);
+    }
+
+    @Override
+    public String getID() {
+        return id;
     }
 
 }

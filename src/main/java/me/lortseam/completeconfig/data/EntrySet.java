@@ -13,19 +13,17 @@ import me.lortseam.completeconfig.exception.IllegalReturnTypeException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-public class EntryMap extends DataMap<Entry> {
+public class EntrySet extends DataSet<Entry> {
 
-    EntryMap(TranslationIdentifier translation) {
+    EntrySet(TranslationIdentifier translation) {
         super(translation);
     }
 
     void resolve(ConfigContainer container) {
         for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
-            putAll(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
+            Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (clazz != container.getClass() && Modifier.isStatic(field.getModifiers())) {
                     return false;
                 }
@@ -40,7 +38,7 @@ public class EntryMap extends DataMap<Entry> {
                 Entry<?> entry = Entry.Draft.of(field, container.getClass()).build(Modifier.isStatic(field.getModifiers()) ? null : container, translation);
                 entry.resolve(field);
                 return entry;
-            }).collect(Collectors.toMap(Entry::getID, Function.identity())));
+            }).forEach(this::add);
             Arrays.stream(clazz.getDeclaredMethods()).filter(method -> {
                 if (clazz != container.getClass() && Modifier.isStatic(method.getModifiers())) {
                     return false;
