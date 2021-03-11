@@ -1,0 +1,75 @@
+plugins {
+	id 'com.github.johnrengelman.shadow' version '6.1.0'
+	id 'maven-publish'
+}
+
+dependencies {
+	shadow("org.spongepowered:configurate-hocon:${rootProject.configurate_version}")
+
+	testImplementation("org.junit.jupiter:junit-jupiter:${rootProject.junit_version}")
+	testImplementation("org.assertj:assertj-core:${rootProject.assertj_version}")
+	testImplementation("org.mockito:mockito-inline:${rootProject.mockito_version}")
+	testImplementation("org.mockito:mockito-junit-jupiter:${rootProject.mockito_junit_version}")
+	testImplementation("io.github.hakky54:logcaptor:${rootProject.logcaptor_version}")
+	testImplementation("com.google.jimfs:jimfs:${rootProject.jimfs_version}")
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	withSourcesJar()
+}
+
+jar {
+	from "LICENSE"
+}
+
+shadowJar {
+	configurations = [project.configurations.shadow]
+	archiveClassifier = "shadow"
+}
+
+remapJar {
+	dependsOn(shadowJar)
+	input.set(shadowJar.archiveFile)
+}
+
+test {
+	useJUnitPlatform()
+}
+
+javadoc {
+	options {
+		source = "8"
+		encoding = "UTF-8"
+		charSet = "UTF-8"
+		memberLevel = JavadocMemberLevel.PROTECTED
+		// Disable the crazy super-strict doclint tool in Java 8
+		addStringOption("Xdoclint:none", "-quiet")
+	}
+	source = sourceSets.main.allJava
+	failOnError false
+}
+
+task javadocJar(type: Jar) {
+	dependsOn javadoc
+	from javadoc.destinationDir
+	archiveClassifier = "javadoc"
+}
+
+build.dependsOn javadocJar
+
+// configure the maven publication
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact(remapJar) {
+				builtBy remapJar
+			}
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
+			artifact javadocJar
+		}
+	}
+}

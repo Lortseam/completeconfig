@@ -1,12 +1,12 @@
-package me.lortseam.completeconfig.testmod;
+package me.lortseam.completeconfig.example;
 
 import lombok.Getter;
 import me.lortseam.completeconfig.data.Config;
 import net.fabricmc.api.ModInitializer;
 
-public class TestMod implements ModInitializer {
+public class ExampleMod implements ModInitializer {
 
-    public static final String MOD_ID = "testmod";
+    public static final String MOD_ID = "example";
     @Getter
     private static Config config;
 

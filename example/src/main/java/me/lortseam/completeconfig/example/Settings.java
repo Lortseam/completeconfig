@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.testmod;
+package me.lortseam.completeconfig.example;
 
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;

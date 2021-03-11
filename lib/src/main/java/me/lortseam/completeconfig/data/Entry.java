@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.data;
 
-import com.google.common.base.Predicates;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
@@ -263,7 +262,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }
 
         Entry<T> build(ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
-            Entry<T> entry = transformations.stream().filter(transformation -> transformation.test(this)).findFirst().orElse(Transformation.by(Predicates.alwaysTrue()).transforms(Entry::new)).transform(this, parentObject, parentTranslation);
+            Entry<T> entry = transformations.stream().filter(transformation -> transformation.test(this)).findFirst().orElse(Transformation.by(e -> true).transforms(Entry::new)).transform(this, parentObject, parentTranslation);
             for (Consumer<Entry<T>> interaction : interactions) {
                 interaction.accept(entry);
             }

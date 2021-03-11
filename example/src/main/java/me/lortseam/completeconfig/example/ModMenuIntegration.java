@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.testmod;
+package me.lortseam.completeconfig.example;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
@@ -11,7 +11,7 @@ public final class ModMenuIntegration implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> screenBuilder.build(parent, TestMod.getConfig());
+        return parent -> screenBuilder.build(parent, ExampleMod.getConfig());
     }
 
 }

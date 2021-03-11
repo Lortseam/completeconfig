@@ -1,0 +1,10 @@
+repositories {
+    maven {
+        url "https://maven.terraformersmc.com/"
+    }
+}
+
+dependencies {
+    implementation(project(":lib"))
+    modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
+}

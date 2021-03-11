@@ -9,4 +9,7 @@ pluginManagement {
     }
 }
 
+include("lib")
+include("example")
+
 rootProject.name = 'completeconfig'

@@ -1,0 +1,23 @@
+{
+  "config.example.dataTypes": "Data types",
+  "config.example.dataTypes.bool": "Boolean",
+  "config.example.dataTypes.integer": "Integer",
+  "config.example.dataTypes.boundedInt": "Bounded Integer",
+  "config.example.dataTypes.aLong": "Long",
+  "config.example.dataTypes.boundedLong": "Bounded Long",
+  "config.example.dataTypes.aFloat": "Float",
+  "config.example.dataTypes.aDouble": "Double",
+  "config.example.dataTypes.string": "String",
+  "config.example.dataTypes.anEnum": "Enum",
+  "config.example.dataTypes.anEnum.foo": "Foo",
+  "config.example.dataTypes.anEnum.bar": "Bar",
+  "config.example.dataTypes.anEnum.baz": "Baz",
+  "config.example.dataTypes.list": "List",
+  "config.example.dataTypes.color": "Color",
+  "config.example.tooltips": "Tooltips",
+  "config.example.tooltips.defaultOneLine.tooltip": "A tooltip with a single line",
+  "config.example.tooltips.defaultMultiLine.tooltip.0": "A tooltip with multiple lines, this is the first line...",
+  "config.example.tooltips.defaultMultiLine.tooltip.1": "... and this is the second one",
+  "config.example.customTooltipLine1": "A tooltip specified with custom keys, line 1...",
+  "config.example.customTooltipLine2": "... and line 2"
+}

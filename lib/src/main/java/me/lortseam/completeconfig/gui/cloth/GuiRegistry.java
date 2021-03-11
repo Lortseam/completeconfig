@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.gui.cloth;
 
-import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
@@ -59,7 +58,7 @@ public final class GuiRegistry {
         if (types.length == 0) {
             throw new IllegalArgumentException("Types must not be empty");
         }
-        registerProvider(provider, Predicates.alwaysTrue(), types);
+        registerProvider(provider, entry -> true, types);
     }
 
     public void registerBoundedProvider(GuiProvider<? extends BoundedEntry<?>> provider, boolean slider, Type... types) {

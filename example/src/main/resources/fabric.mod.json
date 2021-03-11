@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "testmod",
+  "id": "example",
   "version": "${version}",
-  "name": "CompleteConfig Test Mod",
+  "name": "CompleteConfig Example Mod",
   "authors": [
     "Lortseam"
   ],
@@ -10,10 +10,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "me.lortseam.completeconfig.testmod.TestMod"
+      "me.lortseam.completeconfig.example.ExampleMod"
     ],
     "modmenu": [
-      "me.lortseam.completeconfig.testmod.ModMenuIntegration"
+      "me.lortseam.completeconfig.example.ModMenuIntegration"
     ]
   },
   "depends": {
