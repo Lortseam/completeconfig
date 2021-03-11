@@ -6,5 +6,5 @@ repositories {
 
 dependencies {
     implementation(project(":lib"))
-    modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
+    modImplementation("com.terraformersmc:modmenu:${rootProject.modmenu_version}")
 }
