@@ -70,8 +70,18 @@ public @interface ConfigEntry {
     @Retention(RetentionPolicy.RUNTIME)
     @interface Boolean {
 
+        /**
+         * A custom translation key for the value {@code true}. If empty, the default key will be used.
+         *
+         * @return a custom translation key
+         */
         String trueTranslationKey() default "";
 
+        /**
+         * A custom translation key for the value {@code false}. If empty, the default key will be used.
+         *
+         * @return a custom translation key
+         */
         String falseTranslationKey() default "";
         
     }
