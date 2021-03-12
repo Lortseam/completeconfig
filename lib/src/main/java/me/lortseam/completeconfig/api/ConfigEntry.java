@@ -8,8 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Applied to declare that a field is an entry inside a config.
- * Also contains various options to modify the entry.
+ * Applied to declare that a field should be resolved as config entry.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -23,7 +22,7 @@ public @interface ConfigEntry {
     String value() default "";
 
     /**
-     * Specifies a comment which describes the purpose of this entry. The comment will only be visible in the config
+     * Specifies a comment to describe the purpose of this entry. The comment will only be visible in the config
      * save file.
      *
      * <p>If blank, no comment will be applied to the entry.
@@ -48,10 +47,10 @@ public @interface ConfigEntry {
     String[] tooltipTranslationKeys() default {};
 
     /**
-     * Specifies if the entry's field should get updated while at least one listener exists in the field's class.
+     * Specifies whether the field should always get updated, regardless of the number of listeners.
      *
-     * <p>In that case, by default, the entry's field will not get modified when the config is saved, but all listeners
-     * will be called. Set this to true to always update the field when saving.
+     * <p>If at least one listener exists in the field's class, by default, the field will not get modified when the
+     * config is saved. Instead, all listeners will be called. Set this to true to disable that behaviour.
      *
      * @return true if the field should always get updated, else false
      */
@@ -64,6 +63,9 @@ public @interface ConfigEntry {
      */
     boolean requiresRestart() default false;
 
+    /**
+     * Applied to an entry of type Boolean.
+     */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Boolean {
@@ -181,7 +183,7 @@ public @interface ConfigEntry {
     }
 
     /**
-     * Applied to an entry of type Enum to change the render behaviour.
+     * Applied to an entry of type Enum.
      *
      * <p>This annotation is optional.
      */
@@ -192,17 +194,14 @@ public @interface ConfigEntry {
         /**
          * Specifies how the entry should be rendered.
          *
-         * @return the desired {@link me.lortseam.completeconfig.data.EnumEntry.DisplayType}
+         * @return the desired {@link EnumEntry.DisplayType}
          */
         EnumEntry.DisplayType displayType() default EnumEntry.DisplayType.BUTTON;
 
     }
 
     /**
-     * Specifies that the annotated field is a color entry.
-     *
-     * <p>This annotation is optional for known color types, such as {@link net.minecraft.text.TextColor}, but is
-     * required for unknown types.
+     * Applied to an entry which represents a color.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)

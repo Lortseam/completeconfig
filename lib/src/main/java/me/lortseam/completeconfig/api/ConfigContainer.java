@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A container of config entries.
+ * A container for config entries.
  */
 public interface ConfigContainer {
 
@@ -29,9 +29,9 @@ public interface ConfigContainer {
     }
 
     /**
-     * Used to register other containers, located at the level of this container.
+     * Used to register transitive containers, located at the level of this container.
      *
-     * @return an array of other containers
+     * @return an array of containers
      * @see Transitive
      */
     default ConfigContainer[] getTransitives() {
@@ -39,8 +39,8 @@ public interface ConfigContainer {
     }
 
     /**
-     * Applied to declare that a field or a class of type {@link ConfigContainer} is transitive, which means the object
-     * will be registered at the level of this container.
+     * Applied to declare that a field or a nested class of type {@link ConfigContainer} is transitive. Transitive
+     * containers will be registered at the level of this container.
      *
      * @see #getTransitives()
      */

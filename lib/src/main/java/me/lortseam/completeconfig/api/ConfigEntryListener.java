@@ -6,10 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Applied to declare that a method listens to a config entry's value updates.
+ * Applied to declare that a method listens to a config entry's value changes.
  *
- * <p>The annotated method requires a parameter of the same type as the entry's field. This parameter contains the
- * updated value which then can be used to modify the field itself.
+ * <p>The annotated method requires a parameter of the same type as the entry's field and a {@code void} return type.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
