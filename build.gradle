@@ -42,7 +42,8 @@ subprojects {
             exclude(group: "net.fabricmc.fabric-api")
         }
 
-        // Using modApi because api does not include dependency inside Maven pom file (see https://github.com/FabricMC/fabric-loom/issues/200)
+        // Using modApi because api does not include dependency inside Maven pom file
+        // see https://github.com/FabricMC/fabric-loom/issues/200
         modApi("org.spongepowered:configurate-hocon:${rootProject.configurate_version}")
 
         compileOnly("org.projectlombok:lombok:${rootProject.lombok_version}")
