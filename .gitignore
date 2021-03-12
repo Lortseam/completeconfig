@@ -26,5 +26,6 @@ bin/
 
 # fabric
 
+run/
 example/run/
 /logs/
