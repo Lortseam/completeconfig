@@ -78,7 +78,7 @@ public final class GuiRegistry {
                builder -> builder
                        .startBooleanToggle(entry.getText(), entry.getValue())
                        .setDefaultValue(entry.getDefaultValue())
-                       .setYesNoTextSupplier(entry.getTrueFalseTextSupplier())
+                       .setYesNoTextSupplier(entry.getValueTextSupplier())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()

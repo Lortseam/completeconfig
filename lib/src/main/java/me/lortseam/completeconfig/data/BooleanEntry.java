@@ -12,11 +12,11 @@ import java.util.function.Function;
 
 public class BooleanEntry extends Entry<Boolean> {
 
-    private final Function<Boolean, TranslationIdentifier> trueFalseTranslationSupplier;
+    private final Function<Boolean, TranslationIdentifier> valueTranslationSupplier;
 
-    public BooleanEntry(EntryOrigin origin, Function<Boolean, TranslationIdentifier> trueFalseTranslationSupplier) {
+    public BooleanEntry(EntryOrigin origin, Function<Boolean, TranslationIdentifier> valueTranslationSupplier) {
         super(origin);
-        this.trueFalseTranslationSupplier = trueFalseTranslationSupplier;
+        this.valueTranslationSupplier = valueTranslationSupplier;
     }
 
     BooleanEntry(AnnotatedEntryOrigin<ConfigEntry.Boolean> origin) {
@@ -25,16 +25,16 @@ public class BooleanEntry extends Entry<Boolean> {
         if (StringUtils.isBlank(annotation.trueTranslationKey()) || StringUtils.isBlank(annotation.falseTranslationKey())) {
             throw new IllegalAnnotationParameterException("Both true key and false key must be specified");
         }
-        trueFalseTranslationSupplier = bool -> getTranslation().root().append(bool ? annotation.trueTranslationKey() : annotation.falseTranslationKey());
+        valueTranslationSupplier = bool -> getTranslation().root().append(bool ? annotation.trueTranslationKey() : annotation.falseTranslationKey());
     }
 
     BooleanEntry(EntryOrigin origin) {
         this(origin, null);
     }
 
-    public Function<Boolean, Text> getTrueFalseTextSupplier() {
-        if (trueFalseTranslationSupplier != null) {
-            return bool -> trueFalseTranslationSupplier.apply(bool).toText();
+    public Function<Boolean, Text> getValueTextSupplier() {
+        if (valueTranslationSupplier != null) {
+            return bool -> valueTranslationSupplier.apply(bool).toText();
         }
         TranslationIdentifier defaultTrueTranslation = getTranslation().append("true");
         TranslationIdentifier defaultFalseTranslation = getTranslation().append("false");
