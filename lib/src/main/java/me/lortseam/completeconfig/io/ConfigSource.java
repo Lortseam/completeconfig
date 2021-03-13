@@ -6,7 +6,7 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.Config;
-import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
+import me.lortseam.completeconfig.extensions.ConfigExtensionPattern;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -25,10 +25,18 @@ import java.util.Set;
 @ToString(onlyExplicitlyIncluded = true)
 public final class ConfigSource {
 
-    private static final TypeSerializerCollection GLOBAL_TYPE_SERIALIZERS = TypeSerializerCollection.builder()
-            .registerExact(TextColorSerializer.INSTANCE)
-            .build();
+    private static final TypeSerializerCollection GLOBAL_TYPE_SERIALIZERS;
     private static final Set<ConfigSource> sources = new HashSet<>();
+
+    static {
+        TypeSerializerCollection.Builder builder = TypeSerializerCollection.builder();
+        switch (FabricLoader.getInstance().getEnvironmentType()) {
+            case CLIENT:
+                builder.registerExact(TextColorSerializer.INSTANCE);
+                break;
+        }
+        GLOBAL_TYPE_SERIALIZERS = builder.build();
+    }
 
     @EqualsAndHashCode.Include
     @ToString.Include
@@ -55,7 +63,7 @@ public final class ConfigSource {
                 .path(path)
                 .defaultOptions(options -> options.serializers(builder -> {
                     builder.registerAll(GLOBAL_TYPE_SERIALIZERS);
-                    CompleteConfig.getExtensions().stream().map(CompleteConfigExtension::getTypeSerializers).filter(Objects::nonNull).forEach(builder::registerAll);
+                    CompleteConfig.getExtensions().stream().map(ConfigExtensionPattern::getTypeSerializers).filter(Objects::nonNull).forEach(builder::registerAll);
                 }))
                 .build();
     }

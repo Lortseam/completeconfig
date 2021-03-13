@@ -4,8 +4,6 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigGroup;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +26,6 @@ public final class Settings implements ConfigContainer {
         private String string = "";
         private AnEnum anEnum = AnEnum.FOO;
         private List<String> list = Arrays.asList("First entry", "Second entry");
-        private TextColor color = TextColor.fromFormatting(Formatting.BLUE);
 
     }
 
