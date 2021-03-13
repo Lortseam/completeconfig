@@ -206,7 +206,8 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     public void apply(CommentedConfigurationNode node) {
         try {
             T value = (T) node.get(type);
-            // value could be null despite the virtual() check (see https://github.com/SpongePowered/Configurate/issues/187)
+            // value could be null despite the virtual() check
+            // see https://github.com/SpongePowered/Configurate/issues/187
             if(value == null) return;
             setValue(value);
         } catch (SerializationException e) {
