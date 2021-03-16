@@ -61,14 +61,6 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         });
     }
 
-    static EntryBase<?> of(String fieldName, Class<? extends ConfigContainer> parentClass) {
-        try {
-            return of(parentClass.getDeclaredField(fieldName), parentClass);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     static EntryBase<?> of(Field field, Class<? extends ConfigContainer> parentClass) {
         return entries.computeIfAbsent(new Key(field, parentClass), absentField -> new Draft<>(field));
     }

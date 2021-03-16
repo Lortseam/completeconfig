@@ -68,7 +68,12 @@ public class EntrySet extends DataSet<Entry> {
                 if (method.getParameterCount() != 1) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong number of parameters");
                 }
-                EntryBase<?> entry = Entry.of(fieldName, fieldClass);
+                EntryBase<?> entry;
+                try {
+                    entry = Entry.of(fieldClass.getDeclaredField(fieldName), container.getClass());
+                } catch (NoSuchFieldException e) {
+                    throw new RuntimeException(e);
+                }
                 if (!method.getParameterTypes()[0].equals(entry.getType())) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong argument type");
                 }
