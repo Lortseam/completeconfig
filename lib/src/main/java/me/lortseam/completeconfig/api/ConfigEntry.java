@@ -204,7 +204,7 @@ public @interface ConfigEntry {
         /**
          * Specifies how the entry should be rendered.
          *
-         * @return the desired {@link EnumEntry.DisplayType}
+         * @return the desired display type
          */
         EnumEntry.DisplayType displayType() default EnumEntry.DisplayType.BUTTON;
 
