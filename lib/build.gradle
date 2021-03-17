@@ -63,6 +63,7 @@ build.dependsOn javadocJar
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
+			artifactId rootProject.name
 			artifact(remapJar) {
 				builtBy remapJar
 			}
