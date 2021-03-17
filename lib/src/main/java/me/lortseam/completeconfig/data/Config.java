@@ -80,6 +80,7 @@ public class Config extends Node {
          * @param branch the branch
          * @return this builder
          */
+        // TODO: Allow varargs
         public Builder setBranch(@NonNull String[] branch) {
             Arrays.stream(branch).forEach(Objects::requireNonNull);
             this.branch = branch;
