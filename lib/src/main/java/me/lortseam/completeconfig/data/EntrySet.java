@@ -45,35 +45,33 @@ public class EntrySet extends DataSet<Entry> {
                 }
                 return method.isAnnotationPresent(ConfigEntryListener.class);
             }).forEach(method -> {
-                String fieldName = null;
+                Field field = null;
                 Class<? extends ConfigContainer> fieldClass = clazz;
                 if (method.isAnnotationPresent(ConfigEntryListener.class)) {
                     ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
-                    if (!listener.value().equals("")) {
-                        fieldName = listener.value();
-                    }
                     if (listener.container() != ConfigContainer.class) {
                         fieldClass = listener.container();
                     }
+                    if (!listener.value().equals("")) {
+                        try {
+                            field = fieldClass.getDeclaredField(listener.value());
+                        } catch (NoSuchFieldException e) {
+                            throw new IllegalAnnotationParameterException(e);
+                        }
+                    }
                 }
-                if (fieldName == null && fieldClass == clazz && method.getName().startsWith("set")) {
+                if (field == null && fieldClass == clazz && method.getName().startsWith("set")) {
                     try {
-                        Field field = fieldClass.getDeclaredField(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName().replaceFirst(Pattern.quote("set"), "")));
-                        fieldName = field.getName();
+                        field = fieldClass.getDeclaredField(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, method.getName().replaceFirst(Pattern.quote("set"), "")));
                     } catch (NoSuchFieldException ignore) {}
                 }
-                if (fieldName == null) {
+                if (field == null) {
                     throw new IllegalAnnotationParameterException("Could not detect field name for listener method " + method);
                 }
                 if (method.getParameterCount() != 1) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong number of parameters");
                 }
-                EntryBase<?> entry;
-                try {
-                    entry = Entry.of(fieldClass.getDeclaredField(fieldName), container.getClass());
-                } catch (NoSuchFieldException e) {
-                    throw new RuntimeException(e);
-                }
+                EntryBase<?> entry = Entry.of(field, container.getClass());
                 if (!method.getParameterTypes()[0].equals(entry.getType())) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong argument type");
                 }

@@ -9,4 +9,8 @@ public class IllegalAnnotationParameterException extends RuntimeException {
         super(message);
     }
 
+    public IllegalAnnotationParameterException(Throwable cause) {
+        super(cause);
+    }
+
 }
