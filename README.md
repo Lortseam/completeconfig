@@ -9,7 +9,7 @@ Beside the basic elements of a config library, CompleteConfig offers the followi
 * Listeners — observe your config entries
 * User-friendly save format
 * Commentable files — comments are retained permanently
-* Customizable GUI generation
+* Customizable config screen (GUI) generation
 * Fully extensible via extension system
 
 ## Setup
