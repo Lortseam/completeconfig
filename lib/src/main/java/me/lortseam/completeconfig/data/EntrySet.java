@@ -47,10 +47,14 @@ public class EntrySet extends DataSet<Entry> {
             }).forEach(method -> {
                 Field field = null;
                 Class<? extends ConfigContainer> fieldClass = clazz;
+                Class<? extends ConfigContainer> parentClass = container.getClass();
                 if (method.isAnnotationPresent(ConfigEntryListener.class)) {
                     ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
                     if (listener.container() != ConfigContainer.class) {
                         fieldClass = listener.container();
+                        // TODO: Currently this silently fails when when container() is a superclass of the registered container
+                        // TODO: Add another parameter to make it possible to listen to a superclass field
+                        parentClass = fieldClass;
                     }
                     if (!listener.value().equals("")) {
                         try {
@@ -71,7 +75,7 @@ public class EntrySet extends DataSet<Entry> {
                 if (method.getParameterCount() != 1) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong number of parameters");
                 }
-                EntryBase<?> entry = Entry.of(field, container.getClass());
+                EntryBase<?> entry = Entry.of(field, parentClass);
                 if (!method.getParameterTypes()[0].equals(entry.getType())) {
                     throw new IllegalArgumentException("Listener method " + method + " has wrong argument type");
                 }
