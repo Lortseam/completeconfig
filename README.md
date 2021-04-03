@@ -5,8 +5,7 @@ CompleteConfig is a flexible, all-in-one configuration API for [Fabric](https://
 Beside the basic elements of a config library, CompleteConfig offers the following unique features:
 * Simple integration into existing code
 * Support for multiple configs
-* Dynamic resolution
-* Nested classes — easily create a grouped structure
+* Nested class resolution — easily create a grouped structure
 * Listeners — observe your config entries
 * User-friendly save format
 * Commentable files — comments are retained permanently
