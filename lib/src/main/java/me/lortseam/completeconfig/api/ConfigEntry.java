@@ -107,13 +107,6 @@ public @interface ConfigEntry {
          */
         int max() default java.lang.Integer.MAX_VALUE;
 
-        /**
-         * Specifies whether the entry should be rendered as slider.
-         *
-         * @return whether the entry should be rendered as slider
-         */
-        boolean slider() default true;
-
     }
 
     /**
@@ -136,13 +129,6 @@ public @interface ConfigEntry {
          * @return the maximum bound
          */
         long max() default java.lang.Long.MAX_VALUE;
-
-        /**
-         * Specifies whether the entry should be rendered as slider.
-         *
-         * @return whether the entry should be rendered as slider
-         */
-        boolean slider() default true;
 
     }
 
@@ -189,6 +175,14 @@ public @interface ConfigEntry {
          * @return the maximum bound
          */
         double max() default java.lang.Double.MAX_VALUE;
+
+    }
+
+    @Target({ElementType.FIELD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Slider {
+
+        String valueTranslationKey() default "";
 
     }
 

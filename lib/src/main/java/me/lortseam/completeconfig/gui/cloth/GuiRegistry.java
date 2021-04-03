@@ -100,6 +100,7 @@ public final class GuiRegistry {
                builder -> builder
                        .startIntSlider(entry.getText(), entry.getValue(), entry.getMin(), entry.getMax())
                        .setDefaultValue(entry.getDefaultValue())
+                       .setTextGetter(entry.getValueTextSupplier())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()
@@ -135,6 +136,7 @@ public final class GuiRegistry {
                builder -> builder
                        .startLongSlider(entry.getText(), entry.getValue(), entry.getMin(), entry.getMax())
                        .setDefaultValue(entry.getDefaultValue())
+                       .setTextGetter(entry.getValueTextSupplier())
                        .setTooltip(entry.getTooltip())
                        .setSaveConsumer(entry::setValue),
                entry.requiresRestart()

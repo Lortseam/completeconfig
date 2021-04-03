@@ -37,7 +37,7 @@ public class Config extends Node {
     private final ConfigSource source;
 
     private Config(ConfigSource source, LinkedHashSet<ConfigContainer> children) {
-        super(new TranslationIdentifier(source.getModID()));
+        super(TranslationIdentifier.ofRoot(source.getModID()));
         this.source = source;
         resolve(children);
         if (isEmpty()) {

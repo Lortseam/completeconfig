@@ -17,9 +17,11 @@ public final class Settings implements ConfigContainer {
         private boolean bool;
         private int integer;
         @ConfigEntry.BoundedInteger(min = 0, max = 10)
+        @ConfigEntry.Slider
         private int boundedInt;
         private long aLong;
         @ConfigEntry.BoundedLong(min = 0, max = 100)
+        @ConfigEntry.Slider
         private long boundedLong;
         private float aFloat;
         private double aDouble;

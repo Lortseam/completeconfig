@@ -24,10 +24,10 @@ public final class Transformation<O extends EntryOrigin> {
         return new Transformation.Builder<>(EntryOrigin::new).andType(types);
     }
 
-    public static <A extends Annotation> Transformation.Builder<AnnotatedEntryOrigin<A>> byAnnotation(Class<A> annotationClass) {
+    public static <A extends Annotation> Transformation.Builder<AnnotatedEntryOrigin<A>> byAnnotation(Class<A> annotationType) {
         return new Transformation.Builder<>((field, parentObject, parentTranslation) -> {
-            return new AnnotatedEntryOrigin<>(field, parentObject, parentTranslation, field.getDeclaredAnnotation(annotationClass));
-        }).and(base -> base.getField().isAnnotationPresent(annotationClass));
+            return new AnnotatedEntryOrigin<>(field, parentObject, parentTranslation, annotationType);
+        }).and(base -> base.getField().isAnnotationPresent(annotationType));
     }
 
     private final Predicate<EntryBase<?>> predicate;

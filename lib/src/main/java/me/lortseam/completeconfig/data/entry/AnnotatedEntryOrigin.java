@@ -12,9 +12,9 @@ public class AnnotatedEntryOrigin<A extends Annotation> extends EntryOrigin {
     @Getter
     private final A annotation;
 
-    AnnotatedEntryOrigin(Field field, ConfigContainer parentObject, TranslationIdentifier parentTranslation, A annotation) {
+    AnnotatedEntryOrigin(Field field, ConfigContainer parentObject, TranslationIdentifier parentTranslation, Class<A> annotationType) {
         super(field, parentObject, parentTranslation);
-        this.annotation = annotation;
+        annotation = field.getAnnotation(annotationType);
     }
 
 }

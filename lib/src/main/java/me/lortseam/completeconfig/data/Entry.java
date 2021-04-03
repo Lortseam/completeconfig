@@ -35,17 +35,15 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             Transformation.byType(boolean.class, Boolean.class).transforms(BooleanEntry::new),
             Transformation.byAnnotation(ConfigEntry.BoundedInteger.class).andType(int.class, Integer.class).transforms(origin -> {
                 ConfigEntry.BoundedInteger bounds = origin.getAnnotation();
-                if (bounds.slider()) {
-                    return new SliderEntry<>(origin, bounds.min(), bounds.max());
-                }
-                return new BoundedEntry<>(origin, bounds.min(), bounds.max());
+                return origin.getAnnotation(ConfigEntry.Slider.class).map(slider -> {
+                    return (Entry<Integer>) new SliderEntry<>(origin, bounds.min(), bounds.max(), slider);
+                }).orElse(new BoundedEntry<>(origin, bounds.min(), bounds.max()));
             }),
             Transformation.byAnnotation(ConfigEntry.BoundedLong.class).andType(long.class, Long.class).transforms(origin -> {
                 ConfigEntry.BoundedLong bounds = origin.getAnnotation();
-                if (bounds.slider()) {
-                    return new SliderEntry<>(origin, bounds.min(), bounds.max());
-                }
-                return new BoundedEntry<>(origin, bounds.min(), bounds.max());
+                return origin.getAnnotation(ConfigEntry.Slider.class).map(slider -> {
+                    return (Entry<Long>) new SliderEntry<>(origin, bounds.min(), bounds.max(), slider);
+                }).orElse(new BoundedEntry<>(origin, bounds.min(), bounds.max()));
             }),
             Transformation.byAnnotation(ConfigEntry.BoundedFloat.class).andType(float.class, Float.class).transforms(origin -> {
                 ConfigEntry.BoundedFloat bounds = origin.getAnnotation();
@@ -183,14 +181,14 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             }
             String customTranslationKey = annotation.translationKey();
             if (!StringUtils.isBlank(customTranslationKey)) {
-                customTranslation = parentTranslation.root().appendKey(customTranslationKey);
+                customTranslation = parentTranslation.root().append(customTranslationKey);
             }
             String[] customTooltipTranslationKeys = annotation.tooltipTranslationKeys();
             if (customTooltipTranslationKeys.length > 0) {
                 if (Arrays.stream(customTooltipTranslationKeys).anyMatch(StringUtils::isBlank)) {
                     throw new IllegalAnnotationParameterException("Entry tooltip translation key(s) must not be blank");
                 }
-                customTooltipTranslation = Arrays.stream(customTooltipTranslationKeys).map(key -> parentTranslation.root().appendKey(key)).toArray(TranslationIdentifier[]::new);
+                customTooltipTranslation = Arrays.stream(customTooltipTranslationKeys).map(key -> parentTranslation.root().append(key)).toArray(TranslationIdentifier[]::new);
             }
             forceUpdate = annotation.forceUpdate();
             requiresRestart = annotation.requiresRestart();

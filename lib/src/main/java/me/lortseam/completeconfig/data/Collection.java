@@ -22,7 +22,7 @@ public class Collection extends Node {
     Collection(String id, TranslationIdentifier translation, String[] customTooltipTranslationKeys, String comment) {
         super(translation);
         this.id = id;
-        customTooltipTranslation = ArrayUtils.isNotEmpty(customTooltipTranslationKeys) ? Arrays.stream(customTooltipTranslationKeys).map(key -> translation.root().appendKey(key)).toArray(TranslationIdentifier[]::new) : null;
+        customTooltipTranslation = ArrayUtils.isNotEmpty(customTooltipTranslationKeys) ? Arrays.stream(customTooltipTranslationKeys).map(key -> translation.root().append(key)).toArray(TranslationIdentifier[]::new) : null;
         this.comment = !StringUtils.isBlank(comment) ? comment : null;
     }
 

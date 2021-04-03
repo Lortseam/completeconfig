@@ -1,7 +1,5 @@
 package me.lortseam.completeconfig.data.text;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -12,15 +10,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TranslationIdentifier {
+
+    public static TranslationIdentifier ofRoot(String modID) {
+        return new TranslationIdentifier("config." + modID);
+    }
 
     private final String modKey;
     private final String[] keyParts;
 
-    public TranslationIdentifier(String modID) {
-        modKey = "config." + modID;
-        keyParts = new String[0];
+    private TranslationIdentifier(String modKey, String... keyParts) {
+        this.modKey = modKey;
+        this.keyParts = keyParts;
     }
 
     private String getKey() {
@@ -33,23 +34,19 @@ public final class TranslationIdentifier {
     }
 
     public TranslationIdentifier root() {
-        return new TranslationIdentifier(modKey, new String[0]);
+        return new TranslationIdentifier(modKey);
     }
 
     public boolean exists() {
         return I18n.hasTranslation(getKey());
     }
 
-    public Text toText() {
-        return new TranslatableText(getKey());
+    public Text toText(Object... args) {
+        return new TranslatableText(getKey(), args);
     }
 
-    public TranslationIdentifier append(String... keyParts) {
-        return new TranslationIdentifier(modKey, ArrayUtils.addAll(this.keyParts, keyParts));
-    }
-
-    public TranslationIdentifier appendKey(String key) {
-        return new TranslationIdentifier(modKey, key.split(Pattern.quote(".")));
+    public TranslationIdentifier append(String key) {
+        return new TranslationIdentifier(modKey, ArrayUtils.addAll(this.keyParts, key.split(Pattern.quote("."))));
     }
 
     public Optional<TranslationIdentifier[]> appendTooltip() {
