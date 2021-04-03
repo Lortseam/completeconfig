@@ -32,7 +32,7 @@ public final class ConfigSource {
         TypeSerializerCollection.Builder builder = TypeSerializerCollection.builder();
         switch (FabricLoader.getInstance().getEnvironmentType()) {
             case CLIENT:
-                builder.registerExact(TextColorSerializer.INSTANCE);
+                builder.registerAll(ClientSerializers.COLLECTION);
                 break;
         }
         GLOBAL_TYPE_SERIALIZERS = builder.build();
