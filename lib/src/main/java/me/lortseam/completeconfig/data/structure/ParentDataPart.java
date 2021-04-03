@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.data.structure;
 
+import com.google.common.base.Predicates;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.function.BiConsumer;
@@ -16,7 +17,7 @@ public interface ParentDataPart<C extends DataPart> extends DataPart {
 
     @Override
     default void fetch(CommentedConfigurationNode node) {
-        propagateToChildren(childNode -> true, DataPart::fetch, node);
+        propagateToChildren(Predicates.alwaysTrue(), DataPart::fetch, node);
     }
 
     default void propagateToChildren(Predicate<CommentedConfigurationNode> childNodeCondition, BiConsumer<C, CommentedConfigurationNode> function, CommentedConfigurationNode node) {

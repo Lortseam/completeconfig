@@ -11,10 +11,8 @@ public class BoundedEntry<T extends Number> extends Entry<T> {
 
     @Getter
     private final T min, max;
-    @Getter
-    private final boolean slider;
 
-    public BoundedEntry(EntryOrigin origin, T min, T max, boolean slider) {
+    public BoundedEntry(EntryOrigin origin, T min, T max) {
         super(origin, value -> {
             if (new BigDecimal(value.toString()).compareTo(new BigDecimal(min.toString())) < 0) {
                 logger.warn("[CompleteConfig] Tried to set value of field " + origin.getField() + " to a value less than minimum bound, setting to minimum now!");
@@ -27,11 +25,6 @@ public class BoundedEntry<T extends Number> extends Entry<T> {
         });
         this.min = min;
         this.max = max;
-        this.slider = slider;
-    }
-
-    public BoundedEntry(EntryOrigin origin, T min, T max) {
-        this(origin, min, max, false);
     }
 
 }
