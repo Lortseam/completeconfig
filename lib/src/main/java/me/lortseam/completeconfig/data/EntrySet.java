@@ -52,8 +52,6 @@ public class EntrySet extends DataSet<Entry> {
                     ConfigEntryListener listener = method.getDeclaredAnnotation(ConfigEntryListener.class);
                     if (listener.container() != ConfigContainer.class) {
                         fieldClass = listener.container();
-                        // TODO: Currently this silently fails when when container() is a superclass of the registered container
-                        // TODO: Add another parameter to make it possible to listen to a superclass field
                         parentClass = fieldClass;
                     }
                     if (!listener.value().equals("")) {
