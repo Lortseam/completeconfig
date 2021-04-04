@@ -35,7 +35,6 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             Transformation.byType(boolean.class, Boolean.class).transforms(BooleanEntry::new),
             Transformation.byAnnotation(ConfigEntry.BoundedInteger.class).andType(int.class, Integer.class).transforms(origin -> {
                 ConfigEntry.BoundedInteger bounds = origin.getAnnotation();
-                // TODO: Create subtransformations for this case
                 return origin.getAnnotation(ConfigEntry.Slider.class).map(slider -> {
                     return (Entry<Integer>) new SliderEntry<>(origin, bounds.min(), bounds.max(), slider);
                 }).orElse(new BoundedEntry<>(origin, bounds.min(), bounds.max()));
@@ -261,7 +260,6 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }
 
         Entry<T> build(ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
-                                                                                                                            // TODO: Use a default transformer instead of transformation
             Entry<T> entry = transformations.stream().filter(transformation -> transformation.test(this)).findFirst().orElse(Transformation.by(Predicates.alwaysTrue()).transforms(Entry::new)).transform(this, parentObject, parentTranslation);
             for (Consumer<Entry<T>> interaction : interactions) {
                 interaction.accept(entry);
