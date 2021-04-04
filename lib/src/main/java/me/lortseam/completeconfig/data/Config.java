@@ -17,6 +17,7 @@ public class Config extends Node {
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             for (Config config : configs) {
+                if(!config.saveOnExit) continue;
                 config.save();
             }
         }));
@@ -35,10 +36,12 @@ public class Config extends Node {
     }
 
     private final ConfigSource source;
+    private final boolean saveOnExit;
 
-    private Config(ConfigSource source, LinkedHashSet<ConfigContainer> children) {
+    private Config(ConfigSource source, LinkedHashSet<ConfigContainer> children, boolean saveOnExit) {
         super(TranslationIdentifier.ofRoot(source.getModID()));
         this.source = source;
+        this.saveOnExit = saveOnExit;
         resolve(children);
         if (isEmpty()) {
             logger.warn("[CompleteConfig] Config of " + source + " is empty!");
@@ -66,6 +69,7 @@ public class Config extends Node {
         private final String modID;
         private String[] branch = new String[0];
         private final LinkedHashSet<ConfigContainer> children = new LinkedHashSet<>();
+        private boolean saveOnExit = true;
 
         private Builder(String modID) {
             this.modID = modID;
@@ -103,6 +107,11 @@ public class Config extends Node {
             return this;
         }
 
+        public Builder setSaveOnExit(boolean saveOnExit) {
+            this.saveOnExit = saveOnExit;
+            return this;
+        }
+
         /**
          * Completes the config creation.
          *
@@ -113,7 +122,7 @@ public class Config extends Node {
                 logger.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
                 return null;
             }
-            return new Config(new ConfigSource(modID, branch), children);
+            return new Config(new ConfigSource(modID, branch), children, saveOnExit);
         }
 
     }
