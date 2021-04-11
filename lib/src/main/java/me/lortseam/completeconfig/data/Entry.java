@@ -238,7 +238,7 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
 
     }
 
-    static class Draft<T> extends EntryBase<T> {
+    public static class Draft<T> extends EntryBase<T> {
 
         static <T> Draft<T> of(Field field, Class<? extends ConfigContainer> parentClass) {
             EntryBase<T> accessor = (EntryBase<T>) Entry.of(field, parentClass);

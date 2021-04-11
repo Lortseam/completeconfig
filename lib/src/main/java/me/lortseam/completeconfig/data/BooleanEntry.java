@@ -1,7 +1,6 @@
 package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.data.entry.AnnotatedEntryOrigin;
 import me.lortseam.completeconfig.data.entry.EntryOrigin;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import net.minecraft.text.Text;

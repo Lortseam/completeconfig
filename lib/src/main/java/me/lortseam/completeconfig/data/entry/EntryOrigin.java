@@ -8,10 +8,9 @@ import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Optional;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class EntryOrigin {
+public final class EntryOrigin {
 
     @Getter
     protected final Field field;
@@ -20,11 +19,11 @@ public class EntryOrigin {
     @Getter
     private final TranslationIdentifier parentTranslation;
 
-    public <A extends Annotation> Optional<A> getAnnotation(Class<A> annotationType) {
-        if (field.isAnnotationPresent(annotationType)) {
-            return Optional.of(field.getAnnotation(annotationType));
+    public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
+        if (!field.isAnnotationPresent(annotationType)) {
+            throw new IllegalArgumentException("Annotation " + annotationType + " is not present");
         }
-        return Optional.empty();
+        return field.getAnnotation(annotationType);
     }
 
 }
