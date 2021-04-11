@@ -72,16 +72,18 @@ public final class Transformation {
         }
 
         public Transformation transforms(Transformer transformer) {
-            if (predicate == null && requiredAnnotations.isEmpty()) {
+            if (!requiredAnnotations.isEmpty() || !optionalAnnotations.isEmpty()) {
+                by(draft -> {
+                    Set<Class<? extends Annotation>> declaredAnnotations = Arrays.stream(draft.getField().getDeclaredAnnotations()).map(Annotation::annotationType).filter(registeredAnnotations::contains).collect(Collectors.toSet());
+                    for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
+                        if (!declaredAnnotations.remove(requiredAnnotation)) return false;
+                    }
+                    return optionalAnnotations.containsAll(declaredAnnotations);
+                });
+            }
+            if (predicate == null) {
                 throw new IllegalStateException("Missing transformation filter");
             }
-            by(draft -> {
-                Set<Class<? extends Annotation>> declaredAnnotations = Arrays.stream(draft.getField().getDeclaredAnnotations()).map(Annotation::annotationType).filter(registeredAnnotations::contains).collect(Collectors.toSet());
-                for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
-                    if (!declaredAnnotations.remove(requiredAnnotation)) return false;
-                }
-                return optionalAnnotations.containsAll(declaredAnnotations);
-            });
             return new Transformation(predicate, transformer);
         }
 
