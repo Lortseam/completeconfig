@@ -1,15 +1,15 @@
 package me.lortseam.completeconfig.data.entry;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigContainer;
+import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Objects;
+import java.util.Optional;
 
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public final class EntryOrigin {
 
     @Getter
@@ -19,11 +19,18 @@ public final class EntryOrigin {
     @Getter
     private final TranslationIdentifier parentTranslation;
 
+    public EntryOrigin(Entry.Draft<?> draft, ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
+        field = draft.getField();
+        this.parentObject = parentObject;
+        this.parentTranslation = parentTranslation;
+    }
+
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-        if (!field.isAnnotationPresent(annotationType)) {
-            throw new IllegalArgumentException("Annotation " + annotationType + " is not present");
-        }
-        return field.getAnnotation(annotationType);
+        return Objects.requireNonNull(field.getDeclaredAnnotation(annotationType), "Missing required transformation annotation");
+    }
+
+    public <A extends Annotation> Optional<A> getOptionalAnnotation(Class<A> annotationType) {
+        return Optional.ofNullable(field.getDeclaredAnnotation(annotationType));
     }
 
 }

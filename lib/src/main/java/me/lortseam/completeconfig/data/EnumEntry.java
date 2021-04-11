@@ -13,13 +13,9 @@ public class EnumEntry<T extends Enum> extends Entry<T> {
     @Getter
     private final DisplayType displayType;
 
-    public EnumEntry(EntryOrigin origin, DisplayType displayType) {
-        super(origin);
-        this.displayType = displayType;
-    }
-
     public EnumEntry(EntryOrigin origin) {
-        this(origin, DisplayType.DEFAULT);
+        super(origin);
+        this.displayType = origin.getOptionalAnnotation(ConfigEntry.Enum.class).map(ConfigEntry.Enum::displayType).orElse(DisplayType.DEFAULT);
     }
 
     public Function<Enum, Text> getEnumNameProvider() {

@@ -25,7 +25,7 @@ public final class ClothBasicMathExtension implements CompleteConfigExtension {
     @Override
     public Collection<Transformation> getTransformations() {
         return ImmutableList.of(
-                Transformation.byType(Color.class).transforms(origin -> new ColorEntry<>(origin, true))
+                Transformation.builder().byType(Color.class).transforms(origin -> new ColorEntry<>(origin, true))
         );
     }
 

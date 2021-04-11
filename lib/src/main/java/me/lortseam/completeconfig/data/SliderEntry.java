@@ -12,8 +12,9 @@ public class SliderEntry<T extends Number> extends BoundedEntry<T> {
 
     private final TranslationIdentifier valueTranslation;
 
-    public SliderEntry(EntryOrigin origin, T min, T max, ConfigEntry.Slider slider) {
+    public SliderEntry(EntryOrigin origin, T min, T max) {
         super(origin, min, max);
+        ConfigEntry.Slider slider = origin.getAnnotation(ConfigEntry.Slider.class);
         if (!StringUtils.isBlank(slider.valueTranslationKey())) {
             valueTranslation = getTranslation().root().append(slider.valueTranslationKey());
         } else {

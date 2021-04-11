@@ -14,8 +14,8 @@ public class ColorEntry<T> extends Entry<T> {
         this.alphaMode = alphaMode;
     }
 
-    ColorEntry(AnnotatedEntryOrigin<ConfigEntry.Color> origin) {
-        this(origin, origin.getAnnotation().alphaMode());
+    ColorEntry(EntryOrigin origin) {
+        this(origin, origin.getAnnotation(ConfigEntry.Color.class).alphaMode());
     }
 
 }

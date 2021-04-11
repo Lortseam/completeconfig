@@ -12,25 +12,21 @@ public class BooleanEntry extends Entry<Boolean> {
 
     private final Function<Boolean, TranslationIdentifier> valueTranslationSupplier;
 
-    BooleanEntry(AnnotatedEntryOrigin<ConfigEntry.Boolean> origin) {
-        super(origin);
-        ConfigEntry.Boolean annotation = origin.getAnnotation();
-        if (StringUtils.isBlank(annotation.trueTranslationKey()) && StringUtils.isBlank(annotation.falseTranslationKey())) {
-            valueTranslationSupplier = null;
-        } else {
-            valueTranslationSupplier = value -> {
-                String key = value ? annotation.trueTranslationKey() : annotation.falseTranslationKey();
-                if (!StringUtils.isBlank(key)) {
-                    return getTranslation().root().append(key);
-                }
-                return getTranslation().append(value ? "true" : "false");
-            };
-        }
-    }
-
     BooleanEntry(EntryOrigin origin) {
         super(origin);
-        valueTranslationSupplier = null;
+        valueTranslationSupplier = origin.getOptionalAnnotation(ConfigEntry.Boolean.class).map(annotation -> {
+            if (StringUtils.isBlank(annotation.trueTranslationKey()) && StringUtils.isBlank(annotation.falseTranslationKey())) {
+                return null;
+            } else {
+                return (Function<Boolean, TranslationIdentifier>) value -> {
+                    String key = value ? annotation.trueTranslationKey() : annotation.falseTranslationKey();
+                    if (!StringUtils.isBlank(key)) {
+                        return getTranslation().root().append(key);
+                    }
+                    return getTranslation().append(value ? "true" : "false");
+                };
+            }
+        }).orElse(null);
     }
 
     public Function<Boolean, Text> getValueTextSupplier() {
