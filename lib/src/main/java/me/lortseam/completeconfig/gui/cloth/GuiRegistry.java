@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.gui.cloth;
 
-import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
@@ -57,7 +56,7 @@ public final class GuiRegistry {
         if (types.length == 0) {
             throw new IllegalArgumentException("Types must not be empty");
         }
-        registerProvider(provider, Predicates.alwaysTrue(), types);
+        registerProvider(provider, entry -> true, types);
     }
 
     public <T extends Entry<?>> void registerSpecialProvider(GuiProvider<?> provider, Class<T> entryType, Predicate<T> predicate, Type... types) {
@@ -65,7 +64,7 @@ public final class GuiRegistry {
     }
 
     public <T extends Entry<?>> void registerSpecialProvider(GuiProvider<?> provider, Class<T> entryType, Type... types) {
-        registerSpecialProvider(provider, entryType, Predicates.alwaysTrue(), types);
+        registerSpecialProvider(provider, entryType, entry -> true, types);
     }
 
     private void registerDefaultProviders() {
