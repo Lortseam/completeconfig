@@ -64,7 +64,7 @@ public final class Transformation {
             return byAnnotation(annotation, false);
         }
 
-        public Builder byAnnotation(List<Class<? extends Annotation>> annotations) {
+        public Builder byAnnotation(Iterable<Class<? extends Annotation>> annotations) {
             for (Class<? extends Annotation> annotation : annotations) {
                 byAnnotation(annotation);
             }
