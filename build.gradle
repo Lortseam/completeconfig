@@ -31,6 +31,9 @@ subprojects {
         maven {
             url "https://maven.shedaniel.me/"
         }
+        maven {
+            url "https://maven.terraformersmc.com/"
+        }
     }
 
     dependencies {
@@ -41,6 +44,7 @@ subprojects {
         modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}") {
             exclude(group: "net.fabricmc.fabric-api")
         }
+        modImplementation("com.terraformersmc:modmenu:${rootProject.modmenu_version}")
 
         // Using modApi because api does not include dependency inside Maven pom file
         // see https://github.com/FabricMC/fabric-loom/issues/200

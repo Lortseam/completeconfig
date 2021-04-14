@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.data;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
@@ -12,12 +13,13 @@ import java.util.*;
 @Log4j2
 public class Config extends Node {
 
-    private static final Set<Config> configs = new HashSet<>();
+    @Getter
+    private static final Map<String, Config> mainConfigs = new HashMap<>();
+    private static final Set<Config> saveOnExitConfigs = new HashSet<>();
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (Config config : configs) {
-                if(!config.saveOnExit) continue;
+            for (Config config : saveOnExitConfigs) {
                 config.save();
             }
         }));
@@ -36,19 +38,11 @@ public class Config extends Node {
     }
 
     private final ConfigSource source;
-    private final boolean saveOnExit;
 
-    private Config(ConfigSource source, LinkedHashSet<ConfigContainer> children, boolean saveOnExit) {
+    private Config(ConfigSource source, LinkedHashSet<ConfigContainer> children) {
         super(TranslationIdentifier.ofRoot(source.getModID()));
         this.source = source;
-        this.saveOnExit = saveOnExit;
         resolve(children);
-        if (isEmpty()) {
-            logger.warn("[CompleteConfig] Config of " + source + " is empty!");
-            return;
-        }
-        source.load(this);
-        configs.add(this);
     }
 
     public String getModID() {
@@ -57,6 +51,10 @@ public class Config extends Node {
 
     public TranslationIdentifier getTranslation() {
         return translation;
+    }
+
+    private void load() {
+        source.load(this);
     }
 
     public void save() {
@@ -69,6 +67,7 @@ public class Config extends Node {
         private final String modID;
         private String[] branch = new String[0];
         private final LinkedHashSet<ConfigContainer> children = new LinkedHashSet<>();
+        private boolean main;
         private boolean saveOnExit = true;
 
         private Builder(String modID) {
@@ -111,6 +110,11 @@ public class Config extends Node {
             return this;
         }
 
+        public Builder main() {
+            main = true;
+            return this;
+        }
+
         /**
          * Completes the config creation.
          *
@@ -121,7 +125,19 @@ public class Config extends Node {
                 logger.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
                 return null;
             }
-            return new Config(new ConfigSource(modID, branch), children, saveOnExit);
+            Config config = new Config(new ConfigSource(modID, branch), children);
+            if (config.isEmpty()) {
+                logger.warn("[CompleteConfig] Config of " + config.source + " is empty!");
+                return null;
+            }
+            config.load();
+            if (main || branch.length == 0 && !mainConfigs.containsKey(modID)) {
+                mainConfigs.put(modID, config);
+            }
+            if (saveOnExit) {
+                saveOnExitConfigs.add(config);
+            }
+            return config;
         }
 
     }

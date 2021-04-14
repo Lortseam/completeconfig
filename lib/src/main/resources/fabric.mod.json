@@ -17,13 +17,19 @@
   "license": "Apache-2.0",
 
   "environment": "*",
+  "entrypoints": {
+    "modmenu": [
+      "me.lortseam.completeconfig.gui.ModMenuIntegration"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.9.0"
   },
   "suggests": {
     "cloth-config2": "*",
     "confabricate": "*",
-    "cloth-basic-math": "*"
+    "cloth-basic-math": "*",
+    "modmenu": ">=1.16.9"
   },
 
   "custom": {
