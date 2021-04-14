@@ -68,7 +68,7 @@ public class Config extends Node {
         private String[] branch = new String[0];
         private final LinkedHashSet<ConfigContainer> children = new LinkedHashSet<>();
         private boolean main;
-        private boolean saveOnExit = true;
+        private boolean saveOnExit;
 
         private Builder(String modID) {
             this.modID = modID;
@@ -105,8 +105,8 @@ public class Config extends Node {
             return this;
         }
 
-        public Builder setSaveOnExit(boolean saveOnExit) {
-            this.saveOnExit = saveOnExit;
+        public Builder saveOnExit() {
+            saveOnExit = true;
             return this;
         }
 
