@@ -11,9 +11,6 @@
   "entrypoints": {
     "main": [
       "me.lortseam.completeconfig.example.ExampleMod"
-    ],
-    "modmenu": [
-      "me.lortseam.completeconfig.example.ModMenuIntegration"
     ]
   },
   "depends": {
