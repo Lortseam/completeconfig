@@ -10,11 +10,13 @@ import java.util.Map;
 
 public final class ModMenuIntegration implements ModMenuApi {
 
-    private final ConfigScreenBuilder screenBuilder = new ClothConfigScreenBuilder();
+    private final ConfigScreenBuilder defaultScreenBuilder = new ClothConfigScreenBuilder();
 
     @Override
     public Map<String, ConfigScreenFactory<?>> getProvidedConfigScreenFactories() {
-        return Maps.transformValues(Config.getMainConfigs(), config -> parentScreen -> screenBuilder.build(parentScreen, config));
+        return Maps.transformValues(Config.getMainConfigs(), config -> parentScreen -> {
+            return ConfigScreenBuilder.getMainBuilder(config.getModID()).orElse(defaultScreenBuilder).build(parentScreen, config);
+        });
     }
 
 }
