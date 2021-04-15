@@ -2,13 +2,14 @@ package me.lortseam.completeconfig.extensions.clothbasicmath;
 
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.extensions.ConfigExtensionPattern;
+import me.lortseam.completeconfig.gui.cloth.GuiProviderRegistration;
 import me.lortseam.completeconfig.gui.cloth.GuiRegistry;
 import me.shedaniel.math.Color;
 
 public final class ClothBasicMathClientExtension implements ConfigExtensionPattern {
 
     ClothBasicMathClientExtension() {
-        dependOn("cloth-config2", () -> GuiRegistry.addGlobalRegistrar(registry -> registry.registerSpecialProvider((ColorEntry<Color> entry) -> GuiRegistry.build(
+        dependOn("cloth-config2", () -> GuiRegistry.addGlobal(new GuiProviderRegistration<>((ColorEntry<Color> entry) -> GuiRegistry.build(
                 builder -> builder
                         .startColorField(entry.getText(), entry.getValue())
                         .setAlphaMode(entry.isAlphaMode())
