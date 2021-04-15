@@ -1,13 +1,11 @@
 package me.lortseam.completeconfig.api;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,7 +13,7 @@ import java.util.List;
  */
 public interface ConfigContainer {
 
-    default List<Class<? extends ConfigContainer>> getConfigClasses() {
+    default Iterable<Class<? extends ConfigContainer>> getConfigClasses() {
         List<Class<? extends ConfigContainer>> classes = new ArrayList<>();
         Class<? extends ConfigContainer> clazz = getClass();
         while (clazz != null) {
@@ -25,7 +23,8 @@ public interface ConfigContainer {
             }
             clazz = (Class<? extends ConfigContainer>) clazz.getSuperclass();
         }
-        return Lists.reverse(ImmutableList.copyOf(classes));
+        Collections.reverse(classes);
+        return classes;
     }
 
     /**

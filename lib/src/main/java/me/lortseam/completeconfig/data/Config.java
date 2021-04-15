@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.data;
 
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
@@ -13,7 +12,6 @@ import java.util.*;
 @Log4j2
 public class Config extends Node {
 
-    @Getter
     private static final Map<String, Config> mainConfigs = new HashMap<>();
     private static final Set<Config> saveOnExitConfigs = new HashSet<>();
 
@@ -23,6 +21,10 @@ public class Config extends Node {
                 config.save();
             }
         }));
+    }
+
+    public static Map<String, Config> getMainConfigs() {
+        return Collections.unmodifiableMap(mainConfigs);
     }
 
     /**
