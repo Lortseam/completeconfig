@@ -42,7 +42,7 @@ public class Config extends BaseCollection {
     private final ConfigSource source;
 
     private Config(ConfigSource source, LinkedHashSet<ConfigContainer> children) {
-        super(TranslationIdentifier.ofRoot(source.getModID()));
+        super(TranslationIdentifier.of(source));
         this.source = source;
         resolve(children);
     }
