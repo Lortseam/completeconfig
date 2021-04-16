@@ -17,13 +17,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-abstract class Node implements ParentDataPart<DataPart> {
+abstract class BaseCollection implements ParentDataPart<DataPart> {
 
     protected final TranslationIdentifier translation;
     private final EntrySet entries;
     private final CollectionSet collections;
 
-    Node(TranslationIdentifier translation) {
+    BaseCollection(TranslationIdentifier translation) {
         this.translation = translation;
         entries = new EntrySet(translation);
         collections = new CollectionSet(translation);

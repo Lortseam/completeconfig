@@ -10,7 +10,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import java.util.*;
 
 @Log4j2
-public class Config extends Node {
+public class Config extends BaseCollection {
 
     private static final Map<String, Config> mainConfigs = new HashMap<>();
     private static final Set<Config> saveOnExitConfigs = new HashSet<>();
