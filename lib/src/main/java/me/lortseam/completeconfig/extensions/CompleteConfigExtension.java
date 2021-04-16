@@ -1,12 +1,17 @@
 package me.lortseam.completeconfig.extensions;
 
-public interface CompleteConfigExtension extends ConfigExtensionPattern {
+import me.lortseam.completeconfig.data.entry.Transformation;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
-    default ConfigExtensionPattern client() {
+import java.util.Collection;
+
+public interface CompleteConfigExtension extends Extension {
+
+    default TypeSerializerCollection getTypeSerializers() {
         return null;
     }
 
-    default ConfigExtensionPattern server() {
+    default Collection<Transformation> getTransformations() {
         return null;
     }
 

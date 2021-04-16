@@ -14,7 +14,7 @@ import me.lortseam.completeconfig.data.entry.Transformer;
 import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
-import me.lortseam.completeconfig.extensions.ConfigExtensionPattern;
+import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.util.TypeUtils;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -65,9 +65,11 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     private static final BiMap<Key, EntryBase> entries = HashBiMap.create();
 
     static {
-        CompleteConfig.getExtensions().stream().map(ConfigExtensionPattern::getTransformations).filter(Objects::nonNull).forEach(extensionTransformations -> {
-            transformations.addAll(0, extensionTransformations);
-        });
+        CompleteConfig.getExtensions().stream().filter(extension -> {
+            return extension instanceof CompleteConfigExtension;
+        }).map(extension -> {
+            return ((CompleteConfigExtension) extension).getTransformations();
+        }).filter(Objects::nonNull).forEach(transformations::addAll);
     }
 
     static EntryBase<?> of(Field field, Class<? extends ConfigContainer> parentClass) {

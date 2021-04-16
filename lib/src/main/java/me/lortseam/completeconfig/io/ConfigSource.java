@@ -6,7 +6,7 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.Config;
-import me.lortseam.completeconfig.extensions.ConfigExtensionPattern;
+import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -63,7 +63,11 @@ public final class ConfigSource {
                 .path(path)
                 .defaultOptions(options -> options.serializers(builder -> {
                     builder.registerAll(GLOBAL_TYPE_SERIALIZERS);
-                    CompleteConfig.getExtensions().stream().map(ConfigExtensionPattern::getTypeSerializers).filter(Objects::nonNull).forEach(builder::registerAll);
+                    CompleteConfig.getExtensions().stream().filter(extension -> {
+                        return extension instanceof CompleteConfigExtension;
+                    }).map(extension -> {
+                        return ((CompleteConfigExtension) extension).getTypeSerializers();
+                    }).filter(Objects::nonNull).forEach(builder::registerAll);
                 }))
                 .build();
     }

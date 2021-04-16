@@ -21,7 +21,7 @@ final class ColorSerializer extends ScalarSerializer<Color> {
         if (obj instanceof Integer) {
             return Color.ofTransparent((Integer) obj);
         }
-        throw new CoercionFailedException(type, obj, "TextColor");
+        throw new CoercionFailedException(type, obj, Color.class.getSimpleName());
     }
 
     @Override
