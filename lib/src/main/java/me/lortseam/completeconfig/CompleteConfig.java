@@ -1,9 +1,8 @@
 package me.lortseam.completeconfig;
 
 import com.google.common.collect.Sets;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.extensions.Extension;
@@ -19,15 +18,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @Log4j2
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class CompleteConfig implements Extension {
+@UtilityClass
+public final class CompleteConfig {
 
     private static final Set<Class<? extends Extension>> validExtensionTypes = Sets.newHashSet(CompleteConfigExtension.class);
     private static final Set<Extension> extensions = new HashSet<>();
 
     static {
         registerExtensionType(GuiExtension.class, EnvType.CLIENT, "cloth-config2");
-        registerExternalExtension("cloth-basic-math", ClothBasicMathExtension.class);
+        registerExtension("cloth-basic-math", ClothBasicMathExtension.class);
         for (EntrypointContainer<CompleteConfigExtension> entrypoint : FabricLoader.getInstance().getEntrypointContainers("completeconfig-extension", CompleteConfigExtension.class)) {
             registerExtension(entrypoint.getEntrypoint());
         }
@@ -65,7 +64,7 @@ public final class CompleteConfig implements Extension {
         }
     }
 
-    public static void registerExternalExtension(@NonNull String modID, @NonNull Class<? extends CompleteConfigExtension> extensionType) {
+    public static void registerExtension(@NonNull String modID, @NonNull Class<? extends CompleteConfigExtension> extensionType) {
         if(!FabricLoader.getInstance().isModLoaded(modID)) return;
         registerExtension(extensionType);
     }
