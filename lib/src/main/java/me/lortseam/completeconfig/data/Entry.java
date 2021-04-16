@@ -14,6 +14,7 @@ import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
+import me.lortseam.completeconfig.util.PropertyUtils;
 import me.lortseam.completeconfig.util.TypeUtils;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -22,8 +23,6 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.List;
@@ -113,6 +112,10 @@ public class Entry<T> implements DataPart {
         this(origin, null);
     }
 
+    private boolean isStatic() {
+        return Modifier.isStatic(field.getModifiers());
+    }
+
     public T getValue() {
         if (update()) {
             return getValue();
@@ -122,7 +125,7 @@ public class Entry<T> implements DataPart {
 
     private T getFieldValue() {
         try {
-            return (T) Objects.requireNonNull(field.get(parentObject), field.toString());
+            return (T) Objects.requireNonNull(field.get(isStatic() ? null : parentObject), field.toString());
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -149,11 +152,11 @@ public class Entry<T> implements DataPart {
 
     private void set(T value) {
         try {
-            Method writeMethod = new PropertyDescriptor(field.getName(), field.getDeclaringClass()).getWriteMethod();
-            if (writeMethod != null) {
-                writeMethod.invoke(Modifier.isStatic(writeMethod.getModifiers()) ? null : parentObject, value);
+            Optional<Method> writeMethod = PropertyUtils.getWriteMethod(field);
+            if (writeMethod.isPresent()) {
+                writeMethod.get().invoke(isStatic() ? null : parentObject, value);
             } else {
-                field.set(Modifier.isStatic(field.getModifiers()) ? null : parentObject, value);
+                field.set(isStatic() ? null : parentObject, value);
             }
         } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Failed to set entry value", e);
