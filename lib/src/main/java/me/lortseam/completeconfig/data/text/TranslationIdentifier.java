@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 public final class TranslationIdentifier {
 
-    public static TranslationIdentifier of(ConfigSource source) {
+    public static TranslationIdentifier from(ConfigSource source) {
         return new TranslationIdentifier("config." + source.getModID());
     }
 
