@@ -1,9 +1,8 @@
 package me.lortseam.completeconfig.data;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
-import lombok.*;
+import lombok.Getter;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
@@ -22,14 +21,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.Consumer;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 @Log4j2
-public class Entry<T> extends EntryBase<T> implements DataPart {
+public class Entry<T> implements DataPart {
 
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
     private static final List<Transformation> transformations = Lists.newArrayList(
@@ -62,7 +65,6 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
             Transformation.builder().byAnnotation(ConfigEntry.Color.class).transforms(ColorEntry::new),
             Transformation.builder().byType(TextColor.class).transforms(origin -> new ColorEntry<>(origin, false))
     );
-    private static final BiMap<Key, EntryBase> entries = HashBiMap.create();
 
     static {
         CompleteConfig.getExtensions().stream().filter(extension -> {
@@ -72,10 +74,17 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         }).filter(Objects::nonNull).forEach(transformations::addAll);
     }
 
-    static EntryBase<?> of(Field field, Class<? extends ConfigContainer> parentClass) {
-        return entries.computeIfAbsent(new Key(field, parentClass), absentField -> new Draft<>(field));
+    static Entry<?> of(Field field, ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
+        EntryOrigin origin = new EntryOrigin(field, parentObject, parentTranslation);
+        return transformations.stream().filter(transformation -> transformation.test(origin)).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
     }
 
+    @Getter
+    private final Field field;
+    @Getter
+    private final Type type;
+    @Getter
+    private final Class<T> typeClass;
     private final ConfigContainer parentObject;
     private String customID;
     @Getter
@@ -83,20 +92,20 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     private final TranslationIdentifier parentTranslation;
     private TranslationIdentifier customTranslation;
     private TranslationIdentifier[] customTooltipTranslation;
-    private boolean forceUpdate;
     private boolean requiresRestart;
     private String comment;
-    private final UnaryOperator<T> modifier;
-    private final List<Listener<T>> listeners = new ArrayList<>();
+    private final UnaryOperator<T> valueModifier;
 
-    protected Entry(EntryOrigin origin, UnaryOperator<T> modifier) {
-        super(origin.getField());
+    protected Entry(EntryOrigin origin, UnaryOperator<T> valueModifier) {
+        field = origin.getField();
         if (!field.isAccessible()) {
             field.setAccessible(true);
         }
+        type = TypeUtils.getFieldType(origin.getField());
+        typeClass = (Class<T>) TypeUtils.getTypeClass(type);
         parentObject = origin.getParentObject();
         parentTranslation = origin.getParentTranslation();
-        this.modifier = modifier;
+        this.valueModifier = valueModifier;
         defaultValue = getValue();
     }
 
@@ -128,8 +137,8 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     }
 
     private boolean update(T value) {
-        if (modifier != null) {
-            value = modifier.apply(value);
+        if (valueModifier != null) {
+            value = valueModifier.apply(value);
         }
         if (value.equals(getFieldValue())) {
             return false;
@@ -139,20 +148,16 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
     }
 
     private void set(T value) {
-        if (listeners.stream().noneMatch(listener -> listener.getParentObject() == parentObject) || forceUpdate) {
-            try {
-                field.set(parentObject, value);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+        try {
+            Method writeMethod = new PropertyDescriptor(field.getName(), field.getDeclaringClass()).getWriteMethod();
+            if (writeMethod != null) {
+                writeMethod.invoke(Modifier.isStatic(writeMethod.getModifiers()) ? null : parentObject, value);
+            } else {
+                field.set(Modifier.isStatic(field.getModifiers()) ? null : parentObject, value);
             }
+        } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Failed to set entry value", e);
         }
-        for (Listener<T> listener : listeners) {
-            listener.invoke(value);
-        }
-    }
-
-    void addListener(Method method, ConfigContainer parentObject) {
-        listeners.add(new Listener<>(method, parentObject));
     }
 
     @Override
@@ -196,7 +201,6 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
                 }
                 customTooltipTranslation = Arrays.stream(customTooltipTranslationKeys).map(key -> parentTranslation.root().append(key)).toArray(TranslationIdentifier[]::new);
             }
-            forceUpdate = annotation.forceUpdate();
             requiresRestart = annotation.requiresRestart();
             String comment = annotation.comment();
             if (!StringUtils.isBlank(comment)) {
@@ -228,52 +232,6 @@ public class Entry<T> extends EntryBase<T> implements DataPart {
         } catch (SerializationException e) {
             logger.error("[CompleteConfig] Failed to fetch value from entry!", e);
         }
-    }
-
-    @Override
-    void interact(Consumer<Entry<T>> interaction) {
-        interaction.accept(this);
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    @EqualsAndHashCode
-    private static class Key {
-
-        private final Field field;
-        private final Class<? extends ConfigContainer> parentClass;
-
-    }
-
-    public static class Draft<T> extends EntryBase<T> {
-
-        static <T> Draft<T> of(Field field, Class<? extends ConfigContainer> parentClass) {
-            EntryBase<T> accessor = (EntryBase<T>) Entry.of(field, parentClass);
-            if (!(accessor instanceof Draft)) {
-                throw new UnsupportedOperationException("Entry draft of field " + field + " was already built");
-            }
-            return (Draft<T>) accessor;
-        }
-
-        private final List<Consumer<Entry<T>>> interactions = new ArrayList<>();
-
-        private Draft(Field field) {
-            super(field);
-        }
-
-        @Override
-        void interact(Consumer<Entry<T>> interaction) {
-            interactions.add(interaction);
-        }
-
-        Entry<T> build(ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
-            Entry<T> entry = (Entry<T>) transformations.stream().filter(transformation -> transformation.test(this)).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(new EntryOrigin(this, parentObject, parentTranslation));
-            for (Consumer<Entry<T>> interaction : interactions) {
-                interaction.accept(entry);
-            }
-            entries.put(entries.inverse().get(this), entry);
-            return entry;
-        }
-
     }
 
 }

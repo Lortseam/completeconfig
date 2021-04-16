@@ -1,15 +1,18 @@
 package me.lortseam.completeconfig.data.entry;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 public final class EntryOrigin {
 
     @Getter
@@ -19,10 +22,8 @@ public final class EntryOrigin {
     @Getter
     private final TranslationIdentifier parentTranslation;
 
-    public EntryOrigin(Entry.Draft<?> draft, ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
-        field = draft.getField();
-        this.parentObject = parentObject;
-        this.parentTranslation = parentTranslation;
+    public Type getType() {
+        return TypeUtils.getFieldType(field);
     }
 
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {

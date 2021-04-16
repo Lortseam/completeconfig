@@ -47,16 +47,6 @@ public @interface ConfigEntry {
     String[] tooltipTranslationKeys() default {};
 
     /**
-     * Specifies whether the field should always get updated, regardless of the number of listeners.
-     *
-     * <p>If at least one listener exists in the field's class, by default, the field will not get modified when the
-     * config is saved. Instead, all listeners will be called. Set this to true to disable that behaviour.
-     *
-     * @return true if the field should always get updated, else false
-     */
-    boolean forceUpdate() default false;
-
-    /**
      * Specifies whether the game needs to be restarted after modifying the entry.
      *
      * @return whether the game needs to be restarted after modifying the entry

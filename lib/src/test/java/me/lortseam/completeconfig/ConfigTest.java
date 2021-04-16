@@ -4,7 +4,6 @@ import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
-import me.lortseam.completeconfig.data.EntryBase;
 import me.lortseam.completeconfig.data.containers.*;
 import me.lortseam.completeconfig.data.groups.EmptyGroup;
 import me.lortseam.completeconfig.data.listeners.*;

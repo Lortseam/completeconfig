@@ -4,12 +4,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import me.lortseam.completeconfig.data.Entry;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -22,22 +23,22 @@ public final class Transformation {
         return new Transformation.Builder();
     }
 
-    private final Predicate<Entry.Draft<?>> predicate;
+    private final Predicate<EntryOrigin> predicate;
     @Getter
     private final Transformer transformer;
 
-    public boolean test(Entry.Draft<?> draft) {
-        return predicate.test(draft);
+    public boolean test(EntryOrigin origin) {
+        return predicate.test(origin);
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Builder {
 
-        private Predicate<Entry.Draft<?>> predicate;
+        private Predicate<EntryOrigin> predicate;
         private final Set<Class<? extends Annotation>> requiredAnnotations = new HashSet<>();
         private final Set<Class<? extends Annotation>> optionalAnnotations = new HashSet<>();
 
-        private Builder by(Predicate<Entry.Draft<?>> predicate) {
+        private Builder by(Predicate<EntryOrigin> predicate) {
             if (this.predicate == null) {
                 this.predicate = predicate;
             } else {
@@ -51,7 +52,7 @@ public final class Transformation {
         }
 
         public Builder byType(Predicate<Type> typePredicate) {
-            return by(draft -> typePredicate.test(draft.getType()));
+            return by(origin -> typePredicate.test(origin.getType()));
         }
 
         public Builder byAnnotation(Class<? extends Annotation> annotation, boolean optional) {
@@ -73,8 +74,8 @@ public final class Transformation {
 
         public Transformation transforms(Transformer transformer) {
             if (!requiredAnnotations.isEmpty() || !optionalAnnotations.isEmpty()) {
-                by(draft -> {
-                    Set<Class<? extends Annotation>> declaredAnnotations = Arrays.stream(draft.getField().getDeclaredAnnotations()).map(Annotation::annotationType).filter(registeredAnnotations::contains).collect(Collectors.toSet());
+                by(origin -> {
+                    Set<Class<? extends Annotation>> declaredAnnotations = Arrays.stream(origin.getField().getDeclaredAnnotations()).map(Annotation::annotationType).filter(registeredAnnotations::contains).collect(Collectors.toSet());
                     for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
                         if (!declaredAnnotations.remove(requiredAnnotation)) return false;
                     }
