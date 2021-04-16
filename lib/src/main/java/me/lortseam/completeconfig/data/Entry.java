@@ -1,7 +1,6 @@
 package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.MoreCollectors;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
@@ -15,6 +14,7 @@ import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
+import me.lortseam.completeconfig.util.PropertyUtils;
 import me.lortseam.completeconfig.util.TypeUtils;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -23,8 +23,6 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.List;
@@ -154,9 +152,7 @@ public class Entry<T> implements DataPart {
 
     private void set(T value) {
         try {
-            Optional<Method> writeMethod = Arrays.stream(Introspector.getBeanInfo(field.getDeclaringClass()).getPropertyDescriptors()).filter(property -> {
-                return property.getName().equals(field.getName());
-            }).collect(MoreCollectors.toOptional()).map(PropertyDescriptor::getWriteMethod);
+            Optional<Method> writeMethod = PropertyUtils.getWriteMethod(field);
             if (writeMethod.isPresent()) {
                 writeMethod.get().invoke(isStatic() ? null : parentObject, value);
             } else {
