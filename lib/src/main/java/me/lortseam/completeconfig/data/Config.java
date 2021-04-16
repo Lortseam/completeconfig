@@ -6,11 +6,14 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.io.ConfigSource;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 
 import java.util.*;
 
 @Log4j2
-public class Config extends BaseCollection {
+public final class Config extends BaseCollection {
+
+    public static final String ID = "config";
 
     private static final Map<String, Config> mainConfigs = new HashMap<>();
     private static final Set<Config> saveOnExitConfigs = new HashSet<>();
@@ -47,12 +50,17 @@ public class Config extends BaseCollection {
         resolve(children);
     }
 
-    public String getModID() {
-        return source.getModID();
+    @Override
+    public String getID() {
+        return ID;
+    }
+
+    public ModMetadata getMod() {
+        return FabricLoader.getInstance().getModContainer(source.getModID()).get().getMetadata();
     }
 
     public TranslationIdentifier getTranslation() {
-        return translation;
+        return translation.append(source.getBranch());
     }
 
     private void load() {

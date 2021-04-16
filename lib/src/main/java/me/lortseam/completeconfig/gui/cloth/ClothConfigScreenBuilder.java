@@ -13,7 +13,6 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.TranslatableText;
@@ -47,7 +46,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
                 .setParentScreen(parentScreen)
                 .setSavingRunnable(config::save);
         TranslationIdentifier customTitle = config.getTranslation().append("title");
-        builder.setTitle(customTitle.exists() ? customTitle.toText() : new TranslatableText("completeconfig.gui.defaultTitle", FabricLoader.getInstance().getModContainer(config.getModID()).get().getMetadata().getName()));
+        builder.setTitle(customTitle.exists() ? customTitle.toText() : new TranslatableText("completeconfig.gui.defaultTitle", config.getMod().getName()));
         if (!config.getEntries().isEmpty()) {
             ConfigCategory category = builder.getOrCreateCategory(config.getText());
             for (Entry<?> entry : config.getEntries()) {

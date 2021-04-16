@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.data.text;
 
+import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.io.ConfigSource;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
@@ -7,6 +8,7 @@ import net.minecraft.text.TranslatableText;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -14,7 +16,7 @@ import java.util.regex.Pattern;
 public final class TranslationIdentifier {
 
     public static TranslationIdentifier from(ConfigSource source) {
-        return new TranslationIdentifier("config." + source.getModID());
+        return new TranslationIdentifier(Config.ID + "." + source.getModID());
     }
 
     private final String modKey;
@@ -46,8 +48,10 @@ public final class TranslationIdentifier {
         return new TranslatableText(getKey(), args);
     }
 
-    public TranslationIdentifier append(String key) {
-        return new TranslationIdentifier(modKey, ArrayUtils.addAll(this.keyParts, key.split(Pattern.quote("."))));
+    public TranslationIdentifier append(String... subKeys) {
+        return new TranslationIdentifier(modKey, ArrayUtils.addAll(keyParts, Arrays.stream(subKeys).map(subKey -> {
+            return subKey.split(Pattern.quote("."));
+        }).flatMap(Arrays::stream).toArray(String[]::new)));
     }
 
     public Optional<TranslationIdentifier[]> appendTooltip() {

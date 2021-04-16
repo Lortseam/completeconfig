@@ -4,9 +4,7 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 
 public interface DataPart {
 
-    default String getID() {
-        throw new UnsupportedOperationException();
-    }
+    String getID();
 
     void apply(CommentedConfigurationNode node);
 

@@ -44,6 +44,7 @@ public final class ConfigSource {
     private final String modID;
     @EqualsAndHashCode.Include
     @ToString.Include
+    @Getter
     private final String[] branch;
     private final HoconConfigurationLoader loader;
 
