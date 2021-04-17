@@ -1,15 +1,22 @@
 package me.lortseam.completeconfig.data;
 
+import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalModifierException;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
+@Log4j2
 public class EntrySet extends DataSet<Entry> {
+
+    private static final Set<Field> staticFields = new HashSet<>();
 
     EntrySet(TranslationIdentifier translation) {
         super(translation);
@@ -25,9 +32,16 @@ public class EntrySet extends DataSet<Entry> {
                     return !ConfigContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigContainer.Ignore.class) && !Modifier.isTransient(field.getModifiers());
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
+            }).filter(field -> {
+                if (!Modifier.isStatic(field.getModifiers()) || !staticFields.contains(field)) return true;
+                logger.warn("[CompleteConfig] Skipped already resolved field: " + field);
+                return false;
             }).map(field -> {
                 if (Modifier.isFinal(field.getModifiers())) {
                     throw new IllegalModifierException("Entry field " + field + " must not be final");
+                }
+                if (Modifier.isStatic(field.getModifiers())) {
+                    staticFields.add(field);
                 }
                 Entry<?> entry = Entry.of(field, container, translation);
                 entry.resolve(field);
