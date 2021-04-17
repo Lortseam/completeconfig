@@ -50,7 +50,7 @@ public final class Config extends BaseCollection {
 
     @Override
     public String getID() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Config root has no ID");
     }
 
     public ModMetadata getMod() {
