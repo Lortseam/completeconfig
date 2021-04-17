@@ -50,7 +50,7 @@ public final class Config extends BaseCollection {
 
     @Override
     public String getID() {
-        return String.valueOf(source.hashCode());
+        throw new UnsupportedOperationException();
     }
 
     public ModMetadata getMod() {
