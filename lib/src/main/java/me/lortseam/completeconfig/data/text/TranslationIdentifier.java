@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.data.text;
 
-import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.io.ConfigSource;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
@@ -16,7 +15,7 @@ import java.util.regex.Pattern;
 public final class TranslationIdentifier {
 
     public static TranslationIdentifier from(ConfigSource source) {
-        return new TranslationIdentifier(Config.ID + "." + source.getModID());
+        return new TranslationIdentifier("config." + source.getModID());
     }
 
     private final String modKey;

@@ -13,8 +13,6 @@ import java.util.*;
 @Log4j2
 public final class Config extends BaseCollection {
 
-    public static final String ID = "config";
-
     private static final Map<String, Config> mainConfigs = new HashMap<>();
     private static final Set<Config> saveOnExitConfigs = new HashSet<>();
 
@@ -52,15 +50,19 @@ public final class Config extends BaseCollection {
 
     @Override
     public String getID() {
-        return ID;
+        return String.valueOf(source.hashCode());
     }
 
     public ModMetadata getMod() {
         return FabricLoader.getInstance().getModContainer(source.getModID()).get().getMetadata();
     }
 
-    public TranslationIdentifier getTranslation() {
-        return translation.append(source.getBranch());
+    public TranslationIdentifier getTranslation(boolean includeBranch) {
+        if (includeBranch) {
+            return translation.append(source.getBranch());
+        } else {
+            return translation;
+        }
     }
 
     private void load() {

@@ -15,7 +15,7 @@ public final class ModMenuIntegration implements ModMenuApi {
     @Override
     public Map<String, ConfigScreenFactory<?>> getProvidedConfigScreenFactories() {
         return Maps.transformValues(Config.getMainConfigs(), config -> parentScreen -> {
-            return ConfigScreenBuilder.getMainBuilder(config.getMod().getId()).orElse(defaultScreenBuilder).build(parentScreen, config);
+            return ConfigScreenBuilder.getMain(config.getMod().getId()).orElse(defaultScreenBuilder).build(parentScreen, config);
         });
     }
 

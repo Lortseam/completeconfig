@@ -13,11 +13,11 @@ public abstract class ConfigScreenBuilder {
 
     private static final Map<String, ConfigScreenBuilder> mainBuilders = new HashMap<>();
 
-    public static void setMainBuilder(String modID, ConfigScreenBuilder screenBuilder) {
+    public static void setMain(String modID, ConfigScreenBuilder screenBuilder) {
         mainBuilders.put(modID, screenBuilder);
     }
 
-    public static Optional<ConfigScreenBuilder> getMainBuilder(String modID) {
+    public static Optional<ConfigScreenBuilder> getMain(String modID) {
         return Optional.ofNullable(mainBuilders.get(modID));
     }
 

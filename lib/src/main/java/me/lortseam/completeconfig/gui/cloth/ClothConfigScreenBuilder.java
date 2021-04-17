@@ -45,7 +45,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
         ConfigBuilder builder = supplier.get()
                 .setParentScreen(parentScreen)
                 .setSavingRunnable(config::save);
-        TranslationIdentifier customTitle = config.getTranslation().append("title");
+        TranslationIdentifier customTitle = config.getTranslation(true).append("title");
         builder.setTitle(customTitle.exists() ? customTitle.toText() : new TranslatableText("completeconfig.gui.defaultTitle", config.getMod().getName()));
         if (!config.getEntries().isEmpty()) {
             ConfigCategory category = builder.getOrCreateCategory(config.getText());
