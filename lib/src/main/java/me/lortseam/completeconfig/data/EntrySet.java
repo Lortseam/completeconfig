@@ -32,15 +32,14 @@ public class EntrySet extends DataSet<Entry> {
                     return !ConfigContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigContainer.Ignore.class) && !Modifier.isTransient(field.getModifiers());
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
-            }).filter(field -> {
-                if (!Modifier.isStatic(field.getModifiers()) || !staticFields.contains(field)) return true;
-                logger.warn("[CompleteConfig] Skipped already resolved field: " + field);
-                return false;
             }).map(field -> {
                 if (Modifier.isFinal(field.getModifiers())) {
                     throw new IllegalModifierException("Entry field " + field + " must not be final");
                 }
                 if (Modifier.isStatic(field.getModifiers())) {
+                    if (staticFields.contains(field)) {
+                        throw new UnsupportedOperationException("Static field has already been resolved: " + field);
+                    }
                     staticFields.add(field);
                 }
                 Entry<?> entry = Entry.of(field, container, translation);
