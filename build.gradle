@@ -6,7 +6,6 @@ plugins {
 }
 
 subprojects {
-
     apply plugin: "fabric-loom"
     apply plugin: "io.freefair.lombok"
 
@@ -26,6 +25,8 @@ subprojects {
             expand "version": project.version
         }
     }
+
+    generateLombokConfig.enabled = false
 
     tasks.withType(JavaCompile).configureEach {
         // ensure that the encoding is set to UTF-8, no matter what the system default is
