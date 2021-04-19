@@ -34,18 +34,15 @@ remapJar {
 	input.set(shadowJar.archiveFile)
 }
 
-// Disable default test task
-test.enabled = false
-
 task testClient(type: Test) {
 	systemProperty "fabric.dli.env", "client"
 }
-check.dependsOn testClient
+test.dependsOn testClient
 
 task testServer(type: Test) {
 	systemProperty "fabric.dli.env", "server"
 }
-check.dependsOn testServer
+test.dependsOn testServer
 
 tasks.withType(Test) {
 	useJUnitPlatform()

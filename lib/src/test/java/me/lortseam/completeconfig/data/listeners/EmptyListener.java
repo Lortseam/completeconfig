@@ -8,7 +8,7 @@ public class EmptyListener implements ConfigContainer {
     @ConfigEntry
     private boolean value;
 
-    public void onUpdate(boolean value) {}
+    public void setValue(boolean value) {}
 
     public boolean getValue() {
         return value;

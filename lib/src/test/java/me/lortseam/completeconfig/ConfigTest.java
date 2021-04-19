@@ -3,10 +3,10 @@ package me.lortseam.completeconfig;
 import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.Config;
-import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.containers.*;
 import me.lortseam.completeconfig.data.groups.EmptyGroup;
-import me.lortseam.completeconfig.data.listeners.*;
+import me.lortseam.completeconfig.data.listeners.EmptyListener;
+import me.lortseam.completeconfig.data.listeners.SetterListener;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.io.ConfigSource;
 import nl.altindag.log.LogCaptor;
@@ -16,7 +16,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +35,7 @@ public class ConfigTest {
         private static final String MOD_ID = "test";
 
         private Config.Builder builder;
+        private final LogCaptor logCaptor = LogCaptor.forRoot();
 
         @BeforeEach
         public void createBuilder() {
@@ -45,9 +45,8 @@ public class ConfigTest {
         @AfterEach
         public void cleanUp() throws NoSuchFieldException {
             builder = null;
-            ((Set<Config>) ReflectionUtil.getStaticFieldValue(Config.class.getDeclaredField("configs"))).clear();
             ((Set<ConfigSource>) ReflectionUtil.getStaticFieldValue(ConfigSource.class.getDeclaredField("sources"))).clear();
-            ((Map<?, EntryBase>) ReflectionUtil.getStaticFieldValue(Entry.class.getDeclaredField("entries"))).clear();
+            logCaptor.clearLogs();
         }
 
         @Test
@@ -74,7 +73,6 @@ public class ConfigTest {
 
         @Test
         public void build_logWarningAndReturnNullIfChildrenEmpty() {
-            LogCaptor logCaptor = LogCaptor.forRoot();
             assertNull(builder.build());
             assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Mod " + MOD_ID + " tried to create an empty config!");
         }
@@ -82,11 +80,14 @@ public class ConfigTest {
         @Nested
         public class Resolution {
 
+            private void assertEmpty(Config config) {
+                assertNull(config);
+                assertThat(logCaptor.getWarnLogs()).containsExactly("[CompleteConfig] Config of ConfigSource(modID=" + MOD_ID + ", branch=[]) is empty!");
+            }
+
             @Test
             public void logWarningIfEmpty() {
-                LogCaptor logCaptor = LogCaptor.forRoot();
-                builder.add(new EmptyContainer()).build();
-                assertThat(logCaptor.getWarnLogs()).containsExactly("[CompleteConfig] Config of ConfigSource(modID=" + MOD_ID + ", branch=[]) is empty!");
+                assertEmpty(builder.add(new EmptyContainer()).build());
             }
 
             @Nested
@@ -101,7 +102,7 @@ public class ConfigTest {
                 @Test
                 public void excludeFieldIfNotAnnotated() {
                     Config config = builder.add(new ContainerWithField()).build();
-                    assertEquals(0, config.getEntries().size());
+                    assertEmpty(config);
                 }
 
                 @Test
@@ -113,19 +114,19 @@ public class ConfigTest {
                 @Test
                 public void excludeFieldInEntriesIfContainer() {
                     Config config = builder.add(new EntriesContainerWithEmptyContainer()).build();
-                    assertEquals(0, config.getEntries().size());
+                    assertEmpty(config);
                 }
 
                 @Test
                 public void excludeFieldInEntriesIfIgnoreAnnotated() {
                     Config config = builder.add(new EntriesContainerWithIgnoredField()).build();
-                    assertEquals(0, config.getEntries().size());
+                    assertEmpty(config);
                 }
 
                 @Test
                 public void excludeFieldInEntriesIfTransient() {
                     Config config = builder.add(new EntriesContainerWithTransientField()).build();
-                    assertEquals(0, config.getEntries().size());
+                    assertEmpty(config);
                 }
 
                 @Test
@@ -137,7 +138,7 @@ public class ConfigTest {
                 @Test
                 public void excludeSuperclassFieldIfStatic() {
                     Config config = builder.add(new SubclassOfContainerWithStaticEntry()).build();
-                    assertEquals(0, config.getEntries().size());
+                    assertEmpty(config);
                 }
 
             }
@@ -188,7 +189,6 @@ public class ConfigTest {
 
                 @Test
                 public void logWarningIfEmpty() {
-                    LogCaptor logCaptor = LogCaptor.forRoot();
                     builder.add(new EmptyGroup()).build();
                     assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Group emptyGroup is empty!");
                 }
@@ -220,39 +220,12 @@ public class ConfigTest {
                 }
 
                 @Test
-                public void listenCustom() {
-                    CustomListener listener = new CustomListener();
-                    Config config = builder.add(listener).build();
-                    boolean value = !listener.getValue();
-                    Iterables.getOnlyElement(config.getEntries()).setValue(value);
-                    assertEquals(value, listener.getValue());
-                }
-
-                @Test
                 public void doNotUpdateField() {
                     EmptyListener listener = new EmptyListener();
                     Config config = builder.add(listener).build();
                     boolean oldValue = listener.getValue();
                     Iterables.getOnlyElement(config.getEntries()).setValue(!oldValue);
                     assertEquals(oldValue, listener.getValue());
-                }
-
-                @Test
-                public void updateFieldIfForceUpdate() {
-                    ForceUpdateListener listener = new ForceUpdateListener();
-                    Config config = builder.add(listener).build();
-                    boolean value = !listener.getValue();
-                    Iterables.getOnlyElement(config.getEntries()).setValue(value);
-                    assertEquals(value, listener.getValue());
-                }
-
-                @Test
-                public void listenOutside() {
-                    OutsideListener listener = new OutsideListener();
-                    Config config = builder.add(listener).build();
-                    boolean value = !listener.getValue();
-                    Iterables.getOnlyElement(config.getEntries()).setValue(value);
-                    assertEquals(value, listener.getValue());
                 }
 
             }
