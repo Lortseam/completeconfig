@@ -45,6 +45,7 @@ task testServer(type: Test) {
 test.dependsOn testServer
 
 tasks.withType(Test) {
+	group = "verification"
 	useJUnitPlatform()
 }
 
