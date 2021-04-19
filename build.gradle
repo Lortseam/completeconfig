@@ -1,17 +1,20 @@
 import groovy.json.JsonSlurper
 
 plugins {
-    id 'fabric-loom' version '0.5-SNAPSHOT' apply false
+    id 'fabric-loom' version "0.5-SNAPSHOT" apply false
+    id "io.freefair.lombok" version "5.3.3.3" apply false
 }
 
 subprojects {
+
     apply plugin: "fabric-loom"
+    apply plugin: "io.freefair.lombok"
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 
     group = rootProject.maven_group
-    archivesBaseName = "${rootProject.archives_base_name}-${project.name}"
+    archivesBaseName = "$rootProject.archives_base_name-${project.name}"
     version = rootProject.mod_version
 
     ext.modName = new JsonSlurper().parse(file("src/main/resources/fabric.mod.json")).name
@@ -53,8 +56,5 @@ subprojects {
         // Using modApi because api does not include dependency inside Maven pom file
         // see https://github.com/FabricMC/fabric-loom/issues/200
         modApi("org.spongepowered:configurate-hocon:${rootProject.configurate_version}")
-
-        compileOnly("org.projectlombok:lombok:${rootProject.lombok_version}")
-        annotationProcessor("org.projectlombok:lombok:${rootProject.lombok_version}")
     }
 }
