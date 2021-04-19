@@ -53,6 +53,7 @@ tasks.withType(Test) {
 
 javadoc {
 	options {
+		title = "$modName $project.version API"
 		source = "8"
 		encoding = "UTF-8"
 		charSet = "UTF-8"

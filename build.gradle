@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 plugins {
     id 'fabric-loom' version '0.5-SNAPSHOT' apply false
 }
@@ -11,6 +13,8 @@ subprojects {
     group = rootProject.maven_group
     archivesBaseName = "${rootProject.archives_base_name}-${project.name}"
     version = rootProject.mod_version
+
+    ext.modName = new JsonSlurper().parse(file("src/main/resources/fabric.mod.json")).name
 
     processResources {
         inputs.property "version", project.version
