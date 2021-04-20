@@ -48,11 +48,6 @@ public final class Config extends BaseCollection {
         resolve(children);
     }
 
-    @Override
-    public String getID() {
-        throw new UnsupportedOperationException("Config root has no ID");
-    }
-
     public ModMetadata getMod() {
         return FabricLoader.getInstance().getModContainer(source.getModID()).get().getMetadata();
     }

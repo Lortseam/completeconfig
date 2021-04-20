@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-abstract class BaseCollection implements ParentDataPart<DataPart> {
+abstract class BaseCollection implements ParentDataPart {
 
     protected final TranslationIdentifier translation;
     private final EntrySet entries;

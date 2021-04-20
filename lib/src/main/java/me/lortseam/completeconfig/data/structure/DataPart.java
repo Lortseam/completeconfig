@@ -4,8 +4,6 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 
 public interface DataPart {
 
-    String getID();
-
     void apply(CommentedConfigurationNode node);
 
     void fetch(CommentedConfigurationNode node);

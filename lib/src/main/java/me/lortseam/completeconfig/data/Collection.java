@@ -2,6 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.ArrayUtils;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @Log4j2
-public class Collection extends BaseCollection {
+public class Collection extends BaseCollection implements Identifiable {
 
     private final String id;
     private final TranslationIdentifier[] customTooltipTranslation;

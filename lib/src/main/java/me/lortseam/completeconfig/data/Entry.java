@@ -11,6 +11,7 @@ import me.lortseam.completeconfig.data.entry.EntryOrigin;
 import me.lortseam.completeconfig.data.entry.Transformation;
 import me.lortseam.completeconfig.data.entry.Transformer;
 import me.lortseam.completeconfig.data.structure.DataPart;
+import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
@@ -31,7 +32,7 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 @Log4j2
-public class Entry<T> implements DataPart {
+public class Entry<T> implements DataPart, Identifiable {
 
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
     private static final List<Transformation> transformations = Lists.newArrayList(

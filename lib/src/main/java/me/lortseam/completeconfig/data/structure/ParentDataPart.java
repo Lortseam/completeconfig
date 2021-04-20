@@ -5,7 +5,7 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
-public interface ParentDataPart<C extends DataPart> extends DataPart {
+public interface ParentDataPart<C extends DataPart & Identifiable> extends DataPart {
 
     Iterable<C> getChildren();
 
