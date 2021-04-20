@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
-import me.lortseam.completeconfig.util.TypeUtils;
+import me.lortseam.completeconfig.util.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -23,7 +23,7 @@ public final class EntryOrigin {
     private final TranslationIdentifier parentTranslation;
 
     public Type getType() {
-        return TypeUtils.getFieldType(field);
+        return ReflectionUtils.getFieldType(field);
     }
 
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {

@@ -7,10 +7,10 @@ import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.structure.ParentDataPart;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
+import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -77,11 +77,7 @@ abstract class BaseCollection implements ParentDataPart {
                 return false;
             }).map(nestedClass -> {
                 try {
-                    Constructor<? extends ConfigContainer> constructor = (Constructor<? extends ConfigContainer>) nestedClass.getDeclaredConstructor();
-                    if (!constructor.isAccessible()) {
-                        constructor.setAccessible(true);
-                    }
-                    return constructor.newInstance();
+                    return (ConfigContainer) ReflectionUtils.instantiateClass(nestedClass);
                 } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                     throw new RuntimeException("Failed to instantiate nested class " + nestedClass, e);
                 }

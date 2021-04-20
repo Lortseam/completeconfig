@@ -8,12 +8,12 @@ import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.extensions.Extension;
 import me.lortseam.completeconfig.extensions.GuiExtension;
 import me.lortseam.completeconfig.extensions.clothbasicmath.ClothBasicMathExtension;
+import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import org.apache.commons.lang3.ClassUtils;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -54,11 +54,7 @@ public final class CompleteConfig {
     private static void registerExtension(Class<? extends Extension> extension) {
         if(Collections.disjoint(ClassUtils.getAllInterfaces(extension), validExtensionTypes)) return;
         try {
-            Constructor<? extends Extension> constructor = extension.getDeclaredConstructor();
-            if (!constructor.isAccessible()) {
-                constructor.setAccessible(true);
-            }
-            registerExtension(constructor.newInstance());
+            registerExtension(ReflectionUtils.instantiateClass(extension));
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             logger.error("[CompleteConfig] Failed to instantiate extension " + extension, e);
         }

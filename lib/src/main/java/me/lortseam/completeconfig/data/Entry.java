@@ -15,8 +15,7 @@ import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
-import me.lortseam.completeconfig.util.PropertyUtils;
-import me.lortseam.completeconfig.util.TypeUtils;
+import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import org.apache.commons.lang3.StringUtils;
@@ -61,7 +60,7 @@ public class Entry<T> implements DataPart, Identifiable {
                 ConfigEntry.BoundedDouble bounds = origin.getAnnotation(ConfigEntry.BoundedDouble.class);
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max());
             }),
-            Transformation.builder().byType(type -> Enum.class.isAssignableFrom(TypeUtils.getTypeClass(type))).byAnnotation(ConfigEntry.Enum.class, true).transforms(EnumEntry::new),
+            Transformation.builder().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).byAnnotation(ConfigEntry.Enum.class, true).transforms(EnumEntry::new),
             Transformation.builder().byAnnotation(ConfigEntry.Color.class).transforms(ColorEntry::new),
             Transformation.builder().byType(TextColor.class).transforms(origin -> new ColorEntry<>(origin, false))
     );
@@ -101,8 +100,8 @@ public class Entry<T> implements DataPart, Identifiable {
         if (!field.isAccessible()) {
             field.setAccessible(true);
         }
-        type = TypeUtils.getFieldType(origin.getField());
-        typeClass = (Class<T>) TypeUtils.getTypeClass(type);
+        type = ReflectionUtils.getFieldType(origin.getField());
+        typeClass = (Class<T>) ReflectionUtils.getTypeClass(type);
         parentObject = origin.getParentObject();
         parentTranslation = origin.getParentTranslation();
         this.valueModifier = valueModifier;
@@ -153,7 +152,7 @@ public class Entry<T> implements DataPart, Identifiable {
 
     private void set(T value) {
         try {
-            Optional<Method> writeMethod = PropertyUtils.getWriteMethod(field);
+            Optional<Method> writeMethod = ReflectionUtils.getWriteMethod(field);
             if (writeMethod.isPresent()) {
                 writeMethod.get().invoke(isStatic() ? null : parentObject, value);
             } else {
