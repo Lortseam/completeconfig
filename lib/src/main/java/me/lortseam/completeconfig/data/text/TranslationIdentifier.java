@@ -14,8 +14,10 @@ import java.util.regex.Pattern;
 
 public final class TranslationIdentifier {
 
+    private static final String DELIMITER = ".";
+
     public static TranslationIdentifier from(ConfigSource source) {
-        return new TranslationIdentifier("config." + source.getModID());
+        return new TranslationIdentifier("config" + DELIMITER + source.getModID());
     }
 
     private final String modKey;
@@ -29,7 +31,7 @@ public final class TranslationIdentifier {
     private String getKey() {
         StringBuilder builder = new StringBuilder(modKey);
         for (String keyPart : keyParts) {
-            builder.append(".");
+            builder.append(DELIMITER);
             builder.append(keyPart);
         }
         return builder.toString();
@@ -49,7 +51,7 @@ public final class TranslationIdentifier {
 
     public TranslationIdentifier append(String... subKeys) {
         return new TranslationIdentifier(modKey, ArrayUtils.addAll(keyParts, Arrays.stream(subKeys).map(subKey -> {
-            return subKey.split(Pattern.quote("."));
+            return subKey.split(Pattern.quote(DELIMITER));
         }).flatMap(Arrays::stream).toArray(String[]::new)));
     }
 
