@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A container for config entries.
+ * A container for config entries. Entries are added by declaring fields or registering transitive containers.
  */
 public interface ConfigContainer {
 
@@ -28,7 +28,7 @@ public interface ConfigContainer {
     }
 
     /**
-     * Used to register transitive containers, located at the level of this container.
+     * Used to register transitive containers dynamically.
      *
      * @return an array of containers
      * @see Transitive
@@ -38,8 +38,7 @@ public interface ConfigContainer {
     }
 
     /**
-     * Applied to declare that a field or a nested class of type {@link ConfigContainer} is transitive. Transitive
-     * containers will be registered at the level of this container.
+     * Applied to declare that a field or a nested class of type {@link ConfigContainer} is transitive.
      *
      * @see #getTransitives()
      */

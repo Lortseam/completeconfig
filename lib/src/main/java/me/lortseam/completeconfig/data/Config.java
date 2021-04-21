@@ -112,18 +112,28 @@ public final class Config extends BaseCollection {
             return this;
         }
 
+        /**
+         * Sets a flag to save the config when the game closes.
+         *
+         * @return this builder
+         */
         public Builder saveOnExit() {
             saveOnExit = true;
             return this;
         }
 
+        /**
+         * Registers the config as main mod config.
+         *
+         * @return this builder
+         */
         public Builder main() {
             main = true;
             return this;
         }
 
         /**
-         * Completes the config creation.
+         * Creates and loads the config.
          *
          * @return the created config
          */

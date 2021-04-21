@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 
 /**
  * Applied to declare that a field should be resolved as config entry.
+ *
+ * @see ConfigEntries
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -63,14 +65,14 @@ public @interface ConfigEntry {
         /**
          * A custom translation key for the value {@code true}. If empty, the default key will be used.
          *
-         * @return a custom translation key
+         * @return a custom value translation key
          */
         String trueTranslationKey() default "";
 
         /**
          * A custom translation key for the value {@code false}. If empty, the default key will be used.
          *
-         * @return a custom translation key
+         * @return a custom value translation key
          */
         String falseTranslationKey() default "";
         
@@ -84,16 +86,16 @@ public @interface ConfigEntry {
     @interface BoundedInteger {
 
         /**
-         * The minimum bound.
+         * The lower bound (minimum).
          *
-         * @return the minimum bound
+         * @return the lower bound
          */
         int min() default java.lang.Integer.MIN_VALUE;
 
         /**
-         * The maximum bound.
+         * The upper bound (maximum).
          *
-         * @return the maximum bound
+         * @return the upper bound
          */
         int max() default java.lang.Integer.MAX_VALUE;
 
@@ -107,16 +109,16 @@ public @interface ConfigEntry {
     @interface BoundedLong {
 
         /**
-         * The minimum bound.
+         * The lower bound (minimum).
          *
-         * @return the minimum bound
+         * @return the lower bound
          */
         long min() default java.lang.Long.MIN_VALUE;
 
         /**
-         * The maximum bound.
+         * The upper bound (maximum).
          *
-         * @return the maximum bound
+         * @return the upper bound
          */
         long max() default java.lang.Long.MAX_VALUE;
 
@@ -130,16 +132,16 @@ public @interface ConfigEntry {
     @interface BoundedFloat {
 
         /**
-         * The minimum bound.
+         * The lower bound (minimum).
          *
-         * @return the minimum bound
+         * @return the lower bound
          */
         float min() default -java.lang.Float.MAX_VALUE;
 
         /**
-         * The maximum bound.
+         * The upper bound (maximum).
          *
-         * @return the maximum bound
+         * @return the upper bound
          */
         float max() default java.lang.Float.MAX_VALUE;
 
@@ -153,40 +155,49 @@ public @interface ConfigEntry {
     @interface BoundedDouble {
 
         /**
-         * The minimum bound.
+         * The lower bound (minimum).
          *
-         * @return the minimum bound
+         * @return the lower bound
          */
         double min() default -java.lang.Double.MAX_VALUE;
 
         /**
-         * The maximum bound.
+         * The upper bound (maximum).
          *
-         * @return the maximum bound
+         * @return the upper bound
          */
         double max() default java.lang.Double.MAX_VALUE;
 
     }
 
+    /**
+     * If applied, renders a slider for this entry. Usually used together with a bounding annotation.
+     */
     @Target({ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
     @interface Slider {
 
+        /**
+         * Specifies a custom translation key for this entry's value. If empty, the default key will be used.
+         *
+         * <p>The translation must contain a single format specifier of the entry's type, which will be replaced by the
+         * actual value.
+         *
+         * @return a custom value translation key
+         */
         String valueTranslationKey() default "";
 
     }
 
     /**
      * Applied to an entry of type Enum.
-     *
-     * <p>This annotation is optional.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Enum {
 
         /**
-         * Specifies how the entry should be rendered.
+         * Specifies how to render the entry.
          *
          * @return the desired display type
          */
