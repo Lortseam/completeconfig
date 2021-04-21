@@ -129,12 +129,12 @@ public final class Config extends BaseCollection {
          */
         public Config build() {
             if (children.isEmpty()) {
-                logger.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config!");
+                logger.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config");
                 return null;
             }
             Config config = new Config(new ConfigSource(modID, branch), children);
             if (config.isEmpty()) {
-                logger.warn("[CompleteConfig] Config of " + config.source + " is empty!");
+                logger.warn("[CompleteConfig] Config of " + config.source + " is empty");
                 return null;
             }
             config.load();

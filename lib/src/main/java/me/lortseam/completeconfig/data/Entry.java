@@ -224,7 +224,7 @@ public class Entry<T> implements DataPart, Identifiable {
             if(value == null) return;
             setValue(value);
         } catch (SerializationException e) {
-            logger.error("[CompleteConfig] Failed to apply value to entry!", e);
+            logger.error("[CompleteConfig] Failed to apply value to entry", e);
         }
     }
 
@@ -236,7 +236,7 @@ public class Entry<T> implements DataPart, Identifiable {
                 node.comment(comment);
             }
         } catch (SerializationException e) {
-            logger.error("[CompleteConfig] Failed to fetch value from entry!", e);
+            logger.error("[CompleteConfig] Failed to fetch value from entry", e);
         }
     }
 

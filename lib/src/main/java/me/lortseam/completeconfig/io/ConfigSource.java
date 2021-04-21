@@ -52,7 +52,7 @@ public final class ConfigSource {
         this.modID = modID;
         this.branch = branch;
         if (!sources.add(this)) {
-            throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists!");
+            throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists");
         }
         Path path = FabricLoader.getInstance().getConfigDir();
         String[] subPath = ArrayUtils.add(branch, 0, modID);
@@ -80,7 +80,7 @@ public final class ConfigSource {
                 config.apply(root);
             }
         } catch (ConfigurateException e) {
-            logger.error("[CompleteConfig] Failed to load config from file!", e);
+            logger.error("[CompleteConfig] Failed to load config from file", e);
         }
         save(config);
     }
@@ -91,7 +91,7 @@ public final class ConfigSource {
         try {
             loader.save(root);
         } catch (ConfigurateException e) {
-            logger.error("[CompleteConfig] Failed to save config to file!", e);
+            logger.error("[CompleteConfig] Failed to save config to file", e);
         }
     }
 
