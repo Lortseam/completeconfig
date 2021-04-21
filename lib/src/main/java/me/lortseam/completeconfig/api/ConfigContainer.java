@@ -48,15 +48,5 @@ public interface ConfigContainer {
     @interface Transitive {
 
     }
-
-    /**
-     * Applied to declare that a field should not be resolved as config entry.
-     * This annotation is needed to exclude fields if the {@link ConfigEntries} annotation was applied to the class.
-     */
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface Ignore {
-
-    }
     
 }

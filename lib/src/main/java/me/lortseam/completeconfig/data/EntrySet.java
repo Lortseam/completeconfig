@@ -29,7 +29,7 @@ public class EntrySet extends DataSet<Entry> {
                     return false;
                 }
                 if (clazz.isAnnotationPresent(ConfigEntries.class)) {
-                    return !ConfigContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigContainer.Ignore.class) && !Modifier.isTransient(field.getModifiers());
+                    return !ConfigContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntries.Exclude.class) && !Modifier.isTransient(field.getModifiers());
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
             }).map(field -> {
