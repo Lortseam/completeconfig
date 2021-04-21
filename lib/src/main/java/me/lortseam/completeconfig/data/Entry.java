@@ -1,6 +1,7 @@
 package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Lists;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
@@ -31,6 +32,7 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 @Log4j2
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Entry<T> implements DataPart, Identifiable {
 
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
@@ -79,6 +81,7 @@ public class Entry<T> implements DataPart, Identifiable {
     }
 
     @Getter
+    @EqualsAndHashCode.Include
     private final Field field;
     @Getter
     private final Type type;
