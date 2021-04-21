@@ -6,7 +6,7 @@ import me.lortseam.completeconfig.api.ConfigEntries;
 @ConfigEntries
 public class EntriesContainerWithIgnoredField implements ConfigContainer {
 
-    @Ignore
+    @ConfigEntries.Exclude
     private boolean noEntry;
 
 }

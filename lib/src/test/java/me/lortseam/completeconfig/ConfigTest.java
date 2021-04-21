@@ -74,7 +74,7 @@ public class ConfigTest {
         @Test
         public void build_logWarningAndReturnNullIfChildrenEmpty() {
             assertNull(builder.build());
-            assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Mod " + MOD_ID + " tried to create an empty config!");
+            assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Mod " + MOD_ID + " tried to create an empty config");
         }
 
         @Nested
@@ -82,7 +82,7 @@ public class ConfigTest {
 
             private void assertEmpty(Config config) {
                 assertNull(config);
-                assertThat(logCaptor.getWarnLogs()).containsExactly("[CompleteConfig] Config of ConfigSource(modID=" + MOD_ID + ", branch=[]) is empty!");
+                assertThat(logCaptor.getWarnLogs()).containsExactly("[CompleteConfig] Config of ConfigSource(modID=" + MOD_ID + ", branch=[]) is empty");
             }
 
             @Test
@@ -190,7 +190,7 @@ public class ConfigTest {
                 @Test
                 public void logWarningIfEmpty() {
                     builder.add(new EmptyGroup()).build();
-                    assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Group emptyGroup is empty!");
+                    assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Group emptyGroup is empty");
                 }
 
                 @Test
