@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.gui.cloth;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
 import me.lortseam.completeconfig.CompleteConfig;
@@ -11,15 +12,14 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.TextColor;
 
-import java.util.Collection;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 @Environment(EnvType.CLIENT)
 public final class GuiRegistry {
 
-    private static final List<Provider> globalProviders = Stream.concat(Stream.of(
+    private static final List<Provider> globalProviders = Lists.newArrayList(
             Provider.create(BooleanEntry.class, entry -> ConfigEntryBuilder.create()
                             .startBooleanToggle(entry.getText(), entry.getValue())
                             .setDefaultValue(entry.getDefaultValue())
@@ -165,11 +165,13 @@ public final class GuiRegistry {
                         .setTooltip(entry.getTooltip())
                         .setSaveConsumer3(entry::setValue),
                     entry -> !entry.isAlphaMode(), TextColor.class)
-    ), CompleteConfig.getExtensions().stream().filter(extension -> {
-        return extension instanceof GuiExtension;
-    }).map(extension -> {
-        return ((GuiExtension) extension).getProviders();
-    }).filter(Objects::nonNull).flatMap(Collection::stream)).collect(Collectors.toList());
+    );
+
+    static {
+        for (Collection<Provider> providers : CompleteConfig.collectExtensions(GuiExtension.class, GuiExtension::getProviders)) {
+            globalProviders.addAll(providers);
+        }
+    }
 
     private final List<Provider> providers = new ArrayList<>();
 

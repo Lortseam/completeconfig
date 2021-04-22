@@ -17,7 +17,6 @@ import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Log4j2
@@ -64,11 +63,9 @@ public final class ConfigSource {
                 .path(path)
                 .defaultOptions(options -> options.serializers(builder -> {
                     builder.registerAll(GLOBAL_TYPE_SERIALIZERS);
-                    CompleteConfig.getExtensions().stream().filter(extension -> {
-                        return extension instanceof CompleteConfigExtension;
-                    }).map(extension -> {
-                        return ((CompleteConfigExtension) extension).getTypeSerializers();
-                    }).filter(Objects::nonNull).forEach(builder::registerAll);
+                    for (TypeSerializerCollection collection : CompleteConfig.collectExtensions(CompleteConfigExtension.class, CompleteConfigExtension::getTypeSerializers)) {
+                        builder.registerAll(collection);
+                    }
                 }))
                 .build();
     }

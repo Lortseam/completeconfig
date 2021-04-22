@@ -26,6 +26,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.beans.IntrospectionException;
 import java.lang.reflect.*;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -68,11 +69,9 @@ public class Entry<T> implements DataPart, Identifiable {
     );
 
     static {
-        CompleteConfig.getExtensions().stream().filter(extension -> {
-            return extension instanceof CompleteConfigExtension;
-        }).map(extension -> {
-            return ((CompleteConfigExtension) extension).getTransformations();
-        }).filter(Objects::nonNull).forEach(transformations::addAll);
+        for (Collection<Transformation> transformations : CompleteConfig.collectExtensions(CompleteConfigExtension.class, CompleteConfigExtension::getTransformations)) {
+            Entry.transformations.addAll(transformations);
+        }
     }
 
     static Entry<?> of(Field field, ConfigContainer parentObject, TranslationIdentifier parentTranslation) {

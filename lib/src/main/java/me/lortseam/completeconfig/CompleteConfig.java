@@ -16,6 +16,8 @@ import org.apache.commons.lang3.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Log4j2
 @UtilityClass
@@ -65,8 +67,8 @@ public final class CompleteConfig {
         registerExtension(extensionType);
     }
 
-    public static Collection<Extension> getExtensions() {
-        return Collections.unmodifiableCollection(extensions);
+    public static <E extends Extension, T> Collection<T> collectExtensions(Class<E> extensionType, Function<E, T> function) {
+        return extensions.stream().filter(extensionType::isInstance).map(extension -> function.apply((E) extension)).filter(Objects::nonNull).collect(Collectors.toSet());
     }
 
 }
