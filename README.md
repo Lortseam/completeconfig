@@ -16,11 +16,19 @@ Beside the basic elements of a config library, CompleteConfig offers the followi
 ## Setup
 [![](https://jitpack.io/v/com.gitlab.Lortseam/completeconfig.svg)](https://jitpack.io/#com.gitlab.Lortseam/completeconfig)
 
-To use the library, first add the JitPack repository to your `build.gradle` file:
+To use the library, first add the required repositories to your `build.gradle` file:
 ```groovy
 repositories {
     [...]
-    maven { url 'https://jitpack.io' }
+    maven {
+        url 'https://jitpack.io'
+    }
+    maven {
+        url "https://maven.shedaniel.me/"
+    }
+    maven {
+        url "https://maven.terraformersmc.com/"
+    }
 }
 ```
 Then add CompleteConfig to the dependencies:
