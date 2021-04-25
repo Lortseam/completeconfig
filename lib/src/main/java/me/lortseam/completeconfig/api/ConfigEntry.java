@@ -180,8 +180,8 @@ public @interface ConfigEntry {
         /**
          * Specifies a custom translation key for this entry's value. If empty, the default key will be used.
          *
-         * <p>The translation must contain a single format specifier of the entry's type, which will be replaced by the
-         * actual value.
+         * <p>The translation must contain a single format specifier of the entry's type, which will be replaced with
+         * the actual value.
          *
          * @return a custom value translation key
          */
