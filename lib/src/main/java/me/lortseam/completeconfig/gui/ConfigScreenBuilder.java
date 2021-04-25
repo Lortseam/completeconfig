@@ -45,8 +45,10 @@ public abstract class ConfigScreenBuilder {
      * @param config the config to build the screen of
      * @return the built screen, if successful
      */
-    public static Optional<Screen> tryBuild(Screen parentScreen, Config config) {
-        return getMain(config.getMod().getId()).map(builder -> builder.build(parentScreen, config));
+    public static Screen tryBuild(Screen parentScreen, Config config) {
+        return getMain(config.getMod().getId()).orElseThrow(() -> {
+            return new UnsupportedOperationException("No screen builder found for mod " + config.getMod().getId());
+        }).build(parentScreen, config);
     }
 
     /**
