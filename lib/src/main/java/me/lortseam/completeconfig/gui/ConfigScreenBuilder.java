@@ -31,10 +31,7 @@ public abstract class ConfigScreenBuilder {
         if (mainBuilders.containsKey(modID)) {
             return Optional.of(mainBuilders.get(modID));
         }
-        if (fallback != null) {
-            return Optional.of(fallback);
-        }
-        return Optional.empty();
+        return Optional.ofNullable(fallback);
     }
 
     /**
