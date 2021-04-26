@@ -41,10 +41,8 @@ public final class Settings implements ConfigContainer {
     @ConfigEntries
     public static class Tooltips implements ConfigGroup {
 
-        @ConfigEntry
         private boolean defaultOneLine;
 
-        @ConfigEntry
         private boolean defaultMultiLine;
 
         @ConfigEntry(tooltipTranslationKeys = {"customTooltipLine1", "customTooltipLine2"})
