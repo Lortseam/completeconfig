@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.data.listeners;
+package me.lortseam.completeconfig.test.data.listeners;
 
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigContainer;

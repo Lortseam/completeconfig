@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.data.containers;
+package me.lortseam.completeconfig.test.data.containers;
 
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
@@ -6,6 +6,8 @@ import me.lortseam.completeconfig.api.ConfigEntries;
 @ConfigEntries
 public class EntriesContainerWithEmptyContainer implements ConfigContainer {
 
-    private final EmptyContainer emptyContainer = new EmptyContainer();
+    private final ConfigContainer emptyContainer = new ConfigContainer() {
+
+    };
 
 }

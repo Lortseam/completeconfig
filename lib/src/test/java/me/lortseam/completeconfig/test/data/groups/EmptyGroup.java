@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.data.groups;
+package me.lortseam.completeconfig.test.data.groups;
 
 import me.lortseam.completeconfig.api.ConfigGroup;
 

@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.extension;
+package me.lortseam.completeconfig.test.extension;
 
 import com.google.common.jimfs.Jimfs;
 import net.fabricmc.api.EnvType;

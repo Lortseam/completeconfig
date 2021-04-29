@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.data.containers;
+package me.lortseam.completeconfig.test.data.containers;
 
 public class SubclassOfContainerWithEntry extends ContainerWithEntry {
 
