@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
 import me.lortseam.completeconfig.CompleteConfig;
-import me.lortseam.completeconfig.DropdownEntry;
+import me.lortseam.completeconfig.data.DropdownEntry;
 import me.lortseam.completeconfig.data.*;
 import me.lortseam.completeconfig.extensions.GuiExtension;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
