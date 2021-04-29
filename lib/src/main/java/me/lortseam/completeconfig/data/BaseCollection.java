@@ -48,7 +48,7 @@ abstract class BaseCollection implements ParentDataPart {
                     if (!ConfigContainer.class.isAssignableFrom(field.getType())) {
                         throw new IllegalAnnotationTargetException("Transitive field " + field + " must implement " + ConfigContainer.class.getSimpleName());
                     }
-                    return true;
+                    return !Modifier.isStatic(field.getModifiers()) || clazz == container.getClass();
                 }
                 return false;
             }).map(field -> {
