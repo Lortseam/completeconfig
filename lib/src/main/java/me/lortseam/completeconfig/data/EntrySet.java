@@ -7,16 +7,11 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import me.lortseam.completeconfig.exception.IllegalModifierException;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 @Log4j2
 public class EntrySet extends DataSet<Entry> {
-
-    private static final Set<Field> staticFields = new HashSet<>();
 
     EntrySet(TranslationIdentifier translation) {
         super(translation);
@@ -36,13 +31,7 @@ public class EntrySet extends DataSet<Entry> {
                 if (Modifier.isFinal(field.getModifiers())) {
                     throw new IllegalModifierException("Entry field " + field + " must not be final");
                 }
-                if (Modifier.isStatic(field.getModifiers())) {
-                    if (staticFields.contains(field)) {
-                        throw new UnsupportedOperationException("Static field has already been resolved: " + field);
-                    }
-                    staticFields.add(field);
-                }
-                Entry<?> entry = Entry.of(field, container, translation);
+                Entry<?> entry = Entry.of(field, Modifier.isStatic(field.getModifiers()) ? null : container, translation);
                 entry.resolve(field);
                 return entry;
             }).forEach(this::add);

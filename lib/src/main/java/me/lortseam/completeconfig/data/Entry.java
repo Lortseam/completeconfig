@@ -26,11 +26,8 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.*;
-import java.util.Arrays;
+import java.util.*;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 @Log4j2
@@ -69,6 +66,7 @@ public class Entry<T> implements DataPart, Identifiable {
             Transformation.builder().byAnnotation(ConfigEntry.Color.class).transforms(ColorEntry::new),
             Transformation.builder().byType(TextColor.class).transforms(origin -> new ColorEntry<>(origin, false))
     );
+    private static final Set<Entry> entries = new HashSet<>();
 
     static {
         for (Collection<Transformation> transformations : CompleteConfig.collectExtensions(CompleteConfigExtension.class, CompleteConfigExtension::getTransformations)) {
@@ -78,7 +76,11 @@ public class Entry<T> implements DataPart, Identifiable {
 
     static Entry<?> of(Field field, ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
         EntryOrigin origin = new EntryOrigin(field, parentObject, parentTranslation);
-        return transformations.stream().filter(transformation -> transformation.test(origin)).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
+        Entry<?> entry = transformations.stream().filter(transformation -> transformation.test(origin)).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
+        if (!entries.add(entry)) {
+            throw new UnsupportedOperationException("Field " + field + " with parent object " + parentObject + " was already resolved");
+        }
+        return entry;
     }
 
     @Getter
@@ -88,6 +90,7 @@ public class Entry<T> implements DataPart, Identifiable {
     private final Type type;
     @Getter
     private final Class<T> typeClass;
+    @EqualsAndHashCode.Include
     private final ConfigContainer parentObject;
     private String customID;
     @Getter
@@ -116,10 +119,6 @@ public class Entry<T> implements DataPart, Identifiable {
         this(origin, null);
     }
 
-    private boolean isStatic() {
-        return Modifier.isStatic(field.getModifiers());
-    }
-
     public T getValue() {
         if (update()) {
             return getValue();
@@ -129,7 +128,7 @@ public class Entry<T> implements DataPart, Identifiable {
 
     private T getFieldValue() {
         try {
-            return (T) Objects.requireNonNull(field.get(isStatic() ? null : parentObject), field.toString());
+            return (T) Objects.requireNonNull(field.get(parentObject), field.toString());
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -158,9 +157,9 @@ public class Entry<T> implements DataPart, Identifiable {
         try {
             Optional<Method> writeMethod = ReflectionUtils.getWriteMethod(field);
             if (writeMethod.isPresent()) {
-                writeMethod.get().invoke(isStatic() ? null : parentObject, value);
+                writeMethod.get().invoke(parentObject, value);
             } else {
-                field.set(isStatic() ? null : parentObject, value);
+                field.set(parentObject, value);
             }
         } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Failed to set entry value", e);
