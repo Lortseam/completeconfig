@@ -14,7 +14,7 @@ public class CollectionSet extends DataSet<Collection> {
     void resolve(ConfigGroup group) {
         String groupID = group.getID();
         Collection collection = new Collection(groupID, translation.append(groupID), group.getTooltipTranslationKeys(), group.getComment());
-        collection.resolve(group);
+        collection.resolveContainer(group);
         if (collection.isEmpty()) {
             logger.warn("[CompleteConfig] Group " + groupID + " is empty");
             return;

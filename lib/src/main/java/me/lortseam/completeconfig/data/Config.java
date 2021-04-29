@@ -42,7 +42,7 @@ public final class Config extends BaseCollection {
 
     private final ConfigSource source;
 
-    private Config(ConfigSource source, LinkedHashSet<ConfigContainer> children) {
+    private Config(ConfigSource source, ConfigContainer[] children) {
         super(TranslationIdentifier.from(source));
         this.source = source;
         resolve(children);
@@ -142,7 +142,7 @@ public final class Config extends BaseCollection {
                 logger.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config");
                 return null;
             }
-            Config config = new Config(new ConfigSource(modID, branch), children);
+            Config config = new Config(new ConfigSource(modID, branch), children.toArray(new ConfigContainer[0]));
             if (config.isEmpty()) {
                 logger.warn("[CompleteConfig] Config of " + config.source + " is empty");
                 return null;

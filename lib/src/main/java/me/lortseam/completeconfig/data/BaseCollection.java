@@ -15,7 +15,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 abstract class BaseCollection implements ParentDataPart {
 
@@ -41,7 +40,7 @@ abstract class BaseCollection implements ParentDataPart {
         return Collections.unmodifiableCollection(collections);
     }
 
-    void resolve(ConfigContainer container) {
+    void resolveContainer(ConfigContainer container) {
         entries.resolve(container);
         for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
             resolve(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
@@ -61,7 +60,7 @@ abstract class BaseCollection implements ParentDataPart {
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
-            }).collect(Collectors.toList()));
+            }).toArray(ConfigContainer[]::new));
             Class<?>[] nestedClasses = clazz.getDeclaredClasses();
             ArrayUtils.reverse(nestedClasses);
             resolve(Arrays.stream(nestedClasses).filter(nestedClass -> {
@@ -81,17 +80,17 @@ abstract class BaseCollection implements ParentDataPart {
                 } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                     throw new RuntimeException("Failed to instantiate nested class " + nestedClass, e);
                 }
-            }).collect(Collectors.toList()));
+            }).toArray(ConfigContainer[]::new));
         }
-        resolve(Arrays.asList(container.getTransitives()));
+        resolve(container.getTransitives());
     }
 
-    protected void resolve(Iterable<ConfigContainer> containers) {
-        for (ConfigContainer c : containers) {
-            if (c instanceof ConfigGroup) {
-                collections.resolve((ConfigGroup) c);
+    protected void resolve(ConfigContainer... containers) {
+        for (ConfigContainer container : containers) {
+            if (container instanceof ConfigGroup) {
+                collections.resolve((ConfigGroup) container);
             } else {
-                resolve(c);
+                resolveContainer(container);
             }
         }
     }
