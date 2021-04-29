@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
+import me.lortseam.completeconfig.DropdownEntry;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.entry.EntryOrigin;
@@ -63,7 +64,8 @@ public class Entry<T> implements DataPart, Identifiable {
                 ConfigEntry.BoundedDouble bounds = origin.getAnnotation(ConfigEntry.BoundedDouble.class);
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max());
             }),
-            Transformation.builder().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).byAnnotation(ConfigEntry.Enum.class, true).transforms(EnumEntry::new),
+            Transformation.builder().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).transforms(EnumEntry::new),
+            Transformation.builder().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).byAnnotation(ConfigEntry.Dropdown.class).transforms(DropdownEntry::new),
             Transformation.builder().byAnnotation(ConfigEntry.Color.class).transforms(ColorEntry::new),
             Transformation.builder().byType(TextColor.class).transforms(origin -> new ColorEntry<>(origin, false))
     );

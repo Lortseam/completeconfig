@@ -1,7 +1,5 @@
 package me.lortseam.completeconfig.api;
 
-import me.lortseam.completeconfig.data.EnumEntry;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -190,18 +188,13 @@ public @interface ConfigEntry {
     }
 
     /**
-     * Applied to an entry of type Enum.
+     * If applied, renders a dropdown menu for this entry.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
-    @interface Enum {
+    @interface Dropdown {
 
-        /**
-         * Specifies how to render the entry.
-         *
-         * @return the desired display type
-         */
-        EnumEntry.DisplayType displayType() default EnumEntry.DisplayType.BUTTON;
+        boolean suggestionMode() default false;
 
     }
 

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
 import me.lortseam.completeconfig.CompleteConfig;
+import me.lortseam.completeconfig.DropdownEntry;
 import me.lortseam.completeconfig.data.*;
 import me.lortseam.completeconfig.extensions.GuiExtension;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
@@ -114,21 +115,21 @@ public final class GuiRegistry {
                             .startEnumSelector(entry.getText(), entry.getTypeClass(), entry.getValue())
                             .setDefaultValue(entry.getDefaultValue())
                             .setTooltip(entry.getTooltip())
-                            .setEnumNameProvider(entry.getEnumNameProvider())
-                            .setSaveConsumer(entry::setValue),
-                    entry -> entry.getDisplayType() == EnumEntry.DisplayType.BUTTON),
-            Provider.create(EnumEntry.class, (EnumEntry<Enum<?>> entry) -> {
+                            .setEnumNameProvider(entry.getValueTextSupplier())
+                            .setSaveConsumer(entry::setValue)),
+            Provider.create(DropdownEntry.class, (DropdownEntry<Enum<?>> entry) -> {
                 List<Enum> enumValues = Arrays.asList(((Class<? extends Enum<?>>) entry.getTypeClass()).getEnumConstants());
                 return ConfigEntryBuilder.create()
                         .startDropdownMenu(entry.getText(), DropdownMenuBuilder.TopCellElementBuilder.of(
                                 entry.getValue(),
-                                enumTranslation -> enumValues.stream().filter(enumValue -> entry.getEnumNameProvider().apply(enumValue).getString().equals(enumTranslation)).collect(MoreCollectors.toOptional()).orElse(null),
-                                entry.getEnumNameProvider()
-                        ), DropdownMenuBuilder.CellCreatorBuilder.of(entry.getEnumNameProvider()))
+                                enumTranslation -> enumValues.stream().filter(enumValue -> entry.getValueTextSupplier().apply(enumValue).getString().equals(enumTranslation)).collect(MoreCollectors.toOptional()).orElse(null),
+                                entry.getValueTextSupplier()
+                        ), DropdownMenuBuilder.CellCreatorBuilder.of(entry.getValueTextSupplier()))
                         .setSelections(enumValues)
+                        .setSuggestionMode(entry.isSuggestionMode())
                         .setDefaultValue(entry.getDefaultValue())
                         .setSaveConsumer(entry::setValue);
-            }, entry -> entry.getDisplayType() == EnumEntry.DisplayType.DROPDOWN),
+            }),
             Provider.create((Entry<List<Integer>> entry) -> ConfigEntryBuilder.create()
                             .startIntList(entry.getText(), entry.getValue())
                             .setDefaultValue(entry.getDefaultValue())

@@ -30,6 +30,10 @@ public final class EntryOrigin {
         return Objects.requireNonNull(field.getDeclaredAnnotation(annotationType), "Missing required transformation annotation");
     }
 
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
+        return field.isAnnotationPresent(annotationType);
+    }
+
     public <A extends Annotation> Optional<A> getOptionalAnnotation(Class<A> annotationType) {
         return Optional.ofNullable(field.getDeclaredAnnotation(annotationType));
     }
