@@ -25,7 +25,7 @@ public class ConfigTest {
         private static final String MOD_ID = "test";
 
         private Config.Builder builder;
-        private final LogCaptor logCaptor = LogCaptor.forRoot();
+        private final LogCaptor logCaptor = LogCaptor.forName("CompleteConfig");
 
         @BeforeEach
         public void beforeEach() {

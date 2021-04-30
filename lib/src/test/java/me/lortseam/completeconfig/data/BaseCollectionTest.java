@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
 public class BaseCollectionTest {
 
     private BaseCollection baseCollection;
-    private final LogCaptor logCaptor = LogCaptor.forRoot();
+    private final LogCaptor logCaptor = LogCaptor.forName("CompleteConfig");
 
     @BeforeEach
     public void beforeEach() {
