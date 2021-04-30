@@ -9,7 +9,7 @@ public class ContainerNestingStaticContainerWithEntry implements ConfigContainer
     public static class ContainerWithEntry implements ConfigContainer {
 
         @ConfigEntry
-        private boolean entry;
+        private boolean containerNestingStaticContainerWithEntryEntry;
 
     }
 

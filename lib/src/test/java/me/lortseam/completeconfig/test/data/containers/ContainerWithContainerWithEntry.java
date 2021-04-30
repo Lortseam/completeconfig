@@ -9,7 +9,7 @@ public class ContainerWithContainerWithEntry implements ConfigContainer {
     private final ConfigContainer container = new ConfigContainer() {
 
         @ConfigEntry
-        private boolean entry;
+        private boolean containerWithContainerWithEntryEntry;
 
     };
 

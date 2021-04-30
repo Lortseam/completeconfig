@@ -7,10 +7,10 @@ import me.lortseam.completeconfig.api.ConfigGroup;
 public class ContainerWithGroupWithEntry implements ConfigContainer {
 
     @Transitive
-    private final ConfigGroup group = new ConfigGroup() {
+    private final ConfigGroup containerWithGroupWithEntryGroup = new ConfigGroup() {
 
         @ConfigEntry
-        private boolean entry;
+        private boolean containerWithGroupWithEntryEntry;
 
     };
 

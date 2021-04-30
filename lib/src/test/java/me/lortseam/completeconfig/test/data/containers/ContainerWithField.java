@@ -4,6 +4,6 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 
 public class ContainerWithField implements ConfigContainer {
 
-    private boolean noEntry;
+    private boolean containerWithFieldField;
 
 }

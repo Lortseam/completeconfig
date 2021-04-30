@@ -6,6 +6,6 @@ import me.lortseam.completeconfig.api.ConfigEntries;
 @ConfigEntries
 public class EntriesContainerWithTransientField implements ConfigContainer {
 
-    private transient boolean noEntry;
+    private transient boolean entriesContainerWithTransientFieldField;
 
 }

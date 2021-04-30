@@ -77,8 +77,7 @@ public class BaseCollectionTest {
 
     @Test
     public void resolve_excludeSuperclassFieldIfStatic() {
-        baseCollection.resolve(new SubclassOfContainerWithStaticEntry());
-        // TODO: Add container test
+        baseCollection.resolve(new SubclassOfContainerWithStaticEntry(), new SubclassOfContainerWithStaticContainerWithEntry());
         assertTrue(baseCollection.isEmpty());
     }
 

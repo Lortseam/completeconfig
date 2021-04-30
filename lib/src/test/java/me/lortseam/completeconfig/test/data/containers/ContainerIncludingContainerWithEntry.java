@@ -10,7 +10,7 @@ public class ContainerIncludingContainerWithEntry implements ConfigContainer {
         return new ConfigContainer[]{new ConfigContainer() {
 
             @ConfigEntry
-            private boolean entry;
+            private boolean containerIncludingContainerWithEntryEntry;
 
         }};
     }

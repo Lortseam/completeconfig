@@ -11,7 +11,7 @@ public class ContainerIncludingGroupWithEntry implements ConfigContainer {
         return new ConfigContainer[]{new ConfigGroup() {
 
             @ConfigEntry
-            private boolean entry;
+            private boolean containerIncludingGroupWithEntryEntry;
 
         }};
     }

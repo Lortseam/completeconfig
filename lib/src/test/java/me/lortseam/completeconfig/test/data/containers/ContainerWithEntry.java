@@ -6,6 +6,6 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 public class ContainerWithEntry implements ConfigContainer {
 
     @ConfigEntry
-    private boolean entry;
+    private boolean containerWithEntryEntry;
 
 }

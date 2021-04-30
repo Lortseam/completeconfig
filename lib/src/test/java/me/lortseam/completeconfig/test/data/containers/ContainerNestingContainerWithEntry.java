@@ -9,7 +9,7 @@ public class ContainerNestingContainerWithEntry implements ConfigContainer {
     public class ContainerWithEntry implements ConfigContainer {
 
         @ConfigEntry
-        private boolean entry;
+        private boolean containerNestingContainerWithEntry;
 
     }
 
