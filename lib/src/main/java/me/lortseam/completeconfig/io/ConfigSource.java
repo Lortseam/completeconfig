@@ -15,7 +15,6 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,7 +50,7 @@ public final class ConfigSource {
         this.modID = modID;
         this.branch = branch;
         if (!sources.add(this)) {
-            throw new IllegalArgumentException("A config of the mod " + modID + " with the specified branch " + Arrays.toString(branch) + " already exists");
+            throw new IllegalArgumentException("A config of " + this + " already exists");
         }
         Path path = FabricLoader.getInstance().getConfigDir();
         String[] subPath = ArrayUtils.add(branch, 0, modID);

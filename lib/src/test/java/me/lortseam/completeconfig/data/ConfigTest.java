@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ConfigTest {
@@ -60,15 +59,9 @@ public class ConfigTest {
         }
 
         @Test
-        public void build_logWarningAndReturnNullIfChildrenEmpty() {
+        public void build_returnNullIfEmpty() {
             assertNull(builder.build());
-            assertThat(logCaptor.getWarnLogs()).contains("Mod " + MOD_ID + " tried to create an empty config");
-        }
-
-        @Test
-        public void build_logWarningAndReturnNullIfEmpty() {
             assertNull(builder.add(new EmptyContainer()).build());
-            assertThat(logCaptor.getWarnLogs()).containsExactly("Config of ConfigSource(modID=" + MOD_ID + ", branch=[]) is empty");
         }
 
     }

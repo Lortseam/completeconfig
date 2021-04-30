@@ -65,7 +65,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
 
     private AbstractConfigListEntry<?> buildEntry(Entry<?> entry) {
         return registry.findBuilder(entry).orElseThrow(() -> {
-            return new UnsupportedOperationException("Could not generate GUI for field " + entry.getField());
+            return new UnsupportedOperationException("Could not generate GUI for entry " + entry.getField());
         }).build(entry);
     }
 

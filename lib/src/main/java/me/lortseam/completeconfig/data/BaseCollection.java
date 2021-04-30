@@ -78,7 +78,7 @@ abstract class BaseCollection implements ParentDataPart {
                 try {
                     return (ConfigContainer) ReflectionUtils.instantiateClass(nestedClass);
                 } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                    throw new RuntimeException("Failed to instantiate nested class " + nestedClass, e);
+                    throw new RuntimeException("Failed to instantiate nested " + nestedClass, e);
                 }
             }).toArray(ConfigContainer[]::new));
         }

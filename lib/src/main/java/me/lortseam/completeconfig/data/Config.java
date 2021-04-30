@@ -103,10 +103,9 @@ public final class Config extends BaseCollection {
          * @return this builder
          */
         public Builder add(@NonNull ConfigContainer... containers) {
-            Arrays.stream(containers).forEach(Objects::requireNonNull);
             for (ConfigContainer container : containers) {
-                if (!children.add(container)) {
-                    throw new IllegalArgumentException("Duplicate container");
+                if (!children.add(Objects.requireNonNull(container))) {
+                    throw new IllegalArgumentException("Duplicate container " + container.getClass().getSimpleName());
                 }
             }
             return this;
@@ -135,25 +134,23 @@ public final class Config extends BaseCollection {
         /**
          * Creates and loads the config.
          *
-         * @return the created config
+         * @return the created config, or null if empty
          */
         public Config build() {
-            if (children.isEmpty()) {
-                logger.warn("Mod " + modID + " tried to create an empty config");
+            Config config = null;
+            if (!children.isEmpty()) {
+                config = new Config(new ConfigSource(modID, branch), children.toArray(new ConfigContainer[0]));
+            }
+            if (config == null || config.isEmpty()) {
                 return null;
             }
-            Config config = new Config(new ConfigSource(modID, branch), children.toArray(new ConfigContainer[0]));
-            if (config.isEmpty()) {
-                logger.warn("Config of " + config.source + " is empty");
-                return null;
-            }
-            config.load();
             if (main || branch.length == 0 && !mainConfigs.containsKey(modID)) {
                 mainConfigs.put(modID, config);
             }
             if (saveOnExit) {
                 saveOnExitConfigs.add(config);
             }
+            config.load();
             return config;
         }
 

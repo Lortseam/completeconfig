@@ -129,7 +129,7 @@ public class Entry<T> implements DataPart, Identifiable {
         try {
             return (T) Objects.requireNonNull(field.get(parentObject), field.toString());
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to get entry value", e);
         }
     }
 
@@ -202,9 +202,14 @@ public class Entry<T> implements DataPart, Identifiable {
             String[] customTooltipTranslationKeys = annotation.tooltipTranslationKeys();
             if (customTooltipTranslationKeys.length > 0) {
                 if (Arrays.stream(customTooltipTranslationKeys).anyMatch(StringUtils::isBlank)) {
-                    throw new IllegalAnnotationParameterException("Entry tooltip translation key(s) must not be blank");
+
                 }
-                customTooltipTranslation = Arrays.stream(customTooltipTranslationKeys).map(key -> parentTranslation.root().append(key)).toArray(TranslationIdentifier[]::new);
+                customTooltipTranslation = Arrays.stream(customTooltipTranslationKeys).map(key -> {
+                    if (StringUtils.isBlank(key)) {
+                        throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + field + " may not be blank");
+                    }
+                    return parentTranslation.root().append(key);
+                }).toArray(TranslationIdentifier[]::new);
             }
             requiresRestart = annotation.requiresRestart();
             String comment = annotation.comment();
