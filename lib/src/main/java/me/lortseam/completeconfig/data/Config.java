@@ -10,7 +10,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 
 import java.util.*;
 
-@Log4j2
+@Log4j2(topic = "CompleteConfig")
 public final class Config extends BaseCollection {
 
     private static final Map<String, Config> mainConfigs = new HashMap<>();
@@ -68,7 +68,7 @@ public final class Config extends BaseCollection {
         source.save(this);
     }
 
-    @Log4j2
+    @Log4j2(topic = "CompleteConfig")
     public final static class Builder {
 
         private final String modID;
@@ -139,12 +139,12 @@ public final class Config extends BaseCollection {
          */
         public Config build() {
             if (children.isEmpty()) {
-                logger.warn("[CompleteConfig] Mod " + modID + " tried to create an empty config");
+                logger.warn("Mod " + modID + " tried to create an empty config");
                 return null;
             }
             Config config = new Config(new ConfigSource(modID, branch), children.toArray(new ConfigContainer[0]));
             if (config.isEmpty()) {
-                logger.warn("[CompleteConfig] Config of " + config.source + " is empty");
+                logger.warn("Config of " + config.source + " is empty");
                 return null;
             }
             config.load();

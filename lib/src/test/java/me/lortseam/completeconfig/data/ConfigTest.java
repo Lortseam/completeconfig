@@ -62,13 +62,13 @@ public class ConfigTest {
         @Test
         public void build_logWarningAndReturnNullIfChildrenEmpty() {
             assertNull(builder.build());
-            assertThat(logCaptor.getWarnLogs()).contains("[CompleteConfig] Mod " + MOD_ID + " tried to create an empty config");
+            assertThat(logCaptor.getWarnLogs()).contains("Mod " + MOD_ID + " tried to create an empty config");
         }
 
         @Test
         public void build_logWarningAndReturnNullIfEmpty() {
             assertNull(builder.add(new EmptyContainer()).build());
-            assertThat(logCaptor.getWarnLogs()).containsExactly("[CompleteConfig] Config of ConfigSource(modID=" + MOD_ID + ", branch=[]) is empty");
+            assertThat(logCaptor.getWarnLogs()).containsExactly("Config of ConfigSource(modID=" + MOD_ID + ", branch=[]) is empty");
         }
 
     }

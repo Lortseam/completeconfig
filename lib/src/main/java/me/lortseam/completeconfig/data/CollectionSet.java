@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 
-@Log4j2
+@Log4j2(topic = "CompleteConfig")
 public class CollectionSet extends DataSet<Collection> {
 
     protected CollectionSet(TranslationIdentifier translation) {
@@ -16,7 +16,7 @@ public class CollectionSet extends DataSet<Collection> {
         Collection collection = new Collection(groupID, translation.append(groupID), group.getTooltipTranslationKeys(), group.getComment());
         collection.resolveContainer(group);
         if (collection.isEmpty()) {
-            logger.warn("[CompleteConfig] Group " + groupID + " is empty");
+            logger.warn("Group " + groupID + " is empty");
             return;
         }
         add(collection);

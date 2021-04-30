@@ -12,7 +12,7 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.util.Arrays;
 import java.util.Optional;
 
-@Log4j2
+@Log4j2(topic = "CompleteConfig")
 public class Collection extends BaseCollection implements Identifiable {
 
     private final String id;

@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Log4j2
+@Log4j2(topic = "CompleteConfig")
 @UtilityClass
 public final class CompleteConfig {
 
@@ -58,7 +58,7 @@ public final class CompleteConfig {
         try {
             registerExtension(ReflectionUtils.instantiateClass(extension));
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            logger.error("[CompleteConfig] Failed to instantiate extension " + extension, e);
+            logger.error("Failed to instantiate extension " + extension, e);
         }
     }
 

@@ -10,7 +10,7 @@ import me.lortseam.completeconfig.exception.IllegalModifierException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
-@Log4j2
+@Log4j2(topic = "CompleteConfig")
 public class EntrySet extends DataSet<Entry> {
 
     EntrySet(TranslationIdentifier translation) {

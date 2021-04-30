@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.Collection;
 import java.util.function.UnaryOperator;
 
-@Log4j2
+@Log4j2(topic = "CompleteConfig")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Entry<T> implements DataPart, Identifiable {
 
@@ -223,7 +223,7 @@ public class Entry<T> implements DataPart, Identifiable {
             if(value == null) return;
             setValue(value);
         } catch (SerializationException e) {
-            logger.error("[CompleteConfig] Failed to apply value to entry", e);
+            logger.error("Failed to apply value to entry", e);
         }
     }
 
@@ -235,7 +235,7 @@ public class Entry<T> implements DataPart, Identifiable {
                 node.comment(comment);
             }
         } catch (SerializationException e) {
-            logger.error("[CompleteConfig] Failed to fetch value from entry", e);
+            logger.error("Failed to fetch value from entry", e);
         }
     }
 
