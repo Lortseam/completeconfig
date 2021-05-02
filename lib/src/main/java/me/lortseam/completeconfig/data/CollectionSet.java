@@ -16,7 +16,7 @@ public class CollectionSet extends DataSet<Collection> {
         Collection collection = new Collection(groupID, translation.append(groupID), group.getTooltipTranslationKeys(), group.getComment());
         collection.resolveContainer(group);
         if (collection.isEmpty()) {
-            logger.warn("Group " + groupID + " is empty");
+            logger.warn("Empty group: " + groupID);
             return;
         }
         add(collection);

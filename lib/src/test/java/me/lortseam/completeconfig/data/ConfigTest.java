@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ConfigTest {
@@ -59,9 +60,15 @@ public class ConfigTest {
         }
 
         @Test
-        public void build_returnNullIfEmpty() {
+        public void build_logWarningAndReturnNullIfChildrenEmpty() {
             assertNull(builder.build());
+            assertThat(logCaptor.getWarnLogs()).containsExactly("Empty config: " + MOD_ID + " []");
+        }
+
+        @Test
+        public void build_logWarningAndReturnNullIfEmpty() {
             assertNull(builder.add(new EmptyContainer()).build());
+            assertThat(logCaptor.getWarnLogs()).containsExactly("Empty config: " + MOD_ID + " []");
         }
 
     }

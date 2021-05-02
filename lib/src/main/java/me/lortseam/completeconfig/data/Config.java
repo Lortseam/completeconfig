@@ -142,6 +142,7 @@ public final class Config extends BaseCollection {
                 config = new Config(new ConfigSource(modID, branch), children.toArray(new ConfigContainer[0]));
             }
             if (config == null || config.isEmpty()) {
+                logger.warn("Empty config: " + modID + " " + Arrays.toString(branch));
                 return null;
             }
             if (main || branch.length == 0 && !mainConfigs.containsKey(modID)) {

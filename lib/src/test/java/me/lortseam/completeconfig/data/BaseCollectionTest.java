@@ -109,7 +109,7 @@ public class BaseCollectionTest {
     @Test
     public void resolve_logWarningIfEmpty() {
         baseCollection.resolve(new EmptyGroup());
-        assertThat(logCaptor.getWarnLogs()).contains("Group emptyGroup is empty");
+        assertThat(logCaptor.getWarnLogs()).contains("Empty group: emptyGroup");
     }
 
     @Test
