@@ -35,20 +35,6 @@ public abstract class ConfigScreenBuilder {
     }
 
     /**
-     * Tries to build a screen based on a config. Fails if no main screen builder was specified for the mod and no
-     * fallback builder exists.
-     *
-     * @param parentScreen the parent screen
-     * @param config the config to build the screen of
-     * @return the built screen, if successful
-     */
-    public static Screen tryBuild(Screen parentScreen, Config config) {
-        return getMain(config.getMod().getId()).orElseThrow(() -> {
-            return new UnsupportedOperationException("No screen builder found for mod " + config.getMod().getId());
-        }).build(parentScreen, config);
-    }
-
-    /**
      * Builds a screen based on a config.
      *
      * @param parentScreen the parent screen
