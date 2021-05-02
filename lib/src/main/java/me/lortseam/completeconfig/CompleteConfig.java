@@ -34,13 +34,13 @@ public final class CompleteConfig {
         }
     }
 
-    public static void registerExtensionType(Class<? extends Extension> extensionType, EnvType environment, String... mods) {
+    public static void registerExtensionType(@NonNull Class<? extends Extension> extensionType, EnvType environment, String... mods) {
         if(validExtensionTypes.contains(extensionType)) return;
-        if(environment != null && FabricLoader.getInstance().getEnvironmentType() != environment || Arrays.stream(mods).anyMatch(modID -> !FabricLoader.getInstance().isModLoaded(modID))) return;
+        if(environment != null && FabricLoader.getInstance().getEnvironmentType() != environment || Arrays.stream(mods).anyMatch(modID -> !FabricLoader.getInstance().isModLoaded(Objects.requireNonNull(modID)))) return;
         validExtensionTypes.add(extensionType);
     }
 
-    public static void registerExtensionType(Class<? extends Extension> extensionType, String... mods) {
+    public static void registerExtensionType(@NonNull Class<? extends Extension> extensionType, String... mods) {
         registerExtensionType(extensionType, null, mods);
     }
 

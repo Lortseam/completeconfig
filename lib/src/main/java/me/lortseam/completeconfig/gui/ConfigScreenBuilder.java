@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.gui;
 
+import lombok.NonNull;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.gui.cloth.ClothConfigScreenBuilder;
 import net.fabricmc.api.EnvType;
@@ -23,11 +24,11 @@ public abstract class ConfigScreenBuilder {
      * @param modID the mod's ID
      * @param screenBuilder the screen builder
      */
-    public static void setMain(String modID, ConfigScreenBuilder screenBuilder) {
+    public static void setMain(@NonNull String modID, @NonNull ConfigScreenBuilder screenBuilder) {
         mainBuilders.put(modID, screenBuilder);
     }
 
-    public static Optional<ConfigScreenBuilder> getMain(String modID) {
+    public static Optional<ConfigScreenBuilder> getMain(@NonNull String modID) {
         if (mainBuilders.containsKey(modID)) {
             return Optional.of(mainBuilders.get(modID));
         }

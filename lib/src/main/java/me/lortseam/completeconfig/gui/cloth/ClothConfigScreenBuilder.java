@@ -1,6 +1,7 @@
 package me.lortseam.completeconfig.gui.cloth;
 
 import lombok.Getter;
+import lombok.NonNull;
 import me.lortseam.completeconfig.data.Collection;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
@@ -32,7 +33,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
     @Getter
     private final GuiRegistry registry = new GuiRegistry();
 
-    public ClothConfigScreenBuilder(Supplier<ConfigBuilder> supplier) {
+    public ClothConfigScreenBuilder(@NonNull Supplier<ConfigBuilder> supplier) {
         this.supplier = supplier;
     }
 
