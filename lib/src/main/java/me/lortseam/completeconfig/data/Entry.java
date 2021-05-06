@@ -82,7 +82,6 @@ public class Entry<T> implements DataPart, Identifiable {
         return entry;
     }
 
-    @Getter
     @EqualsAndHashCode.Include
     private final Field field;
     @Getter
@@ -242,6 +241,11 @@ public class Entry<T> implements DataPart, Identifiable {
         } catch (SerializationException e) {
             logger.error("Failed to fetch value from entry", e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return field.toString();
     }
 
 }
