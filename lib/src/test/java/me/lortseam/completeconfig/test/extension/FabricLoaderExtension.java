@@ -3,23 +3,13 @@ package me.lortseam.completeconfig.test.extension;
 import com.google.common.jimfs.Jimfs;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.Extension;
 
 import static org.mockito.Mockito.*;
 
-public class FabricLoaderExtension implements BeforeAllCallback {
+public class FabricLoaderExtension implements Extension {
 
-    private static boolean initialized = false;
-
-    @Override
-    public void beforeAll(ExtensionContext context) {
-        if (initialized) return;
-        init();
-        initialized = true;
-    }
-
-    private void init() {
+    static {
         FabricLoader loader = mock(FabricLoader.class);
         switch (System.clearProperty("fabric.dli.env")) {
             case "client":
