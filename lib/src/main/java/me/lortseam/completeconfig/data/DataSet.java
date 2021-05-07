@@ -1,7 +1,9 @@
-package me.lortseam.completeconfig.data.structure;
+package me.lortseam.completeconfig.data;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import me.lortseam.completeconfig.data.structure.DataPart;
+import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.text.TranslationIdentifier;
 import org.jetbrains.annotations.NotNull;
 
