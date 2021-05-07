@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class DataSet<T extends DataPart & Identifiable> extends AbstractSet<T> {
+abstract class DataSet<T extends DataPart & Identifiable> extends AbstractSet<T> {
 
     private final Map<String, T> map = new LinkedHashMap<>();
     protected final TranslationIdentifier translation;
