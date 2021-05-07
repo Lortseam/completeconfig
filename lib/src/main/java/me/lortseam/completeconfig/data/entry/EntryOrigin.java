@@ -9,7 +9,6 @@ import me.lortseam.completeconfig.util.ReflectionUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -27,7 +26,10 @@ public final class EntryOrigin {
     }
 
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-        return Objects.requireNonNull(field.getDeclaredAnnotation(annotationType), "Missing required transformation annotation");
+        if (!field.isAnnotationPresent(annotationType)) {
+            throw new IllegalStateException("Missing required transformation annotation: " + annotationType);
+        }
+        return field.getDeclaredAnnotation(annotationType);
     }
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
