@@ -26,10 +26,11 @@ public final class EntryOrigin {
     }
 
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
-        if (!field.isAnnotationPresent(annotationType)) {
+        A annotation = field.getDeclaredAnnotation(annotationType);
+        if (annotation == null) {
             throw new IllegalStateException("Missing required transformation annotation: " + annotationType);
         }
-        return field.getDeclaredAnnotation(annotationType);
+        return annotation;
     }
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
