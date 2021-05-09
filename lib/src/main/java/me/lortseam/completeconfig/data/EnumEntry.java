@@ -13,7 +13,7 @@ public class EnumEntry<T extends Enum<?>> extends Entry<T> {
     }
 
     public final Function<Enum, Text> getValueTextSupplier() {
-        return enumValue -> getTranslation().append(CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, enumValue.name())).toText();
+        return enumValue -> translation.append(CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, enumValue.name())).toText();
     }
 
 }

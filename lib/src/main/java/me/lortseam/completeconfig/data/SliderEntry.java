@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.entry.EntryOrigin;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,13 +10,13 @@ import java.util.function.Function;
 
 public class SliderEntry<T extends Number> extends BoundedEntry<T> {
 
-    private final TranslationIdentifier valueTranslation;
+    private final TranslationKey valueTranslation;
 
     public SliderEntry(EntryOrigin origin, T min, T max) {
         super(origin, min, max);
         ConfigEntry.Slider slider = origin.getAnnotation(ConfigEntry.Slider.class);
         if (!StringUtils.isBlank(slider.valueTranslationKey())) {
-            valueTranslation = getTranslation().root().append(slider.valueTranslationKey());
+            valueTranslation = translation.root().append(slider.valueTranslationKey());
         } else {
             valueTranslation = null;
         }
@@ -26,7 +26,7 @@ public class SliderEntry<T extends Number> extends BoundedEntry<T> {
         if (valueTranslation != null) {
             return valueTranslation::toText;
         }
-        TranslationIdentifier defaultValueTranslation = getTranslation().append("value");
+        TranslationKey defaultValueTranslation = translation.append("value");
         if (defaultValueTranslation.exists()) {
             return defaultValueTranslation::toText;
         }

@@ -12,18 +12,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public final class TranslationIdentifier {
+public final class TranslationKey {
 
     private static final String DELIMITER = ".";
 
-    public static TranslationIdentifier from(ConfigSource source) {
-        return new TranslationIdentifier("config" + DELIMITER + source.getModID());
+    public static TranslationKey from(ConfigSource source) {
+        return new TranslationKey("config" + DELIMITER + source.getModID());
     }
 
     private final String modKey;
     private final String[] keyParts;
 
-    private TranslationIdentifier(String modKey, String... keyParts) {
+    private TranslationKey(String modKey, String... keyParts) {
         this.modKey = modKey;
         this.keyParts = keyParts;
     }
@@ -37,8 +37,8 @@ public final class TranslationIdentifier {
         return builder.toString();
     }
 
-    public TranslationIdentifier root() {
-        return new TranslationIdentifier(modKey);
+    public TranslationKey root() {
+        return new TranslationKey(modKey);
     }
 
     public boolean exists() {
@@ -49,25 +49,25 @@ public final class TranslationIdentifier {
         return new TranslatableText(getKey(), args);
     }
 
-    public TranslationIdentifier append(String... subKeys) {
-        return new TranslationIdentifier(modKey, ArrayUtils.addAll(keyParts, Arrays.stream(subKeys).map(subKey -> {
+    public TranslationKey append(String... subKeys) {
+        return new TranslationKey(modKey, ArrayUtils.addAll(keyParts, Arrays.stream(subKeys).map(subKey -> {
             return subKey.split(Pattern.quote(DELIMITER));
         }).flatMap(Arrays::stream).toArray(String[]::new)));
     }
 
-    public Optional<TranslationIdentifier[]> appendTooltip() {
-        TranslationIdentifier baseTranslation = append("tooltip");
+    public Optional<TranslationKey[]> appendTooltip() {
+        TranslationKey baseTranslation = append("tooltip");
         if (baseTranslation.exists()) {
-            return Optional.of(new TranslationIdentifier[] {baseTranslation});
+            return Optional.of(new TranslationKey[] {baseTranslation});
         } else {
-            List<TranslationIdentifier> multiLineTranslation = new ArrayList<>();
+            List<TranslationKey> multiLineTranslation = new ArrayList<>();
             for(int i = 0;; i++) {
-                TranslationIdentifier key = baseTranslation.append(Integer.toString(i));
+                TranslationKey key = baseTranslation.append(Integer.toString(i));
                 if(key.exists()) {
                     multiLineTranslation.add(key);
                 } else {
                     if (!multiLineTranslation.isEmpty()) {
-                        return Optional.of(multiLineTranslation.toArray(new TranslationIdentifier[0]));
+                        return Optional.of(multiLineTranslation.toArray(new TranslationKey[0]));
                     }
                     break;
                 }

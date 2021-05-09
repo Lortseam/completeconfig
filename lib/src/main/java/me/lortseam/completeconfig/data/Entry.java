@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
@@ -13,7 +14,7 @@ import me.lortseam.completeconfig.data.entry.Transformation;
 import me.lortseam.completeconfig.data.entry.Transformer;
 import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.structure.Identifiable;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.util.ReflectionUtils;
@@ -24,9 +25,12 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.beans.IntrospectionException;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 @Log4j2(topic = "CompleteConfig")
@@ -73,11 +77,11 @@ public class Entry<T> implements DataPart, Identifiable {
         }
     }
 
-    static Entry<?> of(Field field, ConfigContainer parentObject, TranslationIdentifier parentTranslation) {
+    static Entry<?> of(Field field, ConfigContainer parentObject, TranslationKey parentTranslation) {
         EntryOrigin origin = new EntryOrigin(field, parentObject, parentTranslation);
         Entry<?> entry = transformations.stream().filter(transformation -> transformation.test(origin)).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
         if (!entries.add(entry)) {
-            throw new UnsupportedOperationException("Field " + field + " with parent object " + parentObject + " was already resolved");
+            throw new UnsupportedOperationException(entry + " was already resolved");
         }
         return entry;
     }
@@ -90,14 +94,16 @@ public class Entry<T> implements DataPart, Identifiable {
     private final Class<T> typeClass;
     @EqualsAndHashCode.Include
     private final ConfigContainer parentObject;
-    private String customID;
+    @Getter
+    private final String id;
     @Getter
     private final T defaultValue;
-    private final TranslationIdentifier parentTranslation;
-    private TranslationIdentifier customTranslation;
-    private TranslationIdentifier[] customTooltipTranslation;
-    private boolean requiresRestart;
-    private String comment;
+    protected final TranslationKey translation;
+    private final TranslationKey[] tooltipTranslation;
+    @Accessors(fluent = true)
+    @Getter
+    private final boolean requiresRestart;
+    private final String comment;
     private final UnaryOperator<T> valueModifier;
 
     protected Entry(EntryOrigin origin, UnaryOperator<T> valueModifier) {
@@ -105,12 +111,30 @@ public class Entry<T> implements DataPart, Identifiable {
         if (!field.isAccessible()) {
             field.setAccessible(true);
         }
-        type = ReflectionUtils.getFieldType(origin.getField());
+        type = origin.getType();
         typeClass = (Class<T>) ReflectionUtils.getTypeClass(type);
         parentObject = origin.getParentObject();
-        parentTranslation = origin.getParentTranslation();
         this.valueModifier = valueModifier;
         defaultValue = getValue();
+        ConfigEntry annotation = field.getDeclaredAnnotation(ConfigEntry.class);
+        id = annotation != null && !StringUtils.isBlank(annotation.value()) ? annotation.value() : field.getName();
+        if (annotation != null && !StringUtils.isBlank(annotation.translationKey())) {
+            translation = origin.getParentTranslation().append(annotation.translationKey());
+        } else {
+            translation = origin.getParentTranslation().append(id);
+        }
+        if (annotation != null && annotation.tooltipTranslationKeys().length > 0) {
+            tooltipTranslation = Arrays.stream(annotation.tooltipTranslationKeys()).map(key -> {
+                if (StringUtils.isBlank(key)) {
+                    throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + this + " may not be blank");
+                }
+                return translation.root().append(key);
+            }).toArray(TranslationKey[]::new);
+        } else {
+            tooltipTranslation = translation.appendTooltip().orElse(null);
+        }
+        requiresRestart = annotation != null && annotation.requiresRestart();
+        comment = annotation != null && !StringUtils.isBlank(annotation.comment()) ? annotation.comment() : null;
     }
 
     protected Entry(EntryOrigin origin) {
@@ -164,58 +188,14 @@ public class Entry<T> implements DataPart, Identifiable {
         }
     }
 
-    @Override
-    public String getID() {
-        return customID != null ? customID : field.getName();
-    }
-
-    TranslationIdentifier getTranslation() {
-        return customTranslation != null ? customTranslation : parentTranslation.append(getID());
-    }
-
     public Text getText() {
-        return getTranslation().toText();
+        return translation.toText();
     }
 
     public Optional<Text[]> getTooltip() {
-        return (customTooltipTranslation != null ? Optional.of(customTooltipTranslation) : getTranslation().appendTooltip()).map(lines -> {
-            return Arrays.stream(lines).map(TranslationIdentifier::toText).toArray(Text[]::new);
+        return Optional.ofNullable(tooltipTranslation).map(lines -> {
+            return Arrays.stream(lines).map(TranslationKey::toText).toArray(Text[]::new);
         });
-    }
-
-    public boolean requiresRestart() {
-        return requiresRestart;
-    }
-
-    void resolve(Field field) {
-        if (field.isAnnotationPresent(ConfigEntry.class)) {
-            ConfigEntry annotation = field.getDeclaredAnnotation(ConfigEntry.class);
-            String id = annotation.value();
-            if (!StringUtils.isBlank(id)) {
-                customID = id;
-            }
-            String customTranslationKey = annotation.translationKey();
-            if (!StringUtils.isBlank(customTranslationKey)) {
-                customTranslation = parentTranslation.root().append(customTranslationKey);
-            }
-            String[] customTooltipTranslationKeys = annotation.tooltipTranslationKeys();
-            if (customTooltipTranslationKeys.length > 0) {
-                if (Arrays.stream(customTooltipTranslationKeys).anyMatch(StringUtils::isBlank)) {
-
-                }
-                customTooltipTranslation = Arrays.stream(customTooltipTranslationKeys).map(key -> {
-                    if (StringUtils.isBlank(key)) {
-                        throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + field + " may not be blank");
-                    }
-                    return parentTranslation.root().append(key);
-                }).toArray(TranslationIdentifier[]::new);
-            }
-            requiresRestart = annotation.requiresRestart();
-            String comment = annotation.comment();
-            if (!StringUtils.isBlank(comment)) {
-                this.comment = comment;
-            }
-        }
     }
 
     @Override

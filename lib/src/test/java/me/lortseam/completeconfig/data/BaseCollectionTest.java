@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.test.data.containers.*;
 import me.lortseam.completeconfig.test.data.groups.EmptyGroup;
@@ -24,7 +24,7 @@ public class BaseCollectionTest {
 
     @BeforeEach
     public void beforeEach() {
-        baseCollection = new BaseCollection(mock(TranslationIdentifier.class)) {};
+        baseCollection = new BaseCollection(mock(TranslationKey.class)) {};
     }
 
     @AfterEach

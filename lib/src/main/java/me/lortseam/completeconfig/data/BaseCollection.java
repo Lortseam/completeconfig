@@ -5,7 +5,7 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.structure.ParentDataPart;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.minecraft.text.Text;
@@ -18,11 +18,11 @@ import java.util.Collections;
 
 abstract class BaseCollection implements ParentDataPart {
 
-    protected final TranslationIdentifier translation;
+    protected final TranslationKey translation;
     private final EntrySet entries;
     private final CollectionSet collections;
 
-    BaseCollection(TranslationIdentifier translation) {
+    BaseCollection(TranslationKey translation) {
         this.translation = translation;
         entries = new EntrySet(translation);
         collections = new CollectionSet(translation);

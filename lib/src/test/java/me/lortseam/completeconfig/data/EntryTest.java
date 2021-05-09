@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 import net.minecraft.text.TextColor;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +37,7 @@ public class EntryTest implements ConfigContainer {
 
     private <E extends Entry<?>> void assertTransformation(String fieldName, Class<E> entryType) {
         try {
-            assertTrue(entryType.isInstance(Entry.of(getClass().getDeclaredField((fieldName)), this, mock(TranslationIdentifier.class))));
+            assertTrue(entryType.isInstance(Entry.of(getClass().getDeclaredField((fieldName)), this, mock(TranslationKey.class))));
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }

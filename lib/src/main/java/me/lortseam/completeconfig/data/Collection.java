@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.data;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.data.structure.Identifiable;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,20 +16,20 @@ import java.util.Optional;
 public class Collection extends BaseCollection implements Identifiable {
 
     private final String id;
-    private final TranslationIdentifier[] customTooltipTranslation;
+    private final TranslationKey[] customTooltipTranslation;
     @Getter
     private final String comment;
 
-    Collection(String id, TranslationIdentifier translation, String[] customTooltipTranslationKeys, String comment) {
+    Collection(String id, TranslationKey translation, String[] customTooltipTranslationKeys, String comment) {
         super(translation);
         this.id = id;
-        customTooltipTranslation = ArrayUtils.isNotEmpty(customTooltipTranslationKeys) ? Arrays.stream(customTooltipTranslationKeys).map(key -> translation.root().append(key)).toArray(TranslationIdentifier[]::new) : null;
+        customTooltipTranslation = ArrayUtils.isNotEmpty(customTooltipTranslationKeys) ? Arrays.stream(customTooltipTranslationKeys).map(key -> translation.root().append(key)).toArray(TranslationKey[]::new) : null;
         this.comment = !StringUtils.isBlank(comment) ? comment : null;
     }
 
     public Optional<Text[]> getTooltipTranslation() {
         return (customTooltipTranslation != null ? Optional.of(customTooltipTranslation) : translation.appendTooltip()).map(lines -> {
-            return Arrays.stream(lines).map(TranslationIdentifier::toText).toArray(Text[]::new);
+            return Arrays.stream(lines).map(TranslationKey::toText).toArray(Text[]::new);
         });
     }
 
@@ -42,7 +42,7 @@ public class Collection extends BaseCollection implements Identifiable {
     }
 
     @Override
-    public String getID() {
+    public String getId() {
         return id;
     }
 

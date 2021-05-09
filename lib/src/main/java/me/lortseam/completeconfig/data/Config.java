@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.data;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.io.ConfigSource;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -43,7 +43,7 @@ public final class Config extends BaseCollection {
     private final ConfigSource source;
 
     private Config(ConfigSource source, ConfigContainer[] children) {
-        super(TranslationIdentifier.from(source));
+        super(TranslationKey.from(source));
         this.source = source;
         resolve(children);
     }
@@ -52,7 +52,7 @@ public final class Config extends BaseCollection {
         return FabricLoader.getInstance().getModContainer(source.getModID()).get().getMetadata();
     }
 
-    public TranslationIdentifier getTranslation(boolean includeBranch) {
+    public TranslationKey getTranslation(boolean includeBranch) {
         if (includeBranch) {
             return translation.append(source.getBranch());
         } else {

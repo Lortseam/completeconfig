@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.data.entry;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
@@ -19,7 +19,7 @@ public final class EntryOrigin {
     @Getter
     private final ConfigContainer parentObject;
     @Getter
-    private final TranslationIdentifier parentTranslation;
+    private final TranslationKey parentTranslation;
 
     public Type getType() {
         return ReflectionUtils.getFieldType(field);

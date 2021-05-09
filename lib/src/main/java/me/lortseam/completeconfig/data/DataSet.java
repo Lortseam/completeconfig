@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.structure.Identifiable;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractSet;
@@ -16,7 +16,7 @@ import java.util.Map;
 abstract class DataSet<T extends DataPart & Identifiable> extends AbstractSet<T> {
 
     private final Map<String, T> map = new LinkedHashMap<>();
-    protected final TranslationIdentifier translation;
+    protected final TranslationKey translation;
 
     @Override
     public @NotNull Iterator<T> iterator() {
@@ -30,7 +30,7 @@ abstract class DataSet<T extends DataPart & Identifiable> extends AbstractSet<T>
 
     @Override
     public boolean add(T t) {
-        return map.put(t.getID(), t) != t;
+        return map.put(t.getId(), t) != t;
     }
 
 }

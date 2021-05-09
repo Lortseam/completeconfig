@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.entry.EntryOrigin;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 public class BooleanEntry extends Entry<Boolean> {
 
-    private final Function<Boolean, TranslationIdentifier> valueTranslationSupplier;
+    private final Function<Boolean, TranslationKey> valueTranslationSupplier;
 
     BooleanEntry(EntryOrigin origin) {
         super(origin);
@@ -18,12 +18,12 @@ public class BooleanEntry extends Entry<Boolean> {
             if (StringUtils.isBlank(annotation.trueTranslationKey()) && StringUtils.isBlank(annotation.falseTranslationKey())) {
                 return null;
             } else {
-                return (Function<Boolean, TranslationIdentifier>) value -> {
+                return (Function<Boolean, TranslationKey>) value -> {
                     String key = value ? annotation.trueTranslationKey() : annotation.falseTranslationKey();
                     if (!StringUtils.isBlank(key)) {
-                        return getTranslation().root().append(key);
+                        return translation.root().append(key);
                     }
-                    return getTranslation().append(value ? "true" : "false");
+                    return translation.append(value ? "true" : "false");
                 };
             }
         }).orElse(null);
@@ -33,8 +33,8 @@ public class BooleanEntry extends Entry<Boolean> {
         if (valueTranslationSupplier != null) {
             return bool -> valueTranslationSupplier.apply(bool).toText();
         }
-        TranslationIdentifier defaultTrueTranslation = getTranslation().append("true");
-        TranslationIdentifier defaultFalseTranslation = getTranslation().append("false");
+        TranslationKey defaultTrueTranslation = translation.append("true");
+        TranslationKey defaultFalseTranslation = translation.append("false");
         if (defaultTrueTranslation.exists() || defaultFalseTranslation.exists()) {
             return bool -> (bool ? defaultTrueTranslation : defaultFalseTranslation).toText();
         }

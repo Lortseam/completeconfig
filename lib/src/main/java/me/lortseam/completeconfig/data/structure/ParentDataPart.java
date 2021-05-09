@@ -21,7 +21,7 @@ public interface ParentDataPart<C extends DataPart & Identifiable> extends DataP
 
     default void propagateToChildren(Predicate<CommentedConfigurationNode> childNodeCondition, BiConsumer<C, CommentedConfigurationNode> function, CommentedConfigurationNode node) {
         for (C child : getChildren()) {
-            CommentedConfigurationNode childNode = node.node(child.getID());
+            CommentedConfigurationNode childNode = node.node(child.getId());
             if (!childNodeCondition.test(childNode)) {
                 continue;
             }

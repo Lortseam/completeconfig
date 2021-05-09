@@ -2,12 +2,12 @@ package me.lortseam.completeconfig.data;
 
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigGroup;
-import me.lortseam.completeconfig.data.text.TranslationIdentifier;
+import me.lortseam.completeconfig.data.text.TranslationKey;
 
 @Log4j2(topic = "CompleteConfig")
 public class CollectionSet extends DataSet<Collection> {
 
-    protected CollectionSet(TranslationIdentifier translation) {
+    protected CollectionSet(TranslationKey translation) {
         super(translation);
     }
 
