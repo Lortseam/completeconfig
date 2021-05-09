@@ -76,8 +76,9 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
             collectionGui.add(buildEntry(entry));
         }
         for (Collection subCollection : collection.getCollections()) {
-            SubCategoryBuilder subBuilder = ConfigEntryBuilder.create().startSubCategory(subCollection.getText());
-            subBuilder.setTooltip(subCollection.getTooltipTranslation());
+            SubCategoryBuilder subBuilder = ConfigEntryBuilder.create()
+                    .startSubCategory(subCollection.getText())
+                    .setTooltip(subCollection.getTooltipTranslation());
             subBuilder.addAll(buildCollection(subCollection));
             collectionGui.add(subBuilder.build());
         }
