@@ -30,6 +30,7 @@ public final class Settings implements ConfigContainer {
         @ConfigEntry.Dropdown
         private AnEnum anEnum = AnEnum.FOO;
         private List<String> list = Arrays.asList("First entry", "Second entry");
+        private String[] array = new String[0];
         private Color color = Color.ofRGB(0, 255, 0);
 
     }

@@ -136,30 +136,60 @@ public final class GuiRegistry {
                             .setTooltip(entry.getTooltip())
                             .setSaveConsumer(entry::setValue),
                     new TypeToken<List<Integer>>() {}.getType()),
+            Provider.create((Entry<Integer[]> entry) -> ConfigEntryBuilder.create()
+                            .startIntList(entry.getText(), Arrays.asList(entry.getValue()))
+                            .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
+                            .setTooltip(entry.getTooltip())
+                            .setSaveConsumer(list -> entry.setValue(list.toArray(new Integer[0]))),
+                    int[].class, Integer[].class),
             Provider.create((Entry<List<Long>> entry) -> ConfigEntryBuilder.create()
                             .startLongList(entry.getText(), entry.getValue())
                             .setDefaultValue(entry.getDefaultValue())
                             .setTooltip(entry.getTooltip())
                             .setSaveConsumer(entry::setValue),
                     new TypeToken<List<Long>>() {}.getType()),
+            Provider.create((Entry<Long[]> entry) -> ConfigEntryBuilder.create()
+                            .startLongList(entry.getText(), Arrays.asList(entry.getValue()))
+                            .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
+                            .setTooltip(entry.getTooltip())
+                            .setSaveConsumer(list -> entry.setValue(list.toArray(new Long[0]))),
+                    long[].class, Long[].class),
             Provider.create((Entry<List<Float>> entry) -> ConfigEntryBuilder.create()
                             .startFloatList(entry.getText(), entry.getValue())
                             .setDefaultValue(entry.getDefaultValue())
                             .setTooltip(entry.getTooltip())
                             .setSaveConsumer(entry::setValue),
                     new TypeToken<List<Float>>() {}.getType()),
+            Provider.create((Entry<Float[]> entry) -> ConfigEntryBuilder.create()
+                            .startFloatList(entry.getText(), Arrays.asList(entry.getValue()))
+                            .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
+                            .setTooltip(entry.getTooltip())
+                            .setSaveConsumer(list -> entry.setValue(list.toArray(new Float[0]))),
+                    float[].class, Float[].class),
             Provider.create((Entry<List<Double>> entry) -> ConfigEntryBuilder.create()
                             .startDoubleList(entry.getText(), entry.getValue())
                             .setDefaultValue(entry.getDefaultValue())
                             .setTooltip(entry.getTooltip())
                             .setSaveConsumer(entry::setValue),
                     new TypeToken<List<Double>>() {}.getType()),
+            Provider.create((Entry<Double[]> entry) -> ConfigEntryBuilder.create()
+                            .startDoubleList(entry.getText(), Arrays.asList(entry.getValue()))
+                            .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
+                            .setTooltip(entry.getTooltip())
+                            .setSaveConsumer(list -> entry.setValue(list.toArray(new Double[0]))),
+                    double[].class, Double[].class),
             Provider.create((Entry<List<String>> entry) -> ConfigEntryBuilder.create()
                             .startStrList(entry.getText(), entry.getValue())
                             .setDefaultValue(entry.getDefaultValue())
                             .setTooltip(entry.getTooltip())
                             .setSaveConsumer(entry::setValue),
                     new TypeToken<List<String>>() {}.getType()),
+            Provider.create((Entry<String[]> entry) -> ConfigEntryBuilder.create()
+                            .startStrList(entry.getText(), Arrays.asList(entry.getValue()))
+                            .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
+                            .setTooltip(entry.getTooltip())
+                            .setSaveConsumer(list -> entry.setValue(list.toArray(new String[0]))),
+                    String[].class),
             Provider.create(ColorEntry.class, (ColorEntry<TextColor> entry) -> ConfigEntryBuilder.create()
                         .startColorField(entry.getText(), entry.getValue())
                         .setDefaultValue(entry.getDefaultValue())
