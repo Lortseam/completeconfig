@@ -68,7 +68,7 @@ public final class ConfigSource {
     public void load(Config config) {
         try {
             CommentedConfigurationNode root = loader.load();
-            if (!root.virtual()) {
+            if (!root.isNull()) {
                 config.apply(root);
             }
         } catch (ConfigurateException e) {

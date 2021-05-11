@@ -11,7 +11,7 @@ public interface ParentDataPart<C extends DataPart & Identifiable> extends DataP
 
     @Override
     default void apply(CommentedConfigurationNode node) {
-        propagateToChildren(childNode -> !childNode.virtual(), DataPart::apply, node);
+        propagateToChildren(childNode -> !childNode.isNull(), DataPart::apply, node);
     }
 
     @Override

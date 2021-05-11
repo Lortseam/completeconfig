@@ -201,11 +201,7 @@ public class Entry<T> implements DataPart, Identifiable {
     @Override
     public void apply(CommentedConfigurationNode node) {
         try {
-            T value = (T) node.get(type);
-            // value could be null despite the virtual() check
-            // see https://github.com/SpongePowered/Configurate/issues/187
-            if(value == null) return;
-            setValue(value);
+            setValue((T) node.get(type));
         } catch (SerializationException e) {
             logger.error("Failed to apply value to entry", e);
         }
