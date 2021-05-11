@@ -1,12 +1,12 @@
 package me.lortseam.completeconfig.extensions;
 
-import me.lortseam.completeconfig.gui.cloth.Provider;
+import me.lortseam.completeconfig.gui.cloth.GuiProvider;
 
 import java.util.Collection;
 
 public interface GuiExtension extends Extension {
 
-    default Collection<Provider> getProviders() {
+    default Collection<GuiProvider> getProviders() {
         return null;
     }
 

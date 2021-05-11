@@ -13,25 +13,25 @@ import java.util.function.Predicate;
 
 @Environment(EnvType.CLIENT)
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class Provider {
+public final class GuiProvider {
 
-    public static <E extends Entry<?>> Provider create(Class<E> entryType, EntryBuilder<? extends E> builder, Predicate<E> predicate, Type... types) {
-        return new Provider(entry -> {
+    public static <E extends Entry<?>> GuiProvider create(Class<E> entryType, EntryBuilder<? extends E> builder, Predicate<E> predicate, Type... types) {
+        return new GuiProvider(entry -> {
             if (entry.getClass() != (entryType != null ? entryType : Entry.class)) return false;
             if (types.length > 0 && !ArrayUtils.contains(types, entry.getType())) return false;
             return predicate.test((E) entry);
         }, builder);
     }
 
-    public static <E extends Entry<?>> Provider create(Class<E> entryType, EntryBuilder<? extends E> builder, Type... types) {
+    public static <E extends Entry<?>> GuiProvider create(Class<E> entryType, EntryBuilder<? extends E> builder, Type... types) {
         return create(entryType, builder, entry -> true, types);
     }
 
-    public static Provider create(EntryBuilder<?> builder, Predicate<Entry<?>> predicate, Type... types) {
+    public static GuiProvider create(EntryBuilder<?> builder, Predicate<Entry<?>> predicate, Type... types) {
         return create(null, builder, predicate, types);
     }
 
-    public static Provider create(EntryBuilder<?> builder, Type... types) {
+    public static GuiProvider create(EntryBuilder<?> builder, Type... types) {
         if (types.length == 0) {
             throw new IllegalArgumentException("Types must not be empty");
         }

@@ -31,7 +31,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
 
     private final Supplier<ConfigBuilder> supplier;
     @Getter
-    private final GuiRegistry registry = new GuiRegistry();
+    private final GuiProviderRegistry registry = new GuiProviderRegistry();
 
     public ClothConfigScreenBuilder(@NonNull Supplier<ConfigBuilder> supplier) {
         this.supplier = supplier;
