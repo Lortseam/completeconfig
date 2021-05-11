@@ -17,6 +17,9 @@ import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.util.ReflectionUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -83,20 +86,25 @@ public class Entry<T> implements DataPart, Identifiable {
         defaultValue = getValue();
         ConfigEntry annotation = field.getDeclaredAnnotation(ConfigEntry.class);
         id = annotation != null && !StringUtils.isBlank(annotation.value()) ? annotation.value() : field.getName();
-        if (annotation != null && !StringUtils.isBlank(annotation.translationKey())) {
-            translation = origin.getParentTranslation().append(annotation.translationKey());
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            if (annotation != null && !StringUtils.isBlank(annotation.translationKey())) {
+                translation = origin.getParentTranslation().append(annotation.translationKey());
+            } else {
+                translation = origin.getParentTranslation().append(id);
+            }
+            if (annotation != null && annotation.tooltipTranslationKeys().length > 0) {
+                tooltipTranslation = Arrays.stream(annotation.tooltipTranslationKeys()).map(key -> {
+                    if (StringUtils.isBlank(key)) {
+                        throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + this + " may not be blank");
+                    }
+                    return translation.root().append(key);
+                }).toArray(TranslationKey[]::new);
+            } else {
+                tooltipTranslation = translation.appendTooltip().orElse(null);
+            }
         } else {
-            translation = origin.getParentTranslation().append(id);
-        }
-        if (annotation != null && annotation.tooltipTranslationKeys().length > 0) {
-            tooltipTranslation = Arrays.stream(annotation.tooltipTranslationKeys()).map(key -> {
-                if (StringUtils.isBlank(key)) {
-                    throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + this + " may not be blank");
-                }
-                return translation.root().append(key);
-            }).toArray(TranslationKey[]::new);
-        } else {
-            tooltipTranslation = translation.appendTooltip().orElse(null);
+            translation = null;
+            tooltipTranslation = null;
         }
         requiresRestart = annotation != null && annotation.requiresRestart();
         comment = annotation != null && !StringUtils.isBlank(annotation.comment()) ? annotation.comment() : null;
@@ -153,10 +161,12 @@ public class Entry<T> implements DataPart, Identifiable {
         }
     }
 
+    @Environment(EnvType.CLIENT)
     public Text getText() {
         return translation.toText();
     }
 
+    @Environment(EnvType.CLIENT)
     public Optional<Text[]> getTooltip() {
         return Optional.ofNullable(tooltipTranslation).map(lines -> {
             return Arrays.stream(lines).map(TranslationKey::toText).toArray(Text[]::new);

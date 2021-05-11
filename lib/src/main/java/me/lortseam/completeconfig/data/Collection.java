@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.text.TranslationKey;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,10 +26,20 @@ public class Collection extends BaseCollection implements Identifiable {
     Collection(String id, TranslationKey translation, String[] customTooltipTranslationKeys, String comment) {
         super(translation);
         this.id = id;
-        customTooltipTranslation = ArrayUtils.isNotEmpty(customTooltipTranslationKeys) ? Arrays.stream(customTooltipTranslationKeys).map(key -> translation.root().append(key)).toArray(TranslationKey[]::new) : null;
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            customTooltipTranslation = ArrayUtils.isNotEmpty(customTooltipTranslationKeys) ? Arrays.stream(customTooltipTranslationKeys).map(key -> translation.root().append(key)).toArray(TranslationKey[]::new) : null;
+        } else {
+            customTooltipTranslation = null;
+        }
         this.comment = !StringUtils.isBlank(comment) ? comment : null;
     }
 
+    @Environment(EnvType.SERVER)
+    Collection(String id, String comment) {
+        this(id, null, null, comment);
+    }
+
+    @Environment(EnvType.CLIENT)
     public Optional<Text[]> getTooltipTranslation() {
         return (customTooltipTranslation != null ? Optional.of(customTooltipTranslation) : translation.appendTooltip()).map(lines -> {
             return Arrays.stream(lines).map(TranslationKey::toText).toArray(Text[]::new);

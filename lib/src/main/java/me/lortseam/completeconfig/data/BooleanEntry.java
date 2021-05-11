@@ -3,6 +3,9 @@ package me.lortseam.completeconfig.data;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.entry.EntryOrigin;
 import me.lortseam.completeconfig.data.text.TranslationKey;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,7 +17,7 @@ public class BooleanEntry extends Entry<Boolean> {
 
     BooleanEntry(EntryOrigin origin) {
         super(origin);
-        valueTranslationSupplier = origin.getOptionalAnnotation(ConfigEntry.Boolean.class).map(annotation -> {
+        valueTranslationSupplier = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? origin.getOptionalAnnotation(ConfigEntry.Boolean.class).map(annotation -> {
             if (StringUtils.isBlank(annotation.trueTranslationKey()) && StringUtils.isBlank(annotation.falseTranslationKey())) {
                 return null;
             } else {
@@ -26,9 +29,10 @@ public class BooleanEntry extends Entry<Boolean> {
                     return translation.append(value ? "true" : "false");
                 };
             }
-        }).orElse(null);
+        }).orElse(null) : null;
     }
 
+    @Environment(EnvType.CLIENT)
     public Function<Boolean, Text> getValueTextSupplier() {
         if (valueTranslationSupplier != null) {
             return bool -> valueTranslationSupplier.apply(bool).toText();

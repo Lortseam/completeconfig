@@ -7,6 +7,8 @@ import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.io.ConfigSource;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
@@ -44,7 +46,7 @@ public final class Config extends BaseCollection {
     private final boolean saveOnExit;
 
     private Config(ConfigSource source, ConfigContainer[] children, boolean saveOnExit) {
-        super(TranslationKey.from(source));
+        super(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? TranslationKey.from(source) : null);
         this.source = source;
         this.saveOnExit = saveOnExit;
         resolve(children);
@@ -54,6 +56,7 @@ public final class Config extends BaseCollection {
         return FabricLoader.getInstance().getModContainer(source.getModId()).get().getMetadata();
     }
 
+    @Environment(EnvType.CLIENT)
     public TranslationKey getTranslation(boolean includeBranch) {
         if (includeBranch) {
             return translation.append(source.getBranch());

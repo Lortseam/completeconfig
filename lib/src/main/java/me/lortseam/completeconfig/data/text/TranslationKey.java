@@ -1,6 +1,8 @@
 package me.lortseam.completeconfig.data.text;
 
 import me.lortseam.completeconfig.io.ConfigSource;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -23,6 +25,7 @@ public final class TranslationKey {
     private final String modKey;
     private final String[] keyParts;
 
+    @Environment(EnvType.CLIENT)
     private TranslationKey(String modKey, String... keyParts) {
         this.modKey = modKey;
         this.keyParts = keyParts;

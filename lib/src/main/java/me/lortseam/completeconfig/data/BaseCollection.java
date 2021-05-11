@@ -8,6 +8,8 @@ import me.lortseam.completeconfig.data.structure.ParentDataPart;
 import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.util.ReflectionUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -28,6 +30,7 @@ abstract class BaseCollection implements ParentDataPart {
         collections = new CollectionSet(translation);
     }
 
+    @Environment(EnvType.CLIENT)
     public Text getText() {
         return translation.toText();
     }

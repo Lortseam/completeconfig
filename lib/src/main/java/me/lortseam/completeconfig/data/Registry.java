@@ -8,6 +8,8 @@ import me.lortseam.completeconfig.data.entry.Transformation;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.io.ConfigSource;
 import me.lortseam.completeconfig.util.ReflectionUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.text.TextColor;
 
 import java.util.Collection;
@@ -73,6 +75,7 @@ public final class Registry {
      * @param modId the mod's ID
      * @param screenBuilder the screen builder
      */
+    @Environment(EnvType.CLIENT)
     public static void register(@NonNull String modId, @NonNull ConfigScreenBuilder screenBuilder) {
         getConfigs(modId).screenBuilder = screenBuilder;
     }
@@ -103,6 +106,7 @@ public final class Registry {
         return Collections.unmodifiableList(transformations);
     }
 
+    @Environment(EnvType.CLIENT)
     public static Optional<ConfigScreenBuilder> getScreenBuilder(String modId, ConfigScreenBuilder fallback) {
         ConfigScreenBuilder screenBuilder = getConfigs(modId).screenBuilder;
         if (screenBuilder != null) {
@@ -114,6 +118,7 @@ public final class Registry {
     private static class ModConfigSet extends HashSet<Config> {
 
         private Config main;
+        @Environment(EnvType.CLIENT)
         private ConfigScreenBuilder screenBuilder;
 
         private void add(Config config, boolean main) {
