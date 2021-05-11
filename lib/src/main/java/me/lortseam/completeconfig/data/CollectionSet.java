@@ -12,11 +12,11 @@ public class CollectionSet extends DataSet<Collection> {
     }
 
     void resolve(ConfigGroup group) {
-        String groupID = group.getID();
-        Collection collection = new Collection(groupID, translation.append(groupID), group.getTooltipTranslationKeys(), group.getComment());
+        String groupId = group.getId();
+        Collection collection = new Collection(groupId, translation.append(groupId), group.getTooltipTranslationKeys(), group.getComment());
         collection.resolveContainer(group);
         if (collection.isEmpty()) {
-            logger.warn("Empty group: " + groupID);
+            logger.warn("Empty group: " + groupId);
             return;
         }
         add(collection);

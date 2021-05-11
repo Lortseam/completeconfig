@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ConfigTest {
 
     @Test
-    public void builder_throwExceptionIfModIDNull() {
+    public void builder_throwExceptionIfModIdNull() {
         NullPointerException exception = assertThrows(NullPointerException.class, () -> Config.builder(null));
-        assertEquals("modID is marked non-null but is null", exception.getMessage());
+        assertEquals("modId is marked non-null but is null", exception.getMessage());
     }
 
     @Nested

@@ -21,16 +21,16 @@ public abstract class ConfigScreenBuilder {
      * Sets the main screen builder for a mod. The main screen builder will be used to build the config screen if no
      * custom builder was specified.
      *
-     * @param modID the mod's ID
+     * @param modId the mod's ID
      * @param screenBuilder the screen builder
      */
-    public static void setMain(@NonNull String modID, @NonNull ConfigScreenBuilder screenBuilder) {
-        mainBuilders.put(modID, screenBuilder);
+    public static void setMain(@NonNull String modId, @NonNull ConfigScreenBuilder screenBuilder) {
+        mainBuilders.put(modId, screenBuilder);
     }
 
-    public static Optional<ConfigScreenBuilder> getMain(@NonNull String modID) {
-        if (mainBuilders.containsKey(modID)) {
-            return Optional.of(mainBuilders.get(modID));
+    public static Optional<ConfigScreenBuilder> getMain(@NonNull String modId) {
+        if (mainBuilders.containsKey(modId)) {
+            return Optional.of(mainBuilders.get(modId));
         }
         return Optional.ofNullable(fallback);
     }

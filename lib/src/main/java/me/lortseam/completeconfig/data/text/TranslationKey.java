@@ -17,7 +17,7 @@ public final class TranslationKey {
     private static final String DELIMITER = ".";
 
     public static TranslationKey from(ConfigSource source) {
-        return new TranslationKey("config" + DELIMITER + source.getModID());
+        return new TranslationKey("config" + DELIMITER + source.getModId());
     }
 
     private final String modKey;

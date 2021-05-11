@@ -31,13 +31,13 @@ public final class Config extends BaseCollection {
     /**
      * Creates a new config builder for the specified mod.
      *
-     * @param modID the ID of the mod creating the config
+     * @param modId the ID of the mod creating the config
      */
-    public static Builder builder(@NonNull String modID) {
-        if (!FabricLoader.getInstance().isModLoaded(modID)) {
-            throw new IllegalArgumentException("Mod " + modID + " is not loaded");
+    public static Builder builder(@NonNull String modId) {
+        if (!FabricLoader.getInstance().isModLoaded(modId)) {
+            throw new IllegalArgumentException("Mod " + modId + " is not loaded");
         }
-        return new Builder(modID);
+        return new Builder(modId);
     }
 
     private final ConfigSource source;
@@ -49,7 +49,7 @@ public final class Config extends BaseCollection {
     }
 
     public ModMetadata getMod() {
-        return FabricLoader.getInstance().getModContainer(source.getModID()).get().getMetadata();
+        return FabricLoader.getInstance().getModContainer(source.getModId()).get().getMetadata();
     }
 
     public TranslationKey getTranslation(boolean includeBranch) {
@@ -71,14 +71,14 @@ public final class Config extends BaseCollection {
     @Log4j2(topic = "CompleteConfig")
     public final static class Builder {
 
-        private final String modID;
+        private final String modId;
         private String[] branch = new String[0];
         private final LinkedHashSet<ConfigContainer> children = new LinkedHashSet<>();
         private boolean main;
         private boolean saveOnExit;
 
-        private Builder(String modID) {
-            this.modID = modID;
+        private Builder(String modId) {
+            this.modId = modId;
         }
 
         /**
@@ -139,14 +139,14 @@ public final class Config extends BaseCollection {
         public Config build() {
             Config config = null;
             if (!children.isEmpty()) {
-                config = new Config(new ConfigSource(modID, branch), children.toArray(new ConfigContainer[0]));
+                config = new Config(new ConfigSource(modId, branch), children.toArray(new ConfigContainer[0]));
             }
             if (config == null || config.isEmpty()) {
-                logger.warn("Empty config: " + modID + " " + Arrays.toString(branch));
+                logger.warn("Empty config: " + modId + " " + Arrays.toString(branch));
                 return null;
             }
-            if (main || branch.length == 0 && !mainConfigs.containsKey(modID)) {
-                mainConfigs.put(modID, config);
+            if (main || branch.length == 0 && !mainConfigs.containsKey(modId)) {
+                mainConfigs.put(modId, config);
             }
             if (saveOnExit) {
                 saveOnExitConfigs.add(config);

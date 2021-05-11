@@ -36,20 +36,20 @@ public final class ConfigSource {
 
     @EqualsAndHashCode.Include
     @Getter
-    private final String modID;
+    private final String modId;
     @EqualsAndHashCode.Include
     @Getter
     private final String[] branch;
     private final HoconConfigurationLoader loader;
 
-    public ConfigSource(String modID, String[] branch) {
-        this.modID = modID;
+    public ConfigSource(String modId, String[] branch) {
+        this.modId = modId;
         this.branch = branch;
         if (!sources.add(this)) {
             throw new IllegalArgumentException("A config of " + this + " already exists");
         }
         Path path = FabricLoader.getInstance().getConfigDir();
-        String[] subPath = ArrayUtils.add(branch, 0, modID);
+        String[] subPath = ArrayUtils.add(branch, 0, modId);
         subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".conf";
         for (String child : subPath) {
             path = path.resolve(child);

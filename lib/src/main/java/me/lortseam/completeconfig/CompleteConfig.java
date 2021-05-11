@@ -36,7 +36,7 @@ public final class CompleteConfig {
 
     public static void registerExtensionType(@NonNull Class<? extends Extension> extensionType, EnvType environment, String... mods) {
         if(validExtensionTypes.contains(extensionType)) return;
-        if(environment != null && FabricLoader.getInstance().getEnvironmentType() != environment || Arrays.stream(mods).anyMatch(modID -> !FabricLoader.getInstance().isModLoaded(Objects.requireNonNull(modID)))) return;
+        if(environment != null && FabricLoader.getInstance().getEnvironmentType() != environment || Arrays.stream(mods).anyMatch(modId -> !FabricLoader.getInstance().isModLoaded(Objects.requireNonNull(modId)))) return;
         validExtensionTypes.add(extensionType);
     }
 
@@ -62,8 +62,8 @@ public final class CompleteConfig {
         }
     }
 
-    public static void registerExtension(@NonNull String modID, @NonNull Class<? extends CompleteConfigExtension> extensionType) {
-        if(!FabricLoader.getInstance().isModLoaded(modID)) return;
+    public static void registerExtension(@NonNull String modId, @NonNull Class<? extends CompleteConfigExtension> extensionType) {
+        if(!FabricLoader.getInstance().isModLoaded(modId)) return;
         registerExtension(extensionType);
     }
 
