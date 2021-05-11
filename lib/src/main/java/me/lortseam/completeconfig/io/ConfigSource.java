@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.Config;
+import me.lortseam.completeconfig.data.Registry;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
@@ -14,15 +15,12 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
 
 @Log4j2(topic = "CompleteConfig")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class ConfigSource {
 
     private static final TypeSerializerCollection GLOBAL_TYPE_SERIALIZERS;
-    private static final Set<ConfigSource> sources = new HashSet<>();
 
     static {
         TypeSerializerCollection.Builder builder = TypeSerializerCollection.builder();
@@ -45,7 +43,7 @@ public final class ConfigSource {
     public ConfigSource(String modId, String[] branch) {
         this.modId = modId;
         this.branch = branch;
-        if (!sources.add(this)) {
+        if (Registry.hasSource(this)) {
             throw new IllegalArgumentException("A config of " + this + " already exists");
         }
         Path path = FabricLoader.getInstance().getConfigDir();

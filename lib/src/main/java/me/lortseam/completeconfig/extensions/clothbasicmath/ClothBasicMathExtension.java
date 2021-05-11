@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.extensions.clothbasicmath;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,6 @@ import me.lortseam.completeconfig.extensions.Extension;
 import me.shedaniel.math.Color;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
-import java.util.Collection;
 import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -25,10 +23,10 @@ public final class ClothBasicMathExtension implements CompleteConfigExtension {
     }
 
     @Override
-    public Collection<Transformation> getTransformations() {
-        return ImmutableList.of(
+    public Transformation[] getTransformations() {
+        return new Transformation[] {
                 Transformation.builder().byType(Color.class).transforms(origin -> new ColorEntry<>(origin, true))
-        );
+        };
     }
 
     @Override

@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.data;
 
-import com.google.common.collect.Lists;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -19,7 +18,6 @@ import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -29,8 +27,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 @Log4j2(topic = "CompleteConfig")
@@ -38,51 +37,17 @@ import java.util.function.UnaryOperator;
 public class Entry<T> implements DataPart, Identifiable {
 
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
-    private static final List<Transformation> transformations = Lists.newArrayList(
-            Transformation.builder().byType(boolean.class, Boolean.class).byAnnotation(ConfigEntry.Boolean.class, true).transforms(BooleanEntry::new),
-            Transformation.builder().byType(int.class, Integer.class).byAnnotation(ConfigEntry.BoundedInteger.class).transforms(origin -> {
-                ConfigEntry.BoundedInteger bounds = origin.getAnnotation(ConfigEntry.BoundedInteger.class);
-                return new BoundedEntry<>(origin, bounds.min(), bounds.max());
-            }),
-            Transformation.builder().byType(int.class, Integer.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedInteger.class, ConfigEntry.Slider.class)).transforms(origin -> {
-                ConfigEntry.BoundedInteger bounds = origin.getAnnotation(ConfigEntry.BoundedInteger.class);
-                return new SliderEntry<>(origin, bounds.min(), bounds.max());
-            }),
-            Transformation.builder().byType(long.class, Long.class).byAnnotation(ConfigEntry.BoundedLong.class).transforms(origin -> {
-                ConfigEntry.BoundedLong bounds = origin.getAnnotation(ConfigEntry.BoundedLong.class);
-                return new BoundedEntry<>(origin, bounds.min(), bounds.max());
-            }),
-            Transformation.builder().byType(long.class, Long.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedLong.class, ConfigEntry.Slider.class)).transforms(origin -> {
-                ConfigEntry.BoundedLong bounds = origin.getAnnotation(ConfigEntry.BoundedLong.class);
-                return new SliderEntry<>(origin, bounds.min(), bounds.max());
-            }),
-            Transformation.builder().byType(float.class, Float.class).byAnnotation(ConfigEntry.BoundedFloat.class).transforms(origin -> {
-                ConfigEntry.BoundedFloat bounds = origin.getAnnotation(ConfigEntry.BoundedFloat.class);
-                return new BoundedEntry<>(origin, bounds.min(), bounds.max());
-            }),
-            Transformation.builder().byType(double.class, Double.class).byAnnotation(ConfigEntry.BoundedDouble.class).transforms(origin -> {
-                ConfigEntry.BoundedDouble bounds = origin.getAnnotation(ConfigEntry.BoundedDouble.class);
-                return new BoundedEntry<>(origin, bounds.min(), bounds.max());
-            }),
-            Transformation.builder().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).transforms(EnumEntry::new),
-            Transformation.builder().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).byAnnotation(ConfigEntry.Dropdown.class).transforms(DropdownEntry::new),
-            Transformation.builder().byAnnotation(ConfigEntry.Color.class).transforms(ColorEntry::new),
-            Transformation.builder().byType(TextColor.class).transforms(origin -> new ColorEntry<>(origin, false))
-    );
-    private static final Set<Entry> entries = new HashSet<>();
 
     static {
-        for (Collection<Transformation> transformations : CompleteConfig.collectExtensions(CompleteConfigExtension.class, CompleteConfigExtension::getTransformations)) {
-            Entry.transformations.addAll(transformations);
+        for (Transformation[] transformations : CompleteConfig.collectExtensions(CompleteConfigExtension.class, CompleteConfigExtension::getTransformations)) {
+            Registry.register(transformations);
         }
     }
 
     static Entry<?> of(Field field, ConfigContainer parentObject, TranslationKey parentTranslation) {
         EntryOrigin origin = new EntryOrigin(field, parentObject, parentTranslation);
-        Entry<?> entry = transformations.stream().filter(transformation -> transformation.test(origin)).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
-        if (!entries.add(entry)) {
-            throw new UnsupportedOperationException(entry + " was already resolved");
-        }
+        Entry<?> entry = Registry.getTransformations().stream().filter(transformation -> transformation.test(origin)).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
+        Registry.register(entry);
         return entry;
     }
 

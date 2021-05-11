@@ -1,5 +1,7 @@
 package me.lortseam.completeconfig.data;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
@@ -8,24 +10,21 @@ import me.lortseam.completeconfig.io.ConfigSource;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Objects;
 
 @Log4j2(topic = "CompleteConfig")
 public final class Config extends BaseCollection {
 
-    private static final Map<String, Config> mainConfigs = new HashMap<>();
-    private static final Set<Config> saveOnExitConfigs = new HashSet<>();
-
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (Config config : saveOnExitConfigs) {
-                config.save();
+            for (Config config : Registry.getConfigs()) {
+                if (config.saveOnExit) {
+                    config.save();
+                }
             }
         }));
-    }
-
-    public static Map<String, Config> getMainConfigs() {
-        return Collections.unmodifiableMap(mainConfigs);
     }
 
     /**
@@ -40,11 +39,14 @@ public final class Config extends BaseCollection {
         return new Builder(modId);
     }
 
+    @Getter(AccessLevel.PACKAGE)
     private final ConfigSource source;
+    private final boolean saveOnExit;
 
-    private Config(ConfigSource source, ConfigContainer[] children) {
+    private Config(ConfigSource source, ConfigContainer[] children, boolean saveOnExit) {
         super(TranslationKey.from(source));
         this.source = source;
+        this.saveOnExit = saveOnExit;
         resolve(children);
     }
 
@@ -139,18 +141,13 @@ public final class Config extends BaseCollection {
         public Config build() {
             Config config = null;
             if (!children.isEmpty()) {
-                config = new Config(new ConfigSource(modId, branch), children.toArray(new ConfigContainer[0]));
+                config = new Config(new ConfigSource(modId, branch), children.toArray(new ConfigContainer[0]), saveOnExit);
             }
             if (config == null || config.isEmpty()) {
                 logger.warn("Empty config: " + modId + " " + Arrays.toString(branch));
                 return null;
             }
-            if (main || branch.length == 0 && !mainConfigs.containsKey(modId)) {
-                mainConfigs.put(modId, config);
-            }
-            if (saveOnExit) {
-                saveOnExitConfigs.add(config);
-            }
+            Registry.register(config, main || branch.length == 0 && !Registry.getMainConfig(modId).isPresent());
             config.load();
             return config;
         }

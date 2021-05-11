@@ -12,7 +12,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.TextColor;
 
-import java.util.Collection;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -198,8 +197,8 @@ public final class GuiProviderRegistry {
     );
 
     static {
-        for (Collection<GuiProvider> providers : CompleteConfig.collectExtensions(GuiExtension.class, GuiExtension::getProviders)) {
-            globalProviders.addAll(providers);
+        for (GuiProvider[] providers : CompleteConfig.collectExtensions(GuiExtension.class, GuiExtension::getProviders)) {
+            globalProviders.addAll(Arrays.asList(providers));
         }
     }
 
