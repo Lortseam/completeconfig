@@ -7,6 +7,7 @@ import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Registry;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -24,10 +25,8 @@ public final class ConfigSource {
 
     static {
         TypeSerializerCollection.Builder builder = TypeSerializerCollection.builder();
-        switch (FabricLoader.getInstance().getEnvironmentType()) {
-            case CLIENT:
-                builder.registerAll(ClientSerializers.COLLECTION);
-                break;
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            builder.registerAll(ClientSerializers.COLLECTION);
         }
         GLOBAL_TYPE_SERIALIZERS = builder.build();
     }
