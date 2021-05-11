@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -18,8 +20,12 @@ public final class EntryOrigin {
     protected final Field field;
     @Getter
     private final ConfigContainer parentObject;
-    @Getter
     private final TranslationKey parentTranslation;
+
+    @Environment(EnvType.CLIENT)
+    public TranslationKey getParentTranslation() {
+        return parentTranslation;
+    }
 
     public Type getType() {
         return ReflectionUtils.getFieldType(field);

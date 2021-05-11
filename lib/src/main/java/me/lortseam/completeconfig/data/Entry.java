@@ -33,6 +33,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 @Log4j2(topic = "CompleteConfig")
@@ -67,7 +68,7 @@ public class Entry<T> implements DataPart, Identifiable {
     @Getter
     private final T defaultValue;
     protected final TranslationKey translation;
-    private final TranslationKey[] tooltipTranslation;
+    private final Supplier<TranslationKey[]> tooltipTranslationSupplier;
     @Accessors(fluent = true)
     @Getter
     private final boolean requiresRestart;
@@ -92,19 +93,20 @@ public class Entry<T> implements DataPart, Identifiable {
             } else {
                 translation = origin.getParentTranslation().append(id);
             }
-            if (annotation != null && annotation.tooltipTranslationKeys().length > 0) {
-                tooltipTranslation = Arrays.stream(annotation.tooltipTranslationKeys()).map(key -> {
-                    if (StringUtils.isBlank(key)) {
-                        throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + this + " may not be blank");
-                    }
-                    return translation.root().append(key);
-                }).toArray(TranslationKey[]::new);
-            } else {
-                tooltipTranslation = translation.appendTooltip().orElse(null);
-            }
+            tooltipTranslationSupplier = () -> {
+                if (annotation != null && annotation.tooltipTranslationKeys().length > 0) {
+                    return Arrays.stream(annotation.tooltipTranslationKeys()).map(key -> {
+                        if (StringUtils.isBlank(key)) {
+                            throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + this + " may not be blank");
+                        }
+                        return translation.root().append(key);
+                    }).toArray(TranslationKey[]::new);
+                }
+                return translation.appendTooltip().orElse(null);
+            };
         } else {
             translation = null;
-            tooltipTranslation = null;
+            tooltipTranslationSupplier = null;
         }
         requiresRestart = annotation != null && annotation.requiresRestart();
         comment = annotation != null && !StringUtils.isBlank(annotation.comment()) ? annotation.comment() : null;
@@ -168,7 +170,7 @@ public class Entry<T> implements DataPart, Identifiable {
 
     @Environment(EnvType.CLIENT)
     public Optional<Text[]> getTooltip() {
-        return Optional.ofNullable(tooltipTranslation).map(lines -> {
+        return Optional.ofNullable(tooltipTranslationSupplier.get()).map(lines -> {
             return Arrays.stream(lines).map(TranslationKey::toText).toArray(Text[]::new);
         });
     }

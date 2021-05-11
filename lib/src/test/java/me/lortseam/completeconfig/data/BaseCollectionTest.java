@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
+import me.lortseam.completeconfig.io.ConfigSource;
 import me.lortseam.completeconfig.test.data.containers.*;
 import me.lortseam.completeconfig.test.data.groups.EmptyGroup;
 import me.lortseam.completeconfig.test.data.listeners.EmptyListener;
@@ -15,16 +16,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 public class BaseCollectionTest {
+
+    private static final String MOD_ID = "test";
 
     private BaseCollection baseCollection;
     private final LogCaptor logCaptor = LogCaptor.forName("CompleteConfig");
 
     @BeforeEach
     public void beforeEach() {
-        baseCollection = new BaseCollection(mock(TranslationKey.class)) {};
+        baseCollection = new BaseCollection(TranslationKey.from(new ConfigSource(MOD_ID, new String[0]))) {};
     }
 
     @AfterEach
