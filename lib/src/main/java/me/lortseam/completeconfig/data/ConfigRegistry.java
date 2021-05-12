@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @UtilityClass
-public final class Registry {
+public final class ConfigRegistry {
 
     private static final Map<String, ModConfigSet> configs = new HashMap<>();
     private static final Set<EntryOrigin> origins = new HashSet<>();
@@ -64,7 +64,7 @@ public final class Registry {
     }
 
     static void register(Transformation... transformations) {
-        Registry.transformations.addAll(Arrays.asList(transformations));
+        ConfigRegistry.transformations.addAll(Arrays.asList(transformations));
     }
 
     private static ModConfigSet getConfigs(String modId) {
@@ -80,7 +80,7 @@ public final class Registry {
     }
 
     public static Map<String, Config> getMainConfigs() {
-        return configs.keySet().stream().map(Registry::getMainConfig).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toMap(config -> {
+        return configs.keySet().stream().map(ConfigRegistry::getMainConfig).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toMap(config -> {
             return config.getMod().getId();
         }, Function.identity()));
     }

@@ -21,7 +21,7 @@ public final class Config extends BaseCollection {
 
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (Config config : Registry.getConfigs()) {
+            for (Config config : ConfigRegistry.getConfigs()) {
                 if (config.saveOnExit) {
                     config.save();
                 }
@@ -158,7 +158,7 @@ public final class Config extends BaseCollection {
                 logger.warn("Empty config: " + modId + " " + Arrays.toString(branch));
                 return null;
             }
-            Registry.register(config, main || branch.length == 0 && !Registry.getMainConfig(modId).isPresent());
+            ConfigRegistry.register(config, main || branch.length == 0 && !ConfigRegistry.getMainConfig(modId).isPresent());
             config.load();
             return config;
         }

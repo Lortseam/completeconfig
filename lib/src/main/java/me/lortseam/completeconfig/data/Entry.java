@@ -39,13 +39,13 @@ public class Entry<T> implements DataPart, Identifiable, TooltipSupplier {
 
     static {
         for (Transformation[] transformations : CompleteConfig.collectExtensions(CompleteConfigExtension.class, CompleteConfigExtension::getTransformations)) {
-            Registry.register(transformations);
+            ConfigRegistry.register(transformations);
         }
     }
 
     static Entry<?> of(BaseCollection parent, Field field, ConfigContainer object) {
         EntryOrigin origin = new EntryOrigin(parent, field, object);
-        return Registry.getTransformations().stream().filter(transformation -> {
+        return ConfigRegistry.getTransformations().stream().filter(transformation -> {
             return transformation.test(origin);
         }).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
     }
@@ -70,7 +70,7 @@ public class Entry<T> implements DataPart, Identifiable, TooltipSupplier {
     private final UnaryOperator<T> valueModifier;
 
     protected Entry(EntryOrigin origin, UnaryOperator<T> valueModifier) {
-        Registry.register(origin);
+        ConfigRegistry.register(origin);
         this.origin = origin;
         if (!origin.getField().isAccessible()) {
             origin.getField().setAccessible(true);
