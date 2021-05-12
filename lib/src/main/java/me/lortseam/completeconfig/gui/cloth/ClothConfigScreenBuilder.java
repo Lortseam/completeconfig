@@ -12,8 +12,6 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.TranslatableText;
@@ -26,7 +24,6 @@ import java.util.function.Supplier;
 /**
  * A screen builder based on the Cloth Config API.
  */
-@Environment(EnvType.CLIENT)
 public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
 
     private final Supplier<ConfigBuilder> supplier;

@@ -1,14 +1,10 @@
 package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Lists;
-import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.util.ReflectionUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.text.TextColor;
 
 import java.util.Collection;
@@ -71,18 +67,6 @@ public final class Registry {
         Registry.transformations.addAll(Arrays.asList(transformations));
     }
 
-    /**
-     * Sets the main screen builder for a mod. The main screen builder will be used to build the config screen if no
-     * custom builder was specified.
-     *
-     * @param modId the mod's ID
-     * @param screenBuilder the screen builder
-     */
-    @Environment(EnvType.CLIENT)
-    public static void register(@NonNull String modId, @NonNull ConfigScreenBuilder screenBuilder) {
-        getConfigs(modId).screenBuilder = screenBuilder;
-    }
-
     private static ModConfigSet getConfigs(String modId) {
         return configs.computeIfAbsent(modId, key -> new ModConfigSet());
     }
@@ -105,20 +89,9 @@ public final class Registry {
         return Collections.unmodifiableList(transformations);
     }
 
-    @Environment(EnvType.CLIENT)
-    public static Optional<ConfigScreenBuilder> getScreenBuilder(String modId, ConfigScreenBuilder fallback) {
-        ConfigScreenBuilder screenBuilder = getConfigs(modId).screenBuilder;
-        if (screenBuilder != null) {
-            return Optional.of(screenBuilder);
-        }
-        return Optional.ofNullable(fallback);
-    }
-
     private static class ModConfigSet extends HashSet<Config> {
 
         private Config main;
-        @Environment(EnvType.CLIENT)
-        private ConfigScreenBuilder screenBuilder;
 
         private void add(Config config, boolean main) {
             add(config);
