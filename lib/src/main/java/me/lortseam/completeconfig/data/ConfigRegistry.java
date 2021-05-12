@@ -94,11 +94,11 @@ public final class ConfigRegistry {
 
         private Config main;
 
-        private void add(Config config, boolean main) {
-            add(config);
+        private boolean add(Config config, boolean main) {
             if (main) {
                 this.main = config;
             }
+            return add(config);
         }
 
         @Override
