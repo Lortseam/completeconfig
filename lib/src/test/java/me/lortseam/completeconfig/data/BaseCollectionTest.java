@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.data.text.TranslationKey;
+import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.io.ConfigSource;
 import me.lortseam.completeconfig.test.data.containers.*;

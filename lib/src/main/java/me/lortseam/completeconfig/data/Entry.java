@@ -12,7 +12,7 @@ import me.lortseam.completeconfig.data.transform.Transformer;
 import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.TooltipSupplier;
-import me.lortseam.completeconfig.data.text.TranslationKey;
+import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.util.ReflectionUtils;

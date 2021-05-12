@@ -1,6 +1,6 @@
 package me.lortseam.completeconfig.data.structure;
 
-import me.lortseam.completeconfig.data.text.TranslationKey;
+import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;

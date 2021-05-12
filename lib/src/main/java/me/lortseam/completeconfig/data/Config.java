@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.data.text.TranslationKey;
+import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.io.ConfigSource;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

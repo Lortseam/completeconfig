@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.data.text;
+package me.lortseam.completeconfig.text;
 
 import me.lortseam.completeconfig.io.ConfigSource;
 import net.fabricmc.api.EnvType;

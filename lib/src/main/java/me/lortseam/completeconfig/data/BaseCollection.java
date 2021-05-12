@@ -5,7 +5,7 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.structure.ParentDataPart;
-import me.lortseam.completeconfig.data.text.TranslationKey;
+import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;

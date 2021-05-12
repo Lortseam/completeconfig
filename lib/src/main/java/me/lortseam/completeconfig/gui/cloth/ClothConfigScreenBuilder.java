@@ -5,7 +5,7 @@ import lombok.NonNull;
 import me.lortseam.completeconfig.data.Collection;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
-import me.lortseam.completeconfig.data.text.TranslationKey;
+import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
