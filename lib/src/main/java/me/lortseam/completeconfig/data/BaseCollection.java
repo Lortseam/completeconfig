@@ -10,7 +10,6 @@ import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.Text;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,20 +19,10 @@ import java.util.Collections;
 
 abstract class BaseCollection implements ParentDataPart {
 
-    protected final TranslationKey translation;
-    private final EntrySet entries;
-    private final CollectionSet collections;
-
-    BaseCollection(TranslationKey translation) {
-        this.translation = translation;
-        entries = new EntrySet(translation);
-        collections = new CollectionSet(translation);
-    }
-
     @Environment(EnvType.CLIENT)
-    public Text getText() {
-        return translation.toText();
-    }
+    protected TranslationKey translation;
+    private final EntrySet entries = new EntrySet(this);
+    private final CollectionSet collections = new CollectionSet(this);
 
     public java.util.Collection<Entry> getEntries() {
         return Collections.unmodifiableCollection(entries);

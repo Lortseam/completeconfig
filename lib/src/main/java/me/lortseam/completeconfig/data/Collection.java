@@ -1,62 +1,60 @@
 package me.lortseam.completeconfig.data;
 
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.Identifiable;
+import me.lortseam.completeconfig.data.structure.TooltipSupplier;
 import me.lortseam.completeconfig.data.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.text.Text;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 @Log4j2(topic = "CompleteConfig")
-public class Collection extends BaseCollection implements Identifiable {
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+public class Collection extends BaseCollection implements Identifiable, TooltipSupplier {
 
-    private final String id;
-    private final TranslationKey[] customTooltipTranslation;
-    @Getter
-    private final String comment;
-
-    Collection(String id, TranslationKey translation, String[] customTooltipTranslationKeys, String comment) {
-        super(translation);
-        this.id = id;
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            customTooltipTranslation = ArrayUtils.isNotEmpty(customTooltipTranslationKeys) ? Arrays.stream(customTooltipTranslationKeys).map(key -> translation.root().append(key)).toArray(TranslationKey[]::new) : null;
-        } else {
-            customTooltipTranslation = null;
-        }
-        this.comment = !StringUtils.isBlank(comment) ? comment : null;
-    }
-
-    @Environment(EnvType.SERVER)
-    Collection(String id, String comment) {
-        this(id, null, null, comment);
-    }
-
+    private final BaseCollection parent;
+    private final ConfigGroup group;
     @Environment(EnvType.CLIENT)
-    public Optional<Text[]> getTooltipTranslation() {
-        return (customTooltipTranslation != null ? Optional.of(customTooltipTranslation) : translation.appendTooltip()).map(lines -> {
-            return Arrays.stream(lines).map(TranslationKey::toText).toArray(Text[]::new);
-        });
+    private TranslationKey[] tooltipTranslation;
+
+    @Override
+    public TranslationKey getTranslation() {
+        if (translation == null) {
+            translation = parent.getTranslation().append(group.getId());
+        }
+        return translation;
+    }
+
+    @Override
+    public TranslationKey[] getTooltipTranslation() {
+        if (tooltipTranslation == null) {
+            if (ArrayUtils.isNotEmpty(group.getTooltipTranslationKeys())) {
+                tooltipTranslation = Arrays.stream(group.getTooltipTranslationKeys()).map(key -> getTranslation().root().append(key)).toArray(TranslationKey[]::new);
+            } else {
+                tooltipTranslation = getTranslation().appendTooltip().orElse(new TranslationKey[0]);
+            }
+        }
+        return tooltipTranslation;
     }
 
     @Override
     public void fetch(CommentedConfigurationNode node) {
-        if (comment != null) {
-            node.comment(comment);
+        if (!StringUtils.isEmpty(group.getComment())) {
+            node.comment(group.getComment());
         }
         super.fetch(node);
     }
 
     @Override
     public String getId() {
-        return id;
+        return group.getId();
     }
 
 }

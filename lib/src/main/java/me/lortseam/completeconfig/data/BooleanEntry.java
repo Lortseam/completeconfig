@@ -1,48 +1,57 @@
 package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.data.entry.EntryOrigin;
 import me.lortseam.completeconfig.data.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class BooleanEntry extends Entry<Boolean> {
 
-    private final Function<Boolean, TranslationKey> valueTranslationSupplier;
+    @Environment(EnvType.CLIENT)
+    private Map<Boolean, TranslationKey> valueTranslations;
 
     BooleanEntry(EntryOrigin origin) {
         super(origin);
-        valueTranslationSupplier = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? origin.getOptionalAnnotation(ConfigEntry.Boolean.class).map(annotation -> {
-            if (StringUtils.isBlank(annotation.trueTranslationKey()) && StringUtils.isBlank(annotation.falseTranslationKey())) {
-                return null;
-            } else {
-                return (Function<Boolean, TranslationKey>) value -> {
-                    String key = value ? annotation.trueTranslationKey() : annotation.falseTranslationKey();
-                    if (!StringUtils.isBlank(key)) {
-                        return translation.root().append(key);
-                    }
-                    return translation.append(value ? "true" : "false");
-                };
+    }
+
+    @Environment(EnvType.CLIENT)
+    private Map<Boolean, TranslationKey> getValueTranslations() {
+        if (valueTranslations == null) {
+            valueTranslations = new HashMap<>();
+            Optional<ConfigEntry.Boolean> annotation = origin.getOptionalAnnotation(ConfigEntry.Boolean.class);
+            if (annotation.isPresent()) {
+                if (!StringUtils.isBlank(annotation.get().trueTranslationKey())) {
+                    valueTranslations.put(true, getTranslation().root().append(annotation.get().trueTranslationKey()));
+                }
+                if (!StringUtils.isBlank(annotation.get().falseTranslationKey())) {
+                    valueTranslations.put(false, getTranslation().root().append(annotation.get().falseTranslationKey()));
+                }
             }
-        }).orElse(null) : null;
+            TranslationKey defaultTrueTranslation = getTranslation().append("true");
+            if (defaultTrueTranslation.exists()) {
+                valueTranslations.putIfAbsent(true, defaultTrueTranslation);
+            }
+            TranslationKey defaultFalseTranslation = getTranslation().append("false");
+            if (defaultFalseTranslation.exists()) {
+                valueTranslations.putIfAbsent(false, defaultFalseTranslation);
+            }
+        }
+        return valueTranslations;
     }
 
     @Environment(EnvType.CLIENT)
     public Function<Boolean, Text> getValueTextSupplier() {
-        if (valueTranslationSupplier != null) {
-            return bool -> valueTranslationSupplier.apply(bool).toText();
+        if (valueTranslations.isEmpty()) {
+            return null;
         }
-        TranslationKey defaultTrueTranslation = translation.append("true");
-        TranslationKey defaultFalseTranslation = translation.append("false");
-        if (defaultTrueTranslation.exists() || defaultFalseTranslation.exists()) {
-            return bool -> (bool ? defaultTrueTranslation : defaultFalseTranslation).toText();
-        }
-        return null;
+        return value -> valueTranslations.get(value).toText();
     }
 
 }

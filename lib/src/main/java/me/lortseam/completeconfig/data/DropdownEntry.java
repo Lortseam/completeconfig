@@ -2,7 +2,6 @@ package me.lortseam.completeconfig.data;
 
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.data.entry.EntryOrigin;
 
 public class DropdownEntry<T extends Enum<?>> extends EnumEntry<T> {
 

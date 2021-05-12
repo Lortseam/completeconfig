@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import me.lortseam.completeconfig.data.EntryOrigin;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.annotation.Annotation;

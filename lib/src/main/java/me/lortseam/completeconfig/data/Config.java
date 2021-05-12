@@ -43,10 +43,11 @@ public final class Config extends BaseCollection {
 
     @Getter(AccessLevel.PACKAGE)
     private final ConfigSource source;
+    @Environment(EnvType.CLIENT)
+    private TranslationKey branchedTranslation;
     private final boolean saveOnExit;
 
     private Config(ConfigSource source, ConfigContainer[] children, boolean saveOnExit) {
-        super(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? TranslationKey.from(source) : null);
         this.source = source;
         this.saveOnExit = saveOnExit;
         resolve(children);
@@ -56,13 +57,20 @@ public final class Config extends BaseCollection {
         return FabricLoader.getInstance().getModContainer(source.getModId()).get().getMetadata();
     }
 
-    @Environment(EnvType.CLIENT)
-    public TranslationKey getTranslation(boolean includeBranch) {
-        if (includeBranch) {
-            return translation.append(source.getBranch());
-        } else {
-            return translation;
+    @Override
+    public TranslationKey getTranslation() {
+        if (translation == null) {
+            translation = TranslationKey.from(source);
         }
+        return translation;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public TranslationKey getBranchedTranslation() {
+        if (branchedTranslation == null) {
+            branchedTranslation = getTranslation().append(source.getBranch());
+        }
+        return branchedTranslation;
     }
 
     private void load() {

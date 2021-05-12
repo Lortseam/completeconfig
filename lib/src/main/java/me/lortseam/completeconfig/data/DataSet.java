@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.structure.Identifiable;
-import me.lortseam.completeconfig.data.text.TranslationKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractSet;
@@ -15,8 +14,8 @@ import java.util.Map;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class DataSet<T extends DataPart & Identifiable> extends AbstractSet<T> {
 
+    protected final BaseCollection parent;
     private final Map<String, T> map = new LinkedHashMap<>();
-    protected final TranslationKey translation;
 
     @Override
     public @NotNull Iterator<T> iterator() {

@@ -6,7 +6,6 @@ import lombok.experimental.UtilityClass;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.entry.Transformation;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
-import me.lortseam.completeconfig.io.ConfigSource;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 public final class Registry {
 
     private static final Map<String, ModConfigSet> configs = new HashMap<>();
-    private static final Set<Entry> entries = new HashSet<>();
+    private static final Set<EntryOrigin> origins = new HashSet<>();
     private static final List<Transformation> transformations = Lists.newArrayList(
             Transformation.builder().byType(boolean.class, Boolean.class).byAnnotation(ConfigEntry.Boolean.class, true).transforms(BooleanEntry::new),
             Transformation.builder().byType(int.class, Integer.class).byAnnotation(ConfigEntry.BoundedInteger.class).transforms(origin -> {
@@ -55,13 +54,17 @@ public final class Registry {
     );
 
     static void register(Config config, boolean main) {
+        if (getConfigs().stream().map(Config::getSource).collect(Collectors.toSet()).contains(config.getSource())) {
+            throw new UnsupportedOperationException("A config of " + config.getSource() + " already exists");
+        }
         getConfigs(config.getMod().getId()).add(config, main);
     }
 
-    static void register(Entry<?> entry) {
-        if (!entries.add(entry)) {
-            throw new UnsupportedOperationException(entry + " was already resolved");
+    static void register(EntryOrigin origin) {
+        if (origins.contains(origin)) {
+            throw new UnsupportedOperationException(origin.getField() + " was already resolved");
         }
+        origins.add(origin);
     }
 
     static void register(Transformation... transformations) {
@@ -78,10 +81,6 @@ public final class Registry {
     @Environment(EnvType.CLIENT)
     public static void register(@NonNull String modId, @NonNull ConfigScreenBuilder screenBuilder) {
         getConfigs(modId).screenBuilder = screenBuilder;
-    }
-
-    public boolean hasSource(ConfigSource source) {
-        return getConfigs().stream().map(Config::getSource).collect(Collectors.toSet()).contains(source);
     }
 
     private static ModConfigSet getConfigs(String modId) {

@@ -46,7 +46,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
         ConfigBuilder builder = supplier.get()
                 .setParentScreen(parentScreen)
                 .setSavingRunnable(config::save);
-        TranslationKey customTitle = config.getTranslation(true).append("title");
+        TranslationKey customTitle = config.getBranchedTranslation().append("title");
         builder.setTitle(customTitle.exists() ? customTitle.toText() : new TranslatableText("completeconfig.gui.defaultTitle", config.getMod().getName()));
         if (!config.getEntries().isEmpty()) {
             ConfigCategory category = builder.getOrCreateCategory(config.getText());
@@ -56,7 +56,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
         }
         for(Collection collection : config.getCollections()) {
             ConfigCategory category = builder.getOrCreateCategory(collection.getText());
-            category.setDescription(() -> collection.getTooltipTranslation().map(lines -> Arrays.stream(lines).map(line -> (StringVisitable) line).toArray(StringVisitable[]::new)));
+            category.setDescription(() -> collection.getTooltip().map(lines -> Arrays.stream(lines).map(line -> (StringVisitable) line).toArray(StringVisitable[]::new)));
             for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {
                 category.addEntry(entry);
             }
@@ -78,7 +78,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
         for (Collection subCollection : collection.getCollections()) {
             SubCategoryBuilder subBuilder = ConfigEntryBuilder.create()
                     .startSubCategory(subCollection.getText())
-                    .setTooltip(subCollection.getTooltipTranslation());
+                    .setTooltip(subCollection.getTooltip());
             subBuilder.addAll(buildCollection(subCollection));
             collectionGui.add(subBuilder.build());
         }

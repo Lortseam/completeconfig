@@ -26,7 +26,12 @@ public class BaseCollectionTest {
 
     @BeforeEach
     public void beforeEach() {
-        baseCollection = new BaseCollection(TranslationKey.from(new ConfigSource(MOD_ID, new String[0]))) {};
+        baseCollection = new BaseCollection() {
+            @Override
+            public TranslationKey getTranslation() {
+                return TranslationKey.from(new ConfigSource(MOD_ID, new String[0]));
+            }
+        };
     }
 
     @AfterEach

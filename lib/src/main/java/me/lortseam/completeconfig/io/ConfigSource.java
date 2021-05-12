@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.Config;
-import me.lortseam.completeconfig.data.Registry;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -42,9 +41,6 @@ public final class ConfigSource {
     public ConfigSource(String modId, String[] branch) {
         this.modId = modId;
         this.branch = branch;
-        if (Registry.hasSource(this)) {
-            throw new IllegalArgumentException("A config of " + this + " already exists");
-        }
         Path path = FabricLoader.getInstance().getConfigDir();
         String[] subPath = ArrayUtils.add(branch, 0, modId);
         subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".conf";

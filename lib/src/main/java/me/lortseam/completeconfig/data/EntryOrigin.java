@@ -1,5 +1,6 @@
-package me.lortseam.completeconfig.data.entry;
+package me.lortseam.completeconfig.data;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigContainer;
@@ -14,17 +15,20 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class EntryOrigin {
 
+    private final BaseCollection parent;
     @Getter
+    @EqualsAndHashCode.Include
     protected final Field field;
     @Getter
-    private final ConfigContainer parentObject;
-    private final TranslationKey parentTranslation;
+    @EqualsAndHashCode.Include
+    private final ConfigContainer object;
 
     @Environment(EnvType.CLIENT)
     public TranslationKey getParentTranslation() {
-        return parentTranslation;
+        return parent.getTranslation();
     }
 
     public Type getType() {
