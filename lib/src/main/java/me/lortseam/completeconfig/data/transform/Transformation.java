@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.data.entry;
+package me.lortseam.completeconfig.data.transform;
 
 import lombok.AccessLevel;
 import lombok.Getter;

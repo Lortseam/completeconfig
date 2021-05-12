@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
-import me.lortseam.completeconfig.data.entry.Transformation;
+import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import me.lortseam.completeconfig.extensions.Extension;
 import me.shedaniel.math.Color;

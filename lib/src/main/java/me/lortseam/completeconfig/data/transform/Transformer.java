@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.data.entry;
+package me.lortseam.completeconfig.data.transform;
 
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.EntryOrigin;

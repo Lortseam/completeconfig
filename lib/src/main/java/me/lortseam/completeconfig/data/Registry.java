@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.data.entry.Transformation;
+import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
