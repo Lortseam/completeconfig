@@ -17,7 +17,7 @@ public class BooleanEntry extends Entry<Boolean> {
     @Environment(EnvType.CLIENT)
     private Map<Boolean, TranslationKey> valueTranslations;
 
-    BooleanEntry(EntryOrigin origin) {
+    public BooleanEntry(EntryOrigin origin) {
         super(origin);
     }
 
