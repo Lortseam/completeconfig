@@ -10,6 +10,7 @@ import net.minecraft.text.TextColor;
 import java.util.Collection;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -98,6 +99,36 @@ public final class ConfigRegistry {
             if (main) {
                 this.main = config;
             }
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            if (o == main) {
+                main = null;
+            }
+            return super.remove(o);
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            if (c.contains(main)) {
+                main = null;
+            }
+            return super.removeAll(c);
+        }
+
+        @Override
+        public boolean removeIf(Predicate<? super Config> filter) {
+            if (filter.test(main)) {
+                main = null;
+            }
+            return super.removeIf(filter);
+        }
+
+        @Override
+        public void clear() {
+            main = null;
+            super.clear();
         }
 
     }
