@@ -141,9 +141,9 @@ public class Entry<T> implements DataPart, Identifiable, TooltipSupplier {
         if (translation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
             if (annotation.isPresent() && !StringUtils.isBlank(annotation.get().translationKey())) {
-                translation = origin.getParentTranslation().append(annotation.get().translationKey());
+                translation = origin.getParent().getTranslation().append(annotation.get().translationKey());
             } else {
-                translation = origin.getParentTranslation().append(id);
+                translation = origin.getParent().getTranslation().append(id);
             }
         }
         return translation;

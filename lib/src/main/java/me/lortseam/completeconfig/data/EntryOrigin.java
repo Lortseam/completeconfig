@@ -4,10 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.data.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -18,6 +15,7 @@ import java.util.Optional;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class EntryOrigin {
 
+    @Getter
     private final BaseCollection parent;
     @Getter
     @EqualsAndHashCode.Include
@@ -25,11 +23,6 @@ public final class EntryOrigin {
     @Getter
     @EqualsAndHashCode.Include
     private final ConfigContainer object;
-
-    @Environment(EnvType.CLIENT)
-    public TranslationKey getParentTranslation() {
-        return parent.getTranslation();
-    }
 
     public Type getType() {
         return ReflectionUtils.getFieldType(field);
