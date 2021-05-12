@@ -48,10 +48,10 @@ public class BooleanEntry extends Entry<Boolean> {
 
     @Environment(EnvType.CLIENT)
     public Function<Boolean, Text> getValueTextSupplier() {
-        if (valueTranslations.isEmpty()) {
+        if (getValueTranslations().isEmpty()) {
             return null;
         }
-        return value -> valueTranslations.get(value).toText();
+        return value -> getValueTranslations().get(value).toText();
     }
 
 }
