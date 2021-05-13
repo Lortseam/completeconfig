@@ -16,7 +16,7 @@ import java.util.Optional;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class EntryOrigin {
 
-    @Getter
+    @Getter(AccessLevel.PACKAGE)
     private final BaseCollection parent;
     @Getter
     @EqualsAndHashCode.Include
