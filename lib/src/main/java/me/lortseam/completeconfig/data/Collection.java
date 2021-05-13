@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.Identifiable;
-import me.lortseam.completeconfig.data.structure.TooltipSupplier;
+import me.lortseam.completeconfig.data.client.TooltipSupplier;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

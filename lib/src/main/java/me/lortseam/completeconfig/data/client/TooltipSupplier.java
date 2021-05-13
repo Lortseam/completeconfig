@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.data.structure;
+package me.lortseam.completeconfig.data.client;
 
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;

@@ -60,7 +60,7 @@ public final class Config extends BaseCollection {
     @Override
     public TranslationKey getTranslation() {
         if (translation == null) {
-            translation = TranslationKey.from(source);
+            translation = TranslationKey.from(this);
         }
         return translation;
     }

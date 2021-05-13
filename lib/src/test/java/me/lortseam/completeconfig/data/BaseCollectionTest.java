@@ -2,13 +2,12 @@ package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
-import me.lortseam.completeconfig.io.ConfigSource;
 import me.lortseam.completeconfig.test.data.containers.*;
 import me.lortseam.completeconfig.test.data.groups.EmptyGroup;
 import me.lortseam.completeconfig.test.data.listeners.EmptyListener;
 import me.lortseam.completeconfig.test.data.listeners.SetterListener;
+import me.lortseam.completeconfig.text.TranslationKey;
 import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 public class BaseCollectionTest {
 
@@ -29,7 +29,7 @@ public class BaseCollectionTest {
         baseCollection = new BaseCollection() {
             @Override
             public TranslationKey getTranslation() {
-                return TranslationKey.from(new ConfigSource(MOD_ID, new String[0]));
+                return mock(TranslationKey.class);
             }
         };
     }

@@ -3,6 +3,7 @@ package me.lortseam.completeconfig.data;
 import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
+import me.lortseam.completeconfig.data.client.TextSupplier;
 import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.structure.ParentDataPart;
 import me.lortseam.completeconfig.text.TranslationKey;
@@ -17,7 +18,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 
-abstract class BaseCollection implements ParentDataPart {
+abstract class BaseCollection implements ParentDataPart, TextSupplier {
 
     @Environment(EnvType.CLIENT)
     protected TranslationKey translation;

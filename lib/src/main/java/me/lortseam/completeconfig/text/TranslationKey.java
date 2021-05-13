@@ -1,6 +1,6 @@
 package me.lortseam.completeconfig.text;
 
-import me.lortseam.completeconfig.io.ConfigSource;
+import me.lortseam.completeconfig.data.Config;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.language.I18n;
@@ -18,8 +18,8 @@ public final class TranslationKey {
 
     private static final String DELIMITER = ".";
 
-    public static TranslationKey from(ConfigSource source) {
-        return new TranslationKey("config" + DELIMITER + source.getModId());
+    public static TranslationKey from(Config config) {
+        return new TranslationKey("config" + DELIMITER + config.getMod().getId());
     }
 
     private final String modKey;
