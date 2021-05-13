@@ -64,9 +64,9 @@ public final class CompleteConfig {
         }
     }
 
-    public static void registerExtension(@NonNull String modId, @NonNull Class<? extends CompleteConfigExtension> extensionType) {
+    public static void registerExtension(@NonNull String modId, @NonNull Class<? extends CompleteConfigExtension> extension) {
         if(!FabricLoader.getInstance().isModLoaded(modId)) return;
-        registerExtension(extensionType);
+        registerExtension(extension);
     }
 
     public static <E extends Extension, T> Collection<T> collectExtensions(Class<E> extensionType, Function<E, T> function) {
