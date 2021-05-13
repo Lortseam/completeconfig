@@ -22,6 +22,8 @@ public class Collection extends BaseCollection implements Identifiable, TooltipS
     private final BaseCollection parent;
     private final ConfigGroup group;
     @Environment(EnvType.CLIENT)
+    private TranslationKey translation;
+    @Environment(EnvType.CLIENT)
     private TranslationKey[] tooltipTranslation;
 
     @Override

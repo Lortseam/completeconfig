@@ -6,11 +6,8 @@ import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.client.TextSupplier;
 import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.structure.ParentDataPart;
-import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.util.ReflectionUtils;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,8 +17,6 @@ import java.util.Collections;
 
 abstract class BaseCollection implements ParentDataPart, TextSupplier {
 
-    @Environment(EnvType.CLIENT)
-    protected TranslationKey translation;
     private final EntrySet entries = new EntrySet(this);
     private final CollectionSet collections = new CollectionSet(this);
 

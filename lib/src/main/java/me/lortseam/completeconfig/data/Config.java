@@ -44,6 +44,8 @@ public final class Config extends BaseCollection {
     @Getter(AccessLevel.PACKAGE)
     private final ConfigSource source;
     @Environment(EnvType.CLIENT)
+    private TranslationKey translation;
+    @Environment(EnvType.CLIENT)
     private TranslationKey branchedTranslation;
     private final boolean saveOnExit;
 
