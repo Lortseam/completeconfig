@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.data;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class EntryOrigin {
 
