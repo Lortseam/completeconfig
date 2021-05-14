@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * A container for config entries. Entries are added by declaring fields or registering transitive containers.
- */
 public interface ConfigContainer {
 
     default Iterable<Class<? extends ConfigContainer>> getConfigClasses() {

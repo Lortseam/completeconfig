@@ -15,6 +15,9 @@ import net.minecraft.text.TextColor;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * Stores global and screen builder specific GUI providers.
+ */
 @Environment(EnvType.CLIENT)
 public final class GuiProviderRegistry {
 
@@ -204,6 +207,11 @@ public final class GuiProviderRegistry {
 
     private final List<GuiProvider> providers = new ArrayList<>();
 
+    /**
+     * Registers one or more custom GUI providers.
+     *
+     * @param providers the custom GUI providers
+     */
     public void add(GuiProvider... providers) {
         Collections.addAll(this.providers, providers);
     }

@@ -34,6 +34,13 @@ public final class CompleteConfig {
         }
     }
 
+    /**
+     * Registers a custom extension type which depends on the environment type and a list of loaded mods.
+     *
+     * @param extensionType the extension type
+     * @param environment the required environment type
+     * @param mods the required mods
+     */
     public static void registerExtensionType(@NonNull Class<? extends Extension> extensionType, EnvType environment, String... mods) {
         if(validExtensionTypes.contains(extensionType)) return;
         if(environment != null && FabricLoader.getInstance().getEnvironmentType() != environment || Arrays.stream(mods).anyMatch(modId -> {
@@ -42,6 +49,12 @@ public final class CompleteConfig {
         validExtensionTypes.add(extensionType);
     }
 
+    /**
+     * Registers a custom extension type which depends on a list of loaded mods.
+     *
+     * @param extensionType the extension type
+     * @param mods the required mods
+     */
     public static void registerExtensionType(@NonNull Class<? extends Extension> extensionType, String... mods) {
         registerExtensionType(extensionType, null, mods);
     }
@@ -64,6 +77,15 @@ public final class CompleteConfig {
         }
     }
 
+    /**
+     * Registers an external CompleteConfig extension. To register an extension provided by your own mod, use the
+     * {@link CompleteConfigExtension} entrypoint.
+     *
+     * @param modId the ID of the external mod
+     * @param extension the extension
+     *
+     * @see CompleteConfigExtension
+     */
     public static void registerExtension(@NonNull String modId, @NonNull Class<? extends CompleteConfigExtension> extension) {
         if(!FabricLoader.getInstance().isModLoaded(modId)) return;
         registerExtension(extension);

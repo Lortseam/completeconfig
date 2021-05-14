@@ -15,11 +15,21 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * A transformation is used to transform a field to an {@link me.lortseam.completeconfig.data.Entry}. This class stores
+ * a predicate, which a field has to fulfill, and a {@link Transformer}, which performs the actual transformation
+ * process.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Transformation {
 
     private static final Set<Class<? extends Annotation>> registeredAnnotations = new HashSet<>();
 
+    /**
+     * Creates a new transformation builder.
+     *
+     * @return a new transformation builder
+     */
     public static Transformation.Builder builder() {
         return new Transformation.Builder();
     }
@@ -48,24 +58,57 @@ public final class Transformation {
             return this;
         }
 
+        /**
+         * Filters by field type.
+         *
+         * @param types the valid field types
+         * @return this builder
+         */
         public Builder byType(Type... types) {
             return byType(type -> ArrayUtils.contains(types, type));
         }
 
+        /**
+         * Filters by a predicate based on the field type.
+         *
+         * @param typePredicate a predicate returning {@code true} for valid types
+         * @return this builder
+         */
         public Builder byType(Predicate<Type> typePredicate) {
             return by(origin -> typePredicate.test(origin.getType()));
         }
 
+        /**
+         * Filters by an annotation type. The annotation may be required or optional.
+         *
+         * @param annotation the annotation type
+         * @param optional whether the annotation is optional
+         * @return this builder
+         */
         public Builder byAnnotation(Class<? extends Annotation> annotation, boolean optional) {
             registeredAnnotations.add(annotation);
             (optional ? optionalAnnotations : requiredAnnotations).add(annotation);
             return this;
         }
 
+        /**
+         * Filters by an annotation type. The annotation is required.
+         *
+         * @param annotation the annotation type
+         * @return this builder
+         *
+         * @see Transformation.Builder#byAnnotation(Class, boolean)
+         */
         public Builder byAnnotation(Class<? extends Annotation> annotation) {
             return byAnnotation(annotation, false);
         }
 
+        /**
+         * Filters by multiple annotation types. All annotations are required.
+         *
+         * @param annotations the annotation types
+         * @return this builder
+         */
         public Builder byAnnotation(Iterable<Class<? extends Annotation>> annotations) {
             for (Class<? extends Annotation> annotation : annotations) {
                 byAnnotation(annotation);
@@ -73,6 +116,12 @@ public final class Transformation {
             return this;
         }
 
+        /**
+         * Sets the transformer and creates the {@link Transformation} object.
+         *
+         * @param transformer the transformer
+         * @return the created transformation
+         */
         public Transformation transforms(Transformer transformer) {
             if (predicate == null && requiredAnnotations.isEmpty()) {
                 throw new IllegalStateException("Missing transformation filter");

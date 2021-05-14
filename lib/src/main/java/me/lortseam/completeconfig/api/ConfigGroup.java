@@ -2,9 +2,6 @@ package me.lortseam.completeconfig.api;
 
 import com.google.common.base.CaseFormat;
 
-/**
- * A group of config entries.
- */
 public interface ConfigGroup extends ConfigContainer {
 
     /**

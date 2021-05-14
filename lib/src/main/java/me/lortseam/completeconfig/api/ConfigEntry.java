@@ -194,6 +194,11 @@ public @interface ConfigEntry {
     @Retention(RetentionPolicy.RUNTIME)
     @interface Dropdown {
 
+        /**
+         * Specifies whether to make the value editable and show suggestions only.
+         *
+         * @return whether to enable suggestions
+         */
         boolean suggestionMode() default false;
 
     }
