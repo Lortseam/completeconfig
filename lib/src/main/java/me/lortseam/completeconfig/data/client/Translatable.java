@@ -5,7 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 
-public interface TextSupplier {
+public interface Translatable {
 
     @Environment(EnvType.CLIENT)
     TranslationKey getTranslation();

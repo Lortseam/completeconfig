@@ -7,7 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.data.client.TextSupplier;
+import me.lortseam.completeconfig.data.client.Translatable;
 import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.data.transform.Transformer;
 import me.lortseam.completeconfig.data.structure.DataPart;
@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 @Log4j2(topic = "CompleteConfig")
-public class Entry<T> implements DataPart, Identifiable, TextSupplier, TooltipSupplier {
+public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSupplier {
 
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
 
