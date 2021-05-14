@@ -28,6 +28,7 @@ public interface ConfigContainer {
      * Used to register transitive containers dynamically.
      *
      * @return an array of containers
+     *
      * @see Transitive
      */
     default ConfigContainer[] getTransitives() {
