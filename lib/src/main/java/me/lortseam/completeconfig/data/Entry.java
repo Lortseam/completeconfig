@@ -7,15 +7,15 @@ import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
+import me.lortseam.completeconfig.data.client.TooltipSupplier;
 import me.lortseam.completeconfig.data.client.Translatable;
-import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.data.transform.Transformer;
 import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.data.structure.Identifiable;
-import me.lortseam.completeconfig.data.client.TooltipSupplier;
-import me.lortseam.completeconfig.text.TranslationKey;
+import me.lortseam.completeconfig.data.transform.Transformation;
+import me.lortseam.completeconfig.data.transform.Transformer;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
+import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -53,8 +53,6 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
 
     protected final EntryOrigin origin;
     @Getter
-    private final Type type;
-    @Getter
     private final Class<T> typeClass;
     @Getter
     private final String id;
@@ -76,8 +74,7 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
         if (!origin.getField().isAccessible()) {
             origin.getField().setAccessible(true);
         }
-        type = origin.getType();
-        typeClass = (Class<T>) ReflectionUtils.getTypeClass(type);
+        typeClass = (Class<T>) ReflectionUtils.getTypeClass(getType());
         this.valueModifier = valueModifier;
         defaultValue = getValue();
         Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
@@ -88,6 +85,10 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
 
     protected Entry(EntryOrigin origin) {
         this(origin, null);
+    }
+
+    public Type getType() {
+        return origin.getType();
     }
 
     public T getValue() {
@@ -171,7 +172,7 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
     @Override
     public void apply(CommentedConfigurationNode node) {
         try {
-            setValue((T) node.get(type));
+            setValue((T) node.get(getType()));
         } catch (SerializationException e) {
             logger.error("Failed to apply value to entry", e);
         }
@@ -180,7 +181,7 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
     @Override
     public void fetch(CommentedConfigurationNode node) {
         try {
-            node.set(type, getValue());
+            node.set(getType(), getValue());
             if (comment != null) {
                 node.comment(comment);
             }

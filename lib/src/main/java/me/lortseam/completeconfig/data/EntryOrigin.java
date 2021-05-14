@@ -3,7 +3,6 @@ package me.lortseam.completeconfig.data;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 
@@ -12,7 +11,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class EntryOrigin {
 
@@ -20,13 +18,18 @@ public final class EntryOrigin {
     private final BaseCollection parent;
     @Getter
     @EqualsAndHashCode.Include
-    protected final Field field;
+    private final Field field;
+    @Getter
+    private final Type type;
     @Getter
     @EqualsAndHashCode.Include
     private final ConfigContainer object;
 
-    public Type getType() {
-        return ReflectionUtils.getFieldType(field);
+    EntryOrigin(BaseCollection parent, Field field, ConfigContainer object) {
+        this.parent = parent;
+        this.field = field;
+        type = ReflectionUtils.getFieldType(field);
+        this.object = object;
     }
 
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
