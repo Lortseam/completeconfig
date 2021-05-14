@@ -77,7 +77,7 @@ public final class GuiProvider {
     }
 
     private final Predicate<Entry<?>> predicate;
-    @Getter
+    @Getter(AccessLevel.PACKAGE)
     private final EntryBuilder<?> builder;
 
     boolean test(Entry<?> entry) {
