@@ -23,17 +23,17 @@ public final class TranslationKey {
     }
 
     private final String modKey;
-    private final String[] keyParts;
+    private final String[] subKey;
 
     @Environment(EnvType.CLIENT)
-    private TranslationKey(String modKey, String... keyParts) {
+    private TranslationKey(String modKey, String... subKey) {
         this.modKey = modKey;
-        this.keyParts = keyParts;
+        this.subKey = subKey;
     }
 
     private String getKey() {
         StringBuilder builder = new StringBuilder(modKey);
-        for (String keyPart : keyParts) {
+        for (String keyPart : subKey) {
             builder.append(DELIMITER);
             builder.append(keyPart);
         }
@@ -53,7 +53,7 @@ public final class TranslationKey {
     }
 
     public TranslationKey append(String... subKeys) {
-        return new TranslationKey(modKey, ArrayUtils.addAll(keyParts, Arrays.stream(subKeys).map(subKey -> {
+        return new TranslationKey(modKey, ArrayUtils.addAll(subKey, Arrays.stream(subKeys).map(subKey -> {
             return subKey.split(Pattern.quote(DELIMITER));
         }).flatMap(Arrays::stream).toArray(String[]::new)));
     }
