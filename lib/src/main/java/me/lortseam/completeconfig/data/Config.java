@@ -45,8 +45,6 @@ public final class Config extends BaseCollection {
     private final ConfigSource source;
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
-    @Environment(EnvType.CLIENT)
-    private TranslationKey branchedTranslation;
     private final boolean saveOnExit;
 
     private Config(ConfigSource source, ConfigContainer[] children, boolean saveOnExit) {
@@ -61,18 +59,18 @@ public final class Config extends BaseCollection {
 
     @Override
     public TranslationKey getTranslation() {
-        if (translation == null) {
-            translation = TranslationKey.from(this);
-        }
-        return translation;
+        return getTranslation(false);
     }
 
     @Environment(EnvType.CLIENT)
-    public TranslationKey getBranchedTranslation() {
-        if (branchedTranslation == null) {
-            branchedTranslation = getTranslation().append(source.getBranch());
+    public TranslationKey getTranslation(boolean includeBranch) {
+        if (translation == null) {
+            translation = TranslationKey.from(this);
         }
-        return branchedTranslation;
+        if (includeBranch) {
+            return translation.append(source.getBranch());
+        }
+        return translation;
     }
 
     private void load() {
