@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A container for config entries.
+ */
 public interface ConfigContainer {
 
     default Iterable<Class<? extends ConfigContainer>> getConfigClasses() {
