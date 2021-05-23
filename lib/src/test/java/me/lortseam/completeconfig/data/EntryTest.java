@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 public class EntryTest implements ConfigContainer {
 
-    private static final String MOD_ID = "test";
     private static final BaseCollection PARENT;
     private static final boolean REQUIRES_RESTART = true;
     private static final String COMMENT = "Comment";
@@ -24,7 +23,7 @@ public class EntryTest implements ConfigContainer {
 
     static {
         ModMetadata modMetadata = mock(ModMetadata.class);
-        when(modMetadata.getId()).thenReturn(MOD_ID);
+        when(modMetadata.getId()).thenReturn("test");
         Config config = mock(Config.class);
         when(config.getMod()).thenReturn(modMetadata);
         TranslationKey parentTranslation = TranslationKey.from(config).append("subKey");
