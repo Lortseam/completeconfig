@@ -82,4 +82,9 @@ public final class TranslationKey {
         return Optional.empty();
     }
 
+    @Override
+    public String toString() {
+        return getKey();
+    }
+
 }
