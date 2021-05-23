@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.text;
 
+import lombok.EqualsAndHashCode;
 import me.lortseam.completeconfig.data.Config;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@EqualsAndHashCode
 public final class TranslationKey {
 
     private static final char DELIMITER = '.';
