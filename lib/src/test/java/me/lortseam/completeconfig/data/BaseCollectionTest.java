@@ -19,8 +19,6 @@ import static org.mockito.Mockito.mock;
 
 public class BaseCollectionTest {
 
-    private static final String MOD_ID = "test";
-
     private BaseCollection baseCollection;
     private final LogCaptor logCaptor = LogCaptor.forName("CompleteConfig");
 
