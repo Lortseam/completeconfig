@@ -11,7 +11,7 @@ public class FabricLoaderExtension implements Extension {
 
     static {
         FabricLoader loader = mock(FabricLoader.class);
-        switch (System.clearProperty("fabric.dli.env")) {
+        switch (System.getProperty("fabric.dli.env")) {
             case "client":
                 when(loader.getEnvironmentType()).thenReturn(EnvType.CLIENT);
                 break;

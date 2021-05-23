@@ -2,13 +2,39 @@ package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
+import me.lortseam.completeconfig.text.TranslationKey;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.text.TextColor;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class EntryTest implements ConfigContainer {
+
+    private static final String MOD_ID = "test";
+    private static final BaseCollection PARENT;
+    private static final boolean REQUIRES_RESTART = true;
+    private static final String COMMENT = "Comment";
+    private static final String CUSTOM_ID = "customId", CUSTOM_TRANSLATION_KEY = "customTranslationKey";
+
+    static {
+        ModMetadata modMetadata = mock(ModMetadata.class);
+        when(modMetadata.getId()).thenReturn(MOD_ID);
+        Config config = mock(Config.class);
+        when(config.getMod()).thenReturn(modMetadata);
+        TranslationKey parentTranslation = TranslationKey.from(config).append("subKey");
+        PARENT = new BaseCollection() {
+            @Override
+            public TranslationKey getTranslation() {
+                return parentTranslation;
+            }
+        };
+    }
 
     private boolean booleanWithoutAnnotation;
     @ConfigEntry.Boolean
@@ -34,28 +60,62 @@ public class EntryTest implements ConfigContainer {
     private int color;
     private TextColor textColor = TextColor.fromRgb(0);
 
-    private <E extends Entry<?>> void assertTransformation(String fieldName, Class<E> entryType) {
+    @ConfigEntry(requiresRestart = REQUIRES_RESTART, comment = COMMENT)
+    private int field = 123456789;
+    private Entry<?> entry = of("field");
+    @ConfigEntry(CUSTOM_ID)
+    private boolean customIdField;
+    private Entry<?> customIdEntry = of("customIdField");
+    @ConfigEntry(translationKey = CUSTOM_TRANSLATION_KEY)
+    private boolean customTranslationKeyField;
+    private Entry<?> customTranslationKeyEntry = of("customTranslationKeyField");
+
+    private Entry<?> of(String fieldName) {
         try {
-            assertTrue(entryType.isInstance(Entry.of(mock(BaseCollection.class), getClass().getDeclaredField((fieldName)), this)));
+            return Entry.of(PARENT, getClass().getDeclaredField((fieldName)), this);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private <E extends Entry<?>> void assertEntryType(Entry<?> entry, Class<E> entryType) {
+        assertTrue(entryType.isInstance(entry));
+    }
+
     @Test
-    public void of_transformDefaults() {
-        assertTransformation("booleanWithoutAnnotation", BooleanEntry.class);
-        assertTransformation("booleanWithAnnotation", BooleanEntry.class);
-        assertTransformation("boundedInt", BoundedEntry.class);
-        assertTransformation("sliderInt", SliderEntry.class);
-        assertTransformation("boundedLong", BoundedEntry.class);
-        assertTransformation("sliderLong", SliderEntry.class);
-        assertTransformation("boundedFloat", BoundedEntry.class);
-        assertTransformation("boundedDouble", BoundedEntry.class);
-        assertTransformation("anEnum", EnumEntry.class);
-        assertTransformation("dropdown", DropdownEntry.class);
-        assertTransformation("color", ColorEntry.class);
-        assertTransformation("textColor", ColorEntry.class);
+    public void of_transformType() {
+        assertEntryType(of("booleanWithoutAnnotation"), BooleanEntry.class);
+        assertEntryType(of("booleanWithAnnotation"), BooleanEntry.class);
+        assertEntryType(of("boundedInt"), BoundedEntry.class);
+        assertEntryType(of("sliderInt"), SliderEntry.class);
+        assertEntryType(of("boundedLong"), BoundedEntry.class);
+        assertEntryType(of("sliderLong"), SliderEntry.class);
+        assertEntryType(of("boundedFloat"), BoundedEntry.class);
+        assertEntryType(of("boundedDouble"), BoundedEntry.class);
+        assertEntryType(of("anEnum"), EnumEntry.class);
+        assertEntryType(of("dropdown"), DropdownEntry.class);
+        assertEntryType(of("color"), ColorEntry.class);
+        assertEntryType(of("textColor"), ColorEntry.class);
+    }
+
+    @Test
+    public void of_transformProperties() {
+        assertEquals("field", entry.getId());
+        assertEquals(CUSTOM_ID, customIdEntry.getId());
+        assertEquals(field, entry.getDefaultValue());
+        assertTrue(entry.requiresRestart());
+        CommentedConfigurationNode node = CommentedConfigurationNode.root();
+        entry.fetch(node);
+        assertEquals(COMMENT, node.comment());
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "fabric.dli.env", matches = "client")
+    public void of_transformClientProperties() {
+        assertEquals(PARENT.getTranslation().append(entry.getId()), entry.getTranslation());
+        assertEquals(PARENT.getTranslation().append(customIdEntry.getId()), customIdEntry.getTranslation());
+        assertEquals(PARENT.getTranslation().root().append(CUSTOM_TRANSLATION_KEY), customTranslationKeyEntry.getTranslation());
+        // TODO: Tooltips
     }
 
     private enum AnEnum {
