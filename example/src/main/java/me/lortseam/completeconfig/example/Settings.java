@@ -11,7 +11,7 @@ import java.util.List;
 
 public final class Settings extends Config {
 
-    protected Settings() {
+    Settings() {
         super(ExampleMod.MOD_ID, false);
     }
 
