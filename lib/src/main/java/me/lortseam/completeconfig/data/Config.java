@@ -17,28 +17,16 @@ import java.util.Arrays;
 @Log4j2(topic = "CompleteConfig")
 public abstract class Config extends BaseCollection implements ConfigContainer {
 
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            for (Config config : ConfigRegistry.getConfigs()) {
-                if (config.saveOnExit) {
-                    config.save();
-                }
-            }
-        }));
-    }
-
     @Getter(AccessLevel.PACKAGE)
     private final ConfigSource source;
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
-    private final boolean saveOnExit;
 
     protected Config(@NonNull String modId, @NonNull String[] branch, boolean saveOnExit) {
         if (!FabricLoader.getInstance().isModLoaded(modId)) {
             throw new IllegalArgumentException("Mod " + modId + " is not loaded");
         }
         source = new ConfigSource(modId, branch);
-        this.saveOnExit = saveOnExit;
         ConfigRegistry.register(this);
         resolveContainer(this);
         if (isEmpty()) {
@@ -46,6 +34,10 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
             return;
         }
         load();
+        if (saveOnExit) {
+            // TODO: Use Fabric API stop events
+            Runtime.getRuntime().addShutdownHook(new Thread(this::save));
+        }
     }
 
     protected Config(String modId, boolean saveOnExit) {

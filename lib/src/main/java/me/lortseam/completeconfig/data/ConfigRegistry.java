@@ -4,19 +4,17 @@ import com.google.common.collect.Lists;
 import lombok.experimental.UtilityClass;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.transform.Transformation;
+import me.lortseam.completeconfig.io.ConfigSource;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.minecraft.text.TextColor;
 
-import java.util.Collection;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @UtilityClass
 public final class ConfigRegistry {
 
-    private static final Map<String, ModConfigSet> configs = new HashMap<>();
+    private static final Set<ConfigSource> sources = new HashSet<>();
+    private static final Map<String, Config> mainConfigs = new HashMap<>();
     private static final Set<EntryOrigin> origins = new HashSet<>();
     private static final List<Transformation> transformations = Lists.newArrayList(
             Transformation.builder().byType(boolean.class, Boolean.class).byAnnotation(ConfigEntry.Boolean.class, true).transforms(BooleanEntry::new),
@@ -50,11 +48,16 @@ public final class ConfigRegistry {
             Transformation.builder().byType(TextColor.class).transforms(origin -> new ColorEntry<>(origin, false))
     );
 
-    static void register(Config config, boolean main) {
-        if (getConfigs().stream().map(Config::getSource).collect(Collectors.toSet()).contains(config.getSource())) {
+    static void register(Config config) {
+        if (!sources.add(config.getSource())) {
             throw new UnsupportedOperationException("A config of " + config.getSource() + " already exists");
         }
-        getConfigs(config.getMod().getId()).add(config, main);
+        String modId = config.getMod().getId();
+        if (!mainConfigs.containsKey(modId)) {
+            mainConfigs.put(modId, config);
+        } else {
+            mainConfigs.remove(modId);
+        }
     }
 
     static void register(EntryOrigin origin) {
@@ -68,69 +71,16 @@ public final class ConfigRegistry {
         ConfigRegistry.transformations.addAll(Arrays.asList(transformations));
     }
 
-    private static ModConfigSet getConfigs(String modId) {
-        return configs.computeIfAbsent(modId, key -> new ModConfigSet());
-    }
-
-    static Set<Config> getConfigs() {
-        return configs.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
-    }
-
-    public static Optional<Config> getMainConfig(String modId) {
-        return Optional.ofNullable(configs.get(modId)).map(modConfigs -> modConfigs.main);
+    public static void setMainConfig(Config config) {
+        mainConfigs.put(config.getMod().getId(), config);
     }
 
     public static Map<String, Config> getMainConfigs() {
-        return configs.keySet().stream().map(ConfigRegistry::getMainConfig).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toMap(config -> {
-            return config.getMod().getId();
-        }, Function.identity()));
+        return Collections.unmodifiableMap(mainConfigs);
     }
 
     static List<Transformation> getTransformations() {
         return Collections.unmodifiableList(transformations);
-    }
-
-    private static class ModConfigSet extends HashSet<Config> {
-
-        private Config main;
-
-        private boolean add(Config config, boolean main) {
-            if (main) {
-                this.main = config;
-            }
-            return add(config);
-        }
-
-        @Override
-        public boolean remove(Object o) {
-            if (o == main) {
-                main = null;
-            }
-            return super.remove(o);
-        }
-
-        @Override
-        public boolean removeAll(Collection<?> c) {
-            if (c.contains(main)) {
-                main = null;
-            }
-            return super.removeAll(c);
-        }
-
-        @Override
-        public boolean removeIf(Predicate<? super Config> filter) {
-            if (filter.test(main)) {
-                main = null;
-            }
-            return super.removeIf(filter);
-        }
-
-        @Override
-        public void clear() {
-            main = null;
-            super.clear();
-        }
-
     }
 
 }
