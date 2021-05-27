@@ -35,7 +35,6 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
         }
         load();
         if (saveOnExit) {
-            // TODO: Use Fabric API stop events
             Runtime.getRuntime().addShutdownHook(new Thread(this::save));
         }
     }
