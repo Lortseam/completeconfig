@@ -22,6 +22,15 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
 
+    /**
+     * Creates a config and loads it.
+     *
+     * <p>The branch determines the location of the config's save file and has to be unique for the mod.
+     *
+     * @param modId the ID of the mod creating the config
+     * @param branch the branch
+     * @param saveOnExit whether to save the config when the client or server stops
+     */
     protected Config(@NonNull String modId, @NonNull String[] branch, boolean saveOnExit) {
         if (!FabricLoader.getInstance().isModLoaded(modId)) {
             throw new IllegalArgumentException("Mod " + modId + " is not loaded");
@@ -39,6 +48,12 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
         }
     }
 
+    /**
+     * Creates a config and loads it.
+     *
+     * @param modId the ID of the mod creating the config
+     * @param saveOnExit whether to save the config when the client or server stops
+     */
     protected Config(String modId, boolean saveOnExit) {
         this(modId, new String[0], saveOnExit);
     }
@@ -67,6 +82,9 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
         source.load(this);
     }
 
+    /**
+     * Saves the config.
+     */
     public void save() {
         source.save(this);
     }

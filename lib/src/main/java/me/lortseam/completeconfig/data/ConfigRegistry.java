@@ -72,6 +72,14 @@ public final class ConfigRegistry {
         ConfigRegistry.transformations.addAll(Arrays.asList(transformations));
     }
 
+    /**
+     * Sets the main config for a mod.
+     *
+     * <p>If a mod has only one config registered, that config is the main one. Therefore, setting the main config is
+     * only required when a mod has two or more configs.
+     *
+     * @param config the main config
+     */
     public static void setMainConfig(Config config) {
         mainConfigs.put(config.getMod().getId(), config);
     }
