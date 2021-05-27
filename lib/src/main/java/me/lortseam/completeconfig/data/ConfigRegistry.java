@@ -9,6 +9,7 @@ import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.minecraft.text.TextColor;
 
 import java.util.*;
+import java.util.Collection;
 
 @UtilityClass
 public final class ConfigRegistry {
@@ -79,8 +80,8 @@ public final class ConfigRegistry {
         return Collections.unmodifiableMap(mainConfigs);
     }
 
-    static List<Transformation> getTransformations() {
-        return Collections.unmodifiableList(transformations);
+    static Collection<Transformation> getTransformations() {
+        return Collections.unmodifiableCollection(transformations);
     }
 
 }
