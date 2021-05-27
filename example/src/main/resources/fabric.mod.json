@@ -11,6 +11,9 @@
   "entrypoints": {
     "main": [
       "me.lortseam.completeconfig.example.ExampleMod"
+    ],
+    "client": [
+      "me.lortseam.completeconfig.example.ExampleModClient"
     ]
   },
   "depends": {
