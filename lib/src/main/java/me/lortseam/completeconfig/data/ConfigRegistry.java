@@ -1,6 +1,7 @@
 package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Lists;
+import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.transform.Transformation;
@@ -80,7 +81,7 @@ public final class ConfigRegistry {
      *
      * @param config the main config
      */
-    public static void setMainConfig(Config config) {
+    public static void setMainConfig(@NonNull Config config) {
         mainConfigs.put(config.getMod().getId(), config);
     }
 
