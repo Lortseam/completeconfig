@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.example;
 
-import me.lortseam.completeconfig.data.Config;
 import net.fabricmc.api.ModInitializer;
 
 public class ExampleMod implements ModInitializer {
@@ -9,9 +8,7 @@ public class ExampleMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Config.builder(MOD_ID)
-                .add(new Settings())
-                .build();
+        new Settings();
     }
 
 }

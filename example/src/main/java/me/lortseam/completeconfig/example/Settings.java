@@ -1,15 +1,19 @@
 package me.lortseam.completeconfig.example;
 
-import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigGroup;
+import me.lortseam.completeconfig.data.Config;
 import me.shedaniel.math.Color;
 
 import java.util.Arrays;
 import java.util.List;
 
-public final class Settings implements ConfigContainer {
+public final class Settings extends Config {
+
+    protected Settings() {
+        super(ExampleMod.MOD_ID, false);
+    }
 
     @Transitive
     @ConfigEntries
