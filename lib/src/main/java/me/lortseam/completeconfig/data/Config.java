@@ -46,11 +46,7 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
      * @param branch the branch
      * @param saveOnExit whether to save the config when the client or server stops
      */
-    protected Config(@NonNull String modId, @NonNull String[] branch, boolean saveOnExit) {
-        if (!FabricLoader.getInstance().isModLoaded(modId)) {
-            throw new IllegalArgumentException("Mod " + modId + " is not loaded");
-        }
-        Arrays.stream(branch).forEach(Objects::requireNonNull);
+    protected Config(String modId, String[] branch, boolean saveOnExit) {
         source = new ConfigSource(modId, branch);
         ConfigRegistry.register(this);
         resolveContainer(this);

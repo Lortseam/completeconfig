@@ -2,6 +2,7 @@ package me.lortseam.completeconfig.io;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
@@ -16,6 +17,8 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Objects;
 
 @Log4j2(topic = "CompleteConfig")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -42,7 +45,11 @@ public final class ConfigSource {
     private final String[] branch;
     private final HoconConfigurationLoader loader;
 
-    public ConfigSource(String modId, String[] branch) {
+    public ConfigSource(@NonNull String modId, @NonNull String[] branch) {
+        if (!FabricLoader.getInstance().isModLoaded(modId)) {
+            throw new IllegalArgumentException("Mod " + modId + " is not loaded");
+        }
+        Arrays.stream(branch).forEach(Objects::requireNonNull);
         this.modId = modId;
         this.branch = branch;
         Path path = FabricLoader.getInstance().getConfigDir();
@@ -55,8 +62,8 @@ public final class ConfigSource {
                 .path(path)
                 .defaultOptions(options -> options.serializers(builder -> {
                     builder.registerAll(GLOBAL_TYPE_SERIALIZERS);
-                    for (TypeSerializerCollection collection : CompleteConfig.collectExtensions(CompleteConfigExtension.class, CompleteConfigExtension::getTypeSerializers)) {
-                        builder.registerAll(collection);
+                    for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(CompleteConfigExtension.class, CompleteConfigExtension::getTypeSerializers)) {
+                        builder.registerAll(typeSerializers);
                     }
                 }))
                 .build();
