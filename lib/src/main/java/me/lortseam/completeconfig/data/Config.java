@@ -13,9 +13,24 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Objects;
 
 @Log4j2(topic = "CompleteConfig")
 public abstract class Config extends BaseCollection implements ConfigContainer {
+
+    /**
+     * Creates a new config builder for the specified mod.
+     *
+     * @param modId the ID of the mod creating the config
+     *
+     * @deprecated Please subclass {@link Config}
+     */
+    @Deprecated
+    public static Builder builder(String modId) {
+        return new Builder(modId);
+    }
+
 
     @Getter(AccessLevel.PACKAGE)
     private final ConfigSource source;
@@ -35,6 +50,7 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
         if (!FabricLoader.getInstance().isModLoaded(modId)) {
             throw new IllegalArgumentException("Mod " + modId + " is not loaded");
         }
+        Arrays.stream(branch).forEach(Objects::requireNonNull);
         source = new ConfigSource(modId, branch);
         ConfigRegistry.register(this);
         resolveContainer(this);
@@ -88,5 +104,98 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
     public void save() {
         source.save(this);
     }
+
+    @Log4j2(topic = "CompleteConfig")
+    @Deprecated
+    public final static class Builder {
+
+        private final String modId;
+        private String[] branch = new String[0];
+        private final LinkedHashSet<ConfigContainer> children = new LinkedHashSet<>();
+        private boolean main;
+        private boolean saveOnExit;
+
+        private Builder(String modId) {
+            this.modId = modId;
+        }
+
+        /**
+         * Sets the branch. Every config of a mod needs a unique branch, therefore setting a branch is only required
+         * when using more than one config.
+         *
+         * <p>The branch determines the location of the config's save file.
+         *
+         * @param branch the branch
+         * @return this builder
+         */
+        @Deprecated
+        public Builder setBranch(String[] branch) {
+            this.branch = branch;
+            return this;
+        }
+
+        /**
+         * Adds one or more containers to the config.
+         *
+         * @param containers one or more containers
+         * @return this builder
+         *
+         * @deprecated Add the containers transitively to the config object
+         */
+        @Deprecated
+        public Builder add(@NonNull ConfigContainer... containers) {
+            for (ConfigContainer container : containers) {
+                if (!children.add(Objects.requireNonNull(container))) {
+                    throw new IllegalArgumentException("Duplicate container " + container.getClass().getSimpleName());
+                }
+            }
+            return this;
+        }
+
+        /**
+         * Sets a flag to save the config when the game closes.
+         *
+         * @return this builder
+         */
+        @Deprecated
+        public Builder saveOnExit() {
+            saveOnExit = true;
+            return this;
+        }
+
+        /**
+         * Registers the config as main mod config.
+         *
+         * @return this builder
+         *
+         * @deprecated Use {@link ConfigRegistry#setMainConfig(Config)}
+         */
+        @Deprecated
+        public Builder main() {
+            main = true;
+            return this;
+        }
+
+        /**
+         * Creates and loads the config.
+         *
+         * @return the created config, or null if empty
+         */
+        @Deprecated
+        public Config build() {
+            Config config = new Config(modId, branch, saveOnExit) {
+                @Override
+                public ConfigContainer[] getTransitives() {
+                    return children.toArray(new ConfigContainer[0]);
+                }
+            };
+            if (main) {
+                ConfigRegistry.setMainConfig(config);
+            }
+            return config;
+        }
+
+    }
+
 
 }
