@@ -58,7 +58,7 @@ public final class ConfigRegistry {
         if (!mainConfigs.containsKey(modId)) {
             mainConfigs.put(modId, config);
         } else {
-            mainConfigs.remove(modId);
+            mainConfigs.put(modId, null);
         }
     }
 
