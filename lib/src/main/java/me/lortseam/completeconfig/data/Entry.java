@@ -23,10 +23,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.beans.IntrospectionException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Objects;
@@ -67,6 +65,7 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
     private final boolean requiresRestart;
     private final String comment;
     private final UnaryOperator<T> valueModifier;
+    private final Setter<T> setter;
 
     protected Entry(EntryOrigin origin, UnaryOperator<T> valueModifier) {
         ConfigRegistry.register(origin);
@@ -81,6 +80,7 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
         id = annotation.isPresent() && !StringUtils.isBlank(annotation.get().value()) ? annotation.get().value() : origin.getField().getName();
         requiresRestart = annotation.isPresent() && annotation.get().requiresRestart();
         comment = annotation.isPresent() && !StringUtils.isBlank(annotation.get().comment()) ? annotation.get().comment() : null;
+        setter = ReflectionUtils.getSetterMethod(origin.getField()).<Setter<T>>map(method -> method::invoke).orElse((object, value) -> origin.getField().set(object, value));
     }
 
     protected Entry(EntryOrigin origin) {
@@ -127,13 +127,8 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
 
     private void set(T value) {
         try {
-            Optional<Method> writeMethod = ReflectionUtils.getWriteMethod(origin.getField());
-            if (writeMethod.isPresent()) {
-                writeMethod.get().invoke(origin.getObject(), value);
-            } else {
-                origin.getField().set(origin.getObject(), value);
-            }
-        } catch (IntrospectionException | IllegalAccessException | InvocationTargetException e) {
+            setter.set(origin.getObject(), value);
+        } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Failed to set entry value", e);
         }
     }
@@ -188,6 +183,13 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
         } catch (SerializationException e) {
             logger.error("Failed to fetch value from entry", e);
         }
+    }
+
+    @FunctionalInterface
+    private interface Setter<T> {
+
+        void set(ConfigContainer object, T value) throws IllegalAccessException, InvocationTargetException;
+
     }
 
 }

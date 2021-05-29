@@ -1,23 +1,15 @@
 package me.lortseam.completeconfig.util;
 
-import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
 import io.leangen.geantyref.GenericTypeReflector;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @UtilityClass
 public final class ReflectionUtils {
-
-    private static final Map<Field, Method> writeMethodsCache = new HashMap<>();
 
     public static Class<?> getTypeClass(Type type) {
         return TypeToken.of(type).getRawType();
@@ -35,15 +27,17 @@ public final class ReflectionUtils {
         return constructor.newInstance();
     }
 
-    public static Optional<Method> getWriteMethod(Field field) throws IntrospectionException {
-        if (writeMethodsCache.containsKey(field)) {
-            return Optional.ofNullable(writeMethodsCache.get(field));
+    public static Optional<Method> getSetterMethod(Field field) {
+        Method method;
+        try {
+            method = field.getDeclaringClass().getDeclaredMethod("set" + StringUtils.capitalize(field.getName()), getTypeClass(getFieldType(field)));
+        } catch (NoSuchMethodException ignore) {
+            return Optional.empty();
         }
-        Optional<Method> writeMethod = Arrays.stream(Introspector.getBeanInfo(field.getDeclaringClass()).getPropertyDescriptors()).filter(property -> {
-            return property.getName().equals(field.getName());
-        }).collect(MoreCollectors.toOptional()).map(PropertyDescriptor::getWriteMethod);
-        writeMethodsCache.put(field, writeMethod.orElse(null));
-        return writeMethod;
+        if (Modifier.isStatic(field.getModifiers()) != Modifier.isStatic(method.getModifiers()) || !method.getReturnType().equals(Void.TYPE)) {
+            return Optional.empty();
+        }
+        return Optional.of(method);
     }
 
 }
