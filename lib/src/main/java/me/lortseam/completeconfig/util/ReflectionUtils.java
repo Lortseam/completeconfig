@@ -37,6 +37,9 @@ public final class ReflectionUtils {
         if (Modifier.isStatic(field.getModifiers()) != Modifier.isStatic(method.getModifiers()) || !method.getReturnType().equals(Void.TYPE)) {
             return Optional.empty();
         }
+        if (method.isAccessible()) {
+            method.setAccessible(true);
+        }
         return Optional.of(method);
     }
 
