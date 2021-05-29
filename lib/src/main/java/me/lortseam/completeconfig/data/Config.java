@@ -16,6 +16,9 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
+/**
+ * The base config class. Inherit this class to create a config for your mod.
+ */
 @Log4j2(topic = "CompleteConfig")
 public abstract class Config extends BaseCollection implements ConfigContainer {
 
@@ -38,9 +41,9 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
     private TranslationKey translation;
 
     /**
-     * Creates a config and loads it.
+     * Creates a config with the specified branch.
      *
-     * <p>The branch determines the location of the config's save file and has to be unique for the mod.
+     * <p>The branch determines the location of the config's save file and has to be mod-unique.
      *
      * @param modId the ID of the mod creating the config
      * @param branch the branch
@@ -61,7 +64,7 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
     }
 
     /**
-     * Creates a config and loads it.
+     * Creates a config with the default branch.
      *
      * @param modId the ID of the mod creating the config
      * @param saveOnExit whether to save the config when the client or server stops
