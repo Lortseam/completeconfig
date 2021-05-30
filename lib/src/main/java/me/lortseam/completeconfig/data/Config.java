@@ -12,7 +12,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
@@ -20,7 +19,7 @@ import java.util.Objects;
  * The base config class. Inherit this class to create a config for your mod.
  */
 @Log4j2(topic = "CompleteConfig")
-public abstract class Config extends BaseCollection implements ConfigContainer {
+public abstract class Config extends BaseCollection {
 
     /**
      * Creates a new config builder for the specified mod.
@@ -33,7 +32,6 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
     public static Builder builder(String modId) {
         return new Builder(modId);
     }
-
 
     @Getter(AccessLevel.PACKAGE)
     private final ConfigSource source;
@@ -52,12 +50,6 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
     protected Config(String modId, String[] branch, boolean saveOnExit) {
         source = new ConfigSource(modId, branch);
         ConfigRegistry.register(this);
-        resolveContainer(this);
-        if (isEmpty()) {
-            logger.warn("Empty config: " + modId + " " + Arrays.toString(branch));
-            return;
-        }
-        load();
         if (saveOnExit) {
             Runtime.getRuntime().addShutdownHook(new Thread(this::save));
         }
@@ -93,7 +85,8 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
         return translation;
     }
 
-    private void load() {
+    public void load() {
+        if(isEmpty()) return;
         source.load(this);
     }
 
@@ -101,6 +94,7 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
      * Saves the config.
      */
     public void save() {
+        if(isEmpty()) return;
         source.save(this);
     }
 
@@ -182,12 +176,9 @@ public abstract class Config extends BaseCollection implements ConfigContainer {
          */
         @Deprecated
         public Config build() {
-            Config config = new Config(modId, branch, saveOnExit) {
-                @Override
-                public ConfigContainer[] getTransitives() {
-                    return children.toArray(new ConfigContainer[0]);
-                }
-            };
+            Config config = new Config(modId, branch, saveOnExit) {};
+            config.resolve(children.toArray(new ConfigContainer[0]));
+            config.load();
             if (main) {
                 ConfigRegistry.setMainConfig(config);
             }
