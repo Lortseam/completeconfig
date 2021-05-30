@@ -73,7 +73,7 @@ abstract class BaseCollection implements ParentDataPart, Translatable {
         resolve(container.getTransitives());
     }
 
-    protected void resolve(ConfigContainer... containers) {
+    void resolve(ConfigContainer... containers) {
         for (ConfigContainer container : containers) {
             if (container instanceof ConfigGroup) {
                 collections.resolve((ConfigGroup) container);

@@ -47,7 +47,7 @@ public class Config extends BaseCollection {
      * @param branch the branch
      * @param saveOnExit whether to save the config when the client or server stops
      */
-    protected Config(String modId, String[] branch, boolean saveOnExit) {
+    public Config(String modId, String[] branch, boolean saveOnExit) {
         source = new ConfigSource(modId, branch);
         ConfigRegistry.register(this);
         if (saveOnExit) {
@@ -61,7 +61,7 @@ public class Config extends BaseCollection {
      * @param modId the ID of the mod creating the config
      * @param saveOnExit whether to save the config when the client or server stops
      */
-    protected Config(String modId, boolean saveOnExit) {
+    public Config(String modId, boolean saveOnExit) {
         this(modId, new String[0], saveOnExit);
     }
 
@@ -85,9 +85,16 @@ public class Config extends BaseCollection {
         return translation;
     }
 
-    public void load() {
-        if(isEmpty()) return;
-        source.load(this);
+    public Config add(ConfigContainer... containers) {
+        resolve(containers);
+        return this;
+    }
+
+    public Config load() {
+        if(!isEmpty()) {
+            source.load(this);
+        }
+        return this;
     }
 
     /**
@@ -176,9 +183,7 @@ public class Config extends BaseCollection {
          */
         @Deprecated
         public Config build() {
-            Config config = new Config(modId, branch, saveOnExit);
-            config.resolve(children.toArray(new ConfigContainer[0]));
-            config.load();
+            Config config = new Config(modId, branch, saveOnExit).add(children.toArray(new ConfigContainer[0])).load();
             if (main) {
                 ConfigRegistry.setMainConfig(config);
             }

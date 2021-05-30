@@ -14,7 +14,7 @@ public final class Settings extends Config implements ConfigContainer {
 
     Settings() {
         super(ExampleMod.MOD_ID, false);
-        resolve(this);
+        add(this);
         load();
     }
 
