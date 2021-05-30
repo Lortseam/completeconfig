@@ -19,7 +19,7 @@ import java.util.Objects;
  * The base config class. Inherit this class to create a config for your mod.
  */
 @Log4j2(topic = "CompleteConfig")
-public abstract class Config extends BaseCollection {
+public class Config extends BaseCollection {
 
     /**
      * Creates a new config builder for the specified mod.
@@ -176,7 +176,7 @@ public abstract class Config extends BaseCollection {
          */
         @Deprecated
         public Config build() {
-            Config config = new Config(modId, branch, saveOnExit) {};
+            Config config = new Config(modId, branch, saveOnExit);
             config.resolve(children.toArray(new ConfigContainer[0]));
             config.load();
             if (main) {
