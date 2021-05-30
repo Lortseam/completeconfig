@@ -35,6 +35,7 @@ public class Config extends BaseCollection {
 
     @Getter(AccessLevel.PACKAGE)
     private final ConfigSource source;
+    private boolean loaded = false;
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
 
@@ -92,6 +93,9 @@ public class Config extends BaseCollection {
      * @return this config
      */
     public Config add(ConfigContainer... containers) {
+        if (loaded) {
+            throw new IllegalStateException("Cannot add container(s) after config was loaded already");
+        }
         resolve(containers);
         return this;
     }
@@ -105,6 +109,7 @@ public class Config extends BaseCollection {
         if(!isEmpty()) {
             source.load(this);
         }
+        loaded = true;
         return this;
     }
 
