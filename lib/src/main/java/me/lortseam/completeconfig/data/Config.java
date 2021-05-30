@@ -16,7 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 
 /**
- * The base config class. Inherit this class to create a config for your mod.
+ * The base config class. Instantiate or inherit this class to create a config for your mod.
  */
 @Log4j2(topic = "CompleteConfig")
 public class Config extends BaseCollection {
@@ -26,7 +26,7 @@ public class Config extends BaseCollection {
      *
      * @param modId the ID of the mod creating the config
      *
-     * @deprecated Please subclass {@link Config}
+     * @deprecated Use {@link Config} class directly
      */
     @Deprecated
     public static Builder builder(String modId) {
@@ -85,11 +85,22 @@ public class Config extends BaseCollection {
         return translation;
     }
 
+    /**
+     * Adds one or more containers to the config.
+     *
+     * @param containers one or more containers
+     * @return this config
+     */
     public Config add(ConfigContainer... containers) {
         resolve(containers);
         return this;
     }
 
+    /**
+     * Loads the config.
+     *
+     * @return this config
+     */
     public Config load() {
         if(!isEmpty()) {
             source.load(this);
@@ -140,7 +151,7 @@ public class Config extends BaseCollection {
          * @param containers one or more containers
          * @return this builder
          *
-         * @deprecated Add the containers transitively to the config object
+         * @deprecated Use {@link Config#add(ConfigContainer...)}
          */
         @Deprecated
         public Builder add(@NonNull ConfigContainer... containers) {
@@ -180,6 +191,8 @@ public class Config extends BaseCollection {
          * Creates and loads the config.
          *
          * @return the created config, or null if empty
+         *
+         * @deprecated Use {@link Config#load()}
          */
         @Deprecated
         public Config build() {
