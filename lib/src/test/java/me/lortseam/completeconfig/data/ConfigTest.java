@@ -4,8 +4,8 @@ import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ConfigTest {
 
@@ -25,12 +25,6 @@ public class ConfigTest {
         exception = assertThrows(NullPointerException.class, () -> new Config(MOD_ID, null, false) {});
         assertEquals("branch is marked non-null but is null", exception.getMessage());
         assertThrows(NullPointerException.class, () -> new Config(MOD_ID, new String[]{null}, false) {});
-    }
-
-    @Test
-    public void _logWarningIfEmpty() {
-        new Config(MOD_ID, false) {};
-        assertThat(logCaptor.getWarnLogs()).containsExactly("Empty config: " + MOD_ID + " []");
     }
 
 }
