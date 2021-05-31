@@ -20,11 +20,11 @@ public class ConfigTest {
 
     @Test
     public void _throwExceptionIfArgNull() {
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> new Config(null, false) {});
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> new Config(null, false));
         assertEquals("modId is marked non-null but is null", exception.getMessage());
-        exception = assertThrows(NullPointerException.class, () -> new Config(MOD_ID, null, false) {});
+        exception = assertThrows(NullPointerException.class, () -> new Config(MOD_ID, null, false));
         assertEquals("branch is marked non-null but is null", exception.getMessage());
-        assertThrows(NullPointerException.class, () -> new Config(MOD_ID, new String[]{null}, false) {});
+        assertThrows(NullPointerException.class, () -> new Config(MOD_ID, new String[]{null}, false));
     }
 
 }
