@@ -75,7 +75,7 @@ public class Config extends BaseCollection {
      * Loads the config.
      */
     public void load() {
-        if (isEmpty()) {
+        if (!loaded && isEmpty()) {
             if (this instanceof ConfigContainer) {
                 resolve((ConfigContainer) this);
                 if (isEmpty()) {
