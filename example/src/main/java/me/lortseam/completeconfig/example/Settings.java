@@ -13,9 +13,7 @@ import java.util.List;
 public final class Settings extends Config implements ConfigContainer {
 
     Settings() {
-        super(ExampleMod.MOD_ID, false);
-        add(this);
-        load();
+        super(ExampleMod.MOD_ID);
     }
 
     @Transitive

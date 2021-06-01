@@ -14,6 +14,7 @@ public class ExampleMod implements ModInitializer {
     @Override
     public void onInitialize() {
         settings = new Settings();
+        settings.load();
     }
 
 }

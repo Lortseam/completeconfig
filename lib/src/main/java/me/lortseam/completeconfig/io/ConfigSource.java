@@ -6,7 +6,7 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
-import me.lortseam.completeconfig.data.Config;
+import me.lortseam.completeconfig.data.structure.DataPart;
 import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -69,23 +69,23 @@ public final class ConfigSource {
                 .build();
     }
 
-    public void load(Config config) {
+    public void load(DataPart data) {
         try {
-            CommentedConfigurationNode root = loader.load();
-            if (!root.isNull()) {
-                config.apply(root);
+            CommentedConfigurationNode rootNode = loader.load();
+            if (!rootNode.isNull()) {
+                data.apply(rootNode);
             }
         } catch (ConfigurateException e) {
             logger.error("Failed to load config from file", e);
         }
-        save(config);
+        save(data);
     }
 
-    public void save(Config config) {
-        CommentedConfigurationNode root = loader.createNode();
-        config.fetch(root);
+    public void save(DataPart data) {
+        CommentedConfigurationNode rootNode = loader.createNode();
+        data.fetch(rootNode);
         try {
-            loader.save(root);
+            loader.save(rootNode);
         } catch (ConfigurateException e) {
             logger.error("Failed to save config to file", e);
         }

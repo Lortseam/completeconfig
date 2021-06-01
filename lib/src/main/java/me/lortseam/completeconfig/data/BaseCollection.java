@@ -20,11 +20,11 @@ abstract class BaseCollection implements ParentDataPart, Translatable {
     private final EntrySet entries = new EntrySet(this);
     private final CollectionSet collections = new CollectionSet(this);
 
-    public java.util.Collection<Entry> getEntries() {
+    public final java.util.Collection<Entry> getEntries() {
         return Collections.unmodifiableCollection(entries);
     }
 
-    public java.util.Collection<Collection> getCollections() {
+    public final java.util.Collection<Collection> getCollections() {
         return Collections.unmodifiableCollection(collections);
     }
 
@@ -84,11 +84,11 @@ abstract class BaseCollection implements ParentDataPart, Translatable {
     }
 
     @Override
-    public Iterable<DataPart> getChildren() {
+    public final Iterable<DataPart> getChildren() {
         return Iterables.concat(entries, collections);
     }
 
-    boolean isEmpty() {
+    final boolean isEmpty() {
         return Iterables.size(getChildren()) == 0;
     }
 

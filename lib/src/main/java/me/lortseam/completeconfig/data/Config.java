@@ -47,9 +47,15 @@ public class Config extends BaseCollection {
      * @param modId the ID of the mod creating the config
      * @param branch the branch
      */
-    public Config(String modId, String[] branch) {
+    public Config(String modId, String[] branch, ConfigContainer... containers) {
         source = new ConfigSource(modId, branch);
         ConfigRegistry.register(this);
+        if (containers.length > 0) {
+            resolve(containers);
+            if (isEmpty()) {
+                throw new IllegalArgumentException("Config of " + source + " is empty");
+            }
+        }
     }
 
     /**
@@ -57,21 +63,21 @@ public class Config extends BaseCollection {
      *
      * @param modId the ID of the mod creating the config
      */
-    public Config(String modId) {
-        this(modId, new String[0]);
+    public Config(String modId, ConfigContainer... containers) {
+        this(modId, new String[0], containers);
     }
 
-    public ModMetadata getMod() {
+    public final ModMetadata getMod() {
         return FabricLoader.getInstance().getModContainer(source.getModId()).get().getMetadata();
     }
 
     @Override
-    public TranslationKey getTranslation() {
+    public final TranslationKey getTranslation() {
         return getTranslation(false);
     }
 
     @Environment(EnvType.CLIENT)
-    public TranslationKey getTranslation(boolean includeBranch) {
+    public final TranslationKey getTranslation(boolean includeBranch) {
         if (translation == null) {
             translation = TranslationKey.from(this);
         }
@@ -82,37 +88,30 @@ public class Config extends BaseCollection {
     }
 
     /**
-     * Adds one or more containers to the config.
-     *
-     * @param containers one or more containers
-     * @return this config
-     */
-    public Config add(ConfigContainer... containers) {
-        if (loaded) {
-            throw new IllegalStateException("Cannot add container(s) after config was loaded already");
-        }
-        resolve(containers);
-        return this;
-    }
-
-    /**
      * Loads the config.
-     *
-     * @return this config
      */
-    public Config load() {
-        if(!isEmpty()) {
-            source.load(this);
+    public void load() {
+        if (isEmpty()) {
+            if (this instanceof ConfigContainer) {
+                resolve((ConfigContainer) this);
+                if (isEmpty()) {
+                    throw new IllegalStateException("Config " + getClass() + " is empty");
+                }
+            } else {
+                throw new IllegalStateException("Config " + getClass() + " must either implement " + ConfigContainer.class.getSimpleName() + " or pass at least one container to the constructor");
+            }
         }
+        source.load(this);
         loaded = true;
-        return this;
     }
 
     /**
      * Saves the config.
      */
     public void save() {
-        if(isEmpty()) return;
+        if (!loaded) {
+            throw new IllegalStateException("Cannot save config before it was loaded");
+        }
         source.save(this);
     }
 
@@ -149,8 +148,6 @@ public class Config extends BaseCollection {
          *
          * @param containers one or more containers
          * @return this builder
-         *
-         * @deprecated Use {@link Config#add(ConfigContainer...)}
          */
         @Deprecated
         public Builder add(@NonNull ConfigContainer... containers) {
@@ -184,7 +181,8 @@ public class Config extends BaseCollection {
          */
         @Deprecated
         public Config build() {
-            Config config = new Config(modId, branch).add(children.toArray(new ConfigContainer[0])).load();
+            Config config = new Config(modId, branch, children.toArray(new ConfigContainer[0]));
+            config.load();
             if (main) {
                 ConfigRegistry.setMainConfig(config);
             }
