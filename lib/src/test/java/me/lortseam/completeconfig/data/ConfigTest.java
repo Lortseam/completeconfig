@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.data;
 
+import me.lortseam.completeconfig.api.ConfigContainer;
 import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,12 @@ public class ConfigTest {
         exception = assertThrows(NullPointerException.class, () -> new Config(MOD_ID, (String[]) null));
         assertEquals("branch is marked non-null but is null", exception.getMessage());
         assertThrows(NullPointerException.class, () -> new Config(MOD_ID, new String[]{null}));
+    }
+
+    @Test
+    public void _throwExceptionIfContainersEmpty() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Config(MOD_ID, new ConfigContainer[] {new ConfigContainer() {}}));
+        assertEquals("Config of ConfigSource(modId=" + MOD_ID + ", branch=[]) is empty", exception.getMessage());
     }
 
 }
