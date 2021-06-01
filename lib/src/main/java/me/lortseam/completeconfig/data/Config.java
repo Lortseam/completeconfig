@@ -46,24 +46,19 @@ public class Config extends BaseCollection {
      *
      * @param modId the ID of the mod creating the config
      * @param branch the branch
-     * @param saveOnExit whether to save the config when the client or server stops
      */
-    public Config(String modId, String[] branch, boolean saveOnExit) {
+    public Config(String modId, String[] branch) {
         source = new ConfigSource(modId, branch);
         ConfigRegistry.register(this);
-        if (saveOnExit) {
-            Runtime.getRuntime().addShutdownHook(new Thread(this::save));
-        }
     }
 
     /**
      * Creates a config with the default branch.
      *
      * @param modId the ID of the mod creating the config
-     * @param saveOnExit whether to save the config when the client or server stops
      */
-    public Config(String modId, boolean saveOnExit) {
-        this(modId, new String[0], saveOnExit);
+    public Config(String modId) {
+        this(modId, new String[0]);
     }
 
     public ModMetadata getMod() {
@@ -165,17 +160,6 @@ public class Config extends BaseCollection {
                     throw new IllegalArgumentException("Duplicate container " + container.getClass().getSimpleName());
                 }
             }
-            return this;
-        }
-
-        /**
-         * Sets a flag to save the config when the game closes.
-         *
-         * @return this builder
-         */
-        @Deprecated
-        public Builder saveOnExit() {
-            saveOnExit = true;
             return this;
         }
 
