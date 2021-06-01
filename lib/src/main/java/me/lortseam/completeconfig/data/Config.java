@@ -2,6 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.io.ConfigSource;
@@ -10,6 +11,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * The base config class. Instantiate or inherit this class to create a config for your mod.
@@ -31,10 +35,11 @@ public class Config extends BaseCollection {
      * @param modId the ID of the mod creating the config
      * @param branch the branch
      */
-    public Config(String modId, String[] branch, ConfigContainer... containers) {
+    public Config(String modId, String[] branch, @NonNull ConfigContainer... containers) {
         source = new ConfigSource(modId, branch);
         ConfigRegistry.register(this);
         if (containers.length > 0) {
+            Arrays.stream(containers).forEach(Objects::requireNonNull);
             resolve(containers);
             if (isEmpty()) {
                 throw new IllegalArgumentException("Config of " + source + " is empty");
