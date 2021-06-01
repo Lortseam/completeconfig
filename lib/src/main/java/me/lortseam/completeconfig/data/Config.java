@@ -124,7 +124,6 @@ public class Config extends BaseCollection {
         private String[] branch = new String[0];
         private final LinkedHashSet<ConfigContainer> children = new LinkedHashSet<>();
         private boolean main;
-        private boolean saveOnExit;
 
         private Builder(String modId) {
             this.modId = modId;
@@ -185,7 +184,7 @@ public class Config extends BaseCollection {
          */
         @Deprecated
         public Config build() {
-            Config config = new Config(modId, branch, saveOnExit).add(children.toArray(new ConfigContainer[0])).load();
+            Config config = new Config(modId, branch).add(children.toArray(new ConfigContainer[0])).load();
             if (main) {
                 ConfigRegistry.setMainConfig(config);
             }
