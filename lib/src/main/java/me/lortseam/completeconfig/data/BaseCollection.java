@@ -40,7 +40,7 @@ abstract class BaseCollection implements ParentDataPart, Translatable {
                 }
                 return false;
             }).map(field -> {
-                if (!field.isAccessible()) {
+                if (!field.canAccess(container)) {
                     field.setAccessible(true);
                 }
                 try {

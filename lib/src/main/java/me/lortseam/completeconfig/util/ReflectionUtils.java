@@ -21,13 +21,13 @@ public final class ReflectionUtils {
 
     public static <T> T instantiateClass(Class<T> clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<T> constructor = clazz.getDeclaredConstructor();
-        if (!constructor.isAccessible()) {
+        if (!constructor.canAccess(null)) {
             constructor.setAccessible(true);
         }
         return constructor.newInstance();
     }
 
-    public static Optional<Method> getSetterMethod(Field field) {
+    public static Optional<Method> getSetterMethod(Field field, Object object) {
         Method method;
         try {
             method = field.getDeclaringClass().getDeclaredMethod("set" + StringUtils.capitalize(field.getName()), getTypeClass(getFieldType(field)));
@@ -37,7 +37,7 @@ public final class ReflectionUtils {
         if (Modifier.isStatic(field.getModifiers()) != Modifier.isStatic(method.getModifiers()) || !method.getReturnType().equals(Void.TYPE)) {
             return Optional.empty();
         }
-        if (!method.isAccessible()) {
+        if (!method.canAccess(object)) {
             method.setAccessible(true);
         }
         return Optional.of(method);

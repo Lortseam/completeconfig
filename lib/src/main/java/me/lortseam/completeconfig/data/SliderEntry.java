@@ -5,7 +5,6 @@ import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.Function;
 
@@ -22,7 +21,7 @@ public class SliderEntry<T extends Number> extends BoundedEntry<T> {
     public Function<T, Text> getValueTextSupplier() {
         if (valueTranslation == null) {
             ConfigEntry.Slider slider = origin.getAnnotation(ConfigEntry.Slider.class);
-            if (!StringUtils.isBlank(slider.valueTranslationKey())) {
+            if (!slider.valueTranslationKey().isBlank()) {
                 valueTranslation = getTranslation().root().append(slider.valueTranslationKey());
             } else {
                 valueTranslation = getTranslation().append("value");

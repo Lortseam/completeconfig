@@ -5,7 +5,6 @@ import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,10 +26,10 @@ public class BooleanEntry extends Entry<Boolean> {
             valueTranslations = new HashMap<>();
             Optional<ConfigEntry.Boolean> annotation = origin.getOptionalAnnotation(ConfigEntry.Boolean.class);
             if (annotation.isPresent()) {
-                if (!StringUtils.isBlank(annotation.get().trueTranslationKey())) {
+                if (!annotation.get().trueTranslationKey().isBlank()) {
                     valueTranslations.put(true, getTranslation().root().append(annotation.get().trueTranslationKey()));
                 }
-                if (!StringUtils.isBlank(annotation.get().falseTranslationKey())) {
+                if (!annotation.get().falseTranslationKey().isBlank()) {
                     valueTranslations.put(false, getTranslation().root().append(annotation.get().falseTranslationKey()));
                 }
             }

@@ -19,7 +19,6 @@ import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -70,17 +69,17 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
     protected Entry(EntryOrigin origin, UnaryOperator<T> valueModifier) {
         ConfigRegistry.register(origin);
         this.origin = origin;
-        if (!origin.getField().isAccessible()) {
+        if (!origin.getField().canAccess(origin.getObject())) {
             origin.getField().setAccessible(true);
         }
         typeClass = (Class<T>) ReflectionUtils.getTypeClass(getType());
         this.valueModifier = valueModifier;
         defaultValue = getValue();
         Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
-        id = annotation.isPresent() && !StringUtils.isBlank(annotation.get().value()) ? annotation.get().value() : origin.getField().getName();
+        id = annotation.isPresent() && !annotation.get().value().isBlank() ? annotation.get().value() : origin.getField().getName();
         requiresRestart = annotation.isPresent() && annotation.get().requiresRestart();
-        comment = annotation.isPresent() && !StringUtils.isBlank(annotation.get().comment()) ? annotation.get().comment() : null;
-        setter = ReflectionUtils.getSetterMethod(origin.getField()).<Setter<T>>map(method -> method::invoke).orElse((object, value) -> origin.getField().set(object, value));
+        comment = annotation.isPresent() && !annotation.get().comment().isBlank() ? annotation.get().comment() : null;
+        setter = ReflectionUtils.getSetterMethod(origin.getField(), origin.getObject()).<Setter<T>>map(method -> method::invoke).orElse((object, value) -> origin.getField().set(object, value));
     }
 
     protected Entry(EntryOrigin origin) {
@@ -137,7 +136,7 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
     public TranslationKey getTranslation() {
         if (translation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
-            if (annotation.isPresent() && !StringUtils.isBlank(annotation.get().translationKey())) {
+            if (annotation.isPresent() && !annotation.get().translationKey().isBlank()) {
                 translation = origin.getParent().getTranslation().root().append(annotation.get().translationKey());
             } else {
                 translation = origin.getParent().getTranslation().append(id);
@@ -152,7 +151,7 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
             if (annotation.isPresent() && annotation.get().tooltipTranslationKeys().length > 0) {
                 tooltipTranslation = Arrays.stream(annotation.get().tooltipTranslationKeys()).map(key -> {
-                    if (StringUtils.isBlank(key)) {
+                    if (key.isBlank()) {
                         throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + origin.getField() + " may not be blank");
                     }
                     return getTranslation().root().append(key);

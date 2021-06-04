@@ -14,19 +14,13 @@ import static org.mockito.Mockito.*;
 public class FabricLoaderExtension implements Extension {
 
     static {
+        EnvType env = switch (System.getProperty("fabric.dli.env")) {
+            case "client" -> EnvType.CLIENT;
+            case "server" -> EnvType.SERVER;
+            default -> throw new IllegalArgumentException("Unknown environment property");
+        };
         FabricLoader loader = mock(FabricLoader.class);
-        switch (System.getProperty("fabric.dli.env")) {
-            case "client":
-                when(loader.getEnvironmentType()).thenReturn(EnvType.CLIENT);
-                break;
-
-            case "server":
-                when(loader.getEnvironmentType()).thenReturn(EnvType.SERVER);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unknown environment property");
-        }
+        when(loader.getEnvironmentType()).thenReturn(env);
         when(loader.isModLoaded(anyString())).thenReturn(true);
         when(loader.getModContainer(anyString())).thenAnswer(invocation -> {
             ModMetadata metadata = mock(ModMetadata.class);
