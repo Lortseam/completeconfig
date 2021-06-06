@@ -13,10 +13,7 @@ public class CollectionSet extends DataSet<Collection> {
     void resolve(ConfigGroup group) {
         Collection collection = new Collection(parent, group);
         collection.resolveContainer(group);
-        if (collection.isEmpty()) {
-            logger.warn("Empty group: " + collection.getId());
-            return;
-        }
+        if (collection.isEmpty()) return;
         add(collection);
     }
 
