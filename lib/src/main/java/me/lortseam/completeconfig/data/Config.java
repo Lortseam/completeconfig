@@ -74,7 +74,7 @@ public class Config extends BaseCollection {
     /**
      * Loads the config.
      */
-    public void load() {
+    public final void load() {
         if (!loaded && this instanceof ConfigContainer) {
             resolve((ConfigContainer) this);
         }
@@ -89,7 +89,7 @@ public class Config extends BaseCollection {
     /**
      * Saves the config.
      */
-    public void save() {
+    public final void save() {
         if (!loaded) {
             throw new IllegalStateException("Cannot save config before it was loaded");
         }

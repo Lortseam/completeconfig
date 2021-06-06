@@ -28,7 +28,7 @@ abstract class BaseCollection implements ParentDataPart, Translatable {
         return Collections.unmodifiableCollection(collections);
     }
 
-    void resolveContainer(ConfigContainer container) {
+    final void resolveContainer(ConfigContainer container) {
         entries.resolve(container);
         for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
             resolve(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
@@ -73,7 +73,7 @@ abstract class BaseCollection implements ParentDataPart, Translatable {
         resolve(container.getTransitives());
     }
 
-    void resolve(ConfigContainer... containers) {
+    final void resolve(ConfigContainer... containers) {
         for (ConfigContainer container : containers) {
             if (container instanceof ConfigGroup) {
                 collections.resolve((ConfigGroup) container);

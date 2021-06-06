@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 @Log4j2(topic = "CompleteConfig")
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class Collection extends BaseCollection implements Identifiable, TooltipSupplier {
+public final class Collection extends BaseCollection implements Identifiable, TooltipSupplier {
 
     private final BaseCollection parent;
     private final ConfigGroup group;
