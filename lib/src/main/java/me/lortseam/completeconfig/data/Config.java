@@ -23,7 +23,7 @@ public class Config extends BaseCollection {
 
     @Getter(AccessLevel.PACKAGE)
     private final ConfigSource source;
-    private boolean loaded = false;
+    private Runnable resolver;
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
 
@@ -39,7 +39,15 @@ public class Config extends BaseCollection {
         source = new ConfigSource(modId, branch);
         ConfigRegistry.register(this);
         Arrays.stream(containers).forEach(Objects::requireNonNull);
-        resolve(containers);
+        resolver = () -> {
+            if (this instanceof ConfigContainer) {
+                resolve((ConfigContainer) this);
+            }
+            resolve(containers);
+            if (isEmpty()) {
+                logger.warn("Config of " + source + " is empty");
+            }
+        };
     }
 
     /**
@@ -75,22 +83,19 @@ public class Config extends BaseCollection {
      * Loads the config.
      */
     public final void load() {
-        if (!loaded && this instanceof ConfigContainer) {
-            resolve((ConfigContainer) this);
+        if (resolver != null) {
+            resolver.run();
+            resolver = null;
         }
-        if (!isEmpty()) {
-            source.load(this);
-        } else {
-            logger.warn("Config of " + source + " is empty");
-        }
-        loaded = true;
+        if (isEmpty()) return;
+        source.load(this);
     }
 
     /**
      * Saves the config.
      */
     public final void save() {
-        if (!loaded) {
+        if (resolver != null) {
             throw new IllegalStateException("Cannot save config before it was loaded");
         }
         if (isEmpty()) return;
