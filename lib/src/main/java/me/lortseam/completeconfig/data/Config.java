@@ -38,13 +38,8 @@ public class Config extends BaseCollection {
     public Config(String modId, String[] branch, @NonNull ConfigContainer... containers) {
         source = new ConfigSource(modId, branch);
         ConfigRegistry.register(this);
-        if (containers.length > 0) {
-            Arrays.stream(containers).forEach(Objects::requireNonNull);
-            resolve(containers);
-            if (isEmpty()) {
-                throw new IllegalArgumentException("Config of " + source + " is empty");
-            }
-        }
+        Arrays.stream(containers).forEach(Objects::requireNonNull);
+        resolve(containers);
     }
 
     /**
@@ -80,17 +75,14 @@ public class Config extends BaseCollection {
      * Loads the config.
      */
     public void load() {
-        if (!loaded && isEmpty()) {
-            if (this instanceof ConfigContainer) {
-                resolve((ConfigContainer) this);
-                if (isEmpty()) {
-                    throw new IllegalStateException("Config " + getClass() + " is empty");
-                }
-            } else {
-                throw new IllegalStateException("Config " + getClass() + " must either implement " + ConfigContainer.class.getSimpleName() + " or pass at least one container to the constructor");
-            }
+        if (!loaded && this instanceof ConfigContainer) {
+            resolve((ConfigContainer) this);
         }
-        source.load(this);
+        if (!isEmpty()) {
+            source.load(this);
+        } else {
+            logger.warn("Config of " + source + " is empty");
+        }
         loaded = true;
     }
 
@@ -101,6 +93,7 @@ public class Config extends BaseCollection {
         if (!loaded) {
             throw new IllegalStateException("Cannot save config before it was loaded");
         }
+        if (isEmpty()) return;
         source.save(this);
     }
 
