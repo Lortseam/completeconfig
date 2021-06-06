@@ -1,10 +1,10 @@
 package me.lortseam.completeconfig.data;
 
-import me.lortseam.completeconfig.api.ConfigContainer;
 import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -29,9 +29,9 @@ public class ConfigTest {
     }
 
     @Test
-    public void _throwExceptionIfContainersEmpty() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Config(MOD_ID, new ConfigContainer[] {new ConfigContainer() {}}));
-        assertEquals("Config of ConfigSource(modId=" + MOD_ID + ", branch=[]) is empty", exception.getMessage());
+    public void load_logWarningIfEmpty() {
+        new Config(MOD_ID).load();
+        assertThat(logCaptor.getWarnLogs()).contains("Config of ConfigSource(modId=" + MOD_ID + ", branch=[]) is empty");
     }
 
 }
