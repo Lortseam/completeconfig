@@ -4,23 +4,18 @@ import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.test.data.containers.*;
-import me.lortseam.completeconfig.test.data.groups.EmptyGroup;
 import me.lortseam.completeconfig.test.data.listeners.EmptyListener;
 import me.lortseam.completeconfig.test.data.listeners.SetterListener;
 import me.lortseam.completeconfig.text.TranslationKey;
-import nl.altindag.log.LogCaptor;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 public class BaseCollectionTest {
 
     private BaseCollection baseCollection;
-    private final LogCaptor logCaptor = LogCaptor.forName("CompleteConfig");
 
     @BeforeEach
     public void beforeEach() {
@@ -30,11 +25,6 @@ public class BaseCollectionTest {
                 return mock(TranslationKey.class);
             }
         };
-    }
-
-    @AfterEach
-    public void afterEach() {
-        logCaptor.clearLogs();
     }
 
     @Test
@@ -109,12 +99,6 @@ public class BaseCollectionTest {
     public void resolve_throwIfNestedNonStatic() {
         IllegalAnnotationTargetException exception = assertThrows(IllegalAnnotationTargetException.class, () -> baseCollection.resolve(new ContainerNestingContainerWithEntry()));
         assertEquals("Transitive " + ContainerNestingContainerWithEntry.ContainerWithEntry.class + " must be static", exception.getMessage());
-    }
-
-    @Test
-    public void resolve_logWarningIfEmpty() {
-        baseCollection.resolve(new EmptyGroup());
-        assertThat(logCaptor.getWarnLogs()).contains("Empty group: emptyGroup");
     }
 
     @Test

@@ -10,7 +10,6 @@ dependencies {
 	testImplementation("org.assertj:assertj-core:${rootProject.assertj_version}")
 	testImplementation("org.mockito:mockito-inline:${rootProject.mockito_version}")
 	testImplementation("org.mockito:mockito-junit-jupiter:${rootProject.mockito_version}")
-	testImplementation("io.github.hakky54:logcaptor:${rootProject.logcaptor_version}")
 	testImplementation("com.google.jimfs:jimfs:${rootProject.jimfs_version}") {
 		exclude group: 'com.google.guava', module: 'guava'
 	}
