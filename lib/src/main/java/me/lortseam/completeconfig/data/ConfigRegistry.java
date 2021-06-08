@@ -52,7 +52,7 @@ public final class ConfigRegistry {
 
     static void register(Config config) {
         if (!sources.add(config.getSource())) {
-            throw new UnsupportedOperationException("A config of " + config.getSource() + " already exists");
+            throw new UnsupportedOperationException(config.getSource() + " already exists");
         }
         String modId = config.getMod().getId();
         if (!mainConfigs.containsKey(modId)) {

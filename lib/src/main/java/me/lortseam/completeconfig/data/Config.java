@@ -3,6 +3,7 @@ package me.lortseam.completeconfig.data;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.io.ConfigSource;
@@ -19,9 +20,11 @@ import java.util.Objects;
  * The base config class. Instantiate or inherit this class to create a config for your mod.
  */
 @Log4j2(topic = "CompleteConfig")
+@ToString(onlyExplicitlyIncluded = true)
 public class Config extends BaseCollection {
 
     @Getter(AccessLevel.PACKAGE)
+    @ToString.Include
     private final ConfigSource source;
     private Runnable resolver;
     @Environment(EnvType.CLIENT)
@@ -45,7 +48,7 @@ public class Config extends BaseCollection {
             }
             resolve(containers);
             if (isEmpty()) {
-                logger.warn("Config of " + source + " is empty");
+                logger.warn(this + " is empty");
             }
         };
     }
