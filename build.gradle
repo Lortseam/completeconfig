@@ -1,16 +1,19 @@
 import groovy.json.JsonSlurper
 
 plugins {
+    id 'java'
     id 'fabric-loom' version "0.8-SNAPSHOT" apply false
     id "io.freefair.lombok" version "5.3.3.3" apply false
+}
+
+allprojects {
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
 }
 
 subprojects {
     apply plugin: "fabric-loom"
     apply plugin: "io.freefair.lombok"
-
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
 
     group = rootProject.maven_group
     archivesBaseName = "$rootProject.archives_base_name-${project.name}"
