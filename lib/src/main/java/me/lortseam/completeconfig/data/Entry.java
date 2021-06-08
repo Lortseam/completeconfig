@@ -166,7 +166,11 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
     @Override
     public void apply(CommentedConfigurationNode node) {
         try {
-            setValue((T) node.get(getType()));
+            T value = (T) node.get(getType());
+            if (value == null) {
+                throw new SerializationException(node, getType(), "Unable to deserialize value of this type");
+            }
+            setValue(value);
         } catch (SerializationException e) {
             logger.error("Failed to apply value to entry", e);
         }
@@ -182,6 +186,11 @@ public class Entry<T> implements DataPart, Identifiable, Translatable, TooltipSu
         } catch (SerializationException e) {
             logger.error("Failed to fetch value from entry", e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return origin.getField().toString();
     }
 
     @FunctionalInterface
