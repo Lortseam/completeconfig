@@ -84,6 +84,8 @@ public class Config extends BaseCollection {
 
     /**
      * Loads the config.
+     *
+     * <p>On first load, this also resolves the config's children.
      */
     public final void load() {
         if (resolver != null) {

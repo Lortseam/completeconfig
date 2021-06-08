@@ -211,6 +211,8 @@ public final class GuiProviderRegistry {
      * Registers one or more custom GUI providers.
      *
      * @param providers the custom GUI providers
+     *
+     * @see GuiExtension#getProviders()
      */
     public void add(GuiProvider... providers) {
         Collections.addAll(this.providers, providers);

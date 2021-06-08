@@ -10,11 +10,11 @@ import me.lortseam.completeconfig.gui.cloth.GuiProvider;
 public interface GuiExtension extends Extension {
 
     /**
-     * Used to register custom GUI providers.
+     * Used to register global GUI providers.
      *
      * @return an array of custom GUI providers
      *
-     * @see GuiProvider
+     * @see me.lortseam.completeconfig.gui.cloth.GuiProviderRegistry#add(GuiProvider...)
      */
     default GuiProvider[] getProviders() {
         return null;

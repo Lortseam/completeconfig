@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Applied to declare that a field should be resolved as config entry.
+ * Applied to declare that a field should be resolved as config entry, using the parameters specified in this
+ * annotation.
  *
  * @see ConfigEntries
  */

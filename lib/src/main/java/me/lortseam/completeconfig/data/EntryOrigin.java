@@ -11,6 +11,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+/**
+ * The origin of a config entry.
+ */
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class EntryOrigin {
 
