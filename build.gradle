@@ -9,9 +9,6 @@ subprojects {
     apply plugin: "fabric-loom"
     apply plugin: "io.freefair.lombok"
 
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
-
     group = rootProject.maven_group
     archivesBaseName = "$rootProject.archives_base_name-${project.name}"
     version = rootProject.mod_version
