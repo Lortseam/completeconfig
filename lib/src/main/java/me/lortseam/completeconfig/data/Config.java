@@ -63,7 +63,7 @@ public class Config extends BaseCollection {
      * @param modId the ID of the mod creating the config
      * @param branch the branch
      */
-    public Config(String modId, String[] branch, @NonNull ConfigContainer... containers) {
+    public Config(@NonNull String modId, @NonNull String[] branch, @NonNull ConfigContainer... containers) {
         if (!FabricLoader.getInstance().isModLoaded(modId)) {
             throw new IllegalArgumentException("Mod " + modId + " is not loaded");
         }
