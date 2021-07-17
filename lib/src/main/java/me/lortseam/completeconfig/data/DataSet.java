@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import me.lortseam.completeconfig.data.structure.DataPart;
+import me.lortseam.completeconfig.data.structure.StructurePart;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-abstract class DataSet<T extends DataPart & Identifiable> extends AbstractSet<T> {
+abstract class DataSet<T extends StructurePart & Identifiable> extends AbstractSet<T> {
 
     protected final BaseCollection parent;
     private final Map<String, T> map = new LinkedHashMap<>();

@@ -5,17 +5,16 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.io.ConfigSource;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.minecraft.text.TextColor;
 
-import java.util.*;
 import java.util.Collection;
+import java.util.*;
 
 @UtilityClass
 public final class ConfigRegistry {
 
-    private static final Set<ConfigSource> sources = new HashSet<>();
+    private static final Set<Config> configs = new HashSet<>();
     private static final Map<String, Config> mainConfigs = new HashMap<>();
     private static final Set<EntryOrigin> origins = new HashSet<>();
     private static final List<Transformation> transformations = Lists.newArrayList(
@@ -51,8 +50,8 @@ public final class ConfigRegistry {
     );
 
     static void register(Config config) {
-        if (!sources.add(config.getSource())) {
-            throw new UnsupportedOperationException(config.getSource() + " already exists");
+        if (!configs.add(config)) {
+            throw new UnsupportedOperationException(config + " already exists");
         }
         String modId = config.getMod().getId();
         if (!mainConfigs.containsKey(modId)) {

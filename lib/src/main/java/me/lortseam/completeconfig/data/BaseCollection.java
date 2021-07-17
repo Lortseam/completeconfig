@@ -3,9 +3,9 @@ package me.lortseam.completeconfig.data;
 import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
-import me.lortseam.completeconfig.data.client.Translatable;
-import me.lortseam.completeconfig.data.structure.DataPart;
-import me.lortseam.completeconfig.data.structure.ParentDataPart;
+import me.lortseam.completeconfig.data.structure.ParentStructurePart;
+import me.lortseam.completeconfig.data.structure.StructurePart;
+import me.lortseam.completeconfig.data.structure.client.Translatable;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -15,7 +15,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
 
-abstract class BaseCollection implements ParentDataPart, Translatable {
+abstract class BaseCollection implements ParentStructurePart, Translatable {
 
     private final EntrySet entries = new EntrySet(this);
     private final CollectionSet collections = new CollectionSet(this);
@@ -84,7 +84,7 @@ abstract class BaseCollection implements ParentDataPart, Translatable {
     }
 
     @Override
-    public final Iterable<DataPart> getChildren() {
+    public final Iterable<StructurePart> getChildren() {
         return Iterables.concat(entries, collections);
     }
 

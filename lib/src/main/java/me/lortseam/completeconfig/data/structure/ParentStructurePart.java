@@ -5,18 +5,18 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
-public interface ParentDataPart<C extends DataPart & Identifiable> extends DataPart {
+public interface ParentStructurePart<C extends StructurePart & Identifiable> extends StructurePart {
 
     Iterable<C> getChildren();
 
     @Override
     default void apply(CommentedConfigurationNode node) {
-        propagateToChildren(childNode -> !childNode.isNull(), DataPart::apply, node);
+        propagateToChildren(childNode -> !childNode.isNull(), StructurePart::apply, node);
     }
 
     @Override
     default void fetch(CommentedConfigurationNode node) {
-        propagateToChildren(childNode -> true, DataPart::fetch, node);
+        propagateToChildren(childNode -> true, StructurePart::fetch, node);
     }
 
     default void propagateToChildren(Predicate<CommentedConfigurationNode> childNodeCondition, BiConsumer<C, CommentedConfigurationNode> function, CommentedConfigurationNode node) {

@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.io;
+package me.lortseam.completeconfig.data.serialize;
 
 import lombok.experimental.UtilityClass;
 import net.fabricmc.api.EnvType;
@@ -10,7 +10,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 @UtilityClass
-final class ClientSerializers {
+public final class ClientSerializers {
 
     private static final ScalarSerializer<TextColor> TEXT_COLOR = TypeSerializer.of(TextColor.class, (v, pass) -> v.getRgb(), v -> {
         if (v instanceof Integer) {
@@ -20,7 +20,7 @@ final class ClientSerializers {
     });
 
     @Environment(EnvType.CLIENT)
-    final static TypeSerializerCollection COLLECTION = TypeSerializerCollection.builder()
+    public final static TypeSerializerCollection COLLECTION = TypeSerializerCollection.builder()
             .registerExact(TEXT_COLOR)
             .build();
 
