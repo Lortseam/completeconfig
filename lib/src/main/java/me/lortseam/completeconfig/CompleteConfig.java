@@ -4,15 +4,14 @@ import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
-import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
-import me.lortseam.completeconfig.extensions.Extension;
-import me.lortseam.completeconfig.extensions.GuiExtension;
-import me.lortseam.completeconfig.extensions.clothbasicmath.ClothBasicMathExtension;
+import me.lortseam.completeconfig.extension.*;
+import me.lortseam.completeconfig.extension.clothbasicmath.ClothBasicMathExtension;
+import me.lortseam.completeconfig.extension.clothconfig.GuiExtension;
+import me.lortseam.completeconfig.extension.minecraft.MinecraftClientExtension;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
-import org.apache.commons.lang3.ClassUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -23,13 +22,16 @@ import java.util.stream.Collectors;
 @UtilityClass
 public final class CompleteConfig {
 
-    private static final Set<Class<? extends Extension>> validExtensionTypes = Sets.newHashSet(CompleteConfigExtension.class);
+    private static final Set<Class<? extends Extension>> validExtensionTypes = Sets.newHashSet(BaseExtension.class);
     private static final Set<Extension> extensions = new HashSet<>();
 
     static {
+        registerExtensionType(ClientExtension.class, EnvType.CLIENT);
+        registerExtensionType(ServerExtension.class, EnvType.SERVER);
         registerExtensionType(GuiExtension.class, EnvType.CLIENT, "cloth-config2");
+        registerExtension(MinecraftClientExtension.class);
         registerExtension("cloth-basic-math", ClothBasicMathExtension.class);
-        for (EntrypointContainer<CompleteConfigExtension> entrypoint : FabricLoader.getInstance().getEntrypointContainers("completeconfig-extension", CompleteConfigExtension.class)) {
+        for (EntrypointContainer<BaseExtension> entrypoint : FabricLoader.getInstance().getEntrypointContainers("completeconfig-extension", BaseExtension.class)) {
             registerExtension(entrypoint.getEntrypoint());
         }
     }
@@ -69,7 +71,7 @@ public final class CompleteConfig {
     }
 
     private static void registerExtension(Class<? extends Extension> extension) {
-        if(Collections.disjoint(ClassUtils.getAllInterfaces(extension), validExtensionTypes)) return;
+        if(!validExtensionTypes.containsAll(Arrays.asList(extension.getInterfaces()))) return;
         try {
             registerExtension(ReflectionUtils.instantiateClass(extension));
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
@@ -79,14 +81,14 @@ public final class CompleteConfig {
 
     /**
      * Registers an external CompleteConfig extension. To register an extension provided by your own mod, use the
-     * {@link CompleteConfigExtension} entrypoint.
+     * {@link BaseExtension} entrypoint.
      *
      * @param modId the ID of the external mod
      * @param extension the extension
      *
-     * @see CompleteConfigExtension
+     * @see BaseExtension
      */
-    public static void registerExtension(@NonNull String modId, @NonNull Class<? extends CompleteConfigExtension> extension) {
+    public static void registerExtension(@NonNull String modId, @NonNull Class<? extends BaseExtension> extension) {
         if(!FabricLoader.getInstance().isModLoaded(modId)) return;
         registerExtension(extension);
     }

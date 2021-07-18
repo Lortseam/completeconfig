@@ -7,8 +7,7 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.data.serialize.ClientSerializers;
-import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
+import me.lortseam.completeconfig.extension.BaseExtension;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -31,16 +30,6 @@ import java.util.Objects;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
 public class Config extends BaseCollection {
-
-    private static final TypeSerializerCollection GLOBAL_TYPE_SERIALIZERS;
-
-    static {
-        TypeSerializerCollection.Builder builder = TypeSerializerCollection.builder();
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            builder.registerAll(ClientSerializers.COLLECTION);
-        }
-        GLOBAL_TYPE_SERIALIZERS = builder.build();
-    }
 
     @EqualsAndHashCode.Include
     @ToString.Include
@@ -80,8 +69,7 @@ public class Config extends BaseCollection {
         loader = HoconConfigurationLoader.builder()
                 .path(path)
                 .defaultOptions(options -> options.serializers(builder -> {
-                    builder.registerAll(GLOBAL_TYPE_SERIALIZERS);
-                    for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(CompleteConfigExtension.class, CompleteConfigExtension::getTypeSerializers)) {
+                    for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(BaseExtension.class, BaseExtension::getTypeSerializers)) {
                         builder.registerAll(typeSerializers);
                     }
                 }))

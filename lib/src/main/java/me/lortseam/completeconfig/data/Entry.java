@@ -14,7 +14,7 @@ import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.data.transform.Transformer;
 import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
-import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
+import me.lortseam.completeconfig.extension.BaseExtension;
 import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
@@ -36,7 +36,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
 
     static {
-        for (Transformation[] transformations : CompleteConfig.collectExtensions(CompleteConfigExtension.class, CompleteConfigExtension::getTransformations)) {
+        for (Transformation[] transformations : CompleteConfig.collectExtensions(BaseExtension.class, BaseExtension::getTransformations)) {
             ConfigRegistry.register(transformations);
         }
     }

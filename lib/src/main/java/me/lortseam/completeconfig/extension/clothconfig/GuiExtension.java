@@ -1,5 +1,6 @@
-package me.lortseam.completeconfig.extensions;
+package me.lortseam.completeconfig.extension.clothconfig;
 
+import me.lortseam.completeconfig.extension.Extension;
 import me.lortseam.completeconfig.gui.cloth.GuiProvider;
 
 /**

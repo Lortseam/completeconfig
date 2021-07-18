@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.extensions;
+package me.lortseam.completeconfig.extension;
 
 import me.lortseam.completeconfig.data.transform.Transformation;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
@@ -6,7 +6,7 @@ import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 /**
  * The main CompleteConfig extension type. Used for the {@code completeconfig-extension} entrypoint.
  */
-public interface CompleteConfigExtension extends Extension {
+public interface BaseExtension extends Extension {
 
     /**
      * Used to register custom type serializers for config entries.

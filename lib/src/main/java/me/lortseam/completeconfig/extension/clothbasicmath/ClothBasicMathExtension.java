@@ -1,24 +1,31 @@
-package me.lortseam.completeconfig.extensions.clothbasicmath;
+package me.lortseam.completeconfig.extension.clothbasicmath;
 
 import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.extensions.CompleteConfigExtension;
-import me.lortseam.completeconfig.extensions.Extension;
+import me.lortseam.completeconfig.extension.BaseExtension;
+import me.lortseam.completeconfig.extension.Extension;
 import me.shedaniel.math.Color;
+import org.spongepowered.configurate.serialize.CoercionFailedException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ClothBasicMathExtension implements CompleteConfigExtension {
+public final class ClothBasicMathExtension implements BaseExtension {
 
     @Override
     public TypeSerializerCollection getTypeSerializers() {
         return TypeSerializerCollection.builder()
-                .registerExact(ColorSerializer.INSTANCE)
+                .registerExact(TypeSerializer.of(Color.class, (v, pass) -> v.getColor(), v -> {
+                    if (v instanceof Integer) {
+                        return Color.ofTransparent((Integer) v);
+                    }
+                    throw new CoercionFailedException(v, Color.class.getSimpleName());
+                }))
                 .build();
     }
 

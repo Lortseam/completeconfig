@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.extensions;
+package me.lortseam.completeconfig.extension;
 
 import java.util.Set;
 

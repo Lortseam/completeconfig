@@ -5,7 +5,7 @@ import com.google.common.collect.MoreCollectors;
 import com.google.common.reflect.TypeToken;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.*;
-import me.lortseam.completeconfig.extensions.GuiExtension;
+import me.lortseam.completeconfig.extension.clothconfig.GuiExtension;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.fabricmc.api.EnvType;
