@@ -1,31 +1,34 @@
 package me.lortseam.completeconfig.data;
 
-import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
-import me.lortseam.completeconfig.data.structure.ParentStructurePart;
+import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.StructurePart;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
 import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
-abstract class BaseCollection implements ParentStructurePart, Translatable {
+abstract class Parent implements StructurePart, Translatable {
 
     private final EntrySet entries = new EntrySet(this);
-    private final CollectionSet collections = new CollectionSet(this);
+    private final ClusterSet clusters = new ClusterSet(this);
 
-    public final java.util.Collection<Entry> getEntries() {
+    public final Collection<Entry> getEntries() {
         return Collections.unmodifiableCollection(entries);
     }
 
-    public final java.util.Collection<Collection> getCollections() {
-        return Collections.unmodifiableCollection(collections);
+    public final Collection<Cluster> getClusters() {
+        return Collections.unmodifiableCollection(clusters);
     }
 
     final void resolveContainer(ConfigContainer container) {
@@ -76,7 +79,7 @@ abstract class BaseCollection implements ParentStructurePart, Translatable {
     final void resolve(ConfigContainer... containers) {
         for (ConfigContainer container : containers) {
             if (container instanceof ConfigGroup) {
-                collections.resolve((ConfigGroup) container);
+                clusters.resolve((ConfigGroup) container);
             } else {
                 resolveContainer(container);
             }
@@ -84,12 +87,33 @@ abstract class BaseCollection implements ParentStructurePart, Translatable {
     }
 
     @Override
-    public final Iterable<StructurePart> getChildren() {
-        return Iterables.concat(entries, collections);
+    public final void apply(CommentedConfigurationNode node) {
+        propagateToChildren(entries, node, childNode -> !childNode.isNull(), StructurePart::apply);
+        propagateToChildren(clusters, node, childNode -> !childNode.isNull(), StructurePart::apply);
+    }
+
+    @Override
+    public void fetch(CommentedConfigurationNode node) {
+        propagateToChildren(entries, node, StructurePart::fetch);
+        propagateToChildren(clusters, node, StructurePart::fetch);
+    }
+
+    private <C extends StructurePart & Identifiable> void propagateToChildren(Collection<C> children, CommentedConfigurationNode node, Predicate<CommentedConfigurationNode> childNodeCondition, BiConsumer<C, CommentedConfigurationNode> function) {
+        for (C child : children) {
+            CommentedConfigurationNode childNode = node.node(child.getId());
+            if (!childNodeCondition.test(childNode)) {
+                continue;
+            }
+            function.accept(child, childNode);
+        }
+    }
+
+    private <C extends StructurePart & Identifiable> void propagateToChildren(Collection<C> children, CommentedConfigurationNode node, BiConsumer<C, CommentedConfigurationNode> function) {
+        propagateToChildren(children, node, childNode -> true, function);
     }
 
     final boolean isEmpty() {
-        return Iterables.size(getChildren()) == 0;
+        return entries.isEmpty() && clusters.isEmpty();
     }
 
 }

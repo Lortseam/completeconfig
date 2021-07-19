@@ -10,9 +10,9 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 @Log4j2(topic = "CompleteConfig")
-public class EntrySet extends DataSet<Entry> {
+public class EntrySet extends SortedSet<Entry> {
 
-    EntrySet(BaseCollection parent) {
+    EntrySet(Parent parent) {
         super(parent);
     }
 

@@ -12,9 +12,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-abstract class DataSet<T extends StructurePart & Identifiable> extends AbstractSet<T> {
+abstract class SortedSet<T extends StructurePart & Identifiable> extends AbstractSet<T> {
 
-    protected final BaseCollection parent;
+    protected final Parent parent;
     private final Map<String, T> map = new LinkedHashMap<>();
 
     @Override

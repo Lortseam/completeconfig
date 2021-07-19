@@ -18,7 +18,7 @@ import java.util.Optional;
 public final class EntryOrigin {
 
     @Getter(AccessLevel.PACKAGE)
-    private final BaseCollection parent;
+    private final Parent parent;
     @Getter
     @EqualsAndHashCode.Include
     private final Field field;
@@ -28,7 +28,7 @@ public final class EntryOrigin {
     @EqualsAndHashCode.Include
     private final ConfigContainer object;
 
-    EntryOrigin(BaseCollection parent, Field field, ConfigContainer object) {
+    EntryOrigin(Parent parent, Field field, ConfigContainer object) {
         this.parent = parent;
         this.field = field;
         type = ReflectionUtils.getFieldType(field);

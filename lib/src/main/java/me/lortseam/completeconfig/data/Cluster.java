@@ -17,9 +17,9 @@ import java.util.Arrays;
 
 @Log4j2(topic = "CompleteConfig")
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public final class Collection extends BaseCollection implements Identifiable, TooltipSupplier {
+public final class Cluster extends Parent implements Identifiable, TooltipSupplier {
 
-    private final BaseCollection parent;
+    private final Parent parent;
     private final ConfigGroup group;
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;

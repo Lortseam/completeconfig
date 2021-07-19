@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.gui.cloth;
 
 import lombok.Getter;
 import lombok.NonNull;
-import me.lortseam.completeconfig.data.Collection;
+import me.lortseam.completeconfig.data.Cluster;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.text.TranslationKey;
@@ -51,10 +51,10 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
                 category.addEntry(buildEntry(entry));
             }
         }
-        for(Collection collection : config.getCollections()) {
-            ConfigCategory category = builder.getOrCreateCategory(collection.getText());
-            category.setDescription(() -> collection.getTooltip().map(lines -> Arrays.stream(lines).map(line -> (StringVisitable) line).toArray(StringVisitable[]::new)));
-            for (AbstractConfigListEntry<?> entry : buildCollection(collection)) {
+        for(Cluster cluster : config.getClusters()) {
+            ConfigCategory category = builder.getOrCreateCategory(cluster.getText());
+            category.setDescription(() -> cluster.getTooltip().map(lines -> Arrays.stream(lines).map(line -> (StringVisitable) line).toArray(StringVisitable[]::new)));
+            for (AbstractConfigListEntry<?> entry : buildCluster(cluster)) {
                 category.addEntry(entry);
             }
         }
@@ -67,19 +67,19 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder {
         }).build(entry);
     }
 
-    private List<AbstractConfigListEntry> buildCollection(Collection collection) {
-        List<AbstractConfigListEntry> collectionGui = new ArrayList<>();
-        for (Entry<?> entry : collection.getEntries()) {
-            collectionGui.add(buildEntry(entry));
+    private List<AbstractConfigListEntry> buildCluster(Cluster cluster) {
+        List<AbstractConfigListEntry> clusterGui = new ArrayList<>();
+        for (Entry<?> entry : cluster.getEntries()) {
+            clusterGui.add(buildEntry(entry));
         }
-        for (Collection subCollection : collection.getCollections()) {
+        for (Cluster subCluster : cluster.getClusters()) {
             SubCategoryBuilder subBuilder = ConfigEntryBuilder.create()
-                    .startSubCategory(subCollection.getText())
-                    .setTooltip(subCollection.getTooltip());
-            subBuilder.addAll(buildCollection(subCollection));
-            collectionGui.add(subBuilder.build());
+                    .startSubCategory(subCluster.getText())
+                    .setTooltip(subCluster.getTooltip());
+            subBuilder.addAll(buildCluster(subCluster));
+            clusterGui.add(subBuilder.build());
         }
-        return collectionGui;
+        return clusterGui;
     }
 
 }

@@ -29,7 +29,7 @@ import java.util.Objects;
 @Log4j2(topic = "CompleteConfig")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
-public class Config extends BaseCollection {
+public class Config extends Parent {
 
     @EqualsAndHashCode.Include
     @ToString.Include
