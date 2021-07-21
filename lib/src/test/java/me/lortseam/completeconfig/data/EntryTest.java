@@ -35,6 +35,10 @@ public class EntryTest implements ConfigContainer {
         };
     }
 
+    private static <E extends Entry<?>> void assertEntryType(Entry<?> entry, Class<E> entryType) {
+        assertTrue(entryType.isInstance(entry));
+    }
+
     private boolean booleanWithoutAnnotation;
     @ConfigEntry.Boolean
     private boolean booleanWithAnnotation;
@@ -77,12 +81,8 @@ public class EntryTest implements ConfigContainer {
         }
     }
 
-    private <E extends Entry<?>> void assertEntryType(Entry<?> entry, Class<E> entryType) {
-        assertTrue(entryType.isInstance(entry));
-    }
-
     @Test
-    public void of_transformType() {
+    public void of_transformTypes() {
         assertEntryType(of("booleanWithoutAnnotation"), BooleanEntry.class);
         assertEntryType(of("booleanWithAnnotation"), BooleanEntry.class);
         assertEntryType(of("boundedInt"), BoundedEntry.class);
@@ -94,6 +94,11 @@ public class EntryTest implements ConfigContainer {
         assertEntryType(of("anEnum"), EnumEntry.class);
         assertEntryType(of("dropdown"), DropdownEntry.class);
         assertEntryType(of("color"), ColorEntry.class);
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "fabric.dli.env", matches = "client")
+    public void of_transformClientTypes() {
         assertEntryType(of("textColor"), ColorEntry.class);
     }
 
