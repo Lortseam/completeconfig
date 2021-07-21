@@ -125,7 +125,7 @@ public class Config extends Parent {
         return translation;
     }
 
-    private void load(HoconConfigurationLoader loader) {
+    private void deserialize(HoconConfigurationLoader loader) {
         if (resolver != null) {
             resolver.run();
             resolver = null;
@@ -141,15 +141,20 @@ public class Config extends Parent {
         }
     }
 
-    public final void load(Callable<BufferedReader> source) {
-        load(createLoader(builder -> builder.source(source)));
+    /**
+     * Deserializes values from a custom source and applies them to this config.
+     *
+     * @param source the source to deserialize from
+     */
+    public final void deserialize(Callable<BufferedReader> source) {
+        deserialize(createLoader(builder -> builder.source(source)));
     }
 
     /**
      * Loads the config from the save file.
      */
     public final void load() {
-        load(loader);
+        deserialize(loader);
         save();
     }
 
@@ -167,6 +172,11 @@ public class Config extends Parent {
         }
     }
 
+    /**
+     * Serializes this config's values to a custom sink.
+     *
+     * @param sink the sink to serialize to
+     */
     public final void serialize(Callable<BufferedWriter> sink) {
         serialize(createLoader(builder -> builder.sink(sink)));
     }
