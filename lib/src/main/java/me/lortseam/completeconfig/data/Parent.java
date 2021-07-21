@@ -20,6 +20,20 @@ import java.util.function.Predicate;
 
 abstract class Parent implements StructurePart, Translatable {
 
+    private static <C extends StructurePart & Identifiable> void propagateToChildren(Collection<C> children, CommentedConfigurationNode node, Predicate<CommentedConfigurationNode> childNodeCondition, BiConsumer<C, CommentedConfigurationNode> function) {
+        for (C child : children) {
+            CommentedConfigurationNode childNode = node.node(child.getId());
+            if (!childNodeCondition.test(childNode)) {
+                continue;
+            }
+            function.accept(child, childNode);
+        }
+    }
+
+    private static <C extends StructurePart & Identifiable> void propagateToChildren(Collection<C> children, CommentedConfigurationNode node, BiConsumer<C, CommentedConfigurationNode> function) {
+        propagateToChildren(children, node, childNode -> true, function);
+    }
+
     private final EntrySet entries = new EntrySet(this);
     private final ClusterSet clusters = new ClusterSet(this);
 
@@ -96,20 +110,6 @@ abstract class Parent implements StructurePart, Translatable {
     public void fetch(CommentedConfigurationNode node) {
         propagateToChildren(entries, node, StructurePart::fetch);
         propagateToChildren(clusters, node, StructurePart::fetch);
-    }
-
-    private <C extends StructurePart & Identifiable> void propagateToChildren(Collection<C> children, CommentedConfigurationNode node, Predicate<CommentedConfigurationNode> childNodeCondition, BiConsumer<C, CommentedConfigurationNode> function) {
-        for (C child : children) {
-            CommentedConfigurationNode childNode = node.node(child.getId());
-            if (!childNodeCondition.test(childNode)) {
-                continue;
-            }
-            function.accept(child, childNode);
-        }
-    }
-
-    private <C extends StructurePart & Identifiable> void propagateToChildren(Collection<C> children, CommentedConfigurationNode node, BiConsumer<C, CommentedConfigurationNode> function) {
-        propagateToChildren(children, node, childNode -> true, function);
     }
 
     final boolean isEmpty() {
