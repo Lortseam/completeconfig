@@ -4,7 +4,8 @@ import me.lortseam.completeconfig.data.transform.Transformation;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 /**
- * The main CompleteConfig extension type. Used for the {@code completeconfig-extension} entrypoint.
+ * The main CompleteConfig extension type for both client and server environment. Used for the
+ * {@code completeconfig-extension} entrypoint.
  */
 public interface BaseExtension extends Extension {
 
