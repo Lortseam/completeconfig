@@ -19,9 +19,13 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 /**
  * The base config class. Instantiate or inherit this class to create a config for your mod.
@@ -30,6 +34,17 @@ import java.util.Objects;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
 public class Config extends Parent {
+
+    private static HoconConfigurationLoader createLoader(Consumer<HoconConfigurationLoader.Builder> builderConsumer) {
+        HoconConfigurationLoader.Builder builder = HoconConfigurationLoader.builder()
+                .defaultOptions(options -> options.serializers(typeSerializerCollection -> {
+                    for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(BaseExtension.class, BaseExtension::getTypeSerializers)) {
+                        typeSerializerCollection.registerAll(typeSerializers);
+                    }
+                }));
+        builderConsumer.accept(builder);
+        return builder.build();
+    }
 
     @EqualsAndHashCode.Include
     @ToString.Include
@@ -60,20 +75,15 @@ public class Config extends Parent {
         Arrays.stream(containers).forEach(Objects::requireNonNull);
         this.modId = modId;
         this.branch = branch;
-        Path path = FabricLoader.getInstance().getConfigDir();
-        String[] subPath = ArrayUtils.add(branch, 0, modId);
-        subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".conf";
-        for (String child : subPath) {
-            path = path.resolve(child);
-        }
-        loader = HoconConfigurationLoader.builder()
-                .path(path)
-                .defaultOptions(options -> options.serializers(builder -> {
-                    for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(BaseExtension.class, BaseExtension::getTypeSerializers)) {
-                        builder.registerAll(typeSerializers);
-                    }
-                }))
-                .build();
+        loader = createLoader(builder -> {
+            Path path = FabricLoader.getInstance().getConfigDir();
+            String[] subPath = ArrayUtils.add(branch, 0, modId);
+            subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".conf";
+            for (String child : subPath) {
+                path = path.resolve(child);
+            }
+            builder.path(path);
+        });
         resolver = () -> {
             if (this instanceof ConfigContainer) {
                 resolve((ConfigContainer) this);
@@ -115,12 +125,7 @@ public class Config extends Parent {
         return translation;
     }
 
-    /**
-     * Loads the config.
-     *
-     * <p>On first load, this also resolves the config's children.
-     */
-    public final void load() {
+    private void load(HoconConfigurationLoader loader) {
         if (resolver != null) {
             resolver.run();
             resolver = null;
@@ -132,17 +137,25 @@ public class Config extends Parent {
                 apply(root);
             }
         } catch (ConfigurateException e) {
-            logger.error("Failed to load config from file", e);
+            logger.error("Failed to load config", e);
         }
-        save();
+    }
+
+    public final void load(Callable<BufferedReader> source) {
+        load(createLoader(builder -> builder.source(source)));
     }
 
     /**
-     * Saves the config.
+     * Loads the config from the save file.
      */
-    public final void save() {
+    public final void load() {
+        load(loader);
+        save();
+    }
+
+    private void serialize(HoconConfigurationLoader loader) {
         if (resolver != null) {
-            throw new IllegalStateException("Cannot save config before it was loaded");
+            throw new IllegalStateException("Cannot serialize config before it was loaded");
         }
         if (isEmpty()) return;
         CommentedConfigurationNode root = loader.createNode();
@@ -150,8 +163,19 @@ public class Config extends Parent {
         try {
             loader.save(root);
         } catch (ConfigurateException e) {
-            logger.error("Failed to save config to file", e);
+            logger.error("Failed to serialize config", e);
         }
+    }
+
+    public final void serialize(Callable<BufferedWriter> sink) {
+        serialize(createLoader(builder -> builder.sink(sink)));
+    }
+
+    /**
+     * Saves the config to the save file.
+     */
+    public final void save() {
+        serialize(loader);
     }
 
 }
