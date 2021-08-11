@@ -172,7 +172,7 @@ public @interface ConfigEntry {
     /**
      * If applied, renders a slider for this entry. Usually used together with a bounding annotation.
      */
-    @Target({ElementType.FIELD})
+    @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Slider {
 
