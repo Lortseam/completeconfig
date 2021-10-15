@@ -27,19 +27,17 @@ public final class ClothConfigClientExtension implements ClientExtension {
 
         @Override
         public ModifierKeyCode deserialize(Type type, ConfigurationNode node) throws SerializationException {
-            if (node.isMap()) {
-                var map = node.childrenMap();
-                var key = InputUtil.fromTranslationKey(requireNonNull(map.get("keyCode"), "keyCode").getString());
-                if (key == InputUtil.UNKNOWN_KEY) {
-                    return ModifierKeyCode.unknown();
-                }
-                var modifier = Modifier.none();
-                if (map.containsKey("modifier")) {
-                    modifier = Modifier.of((short) map.get("modifier").getInt());
-                }
-                return ModifierKeyCode.of(key, modifier);
+            if(!node.isMap()) throw new SerializationException(node, type, "Node must be of type map");
+            var map = node.childrenMap();
+            var key = InputUtil.fromTranslationKey(requireNonNull(map.get("keyCode"), "keyCode").getString());
+            if (key == InputUtil.UNKNOWN_KEY) {
+                return ModifierKeyCode.unknown();
             }
-            throw new SerializationException(node, type, "Node must be of type map");
+            var modifier = Modifier.none();
+            if (map.containsKey("modifier")) {
+                modifier = Modifier.of((short) map.get("modifier").getInt());
+            }
+            return ModifierKeyCode.of(key, modifier);
         }
 
         @Override
