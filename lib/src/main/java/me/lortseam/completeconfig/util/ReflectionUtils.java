@@ -43,4 +43,8 @@ public final class ReflectionUtils {
         return Optional.of(method);
     }
 
+    public static Type boxType(Type type) {
+        return GenericTypeReflector.box(type);
+    }
+
 }
