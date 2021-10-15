@@ -4,10 +4,14 @@ import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
-import me.lortseam.completeconfig.extension.*;
+import me.lortseam.completeconfig.extension.BaseExtension;
+import me.lortseam.completeconfig.extension.ClientExtension;
+import me.lortseam.completeconfig.extension.Extension;
+import me.lortseam.completeconfig.extension.ServerExtension;
 import me.lortseam.completeconfig.extension.clothbasicmath.ClothBasicMathExtension;
+import me.lortseam.completeconfig.extension.clothconfig.ClothConfigExtension;
 import me.lortseam.completeconfig.extension.clothconfig.GuiExtension;
-import me.lortseam.completeconfig.extension.minecraft.MinecraftClientExtension;
+import me.lortseam.completeconfig.extension.minecraft.MinecraftExtension;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -29,8 +33,9 @@ public final class CompleteConfig {
         registerExtensionType(ClientExtension.class, EnvType.CLIENT);
         registerExtensionType(ServerExtension.class, EnvType.SERVER);
         registerExtensionType(GuiExtension.class, EnvType.CLIENT, "cloth-config2");
-        registerExtension(MinecraftClientExtension.class);
+        registerExtension(MinecraftExtension.class);
         registerExtension("cloth-basic-math", ClothBasicMathExtension.class);
+        registerExtension("cloth-config2", ClothConfigExtension.class);
         for (EntrypointContainer<BaseExtension> entrypoint : FabricLoader.getInstance().getEntrypointContainers("completeconfig-extension", BaseExtension.class)) {
             registerExtension(entrypoint.getEntrypoint());
         }

@@ -5,7 +5,9 @@ import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.Config;
+import me.shedaniel.clothconfig2.api.ModifierKeyCode;
 import me.shedaniel.math.Color;
+import net.minecraft.client.util.InputUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +39,8 @@ public final class Settings extends Config implements ConfigContainer {
         private List<String> list = Arrays.asList("First entry", "Second entry");
         private String[] array = new String[0];
         private Color color = Color.ofRGB(0, 255, 0);
+        private InputUtil.Key key = InputUtil.UNKNOWN_KEY;
+        private ModifierKeyCode modKey = ModifierKeyCode.unknown();
 
     }
 
