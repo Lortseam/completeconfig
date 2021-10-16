@@ -8,6 +8,7 @@ import me.lortseam.completeconfig.extension.ClientExtension;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TextColor;
 import org.spongepowered.configurate.serialize.CoercionFailedException;
+import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
@@ -25,7 +26,11 @@ public final class MinecraftClientExtension implements ClientExtension {
                 }))
                 .registerExact(TypeSerializer.of(InputUtil.Key.class, (v, pass) -> v.getTranslationKey(), v -> {
                     if(v instanceof String) {
-                        return InputUtil.fromTranslationKey((String) v);
+                        try {
+                            return InputUtil.fromTranslationKey((String) v);
+                        } catch(Exception e) {
+                            throw new SerializationException(e);
+                        }
                     }
                     throw new CoercionFailedException(v, InputUtil.Key.class.getSimpleName());
                 }))
