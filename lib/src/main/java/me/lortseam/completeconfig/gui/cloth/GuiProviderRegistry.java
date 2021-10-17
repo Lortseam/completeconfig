@@ -10,7 +10,6 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.TextColor;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -190,13 +189,7 @@ public final class GuiProviderRegistry {
                     .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
                     .setTooltip(entry.getTooltip())
                     .setSaveConsumer(list -> entry.setValue(list.toArray(new String[0]))),
-                    String[].class),
-            GuiProvider.create(ColorEntry.class, (ColorEntry<TextColor> entry) -> ConfigEntryBuilder.create()
-                    .startColorField(entry.getText(), entry.getValue())
-                    .setDefaultValue(entry.getDefaultValue())
-                    .setTooltip(entry.getTooltip())
-                    .setSaveConsumer3(entry::setValue),
-                    entry -> !entry.isAlphaMode(), TextColor.class)
+                    String[].class)
     );
 
     static {
