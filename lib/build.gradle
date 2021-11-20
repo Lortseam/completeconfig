@@ -1,5 +1,5 @@
 plugins {
-	id 'com.github.johnrengelman.shadow' version '6.1.0'
+	id 'com.github.johnrengelman.shadow' version '7.1.0'
 	id 'maven-publish'
 }
 
@@ -19,6 +19,7 @@ java {
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.
 	withSourcesJar()
+	withJavadocJar()
 }
 
 jar {
@@ -55,12 +56,12 @@ tasks.withType(Test) {
 javadoc {
 	options {
 		title = "$modName ${project.version} API"
-		source = "16"
+		source = "17"
 		encoding = "UTF-8"
 		charSet = "UTF-8"
 		memberLevel = JavadocMemberLevel.PROTECTED
 		links = [
-				"https://docs.oracle.com/en/java/javase/16/docs/api/"
+				"https://docs.oracle.com/en/java/javase/17/docs/api/"
 		]
 		// Disable the crazy super-strict doclint tool in Java 8
 		addStringOption("Xdoclint:none", "-quiet")
@@ -68,26 +69,12 @@ javadoc {
 	failOnError false
 }
 
-task javadocJar(type: Jar) {
-	dependsOn javadoc
-	from javadoc.destinationDir
-	archiveClassifier = "javadoc"
-}
-
-build.dependsOn javadocJar
-
 // configure the maven publication
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			artifactId rootProject.name
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
-			artifact javadocJar
+			from components.java
 		}
 	}
 }
