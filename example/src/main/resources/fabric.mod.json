@@ -18,6 +18,7 @@
   },
   "depends": {
     "java": ">=17",
-    "fabricloader": ">=0.11.3"
+    "fabricloader": ">=0.11.3",
+    "completeconfig": "*"
   }
 }
