@@ -49,13 +49,15 @@ subprojects {
         mappings("net.fabricmc:yarn:${rootProject.yarn_mappings}:v2")
         modImplementation("net.fabricmc:fabric-loader:${rootProject.loader_version}")
 
-        modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}") {
-            exclude(group: "net.fabricmc.fabric-api")
-        }
+        modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}")
         modImplementation("com.terraformersmc:modmenu:${rootProject.modmenu_version}")
 
         // Using modApi because api does not include dependency inside Maven pom file
         // see https://github.com/FabricMC/fabric-loom/issues/200
         modApi("org.spongepowered:configurate-hocon:${rootProject.configurate_version}")
+
+        constraints {
+            modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+        }
     }
 }
