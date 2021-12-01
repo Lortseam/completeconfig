@@ -57,6 +57,7 @@ subprojects {
         modApi("org.spongepowered:configurate-hocon:${rootProject.configurate_version}")
 
         constraints {
+            // Transitive dependency of Cloth Config which may be outdated
             modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
         }
     }
