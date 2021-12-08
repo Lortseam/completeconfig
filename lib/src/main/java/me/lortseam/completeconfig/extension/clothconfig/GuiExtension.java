@@ -15,7 +15,7 @@ public interface GuiExtension extends Extension {
      *
      * @return an array of custom GUI providers
      *
-     * @see me.lortseam.completeconfig.gui.cloth.GuiProviderRegistry#add(GuiProvider...)
+     * @see me.lortseam.completeconfig.gui.cloth.ClothConfigScreenBuilder#register(GuiProvider...)
      */
     default GuiProvider[] getProviders() {
         return null;
