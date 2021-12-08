@@ -78,3 +78,9 @@ publishing {
 		}
 	}
 }
+
+// Disable Gradle Module Metadata (.module) generation
+// The module file doesn't include excludes of transitive dependencies
+tasks.withType(GenerateModuleMetadata) {
+	enabled = false
+}
