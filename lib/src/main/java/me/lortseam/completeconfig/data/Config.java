@@ -77,7 +77,7 @@ public class Config extends Parent {
         this.branch = branch;
         loader = createLoader(builder -> {
             Path path = FabricLoader.getInstance().getConfigDir();
-            String[] subPath = ArrayUtils.add(branch, 0, modId);
+            String[] subPath = ArrayUtils.insert(0, branch, modId);
             subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".conf";
             for (String child : subPath) {
                 path = path.resolve(child);
