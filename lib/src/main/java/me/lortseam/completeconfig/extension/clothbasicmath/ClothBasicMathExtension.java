@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.extension.clothbasicmath;
 
-import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
@@ -38,7 +37,7 @@ public final class ClothBasicMathExtension implements BaseExtension {
 
     @Override
     public Set<Class<? extends Extension>> children() {
-        return ImmutableSet.of(ClothBasicMathGuiExtension.class);
+        return Set.of(ClothBasicMathGuiExtension.class);
     }
 
 }
