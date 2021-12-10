@@ -32,10 +32,10 @@ public final class CompleteConfig {
     static {
         registerExtensionType(ClientExtension.class, EnvType.CLIENT);
         registerExtensionType(ServerExtension.class, EnvType.SERVER);
-        registerExtensionType(GuiExtension.class, EnvType.CLIENT, "cloth-config2");
+        registerExtensionType(GuiExtension.class, EnvType.CLIENT, "cloth-config");
         registerExtension(MinecraftExtension.class);
         registerExtension("cloth-basic-math", ClothBasicMathExtension.class);
-        registerExtension("cloth-config2", ClothConfigExtension.class);
+        registerExtension("cloth-config", ClothConfigExtension.class);
         for (EntrypointContainer<BaseExtension> entrypoint : FabricLoader.getInstance().getEntrypointContainers("completeconfig-extension", BaseExtension.class)) {
             registerExtension(entrypoint.getEntrypoint());
         }
