@@ -3,7 +3,7 @@ package me.lortseam.completeconfig;
 import com.google.common.collect.Sets;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import me.lortseam.completeconfig.extension.BaseExtension;
 import me.lortseam.completeconfig.extension.ClientExtension;
 import me.lortseam.completeconfig.extension.Extension;
@@ -22,7 +22,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Log4j2(topic = "CompleteConfig")
+@Slf4j(topic = "CompleteConfig")
 @UtilityClass
 public final class CompleteConfig {
 

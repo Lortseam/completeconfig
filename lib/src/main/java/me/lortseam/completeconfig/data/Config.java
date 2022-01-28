@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.extension.BaseExtension;
@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 /**
  * The base config class. Instantiate or inherit this class to create a config for your mod.
  */
-@Log4j2(topic = "CompleteConfig")
+@Slf4j(topic = "CompleteConfig")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
 public class Config extends Parent {
