@@ -2,7 +2,6 @@ package me.lortseam.completeconfig.data;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.client.TooltipSupplier;
@@ -15,7 +14,6 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.Arrays;
 
-@Log4j2(topic = "CompleteConfig")
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public final class Cluster extends Parent implements Identifiable, TooltipSupplier {
 

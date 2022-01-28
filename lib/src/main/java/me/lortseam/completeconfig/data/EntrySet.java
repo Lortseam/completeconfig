@@ -1,6 +1,5 @@
 package me.lortseam.completeconfig.data;
 
-import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
@@ -9,7 +8,6 @@ import me.lortseam.completeconfig.exception.IllegalModifierException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
-@Log4j2(topic = "CompleteConfig")
 public class EntrySet extends SortedSet<Entry> {
 
     EntrySet(Parent parent) {
