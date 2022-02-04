@@ -13,7 +13,6 @@ import me.lortseam.completeconfig.data.structure.client.TooltipSupplier;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
 import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.data.transform.Transformer;
-import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
 import me.lortseam.completeconfig.extension.BaseExtension;
 import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
@@ -152,7 +151,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
             if (annotation.isPresent() && annotation.get().tooltipTranslationKeys().length > 0) {
                 tooltipTranslation = Arrays.stream(annotation.get().tooltipTranslationKeys()).map(key -> {
                     if (key.isBlank()) {
-                        throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + origin.getField() + " may not be blank");
+                        throw new AssertionError("Tooltip translation key of entry " + origin.getField() + " may not be blank");
                     }
                     return getTranslation().root().append(key);
                 }).toArray(TranslationKey[]::new);
