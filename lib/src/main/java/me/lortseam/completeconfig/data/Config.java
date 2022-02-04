@@ -62,7 +62,7 @@ public class Config extends Parent {
     /**
      * Creates a config with the specified branch.
      *
-     * <p>The branch determines the location of the config's save file and has to be mod-unique.
+     * <p>The branch determines the location of the config file and has to be mod-unique.
      *
      * @param modId the ID of the mod creating the config
      * @param branch the branch
@@ -151,7 +151,7 @@ public class Config extends Parent {
     }
 
     /**
-     * Loads the config from the save file.
+     * Loads the config from the config file.
      */
     public final void load() {
         deserialize(loader);
@@ -182,7 +182,7 @@ public class Config extends Parent {
     }
 
     /**
-     * Saves the config to the save file.
+     * Saves the config to the config file.
      */
     public final void save() {
         serialize(loader);

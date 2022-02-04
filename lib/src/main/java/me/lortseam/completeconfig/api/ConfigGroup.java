@@ -27,7 +27,7 @@ public interface ConfigGroup extends ConfigContainer {
     }
 
     /**
-     * Specifies a comment which describes this group. The comment will only be visible in the config save file.
+     * Specifies a comment which describes this group. The comment will only be visible in the config file.
      *
      * @return a comment
      */
