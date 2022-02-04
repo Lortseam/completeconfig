@@ -3,7 +3,6 @@ package me.lortseam.completeconfig.data;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.exception.IllegalModifierException;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -26,7 +25,7 @@ public class EntrySet extends SortedSet<Entry> {
                 return field.isAnnotationPresent(ConfigEntry.class);
             }).map(field -> {
                 if (Modifier.isFinal(field.getModifiers())) {
-                    throw new IllegalModifierException("Entry field " + field + " must not be final");
+                    throw new AssertionError("Entry field " + field + " must not be final");
                 }
                 return Entry.of(parent, field, Modifier.isStatic(field.getModifiers()) ? null : container);
             }).forEach(this::add);

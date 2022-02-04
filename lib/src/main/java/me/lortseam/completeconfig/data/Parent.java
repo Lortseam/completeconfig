@@ -5,7 +5,6 @@ import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.StructurePart;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
-import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -51,7 +50,7 @@ abstract class Parent implements StructurePart, Translatable {
             resolve(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (field.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(field.getType())) {
-                        throw new IllegalAnnotationTargetException("Transitive field " + field + " must implement " + ConfigContainer.class.getSimpleName());
+                        throw new AssertionError("Transitive field " + field + " must implement " + ConfigContainer.class.getSimpleName());
                     }
                     return !Modifier.isStatic(field.getModifiers()) || clazz == container.getClass();
                 }
@@ -71,10 +70,10 @@ abstract class Parent implements StructurePart, Translatable {
             resolve(Arrays.stream(nestedClasses).filter(nestedClass -> {
                 if (nestedClass.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(nestedClass)) {
-                        throw new IllegalAnnotationTargetException("Transitive " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
+                        throw new AssertionError("Transitive " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
                     }
                     if (!Modifier.isStatic(nestedClass.getModifiers())) {
-                        throw new IllegalAnnotationTargetException("Transitive " + nestedClass + " must be static");
+                        throw new AssertionError("Transitive " + nestedClass + " must be static");
                     }
                     return true;
                 }
