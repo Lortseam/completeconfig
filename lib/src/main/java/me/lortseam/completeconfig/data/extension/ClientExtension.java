@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.extension;
+package me.lortseam.completeconfig.data.extension;
 
 /**
  * The main CompleteConfig extension type for the client environment.

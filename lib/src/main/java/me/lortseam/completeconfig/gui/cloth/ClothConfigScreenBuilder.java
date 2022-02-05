@@ -6,7 +6,6 @@ import com.google.common.reflect.TypeToken;
 import lombok.NonNull;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.*;
-import me.lortseam.completeconfig.extension.clothconfig.GuiExtension;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.text.TranslationKey;
 import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;

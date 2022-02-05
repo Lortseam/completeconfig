@@ -1,7 +1,7 @@
-package me.lortseam.completeconfig.extension.clothconfig;
+package me.lortseam.completeconfig.extensions.clothconfig;
 
-import me.lortseam.completeconfig.extension.BaseExtension;
-import me.lortseam.completeconfig.extension.Extension;
+import me.lortseam.completeconfig.data.extension.BaseExtension;
+import me.lortseam.completeconfig.Extension;
 
 import java.util.Set;
 

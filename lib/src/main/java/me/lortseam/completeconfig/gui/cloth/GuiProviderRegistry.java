@@ -1,7 +1,6 @@
 package me.lortseam.completeconfig.gui.cloth;
 
 import lombok.RequiredArgsConstructor;
-import me.lortseam.completeconfig.extension.clothconfig.GuiExtension;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

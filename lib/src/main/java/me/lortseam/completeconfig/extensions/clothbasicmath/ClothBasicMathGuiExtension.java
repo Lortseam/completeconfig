@@ -1,7 +1,7 @@
-package me.lortseam.completeconfig.extension.clothbasicmath;
+package me.lortseam.completeconfig.extensions.clothbasicmath;
 
 import me.lortseam.completeconfig.data.ColorEntry;
-import me.lortseam.completeconfig.extension.clothconfig.GuiExtension;
+import me.lortseam.completeconfig.gui.cloth.GuiExtension;
 import me.lortseam.completeconfig.gui.cloth.GuiProvider;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.math.Color;

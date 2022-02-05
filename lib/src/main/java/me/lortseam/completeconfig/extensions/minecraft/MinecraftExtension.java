@@ -1,7 +1,7 @@
-package me.lortseam.completeconfig.extension.minecraft;
+package me.lortseam.completeconfig.extensions.minecraft;
 
-import me.lortseam.completeconfig.extension.BaseExtension;
-import me.lortseam.completeconfig.extension.Extension;
+import me.lortseam.completeconfig.data.extension.BaseExtension;
+import me.lortseam.completeconfig.Extension;
 
 import java.util.Set;
 
