@@ -7,7 +7,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.extension.BaseExtension;
+import me.lortseam.completeconfig.data.extension.BaseExtension;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

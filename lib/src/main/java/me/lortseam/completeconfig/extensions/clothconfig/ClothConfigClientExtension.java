@@ -1,6 +1,6 @@
-package me.lortseam.completeconfig.extension.clothconfig;
+package me.lortseam.completeconfig.extensions.clothconfig;
 
-import me.lortseam.completeconfig.extension.ClientExtension;
+import me.lortseam.completeconfig.data.extension.ClientExtension;
 import me.shedaniel.clothconfig2.api.Modifier;
 import me.shedaniel.clothconfig2.api.ModifierKeyCode;
 import net.minecraft.client.util.InputUtil;

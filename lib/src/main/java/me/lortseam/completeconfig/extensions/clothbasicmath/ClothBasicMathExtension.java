@@ -1,11 +1,11 @@
-package me.lortseam.completeconfig.extension.clothbasicmath;
+package me.lortseam.completeconfig.extensions.clothbasicmath;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.extension.BaseExtension;
-import me.lortseam.completeconfig.extension.Extension;
+import me.lortseam.completeconfig.data.extension.BaseExtension;
+import me.lortseam.completeconfig.Extension;
 import me.shedaniel.math.Color;
 import org.spongepowered.configurate.serialize.CoercionFailedException;
 import org.spongepowered.configurate.serialize.TypeSerializer;

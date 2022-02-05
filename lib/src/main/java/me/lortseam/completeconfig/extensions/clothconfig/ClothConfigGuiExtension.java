@@ -1,6 +1,7 @@
-package me.lortseam.completeconfig.extension.clothconfig;
+package me.lortseam.completeconfig.extensions.clothconfig;
 
 import me.lortseam.completeconfig.data.Entry;
+import me.lortseam.completeconfig.gui.cloth.GuiExtension;
 import me.lortseam.completeconfig.gui.cloth.GuiProvider;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.api.ModifierKeyCode;

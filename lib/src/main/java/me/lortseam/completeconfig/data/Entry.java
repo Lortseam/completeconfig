@@ -13,7 +13,7 @@ import me.lortseam.completeconfig.data.structure.client.TooltipSupplier;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
 import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.data.transform.Transformer;
-import me.lortseam.completeconfig.extension.BaseExtension;
+import me.lortseam.completeconfig.data.extension.BaseExtension;
 import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;

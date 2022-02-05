@@ -1,7 +1,6 @@
-package me.lortseam.completeconfig.extension.clothconfig;
+package me.lortseam.completeconfig.gui.cloth;
 
-import me.lortseam.completeconfig.extension.Extension;
-import me.lortseam.completeconfig.gui.cloth.GuiProvider;
+import me.lortseam.completeconfig.Extension;
 
 /**
  * The main extension type to extend the Cloth Config screen building process.

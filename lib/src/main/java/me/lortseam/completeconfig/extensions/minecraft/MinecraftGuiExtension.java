@@ -1,8 +1,8 @@
-package me.lortseam.completeconfig.extension.minecraft;
+package me.lortseam.completeconfig.extensions.minecraft;
 
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.Entry;
-import me.lortseam.completeconfig.extension.clothconfig.GuiExtension;
+import me.lortseam.completeconfig.gui.cloth.GuiExtension;
 import me.lortseam.completeconfig.gui.cloth.GuiProvider;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.client.util.InputUtil;
