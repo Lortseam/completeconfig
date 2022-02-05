@@ -16,7 +16,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.loader.AbstractConfigurationLoader;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.BufferedReader;
@@ -35,8 +35,8 @@ import java.util.function.Consumer;
 @ToString(onlyExplicitlyIncluded = true)
 public class Config extends Parent {
 
-    private static HoconConfigurationLoader createLoader(Consumer<HoconConfigurationLoader.Builder> builderConsumer) {
-        HoconConfigurationLoader.Builder builder = HoconConfigurationLoader.builder()
+    private static AbstractConfigurationLoader<CommentedConfigurationNode> createLoader(Consumer<AbstractConfigurationLoader.Builder<?, ? extends AbstractConfigurationLoader<CommentedConfigurationNode>>> builderConsumer) {
+        AbstractConfigurationLoader.Builder<?, ? extends AbstractConfigurationLoader<CommentedConfigurationNode>> builder = ConfigFormat.HOCON.createLoaderBuilder()
                 .defaultOptions(options -> options.serializers(typeSerializerCollection -> {
                     for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(BaseExtension.class, BaseExtension::getTypeSerializers)) {
                         typeSerializerCollection.registerAll(typeSerializers);
@@ -54,7 +54,7 @@ public class Config extends Parent {
     @ToString.Include
     @Getter
     private final String[] branch;
-    private final HoconConfigurationLoader loader;
+    private final AbstractConfigurationLoader<CommentedConfigurationNode> loader;
     private Runnable resolver;
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
@@ -125,7 +125,7 @@ public class Config extends Parent {
         return translation;
     }
 
-    private void deserialize(HoconConfigurationLoader loader) {
+    private void deserialize(AbstractConfigurationLoader<CommentedConfigurationNode> loader) {
         if (resolver != null) {
             resolver.run();
             resolver = null;
@@ -158,7 +158,7 @@ public class Config extends Parent {
         save();
     }
 
-    private void serialize(HoconConfigurationLoader loader) {
+    private void serialize(AbstractConfigurationLoader<CommentedConfigurationNode> loader) {
         if (resolver != null) {
             throw new IllegalStateException("Cannot serialize config before it was loaded");
         }
