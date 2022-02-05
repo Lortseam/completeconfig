@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 @Slf4j(topic = "CompleteConfig")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
-public class Config extends Parent {
+public class Config extends Parent implements ConfigContainer {
 
     private static HoconConfigurationLoader createLoader(Consumer<HoconConfigurationLoader.Builder> builderConsumer) {
         HoconConfigurationLoader.Builder builder = HoconConfigurationLoader.builder()
@@ -85,9 +85,7 @@ public class Config extends Parent {
             builder.path(path);
         });
         resolver = () -> {
-            if (this instanceof ConfigContainer) {
-                resolve((ConfigContainer) this);
-            }
+            resolve(this);
             resolve(containers);
             if (isEmpty()) {
                 logger.warn(this + " is empty");
