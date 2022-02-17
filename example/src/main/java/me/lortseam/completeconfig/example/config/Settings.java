@@ -10,11 +10,17 @@ import me.shedaniel.math.Color;
 import java.util.Arrays;
 import java.util.List;
 
+@ConfigEntries
 public class Settings extends Config {
 
     public Settings() {
         super(ExampleMod.MOD_ID);
     }
+
+    @ConfigEntry(comment = "This is a test comment")
+    private boolean comment;
+    @ConfigEntry(requiresRestart = true)
+    private boolean requiresRestart;
 
     @Transitive
     @ConfigEntries

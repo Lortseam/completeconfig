@@ -37,10 +37,16 @@ subprojects {
 
     repositories {
         maven {
+            url "https://jitpack.io"
+        }
+        maven {
             url "https://maven.terraformersmc.com/"
         }
         maven {
             url "https://maven.shedaniel.me/"
+        }
+        maven {
+            url "https://maven.siphalor.de/"
         }
     }
 
@@ -51,6 +57,12 @@ subprojects {
 
         modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}") {
             exclude(group: "net.fabricmc.fabric-api")
+        }
+        // TODO: Get Minecraft version without patch from root project
+        modApi("de.siphalor:coat-1.18:${rootProject.coat_version}") {
+            exclude(group: "net.fabricmc.fabric-api")
+            exclude(group: "de.siphalor", module: "amecsapi-1.18")
+            exclude(group: "com.github.astei", module: "lazydfu")
         }
         modImplementation("com.terraformersmc:modmenu:${rootProject.modmenu_version}")
 

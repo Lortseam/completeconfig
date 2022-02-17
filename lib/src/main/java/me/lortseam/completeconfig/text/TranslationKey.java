@@ -8,14 +8,12 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @EqualsAndHashCode
 public final class TranslationKey {
 
     private static final char DELIMITER = '.';
+
+    public static final TranslationKey EMPTY = new TranslationKey("", "");
 
     public static TranslationKey from(Config config) {
         return new TranslationKey("config" + DELIMITER + config.getMod().getId(), null);
@@ -61,25 +59,16 @@ public final class TranslationKey {
         return new TranslationKey(modKey, subKeyBuilder.toString());
     }
 
-    public Optional<TranslationKey[]> appendTooltip() {
-        TranslationKey baseTranslation = append("tooltip");
-        if (baseTranslation.exists()) {
-            return Optional.of(new TranslationKey[] {baseTranslation});
-        } else {
-            List<TranslationKey> multiLineTranslation = new ArrayList<>();
-            for(int i = 0;; i++) {
-                TranslationKey key = baseTranslation.append(Integer.toString(i));
-                if(key.exists()) {
-                    multiLineTranslation.add(key);
-                } else {
-                    if (!multiLineTranslation.isEmpty()) {
-                        return Optional.of(multiLineTranslation.toArray(new TranslationKey[0]));
-                    }
-                    break;
-                }
-            }
+    public TranslationKey appendOptional(String... subKeys) {
+        TranslationKey translation = append(subKeys);
+        if (translation.exists()) {
+            return translation;
         }
-        return Optional.empty();
+        return EMPTY;
+    }
+
+    public boolean isEmpty() {
+        return this == EMPTY;
     }
 
     @Override

@@ -5,7 +5,6 @@ import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import me.lortseam.completeconfig.data.transform.Transformation;
 
-import java.util.Collection;
 import java.util.*;
 
 @UtilityClass

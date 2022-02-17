@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.gui.cloth;
+package me.lortseam.completeconfig.gui;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import java.util.function.Predicate;
  */
 @Environment(EnvType.CLIENT)
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class GuiProvider {
+public final class GuiProvider<T> {
 
     /**
      * Creates a new GUI provider for a custom entry type, filtered by a predicate and value types.
@@ -29,8 +29,8 @@ public final class GuiProvider {
      * @param <E> the custom entry type
      * @return the created GUI provider
      */
-    public static <E extends Entry<?>> GuiProvider create(Class<E> entryType, EntryBuilder<? extends E> builder, Predicate<E> predicate, Type... types) {
-        return new GuiProvider(entry -> {
+    public static <T, E extends Entry<?>, B extends EntryBuilder<? extends E, T>> GuiProvider<T> create(Class<E> entryType, B builder, Predicate<E> predicate, Type... types) {
+        return new GuiProvider<>(entry -> {
             if (entry.getClass() != (entryType != null ? entryType : Entry.class)) return false;
             if (types.length > 0 && !ArrayUtils.contains(types, entry.getType())) return false;
             return predicate.test((E) entry);
@@ -46,7 +46,7 @@ public final class GuiProvider {
      * @param <E> the custom entry type
      * @return the created GUI provider
      */
-    public static <E extends Entry<?>> GuiProvider create(Class<E> entryType, EntryBuilder<? extends E> builder, Type... types) {
+    public static <T, E extends Entry<?>, B extends EntryBuilder<? extends E, T>> GuiProvider<T> create(Class<E> entryType, B builder, Type... types) {
         return create(entryType, builder, entry -> true, types);
     }
 
@@ -58,7 +58,7 @@ public final class GuiProvider {
      * @param types the valid value types
      * @return the created GUI provider
      */
-    public static GuiProvider create(EntryBuilder<?> builder, Predicate<Entry<?>> predicate, Type... types) {
+    public static <T, E extends Entry<?>, B extends EntryBuilder<? extends E, T>> GuiProvider<T> create(B builder, Predicate<E> predicate, Type... types) {
         return create(null, builder, predicate, types);
     }
 
@@ -69,7 +69,7 @@ public final class GuiProvider {
      * @param types the valid value types
      * @return the created GUI provider
      */
-    public static GuiProvider create(EntryBuilder<?> builder, Type... types) {
+    public static <T, E extends Entry<?>, B extends EntryBuilder<? extends E, T>> GuiProvider<T> create(B builder, Type... types) {
         if (types.length == 0) {
             throw new IllegalArgumentException("Types must not be empty");
         }
@@ -78,7 +78,7 @@ public final class GuiProvider {
 
     private final Predicate<Entry<?>> predicate;
     @Getter(AccessLevel.PACKAGE)
-    private final EntryBuilder<?> builder;
+    private final EntryBuilder<?, T> builder;
 
     boolean test(Entry<?> entry) {
         return predicate.test(entry);

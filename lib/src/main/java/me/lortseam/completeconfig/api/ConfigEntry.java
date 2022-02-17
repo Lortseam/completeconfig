@@ -37,15 +37,9 @@ public @interface ConfigEntry {
      *
      * @return a custom translation key
      */
-    String translationKey() default "";
+    String key() default "";
 
-    /**
-     * Specifies one or more custom translation keys for this entry's tooltip, declared line by line. If empty, the
-     * default single-line or multi-line keys will be used, depending on which are defined in the language file(s).
-     *
-     * @return an array of custom tooltip translation keys
-     */
-    String[] tooltipTranslationKeys() default {};
+    String descriptionKey() default "";
 
     /**
      * Specifies whether the game needs to be restarted after modifying the entry.
@@ -66,14 +60,14 @@ public @interface ConfigEntry {
          *
          * @return a custom value translation key
          */
-        String trueTranslationKey() default "";
+        String trueKey() default "";
 
         /**
          * A custom translation key for the value {@code false}. If empty, the default key will be used.
          *
          * @return a custom value translation key
          */
-        String falseTranslationKey() default "";
+        String falseKey() default "";
         
     }
 
@@ -184,7 +178,7 @@ public @interface ConfigEntry {
          *
          * @return a custom value translation key
          */
-        String valueTranslationKey() default "";
+        String valueKey() default "";
 
     }
 

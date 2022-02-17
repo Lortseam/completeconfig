@@ -69,7 +69,7 @@ public class EntryTest implements ConfigContainer {
     @ConfigEntry(CUSTOM_ID)
     private boolean customIdField;
     private Entry<?> customIdEntry = of("customIdField");
-    @ConfigEntry(translationKey = CUSTOM_TRANSLATION_KEY)
+    @ConfigEntry(key = CUSTOM_TRANSLATION_KEY)
     private boolean customTranslationKeyField;
     private Entry<?> customTranslationKeyEntry = of("customTranslationKeyField");
 
@@ -119,7 +119,7 @@ public class EntryTest implements ConfigContainer {
         assertEquals(PARENT.getTranslation().append(entry.getId()), entry.getTranslation());
         assertEquals(PARENT.getTranslation().append(customIdEntry.getId()), customIdEntry.getTranslation());
         assertEquals(PARENT.getTranslation().root().append(CUSTOM_TRANSLATION_KEY), customTranslationKeyEntry.getTranslation());
-        // TODO: Tooltips
+        // TODO: Descriptions
     }
 
     private enum AnEnum {

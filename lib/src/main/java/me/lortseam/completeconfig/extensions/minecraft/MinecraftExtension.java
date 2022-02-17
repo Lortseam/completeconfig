@@ -9,7 +9,7 @@ public final class MinecraftExtension implements BaseExtension {
 
     @Override
     public Set<Class<? extends Extension>> children() {
-        return Set.of(MinecraftClientExtension.class, MinecraftGuiExtension.class);
+        return Set.of(MinecraftClientExtension.class, MinecraftClothConfigGuiExtension.class);
     }
 
 }

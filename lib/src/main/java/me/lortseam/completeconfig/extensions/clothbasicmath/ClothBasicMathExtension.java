@@ -37,7 +37,7 @@ public final class ClothBasicMathExtension implements BaseExtension {
 
     @Override
     public Set<Class<? extends Extension>> children() {
-        return Set.of(ClothBasicMathGuiExtension.class);
+        return Set.of(ClothBasicMathClothConfigGuiExtension.class);
     }
 
 }

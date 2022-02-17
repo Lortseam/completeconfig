@@ -16,13 +16,7 @@ public interface ConfigGroup extends ConfigContainer {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, getClass().getSimpleName());
     }
 
-    /**
-     * Specifies one or more custom translation keys for this group's tooltip, declared line by line. If empty,
-     * the default single-line or multi-line keys will be used, depending on which are defined in the language file(s).
-     *
-     * @return an array of custom tooltip translation keys
-     */
-    default String[] getTooltipTranslationKeys() {
+    default String getDescriptionKey() {
         return null;
     }
 

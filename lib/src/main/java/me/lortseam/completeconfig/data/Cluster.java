@@ -4,25 +4,24 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.Identifiable;
-import me.lortseam.completeconfig.data.structure.client.TooltipSupplier;
+import me.lortseam.completeconfig.data.structure.client.DescriptionSupplier;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
-import java.util.Arrays;
+import java.util.Optional;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public final class Cluster extends Parent implements Identifiable, TooltipSupplier {
+public final class Cluster extends Parent implements Identifiable, DescriptionSupplier {
 
     private final Parent parent;
     private final ConfigGroup group;
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
     @Environment(EnvType.CLIENT)
-    private TranslationKey[] tooltipTranslation;
+    private TranslationKey descriptionTranslation;
 
     @Override
     public TranslationKey getTranslation() {
@@ -33,15 +32,16 @@ public final class Cluster extends Parent implements Identifiable, TooltipSuppli
     }
 
     @Override
-    public TranslationKey[] getTooltipTranslation() {
-        if (tooltipTranslation == null) {
-            if (ArrayUtils.isNotEmpty(group.getTooltipTranslationKeys())) {
-                tooltipTranslation = Arrays.stream(group.getTooltipTranslationKeys()).map(key -> getTranslation().root().append(key)).toArray(TranslationKey[]::new);
+    public Optional<TranslationKey> getDescriptionTranslation() {
+        if (descriptionTranslation == null) {
+            String customKey = group.getDescriptionKey();
+            if (customKey != null) {
+                descriptionTranslation = getTranslation().root().append(customKey);
             } else {
-                tooltipTranslation = getTranslation().appendTooltip().orElse(new TranslationKey[0]);
+                descriptionTranslation = getTranslation().appendOptional("description");
             }
         }
-        return tooltipTranslation;
+        return !descriptionTranslation.isEmpty() ? Optional.of(descriptionTranslation) : Optional.empty();
     }
 
     @Override

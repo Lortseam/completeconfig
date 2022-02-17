@@ -8,7 +8,12 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
+@ConfigEntries
 public class ClientSettings extends Settings {
+
+    private boolean defaultDescription;
+    @ConfigEntry(descriptionKey = "customDescriptionKey")
+    private boolean customDescription;
 
     @Transitive
     @ConfigEntries
@@ -17,19 +22,6 @@ public class ClientSettings extends Settings {
         private TextColor textColor = TextColor.fromFormatting(Formatting.GREEN);
         private InputUtil.Key key = InputUtil.UNKNOWN_KEY;
         private ModifierKeyCode modifierKeyCode = ModifierKeyCode.unknown();
-
-    }
-
-    @Transitive
-    @ConfigEntries
-    public static class Tooltips implements ConfigGroup {
-
-        private boolean defaultOneLine;
-
-        private boolean defaultMultiLine;
-
-        @ConfigEntry(tooltipTranslationKeys = {"customTooltipLine1", "customTooltipLine2"})
-        private boolean custom;
 
     }
 

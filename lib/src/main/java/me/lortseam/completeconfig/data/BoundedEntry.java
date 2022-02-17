@@ -2,8 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.math.BigDecimal;
+import me.lortseam.completeconfig.util.NumberUtils;
 
 @Slf4j(topic = "CompleteConfig")
 public class BoundedEntry<T extends Number> extends Entry<T> {
@@ -13,10 +12,10 @@ public class BoundedEntry<T extends Number> extends Entry<T> {
 
     public BoundedEntry(EntryOrigin origin, T min, T max) {
         super(origin, value -> {
-            if (new BigDecimal(value.toString()).compareTo(new BigDecimal(min.toString())) < 0) {
+            if (NumberUtils.compare(value, min) < 0) {
                 logger.warn("Tried to set value of field " + origin.getField() + " to a value less than lower bound, setting to minimum now");
                 return min;
-            } else if (new BigDecimal(value.toString()).compareTo(new BigDecimal(max.toString())) > 0) {
+            } else if (NumberUtils.compare(value, max) > 0) {
                 logger.warn("Tried to set value of field " + origin.getField() + " to a value greater than upper bound, setting to maximum now");
                 return max;
             }

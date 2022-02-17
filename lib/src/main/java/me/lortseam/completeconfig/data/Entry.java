@@ -7,30 +7,32 @@ import lombok.extern.slf4j.Slf4j;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
+import me.lortseam.completeconfig.data.extension.BaseExtension;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.StructurePart;
-import me.lortseam.completeconfig.data.structure.client.TooltipSupplier;
+import me.lortseam.completeconfig.data.structure.client.DescriptionSupplier;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
 import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.data.transform.Transformer;
-import me.lortseam.completeconfig.data.extension.BaseExtension;
 import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 @Slf4j(topic = "CompleteConfig")
-public class Entry<T> implements StructurePart, Identifiable, Translatable, TooltipSupplier {
+public class Entry<T> implements StructurePart, Identifiable, Translatable, DescriptionSupplier {
 
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
 
@@ -57,11 +59,12 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
     @Environment(EnvType.CLIENT)
-    private TranslationKey[] tooltipTranslation;
+    private TranslationKey descriptionTranslation;
     @Accessors(fluent = true)
     @Getter
     private final boolean requiresRestart;
     private final String comment;
+    // TODO: Make this an abstract method
     private final UnaryOperator<T> valueModifier;
     private final Setter<T> setter;
 
@@ -135,8 +138,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
     public TranslationKey getTranslation() {
         if (translation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
-            if (annotation.isPresent() && !annotation.get().translationKey().isBlank()) {
-                translation = origin.getParent().getTranslation().root().append(annotation.get().translationKey());
+            if (annotation.isPresent() && !annotation.get().key().isBlank()) {
+                translation = origin.getParent().getTranslation().root().append(annotation.get().key());
             } else {
                 translation = origin.getParent().getTranslation().append(id);
             }
@@ -145,21 +148,21 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
     }
 
     @Override
-    public TranslationKey[] getTooltipTranslation() {
-        if (tooltipTranslation == null) {
+    public Optional<TranslationKey> getDescriptionTranslation() {
+        if (descriptionTranslation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
-            if (annotation.isPresent() && annotation.get().tooltipTranslationKeys().length > 0) {
-                tooltipTranslation = Arrays.stream(annotation.get().tooltipTranslationKeys()).map(key -> {
-                    if (key.isBlank()) {
-                        throw new AssertionError("Tooltip translation key of entry " + origin.getField() + " may not be blank");
-                    }
-                    return getTranslation().root().append(key);
-                }).toArray(TranslationKey[]::new);
+            if (annotation.isPresent() && !annotation.get().descriptionKey().isBlank()) {
+                descriptionTranslation = getTranslation().root().append(annotation.get().descriptionKey());
             } else {
-                tooltipTranslation = getTranslation().appendTooltip().orElse(new TranslationKey[0]);
+                descriptionTranslation = getTranslation().appendOptional("description");
             }
         }
-        return tooltipTranslation;
+        return !descriptionTranslation.isEmpty() ? Optional.of(descriptionTranslation) : Optional.empty();
+    }
+
+    @Environment(EnvType.CLIENT)
+    public Function<T, Text> getValueTextSupplier() {
+        return value -> new LiteralText(value.toString());
     }
 
     @Override

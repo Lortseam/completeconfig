@@ -9,8 +9,8 @@ import me.lortseam.completeconfig.data.extension.ClientExtension;
 import me.lortseam.completeconfig.data.extension.ServerExtension;
 import me.lortseam.completeconfig.extensions.clothbasicmath.ClothBasicMathExtension;
 import me.lortseam.completeconfig.extensions.clothconfig.ClothConfigExtension;
-import me.lortseam.completeconfig.gui.cloth.GuiExtension;
 import me.lortseam.completeconfig.extensions.minecraft.MinecraftExtension;
+import me.lortseam.completeconfig.gui.cloth.ClothConfigGuiExtension;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -31,7 +31,7 @@ public final class CompleteConfig {
     static {
         registerExtensionType(ClientExtension.class, EnvType.CLIENT);
         registerExtensionType(ServerExtension.class, EnvType.SERVER);
-        registerExtensionType(GuiExtension.class, EnvType.CLIENT, "cloth-config");
+        registerExtensionType(ClothConfigGuiExtension.class, EnvType.CLIENT, "cloth-config");
         registerExtension(MinecraftExtension.class);
         registerExtension("cloth-basic-math", ClothBasicMathExtension.class);
         registerExtension("cloth-config", ClothConfigExtension.class);
