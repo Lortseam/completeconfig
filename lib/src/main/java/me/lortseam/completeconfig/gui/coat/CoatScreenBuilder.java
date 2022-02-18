@@ -11,6 +11,8 @@ import de.siphalor.coat.screen.ConfigScreen;
 import me.lortseam.completeconfig.data.*;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.GuiProvider;
+import me.lortseam.completeconfig.gui.coat.handler.BasicEntryHandler;
+import me.lortseam.completeconfig.gui.coat.handler.BoundedEntryHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -27,37 +29,37 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigListConfi
             GuiProvider.create(BooleanEntry.class, entry -> new ConfigListConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
-                    new GenericEntryHandler<>(entry),
+                    new BasicEntryHandler<>(entry),
                     new CheckBoxConfigInput(null, entry.getValue(), false)
             ), boolean.class, Boolean.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> new ConfigListConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
-                    new GenericEntryHandler<>(entry),
+                    new BoundedEntryHandler<>(entry),
                     new SliderConfigInput<>(entry.getValue(), entry.getMin(), entry.getMax())
             ), int.class, Integer.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Long> entry) -> new ConfigListConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
-                    new GenericEntryHandler<>(entry),
+                    new BoundedEntryHandler<>(entry),
                     new SliderConfigInput<>(entry.getValue(), entry.getMin(), entry.getMax())
             ), long.class, Long.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Float> entry) -> new ConfigListConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
-                    new GenericEntryHandler<>(entry),
+                    new BoundedEntryHandler<>(entry),
                     new SliderConfigInput<>(entry.getValue(), entry.getMin(), entry.getMax())
             ), float.class, Float.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Double> entry) -> new ConfigListConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
-                    new GenericEntryHandler<>(entry),
+                    new BoundedEntryHandler<>(entry),
                     new SliderConfigInput<>(entry.getValue(), entry.getMin(), entry.getMax())
             ), double.class, Double.class),
             GuiProvider.create((Entry<String> entry) -> new ConfigListConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
-                    new GenericEntryHandler<>(entry),
+                    new BasicEntryHandler<>(entry),
                     new TextConfigInput(entry.getValue())
             ), String.class)
     );
