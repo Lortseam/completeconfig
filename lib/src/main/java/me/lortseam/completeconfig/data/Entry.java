@@ -20,7 +20,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -108,13 +107,17 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         return update(getFieldValue());
     }
 
-    @MustBeInvokedByOverriders
-    protected boolean update(T value) {
+    private boolean update(T value) {
+        value = onUpdate(value);
         if (value.equals(getFieldValue())) {
             return false;
         }
         set(value);
         return true;
+    }
+
+    protected T onUpdate(T value) {
+        return value;
     }
 
     private void set(T value) {

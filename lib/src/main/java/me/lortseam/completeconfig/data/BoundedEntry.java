@@ -17,15 +17,15 @@ public class BoundedEntry<T extends Number> extends Entry<T> {
     }
 
     @Override
-    protected boolean update(T value) {
+    protected T onUpdate(T value) {
         if (NumberUtils.compare(value, min) < 0) {
             logger.warn("Tried to set value of field " + origin.getField() + " to a value less than lower bound, setting to minimum now");
-            value = min;
+            return min;
         } else if (NumberUtils.compare(value, max) > 0) {
             logger.warn("Tried to set value of field " + origin.getField() + " to a value greater than upper bound, setting to maximum now");
-            value = max;
+            return max;
         }
-        return super.update(value);
+        return value;
     }
 
 }
