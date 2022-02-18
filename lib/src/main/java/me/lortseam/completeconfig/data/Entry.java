@@ -20,6 +20,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -29,7 +30,6 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
 @Slf4j(topic = "CompleteConfig")
 public class Entry<T> implements StructurePart, Identifiable, Translatable, DescriptionSupplier {
@@ -64,28 +64,21 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     @Getter
     private final boolean requiresRestart;
     private final String comment;
-    // TODO: Make this an abstract method
-    private final UnaryOperator<T> valueModifier;
     private final Setter<T> setter;
 
-    protected Entry(EntryOrigin origin, UnaryOperator<T> valueModifier) {
+    protected Entry(EntryOrigin origin) {
         ConfigRegistry.register(origin);
         this.origin = origin;
         if (!origin.getField().canAccess(origin.getObject())) {
             origin.getField().setAccessible(true);
         }
         typeClass = (Class<T>) ReflectionUtils.getTypeClass(getType());
-        this.valueModifier = valueModifier;
         defaultValue = getValue();
         Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
         id = annotation.isPresent() && !annotation.get().value().isBlank() ? annotation.get().value() : origin.getField().getName();
         requiresRestart = annotation.isPresent() && annotation.get().requiresRestart();
         comment = annotation.isPresent() && !annotation.get().comment().isBlank() ? annotation.get().comment() : null;
         setter = ReflectionUtils.getSetterMethod(origin.getField(), origin.getObject()).<Setter<T>>map(method -> method::invoke).orElse((object, value) -> origin.getField().set(object, value));
-    }
-
-    protected Entry(EntryOrigin origin) {
-        this(origin, null);
     }
 
     public Type getType() {
@@ -115,10 +108,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         return update(getFieldValue());
     }
 
-    private boolean update(T value) {
-        if (valueModifier != null) {
-            value = valueModifier.apply(value);
-        }
+    @MustBeInvokedByOverriders
+    protected boolean update(T value) {
         if (value.equals(getFieldValue())) {
             return false;
         }
