@@ -2,5 +2,7 @@
   "completeconfig.gui.defaultTitle": "%s Konfiguration",
   "completeconfig.gui.coat.message.requiresRestart": "Benötigt Neustart",
   "completeconfig.gui.coat.message.tooLarge": "Zu groß (Maximum: %d)",
-  "completeconfig.gui.coat.message.tooSmall": "Zu klein (Minimum: %d)"
+  "completeconfig.gui.coat.message.tooSmall": "Zu klein (Minimum: %d)",
+  "completeconfig.gui.boolean.defaultValue.true": "Ja",
+  "completeconfig.gui.boolean.defaultValue.false": "Nein"
 }
