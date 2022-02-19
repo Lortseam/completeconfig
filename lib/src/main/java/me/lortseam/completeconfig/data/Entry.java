@@ -29,6 +29,7 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 @Slf4j(topic = "CompleteConfig")
 public class Entry<T> implements StructurePart, Identifiable, Translatable, DescriptionSupplier {
@@ -64,20 +65,26 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     private final boolean requiresRestart;
     private final String comment;
     private final Setter<T> setter;
+    private final UnaryOperator<T> revisor;
 
-    protected Entry(EntryOrigin origin) {
+    protected Entry(EntryOrigin origin, UnaryOperator<T> revisor) {
         ConfigRegistry.register(origin);
         this.origin = origin;
+        this.revisor = revisor;
         if (!origin.getField().canAccess(origin.getObject())) {
             origin.getField().setAccessible(true);
         }
-        typeClass = (Class<T>) ReflectionUtils.getTypeClass(getType());
-        defaultValue = getValue();
+        typeClass = (Class<T>) ReflectionUtils.getTypeClass(origin.getType());
         Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
         id = annotation.isPresent() && !annotation.get().value().isBlank() ? annotation.get().value() : origin.getField().getName();
         requiresRestart = annotation.isPresent() && annotation.get().requiresRestart();
         comment = annotation.isPresent() && !annotation.get().comment().isBlank() ? annotation.get().comment() : null;
         setter = ReflectionUtils.getSetterMethod(origin.getField(), origin.getObject()).<Setter<T>>map(method -> method::invoke).orElse((object, value) -> origin.getField().set(object, value));
+        defaultValue = getValue();
+    }
+
+    protected Entry(EntryOrigin origin) {
+        this(origin, null);
     }
 
     public Type getType() {
@@ -108,16 +115,14 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     private boolean update(T value) {
-        value = onUpdate(value);
+        if (revisor != null) {
+            value = revisor.apply(value);
+        }
         if (value.equals(getFieldValue())) {
             return false;
         }
         set(value);
         return true;
-    }
-
-    protected T onUpdate(T value) {
-        return value;
     }
 
     private void set(T value) {
