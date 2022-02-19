@@ -11,6 +11,7 @@ import me.lortseam.completeconfig.extensions.clothbasicmath.ClothBasicMathExtens
 import me.lortseam.completeconfig.extensions.clothconfig.ClothConfigExtension;
 import me.lortseam.completeconfig.extensions.minecraft.MinecraftExtension;
 import me.lortseam.completeconfig.gui.cloth.ClothConfigGuiExtension;
+import me.lortseam.completeconfig.gui.coat.CoatGuiExtension;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -32,6 +33,7 @@ public final class CompleteConfig {
         registerExtensionType(ClientExtension.class, EnvType.CLIENT);
         registerExtensionType(ServerExtension.class, EnvType.SERVER);
         registerExtensionType(ClothConfigGuiExtension.class, EnvType.CLIENT, "cloth-config");
+        registerExtensionType(CoatGuiExtension.class, EnvType.CLIENT, "coat");
         registerExtension(MinecraftExtension.class);
         registerExtension("cloth-basic-math", ClothBasicMathExtension.class);
         registerExtension("cloth-config", ClothConfigExtension.class);

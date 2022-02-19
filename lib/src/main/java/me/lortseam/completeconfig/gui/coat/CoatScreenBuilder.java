@@ -24,7 +24,7 @@ import java.util.List;
 
 public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigListConfigEntry<?>> {
 
-    // TODO: Add missing providers and extension
+    // TODO: Add missing providers
     private static final List<GuiProvider<ConfigListConfigEntry<?>>> globalProviders = Lists.newArrayList(
             GuiProvider.create(BooleanEntry.class, entry -> new ConfigListConfigEntry<>(
                     (BaseText) entry.getText(),
