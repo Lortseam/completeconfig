@@ -19,7 +19,9 @@ public class EntryTest implements ConfigContainer {
     private static final Parent PARENT;
     private static final boolean REQUIRES_RESTART = true;
     private static final String COMMENT = "Comment";
-    private static final String CUSTOM_ID = "customId", CUSTOM_TRANSLATION_KEY = "customTranslationKey";
+    private static final String CUSTOM_ID = "customId",
+            CUSTOM_KEY = "customKey",
+            CUSTOM_DESCRIPTION_KEY = "customDescriptionKey";
 
     static {
         ModMetadata modMetadata = mock(ModMetadata.class);
@@ -69,9 +71,9 @@ public class EntryTest implements ConfigContainer {
     @ConfigEntry(CUSTOM_ID)
     private boolean customIdField;
     private Entry<?> customIdEntry = of("customIdField");
-    @ConfigEntry(key = CUSTOM_TRANSLATION_KEY)
-    private boolean customTranslationKeyField;
-    private Entry<?> customTranslationKeyEntry = of("customTranslationKeyField");
+    @ConfigEntry(key = CUSTOM_KEY, descriptionKey = CUSTOM_DESCRIPTION_KEY)
+    private boolean customKeyField;
+    private Entry<?> customKeyEntry = of("customKeyField");
 
     private Entry<?> of(String fieldName) {
         try {
@@ -116,10 +118,12 @@ public class EntryTest implements ConfigContainer {
     @Test
     @EnabledIfSystemProperty(named = "fabric.dli.env", matches = "client")
     public void of_transformClientProperties() {
+        // Key
         assertEquals(PARENT.getTranslation().append(entry.getId()), entry.getTranslation());
         assertEquals(PARENT.getTranslation().append(customIdEntry.getId()), customIdEntry.getTranslation());
-        assertEquals(PARENT.getTranslation().root().append(CUSTOM_TRANSLATION_KEY), customTranslationKeyEntry.getTranslation());
-        // TODO: Descriptions
+        assertEquals(PARENT.getTranslation().root().append(CUSTOM_KEY), customKeyEntry.getTranslation());
+
+        // TODO: Description key
     }
 
     private enum AnEnum {
