@@ -122,6 +122,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
             return false;
         }
         set(value);
+        origin.getObject().onUpdate();
+        origin.getRoot().onChildUpdate();
         return true;
     }
 

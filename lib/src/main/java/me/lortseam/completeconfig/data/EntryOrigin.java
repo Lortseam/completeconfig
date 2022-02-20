@@ -18,6 +18,8 @@ import java.util.Optional;
 public final class EntryOrigin {
 
     @Getter(AccessLevel.PACKAGE)
+    private final Config root;
+    @Getter(AccessLevel.PACKAGE)
     private final Parent parent;
     @Getter
     @EqualsAndHashCode.Include
@@ -29,6 +31,7 @@ public final class EntryOrigin {
     private final ConfigContainer object;
 
     EntryOrigin(Parent parent, Field field, ConfigContainer object) {
+        this.root = parent.getRoot();
         this.parent = parent;
         this.field = field;
         type = ReflectionUtils.getFieldType(field);

@@ -1,7 +1,7 @@
 package me.lortseam.completeconfig.data;
 
 import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.Identifiable;
@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
-@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public abstract class Parent implements StructurePart, Translatable {
 
     private static <C extends StructurePart & Identifiable> void propagateToChildren(Collection<C> children, CommentedConfigurationNode node, Predicate<CommentedConfigurationNode> childNodeCondition, BiConsumer<C, CommentedConfigurationNode> function) {
@@ -38,6 +38,8 @@ public abstract class Parent implements StructurePart, Translatable {
 
     private final EntrySet entries = new EntrySet(this);
     private final ClusterSet clusters = new ClusterSet(this);
+
+    abstract Config getRoot();
 
     public final Collection<Entry> getEntries() {
         return Collections.unmodifiableCollection(entries);
