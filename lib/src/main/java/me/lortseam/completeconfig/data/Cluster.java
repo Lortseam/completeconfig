@@ -25,6 +25,11 @@ public final class Cluster extends Parent implements Identifiable, TooltipSuppli
     private TranslationKey[] tooltipTranslation;
 
     @Override
+    Config getRoot() {
+        return parent.getRoot();
+    }
+
+    @Override
     public TranslationKey getTranslation() {
         if (translation == null) {
             translation = parent.getTranslation().append(group.getId());

@@ -38,6 +38,8 @@ public interface ConfigContainer {
         return new ConfigContainer[0];
     }
 
+    default void onUpdate() {}
+
     /**
      * Applied to declare that a field or a nested class of type {@link ConfigContainer} is transitive.
      *

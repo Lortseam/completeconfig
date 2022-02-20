@@ -120,6 +120,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
             return false;
         }
         set(value);
+        origin.getObject().onUpdate();
+        origin.getRoot().onChildUpdate();
         return true;
     }
 

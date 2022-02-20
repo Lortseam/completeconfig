@@ -188,4 +188,11 @@ public class Config extends Parent {
         serialize(loader);
     }
 
+    protected void onChildUpdate() {}
+
+    @Override
+    Config getRoot() {
+        return this;
+    }
+
 }
