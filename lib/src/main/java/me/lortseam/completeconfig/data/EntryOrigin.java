@@ -30,8 +30,8 @@ public final class EntryOrigin {
     @EqualsAndHashCode.Include
     private final ConfigContainer object;
 
-    EntryOrigin(Parent parent, Field field, ConfigContainer object) {
-        this.root = parent.getRoot();
+    EntryOrigin(Config root, Parent parent, Field field, ConfigContainer object) {
+        this.root = root;
         this.parent = parent;
         this.field = field;
         type = ReflectionUtils.getFieldType(field);

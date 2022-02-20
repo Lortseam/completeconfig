@@ -14,6 +14,7 @@ public class EntrySet extends SortedSet<Entry> {
     }
 
     void resolve(ConfigContainer container) {
+        var root = parent.getRoot();
         for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
             Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (clazz != container.getClass() && Modifier.isStatic(field.getModifiers())) {
@@ -27,7 +28,7 @@ public class EntrySet extends SortedSet<Entry> {
                 if (Modifier.isFinal(field.getModifiers())) {
                     throw new AssertionError("Entry field " + field + " must not be final");
                 }
-                return Entry.of(parent, field, Modifier.isStatic(field.getModifiers()) ? null : container);
+                return Entry.of(root, parent, field, Modifier.isStatic(field.getModifiers()) ? null : container);
             }).forEach(this::add);
         }
     }
