@@ -40,8 +40,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
         }
     }
 
-    static Entry<?> of(Parent parent, Field field, ConfigContainer object) {
-        EntryOrigin origin = new EntryOrigin(parent, field, object);
+    static Entry<?> of(Config root, Parent parent, Field field, ConfigContainer object) {
+        EntryOrigin origin = new EntryOrigin(root, parent, field, object);
         return ConfigRegistry.getTransformations().stream().filter(transformation -> {
             return transformation.test(origin);
         }).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
