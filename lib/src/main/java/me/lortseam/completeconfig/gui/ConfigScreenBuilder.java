@@ -11,11 +11,16 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 @Environment(EnvType.CLIENT)
 public abstract class ConfigScreenBuilder<T> {
 
-    private static final Map<String, ConfigScreenBuilder> builders = new HashMap<>();
+    private static final Map<String, Supplier<ConfigScreenBuilder<?>>> suppliers = new HashMap<>();
+
+    public static void setMain(@NonNull String modId, @NonNull Supplier<ConfigScreenBuilder<?>> screenBuilderSupplier) {
+        suppliers.put(modId, screenBuilderSupplier);
+    }
 
     /**
      * Sets the main screen builder for a mod. The main screen builder will be used to build the config screen if no
@@ -25,11 +30,11 @@ public abstract class ConfigScreenBuilder<T> {
      * @param screenBuilder the screen builder
      */
     public static void setMain(@NonNull String modId, @NonNull ConfigScreenBuilder<?> screenBuilder) {
-        builders.put(modId, screenBuilder);
+        setMain(modId, () -> screenBuilder);
     }
 
-    public static Optional<ConfigScreenBuilder<?>> getMain(String modId) {
-        return Optional.ofNullable(builders.get(modId));
+    public static Optional<Supplier<ConfigScreenBuilder<?>>> getMainSupplier(String modId) {
+        return Optional.ofNullable(suppliers.get(modId));
     }
 
     private final List<GuiProvider<T>> providers = new ArrayList<>();
