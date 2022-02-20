@@ -153,10 +153,10 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
             if (annotation.isPresent() && !annotation.get().descriptionKey().isBlank()) {
                 descriptionTranslation = getTranslation().root().append(annotation.get().descriptionKey());
             } else {
-                descriptionTranslation = getTranslation().appendOptional("description");
+                descriptionTranslation = getTranslation().append("description");
             }
         }
-        return !descriptionTranslation.isEmpty() ? Optional.of(descriptionTranslation) : Optional.empty();
+        return descriptionTranslation.exists() ? Optional.of(descriptionTranslation) : Optional.empty();
     }
 
     @Environment(EnvType.CLIENT)

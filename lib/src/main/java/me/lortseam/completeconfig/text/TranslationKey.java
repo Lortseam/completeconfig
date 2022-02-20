@@ -13,8 +13,6 @@ public final class TranslationKey {
 
     private static final char DELIMITER = '.';
 
-    public static final TranslationKey EMPTY = new TranslationKey("", "");
-
     public static TranslationKey from(Config config) {
         return new TranslationKey("config" + DELIMITER + config.getMod().getId(), null);
     }
@@ -57,18 +55,6 @@ public final class TranslationKey {
             subKeyBuilder.append(DELIMITER).append(subKey);
         }
         return new TranslationKey(modKey, subKeyBuilder.toString());
-    }
-
-    public TranslationKey appendOptional(String... subKeys) {
-        TranslationKey translation = append(subKeys);
-        if (translation.exists()) {
-            return translation;
-        }
-        return EMPTY;
-    }
-
-    public boolean isEmpty() {
-        return this == EMPTY;
     }
 
     @Override

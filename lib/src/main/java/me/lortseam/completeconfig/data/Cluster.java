@@ -38,10 +38,10 @@ public final class Cluster extends Parent implements Identifiable, DescriptionSu
             if (customKey != null) {
                 descriptionTranslation = getTranslation().root().append(customKey);
             } else {
-                descriptionTranslation = getTranslation().appendOptional("description");
+                descriptionTranslation = getTranslation().append("description");
             }
         }
-        return !descriptionTranslation.isEmpty() ? Optional.of(descriptionTranslation) : Optional.empty();
+        return descriptionTranslation.exists() ? Optional.of(descriptionTranslation) : Optional.empty();
     }
 
     @Override
