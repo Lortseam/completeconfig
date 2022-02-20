@@ -4,8 +4,8 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class BooleanEntry extends Entry<Boolean> {
     @Override
     public Function<Boolean, Text> getValueTextSupplier() {
         if (getValueTranslations().isEmpty()) {
-            return value -> new TranslatableText("completeconfig.gui.boolean.defaultValue." + value.toString());
+            return ScreenTexts::onOrOff;
         }
         return value -> getValueTranslations().get(value).toText();
     }
