@@ -115,7 +115,7 @@ public class Config extends Parent implements ConfigContainer {
     @Environment(EnvType.CLIENT)
     public final TranslationKey getTranslation(boolean includeBranch) {
         if (translation == null) {
-            translation = TranslationKey.from(this);
+            translation = new TranslationKey(this);
         }
         if (includeBranch) {
             return translation.append(branch);

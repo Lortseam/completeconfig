@@ -28,7 +28,7 @@ public class EntryTest implements ConfigContainer {
         when(modMetadata.getId()).thenReturn("test");
         Config config = mock(Config.class);
         when(config.getMod()).thenReturn(modMetadata);
-        TranslationKey parentTranslation = TranslationKey.from(config).append("subKey");
+        TranslationKey parentTranslation = new TranslationKey(config).append("subKey");
         PARENT = new Parent() {
             @Override
             public TranslationKey getTranslation() {

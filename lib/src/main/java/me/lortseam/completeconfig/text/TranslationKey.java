@@ -13,10 +13,6 @@ public final class TranslationKey {
 
     private static final char DELIMITER = '.';
 
-    public static TranslationKey from(Config config) {
-        return new TranslationKey("config" + DELIMITER + config.getMod().getId(), null);
-    }
-
     private final String modKey;
     private final String subKey;
 
@@ -24,6 +20,10 @@ public final class TranslationKey {
     private TranslationKey(String modKey, String subKey) {
         this.modKey = modKey;
         this.subKey = subKey;
+    }
+
+    public TranslationKey(Config config) {
+        this("config" + DELIMITER + config.getMod().getId(), null);
     }
 
     private String getKey() {
