@@ -23,6 +23,11 @@ public class ParentTest {
             public TranslationKey getTranslation() {
                 return mock(TranslationKey.class);
             }
+
+            @Override
+            Config getRoot() {
+                return mock(Config.class);
+            }
         };
     }
 
