@@ -22,6 +22,10 @@
       "me.lortseam.completeconfig.gui.ModMenuIntegration"
     ]
   },
+  "mixins": [
+    "completeconfig.mixins.json"
+  ],
+
   "depends": {
     "java": ">=17",
     "fabricloader": ">=0.11.3"

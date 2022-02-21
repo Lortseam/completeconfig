@@ -13,6 +13,7 @@ import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.GuiProvider;
 import me.lortseam.completeconfig.gui.coat.handler.BasicEntryHandler;
 import me.lortseam.completeconfig.gui.coat.handler.BoundedEntryHandler;
+import me.lortseam.completeconfig.gui.coat.input.ButtonConfigInput;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -61,7 +62,13 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigListConfi
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
                     new BasicEntryHandler<>(entry),
                     new TextConfigInput(entry.getValue())
-            ), String.class)
+            ), String.class),
+            GuiProvider.create(EnumEntry.class, (EnumEntry<Enum<?>> entry) -> new ConfigListConfigEntry<>(
+                    (BaseText) entry.getText(),
+                    (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
+                    new BasicEntryHandler<>(entry),
+                    new ButtonConfigInput<>(entry.getEnumConstants(), entry.getValue(), entry.getValueTextSupplier())
+            ))
     );
 
     public CoatScreenBuilder() {

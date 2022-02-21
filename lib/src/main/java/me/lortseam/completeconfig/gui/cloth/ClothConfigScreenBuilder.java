@@ -127,7 +127,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
                     .setEnumNameProvider(value -> entry.getValueTextSupplier().apply(value))
                     .setSaveConsumer(entry::setValue)),
             GuiProvider.create(DropdownEntry.class, (DropdownEntry<Enum<?>> entry) -> {
-                List<Enum<?>> enumValues = Arrays.asList(((Class<? extends Enum<?>>) entry.getTypeClass()).getEnumConstants());
+                List<Enum<?>> enumValues = Arrays.asList(entry.getEnumConstants());
                 return ConfigEntryBuilder.create()
                         .startDropdownMenu(entry.getText(), DropdownMenuBuilder.TopCellElementBuilder.of(
                                 entry.getValue(),
