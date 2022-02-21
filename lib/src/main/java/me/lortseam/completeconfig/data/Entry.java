@@ -42,8 +42,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         }
     }
 
-    static Entry<?> of(Config root, Parent parent, Field field, ConfigContainer object) {
-        EntryOrigin origin = new EntryOrigin(root, parent, field, object);
+    static Entry<?> of(Config root, Parent parent, Field field, ConfigContainer container) {
+        EntryOrigin origin = new EntryOrigin(root, parent, field, container);
         return ConfigRegistry.getTransformations().stream().filter(transformation -> {
             return transformation.test(origin);
         }).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
@@ -122,7 +122,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
             return false;
         }
         set(value);
-        origin.getObject().onUpdate();
+        origin.getContainer().onUpdate();
         origin.getRoot().onChildUpdate();
         return true;
     }
@@ -200,7 +200,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     @FunctionalInterface
     private interface Setter<T> {
 
-        void set(ConfigContainer object, T value) throws IllegalAccessException, InvocationTargetException;
+        void set(Object object, T value) throws IllegalAccessException, InvocationTargetException;
 
     }
 
