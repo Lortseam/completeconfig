@@ -35,9 +35,5 @@
   "config.example.defaultDescription": "Default description key",
   "config.example.defaultDescription.description": "This is a description.",
   "config.example.customDescription": "Custom description key",
-  "config.example.customDescriptionKey": "This is a\nmultiline description.",
-  "config.example.options": "Options",
-  "config.example.options.screenBuilderType": "Screen Builder",
-  "config.example.options.screenBuilderType.clothConfig": "Cloth Config",
-  "config.example.options.screenBuilderType.coat": "Coat"
+  "config.example.customDescriptionKey": "This is a\nmultiline description."
 }
