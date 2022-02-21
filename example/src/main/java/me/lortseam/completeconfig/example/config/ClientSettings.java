@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.example.config;
 
+import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigGroup;
@@ -15,13 +16,27 @@ public class ClientSettings extends Settings {
     @ConfigEntry(descriptionKey = "customDescriptionKey")
     private boolean customDescription;
 
+
     @Transitive
     @ConfigEntries
     private static final class ClientDataTypes implements ConfigGroup {
 
-        private TextColor textColor = TextColor.fromFormatting(Formatting.GREEN);
-        private InputUtil.Key key = InputUtil.UNKNOWN_KEY;
-        private ModifierKeyCode modifierKeyCode = ModifierKeyCode.unknown();
+        @Override
+        public ConfigContainer[] getTransitives() {
+            if (Options.getScreenBuilderType() == Options.ScreenBuilderType.CLOTH_CONFIG) {
+                return new ConfigContainer[] {new ClothConfigClientDataTypes()};
+            }
+            return new ConfigContainer[0];
+        }
+
+        @ConfigEntries
+        public static class ClothConfigClientDataTypes implements ConfigContainer {
+
+            private TextColor textColor = TextColor.fromFormatting(Formatting.GREEN);
+            private InputUtil.Key key = InputUtil.UNKNOWN_KEY;
+            private ModifierKeyCode modifierKeyCode = ModifierKeyCode.unknown();
+
+        }
 
     }
 

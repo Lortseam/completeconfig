@@ -5,16 +5,10 @@ import net.fabricmc.api.DedicatedServerModInitializer;
 
 public class ExampleModServer implements DedicatedServerModInitializer {
 
-    private static Settings settings;
-
     @Override
     public void onInitializeServer() {
-        settings = new Settings();
+        Settings settings = new Settings();
         settings.load();
-    }
-
-    public static Settings getSettings() {
-        return settings;
     }
     
 }
