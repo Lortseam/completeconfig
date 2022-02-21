@@ -1,8 +1,8 @@
 import groovy.json.JsonSlurper
 
 plugins {
-    id 'fabric-loom' version "0.10-SNAPSHOT" apply false
-    id "io.freefair.lombok" version "6.3.0" apply false
+    id 'fabric-loom' version "0.11-SNAPSHOT" apply false
+    id "io.freefair.lombok" version "6.4.1" apply false
 }
 
 subprojects {
@@ -16,7 +16,7 @@ subprojects {
     archivesBaseName = "$rootProject.archives_base_name-${project.name}"
     version = rootProject.mod_version
 
-    ext.minecraftMinorVersion = rootProject.minecraft_version.substring(0, rootProject.minecraft_version.length() - 2)
+    ext.minecraftMinorVersion = rootProject.minecraft_version.substring(0, 4)
     ext.modName = new JsonSlurper().parse(file("src/main/resources/fabric.mod.json")).name
 
     processResources {
@@ -49,6 +49,7 @@ subprojects {
         maven {
             url "https://maven.siphalor.de/"
         }
+        mavenCentral()
     }
 
     dependencies {
