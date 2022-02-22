@@ -44,12 +44,21 @@ public abstract class ConfigScreenBuilder<T> {
     }
 
     /**
-     * Registers one or more custom GUI providers.
+     * Registers a custom GUI provider.
+     *
+     * @param provider the custom GUI provider
+     */
+    public final void register(GuiProvider<T> provider) {
+        providers.add(provider);
+    }
+
+    /**
+     * Registers custom GUI providers.
      *
      * @param providers the custom GUI providers
      */
-    public final void register(GuiProvider<T>... providers) {
-        Collections.addAll(this.providers, providers);
+    public final void register(Collection<GuiProvider<T>> providers) {
+        this.providers.addAll(providers);
     }
 
     protected final Text getTitle(Config config) {

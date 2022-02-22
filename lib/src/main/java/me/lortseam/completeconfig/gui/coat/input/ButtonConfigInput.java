@@ -11,11 +11,11 @@ import java.util.function.Function;
 
 public class ButtonConfigInput<T> implements ConfigInput<T> {
 
-    private final CyclingButtonWidget<T> button;
+    private final CyclingButtonWidget<T> widget;
     private InputChangeListener<T> changeListener;
 
     public ButtonConfigInput(T[] values, T initialValue, Function<T, Text> valueTextSupplier) {
-        button = CyclingButtonWidget.builder(valueTextSupplier)
+        widget = CyclingButtonWidget.builder(valueTextSupplier)
                 .values(values)
                 .initially(initialValue)
                 .omitKeyText()
@@ -27,17 +27,17 @@ public class ButtonConfigInput<T> implements ConfigInput<T> {
 
     @Override
     public int getHeight() {
-        return button.getHeight();
+        return widget.getHeight();
     }
 
     @Override
     public T getValue() {
-        return button.getValue();
+        return widget.getValue();
     }
 
     @Override
     public void setValue(T value) {
-        button.setValue(value);
+        widget.setValue(value);
         if (changeListener != null) {
             changeListener.inputChanged(value);
         }
@@ -50,15 +50,15 @@ public class ButtonConfigInput<T> implements ConfigInput<T> {
 
     @Override
     public void setFocused(boolean focused) {
-        ((ClickableWidgetAccess) button).invokeSetFocused(focused);
+        ((ClickableWidgetAccess) widget).invokeSetFocused(focused);
     }
 
     @Override
     public void render(MatrixStack matrices, int x, int y, int width, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-        button.x = x;
-        button.y = y;
-        button.setWidth(width);
-        button.render(matrices, mouseX, mouseY, tickDelta);
+        widget.x = x;
+        widget.y = y;
+        widget.setWidth(width);
+        widget.render(matrices, mouseX, mouseY, tickDelta);
     }
 
     @Override
@@ -68,17 +68,17 @@ public class ButtonConfigInput<T> implements ConfigInput<T> {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return button.isMouseOver(mouseX, mouseY);
+        return widget.isMouseOver(mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        return button.mouseClicked(mouseX, mouseY, mouseButton);
+        return widget.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        return button.mouseScrolled(mouseX, mouseY, amount);
+        return widget.mouseScrolled(mouseX, mouseY, amount);
     }
 
 }
