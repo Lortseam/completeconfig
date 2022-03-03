@@ -78,6 +78,8 @@ public class Settings extends Config {
         @ConfigEntries
         private static class CoatDataTypes implements ConfigContainer {
 
+            @ConfigEntry.Checkbox
+            private boolean checkboxBoolean;
             @ConfigEntry.BoundedFloat(min = 0, max = 10)
             @ConfigEntry.Slider
             private float floatSlider;

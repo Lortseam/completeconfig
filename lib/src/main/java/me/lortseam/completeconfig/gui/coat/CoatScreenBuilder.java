@@ -19,6 +19,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.BaseText;
 import net.minecraft.text.LiteralText;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,13 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
                     new BasicEntryHandler<>(entry),
                     new CheckBoxConfigInput(null, entry.getValue(), false)
-            ), boolean.class, Boolean.class),
+            ), BooleanEntry::isCheckbox, boolean.class, Boolean.class),
+            GuiProvider.create(BooleanEntry.class, entry -> new ConfigCategoryConfigEntry<>(
+                    (BaseText) entry.getText(),
+                    (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
+                    new BasicEntryHandler<>(entry),
+                    new ButtonConfigInput<>(BooleanUtils.booleanValues(), entry.getValue(), entry.getValueTextSupplier())
+            ), entry -> !entry.isCheckbox(), boolean.class, Boolean.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> new ConfigCategoryConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),

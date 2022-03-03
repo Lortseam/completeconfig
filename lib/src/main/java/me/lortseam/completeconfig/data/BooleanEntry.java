@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.data;
 
+import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
@@ -16,9 +17,13 @@ public class BooleanEntry extends Entry<Boolean> {
 
     @Environment(EnvType.CLIENT)
     private Map<Boolean, TranslationKey> valueTranslations;
+    @Environment(EnvType.CLIENT)
+    @Getter
+    private final boolean checkbox;
 
     public BooleanEntry(EntryOrigin origin) {
         super(origin);
+        checkbox = origin.isAnnotationPresent(ConfigEntry.Checkbox.class);
     }
 
     @Environment(EnvType.CLIENT)

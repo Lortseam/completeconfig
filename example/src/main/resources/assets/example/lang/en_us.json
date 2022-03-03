@@ -4,6 +4,7 @@
   "config.example.requiresRestart": "Requires restart",
   "config.example.dataTypes": "Data Types",
   "config.example.dataTypes.bool": "Boolean",
+  "config.example.dataTypes.checkboxBoolean": "Checkbox Boolean",
   "config.example.dataTypes.anInt": "Integer",
   "config.example.dataTypes.boundedInt": "Bounded Integer",
   "config.example.dataTypes.intSlider": "Integer Slider",

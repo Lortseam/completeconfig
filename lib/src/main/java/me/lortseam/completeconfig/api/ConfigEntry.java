@@ -71,6 +71,12 @@ public @interface ConfigEntry {
         
     }
 
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Checkbox {
+
+    }
+
     /**
      * Applies bounds to an entry of type Integer.
      */

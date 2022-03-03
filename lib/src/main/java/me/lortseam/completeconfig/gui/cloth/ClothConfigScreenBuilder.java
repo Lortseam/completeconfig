@@ -36,7 +36,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
                     .setYesNoTextSupplier(entry.getValueTextSupplier())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
                     .setSaveConsumer(entry::setValue),
-                    boolean.class, Boolean.class),
+                    entry -> !entry.isCheckbox(), boolean.class, Boolean.class),
             GuiProvider.create((Entry<Integer> entry) -> ConfigEntryBuilder.create()
                     .startIntField(entry.getText(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
