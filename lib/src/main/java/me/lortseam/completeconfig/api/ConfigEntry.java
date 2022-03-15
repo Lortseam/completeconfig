@@ -24,7 +24,7 @@ public @interface ConfigEntry {
 
     /**
      * Specifies a comment to describe the purpose of this entry. The comment will only be visible in the config
-     * file.
+     * save file.
      *
      * <p>If blank, no comment will be applied to the entry.
      *
@@ -37,9 +37,15 @@ public @interface ConfigEntry {
      *
      * @return a custom translation key
      */
-    String key() default "";
+    String translationKey() default "";
 
-    String descriptionKey() default "";
+    /**
+     * Specifies one or more custom translation keys for this entry's tooltip, declared line by line. If empty, the
+     * default single-line or multi-line keys will be used, depending on which are defined in the language file(s).
+     *
+     * @return an array of custom tooltip translation keys
+     */
+    String[] tooltipTranslationKeys() default {};
 
     /**
      * Specifies whether the game needs to be restarted after modifying the entry.
@@ -60,21 +66,15 @@ public @interface ConfigEntry {
          *
          * @return a custom value translation key
          */
-        String trueKey() default "";
+        String trueTranslationKey() default "";
 
         /**
          * A custom translation key for the value {@code false}. If empty, the default key will be used.
          *
          * @return a custom value translation key
          */
-        String falseKey() default "";
+        String falseTranslationKey() default "";
         
-    }
-
-    @Target(ElementType.FIELD)
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface Checkbox {
-
     }
 
     /**
@@ -184,7 +184,7 @@ public @interface ConfigEntry {
          *
          * @return a custom value translation key
          */
-        String valueKey() default "";
+        String valueTranslationKey() default "";
 
     }
 

@@ -49,17 +49,9 @@ public final class Transformation {
                 ConfigEntry.BoundedFloat bounds = origin.getAnnotation(ConfigEntry.BoundedFloat.class);
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max());
             }),
-            Transformation.builder().byType(float.class, Float.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedFloat.class, ConfigEntry.Slider.class)).transforms(origin -> {
-                ConfigEntry.BoundedFloat bounds = origin.getAnnotation(ConfigEntry.BoundedFloat.class);
-                return new SliderEntry<>(origin, bounds.min(), bounds.max());
-            }),
             Transformation.builder().byType(double.class, Double.class).byAnnotation(ConfigEntry.BoundedDouble.class).transforms(origin -> {
                 ConfigEntry.BoundedDouble bounds = origin.getAnnotation(ConfigEntry.BoundedDouble.class);
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max());
-            }),
-            Transformation.builder().byType(double.class, Double.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedDouble.class, ConfigEntry.Slider.class)).transforms(origin -> {
-                ConfigEntry.BoundedDouble bounds = origin.getAnnotation(ConfigEntry.BoundedDouble.class);
-                return new SliderEntry<>(origin, bounds.min(), bounds.max());
             }),
             Transformation.builder().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).transforms(EnumEntry::new),
             Transformation.builder().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).byAnnotation(ConfigEntry.Dropdown.class).transforms(DropdownEntry::new),

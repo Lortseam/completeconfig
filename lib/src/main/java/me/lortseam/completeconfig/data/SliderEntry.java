@@ -17,12 +17,12 @@ public class SliderEntry<T extends Number> extends BoundedEntry<T> {
         super(origin, min, max);
     }
 
-    @Override
+    @Environment(EnvType.CLIENT)
     public Function<T, Text> getValueTextSupplier() {
         if (valueTranslation == null) {
             ConfigEntry.Slider slider = origin.getAnnotation(ConfigEntry.Slider.class);
-            if (!slider.valueKey().isBlank()) {
-                valueTranslation = getTranslation().root().append(slider.valueKey());
+            if (!slider.valueTranslationKey().isBlank()) {
+                valueTranslation = getTranslation().root().append(slider.valueTranslationKey());
             } else {
                 valueTranslation = getTranslation().append("value");
             }
@@ -30,7 +30,7 @@ public class SliderEntry<T extends Number> extends BoundedEntry<T> {
         if (valueTranslation.exists()) {
             return value -> valueTranslation.toText(value);
         }
-        return super.getValueTextSupplier();
+        return null;
     }
 
 }

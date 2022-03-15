@@ -1,12 +1,15 @@
 package me.lortseam.completeconfig.data;
 
+import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
+import me.lortseam.completeconfig.exception.IllegalModifierException;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
+@Log4j2(topic = "CompleteConfig")
 public class EntrySet extends SortedSet<Entry> {
 
     EntrySet(Parent parent) {
@@ -14,7 +17,6 @@ public class EntrySet extends SortedSet<Entry> {
     }
 
     void resolve(ConfigContainer container) {
-        var root = parent.getRoot();
         for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
             Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (clazz != container.getClass() && Modifier.isStatic(field.getModifiers())) {
@@ -26,9 +28,9 @@ public class EntrySet extends SortedSet<Entry> {
                 return field.isAnnotationPresent(ConfigEntry.class);
             }).map(field -> {
                 if (Modifier.isFinal(field.getModifiers())) {
-                    throw new AssertionError("Entry field " + field + " must not be final");
+                    throw new IllegalModifierException("Entry field " + field + " must not be final");
                 }
-                return Entry.of(root, parent, field, container);
+                return Entry.of(parent, field, Modifier.isStatic(field.getModifiers()) ? null : container);
             }).forEach(this::add);
         }
     }

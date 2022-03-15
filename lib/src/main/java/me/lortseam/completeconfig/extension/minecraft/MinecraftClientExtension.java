@@ -1,10 +1,10 @@
-package me.lortseam.completeconfig.extensions.minecraft;
+package me.lortseam.completeconfig.extension.minecraft;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.data.extension.ClientExtension;
+import me.lortseam.completeconfig.extension.ClientExtension;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TextColor;
 import org.spongepowered.configurate.serialize.CoercionFailedException;

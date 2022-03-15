@@ -19,25 +19,18 @@ public class EntryTest implements ConfigContainer {
     private static final Parent PARENT;
     private static final boolean REQUIRES_RESTART = true;
     private static final String COMMENT = "Comment";
-    private static final String CUSTOM_ID = "customId",
-            CUSTOM_KEY = "customKey",
-            CUSTOM_DESCRIPTION_KEY = "customDescriptionKey";
+    private static final String CUSTOM_ID = "customId", CUSTOM_TRANSLATION_KEY = "customTranslationKey";
 
     static {
         ModMetadata modMetadata = mock(ModMetadata.class);
         when(modMetadata.getId()).thenReturn("test");
         Config config = mock(Config.class);
         when(config.getMod()).thenReturn(modMetadata);
-        TranslationKey parentTranslation = new TranslationKey(config).append("subKey");
+        TranslationKey parentTranslation = TranslationKey.from(config).append("subKey");
         PARENT = new Parent() {
             @Override
             public TranslationKey getTranslation() {
                 return parentTranslation;
-            }
-
-            @Override
-            Config getRoot() {
-                return mock(Config.class);
             }
         };
     }
@@ -76,13 +69,13 @@ public class EntryTest implements ConfigContainer {
     @ConfigEntry(CUSTOM_ID)
     private boolean customIdField;
     private Entry<?> customIdEntry = of("customIdField");
-    @ConfigEntry(key = CUSTOM_KEY, descriptionKey = CUSTOM_DESCRIPTION_KEY)
-    private boolean customKeyField;
-    private Entry<?> customKeyEntry = of("customKeyField");
+    @ConfigEntry(translationKey = CUSTOM_TRANSLATION_KEY)
+    private boolean customTranslationKeyField;
+    private Entry<?> customTranslationKeyEntry = of("customTranslationKeyField");
 
     private Entry<?> of(String fieldName) {
         try {
-            return Entry.of(mock(Config.class), PARENT, getClass().getDeclaredField((fieldName)), this);
+            return Entry.of(PARENT, getClass().getDeclaredField((fieldName)), this);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -123,12 +116,10 @@ public class EntryTest implements ConfigContainer {
     @Test
     @EnabledIfSystemProperty(named = "fabric.dli.env", matches = "client")
     public void of_transformClientProperties() {
-        // Key
         assertEquals(PARENT.getTranslation().append(entry.getId()), entry.getTranslation());
         assertEquals(PARENT.getTranslation().append(customIdEntry.getId()), customIdEntry.getTranslation());
-        assertEquals(PARENT.getTranslation().root().append(CUSTOM_KEY), customKeyEntry.getTranslation());
-
-        // TODO: Description key
+        assertEquals(PARENT.getTranslation().root().append(CUSTOM_TRANSLATION_KEY), customTranslationKeyEntry.getTranslation());
+        // TODO: Tooltips
     }
 
     private enum AnEnum {

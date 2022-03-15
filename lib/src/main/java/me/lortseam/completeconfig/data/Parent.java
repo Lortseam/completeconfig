@@ -1,12 +1,11 @@
 package me.lortseam.completeconfig.data;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.StructurePart;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
+import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -19,8 +18,7 @@ import java.util.Collections;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public abstract class Parent implements StructurePart, Translatable {
+abstract class Parent implements StructurePart, Translatable {
 
     private static <C extends StructurePart & Identifiable> void propagateToChildren(Collection<C> children, CommentedConfigurationNode node, Predicate<CommentedConfigurationNode> childNodeCondition, BiConsumer<C, CommentedConfigurationNode> function) {
         for (C child : children) {
@@ -39,8 +37,6 @@ public abstract class Parent implements StructurePart, Translatable {
     private final EntrySet entries = new EntrySet(this);
     private final ClusterSet clusters = new ClusterSet(this);
 
-    abstract Config getRoot();
-
     public final Collection<Entry> getEntries() {
         return Collections.unmodifiableCollection(entries);
     }
@@ -55,7 +51,7 @@ public abstract class Parent implements StructurePart, Translatable {
             resolve(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (field.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(field.getType())) {
-                        throw new AssertionError("Transitive field " + field + " must implement " + ConfigContainer.class.getSimpleName());
+                        throw new IllegalAnnotationTargetException("Transitive field " + field + " must implement " + ConfigContainer.class.getSimpleName());
                     }
                     return !Modifier.isStatic(field.getModifiers()) || clazz == container.getClass();
                 }
@@ -75,10 +71,10 @@ public abstract class Parent implements StructurePart, Translatable {
             resolve(Arrays.stream(nestedClasses).filter(nestedClass -> {
                 if (nestedClass.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(nestedClass)) {
-                        throw new AssertionError("Transitive " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
+                        throw new IllegalAnnotationTargetException("Transitive " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
                     }
                     if (!Modifier.isStatic(nestedClass.getModifiers())) {
-                        throw new AssertionError("Transitive " + nestedClass + " must be static");
+                        throw new IllegalAnnotationTargetException("Transitive " + nestedClass + " must be static");
                     }
                     return true;
                 }

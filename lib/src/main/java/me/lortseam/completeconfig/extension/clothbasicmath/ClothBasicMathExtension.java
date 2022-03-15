@@ -1,11 +1,12 @@
-package me.lortseam.completeconfig.extensions.clothbasicmath;
+package me.lortseam.completeconfig.extension.clothbasicmath;
 
+import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.data.extension.BaseExtension;
-import me.lortseam.completeconfig.Extension;
+import me.lortseam.completeconfig.extension.BaseExtension;
+import me.lortseam.completeconfig.extension.Extension;
 import me.shedaniel.math.Color;
 import org.spongepowered.configurate.serialize.CoercionFailedException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
@@ -37,7 +38,7 @@ public final class ClothBasicMathExtension implements BaseExtension {
 
     @Override
     public Set<Class<? extends Extension>> children() {
-        return Set.of(ClothBasicMathClothConfigGuiExtension.class);
+        return ImmutableSet.of(ClothBasicMathGuiExtension.class);
     }
 
 }

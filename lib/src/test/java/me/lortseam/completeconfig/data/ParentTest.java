@@ -2,6 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
+import me.lortseam.completeconfig.exception.IllegalAnnotationTargetException;
 import me.lortseam.completeconfig.test.data.containers.*;
 import me.lortseam.completeconfig.test.data.listeners.EmptyListener;
 import me.lortseam.completeconfig.test.data.listeners.SetterListener;
@@ -22,11 +23,6 @@ public class ParentTest {
             @Override
             public TranslationKey getTranslation() {
                 return mock(TranslationKey.class);
-            }
-
-            @Override
-            Config getRoot() {
-                return mock(Config.class);
             }
         };
     }
@@ -95,14 +91,14 @@ public class ParentTest {
 
     @Test
     public void resolve_throwIfNestedNonContainer() {
-        AssertionError error = assertThrows(AssertionError.class, () -> parent.resolve(new ContainerNestingStaticClass()));
-        assertEquals("Transitive " + ContainerNestingStaticClass.Class.class + " must implement " + ConfigContainer.class.getSimpleName(), error.getMessage());
+        IllegalAnnotationTargetException exception = assertThrows(IllegalAnnotationTargetException.class, () -> parent.resolve(new ContainerNestingStaticClass()));
+        assertEquals("Transitive " + ContainerNestingStaticClass.Class.class + " must implement " + ConfigContainer.class.getSimpleName(), exception.getMessage());
     }
 
     @Test
     public void resolve_throwIfNestedNonStatic() {
-        AssertionError error = assertThrows(AssertionError.class, () -> parent.resolve(new ContainerNestingContainerWithEntry()));
-        assertEquals("Transitive " + ContainerNestingContainerWithEntry.ContainerWithEntry.class + " must be static", error.getMessage());
+        IllegalAnnotationTargetException exception = assertThrows(IllegalAnnotationTargetException.class, () -> parent.resolve(new ContainerNestingContainerWithEntry()));
+        assertEquals("Transitive " + ContainerNestingContainerWithEntry.ContainerWithEntry.class + " must be static", exception.getMessage());
     }
 
     @Test

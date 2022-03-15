@@ -1,7 +1,6 @@
-package me.lortseam.completeconfig.data.extension;
+package me.lortseam.completeconfig.extension;
 
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.Extension;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 /**

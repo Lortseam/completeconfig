@@ -1,8 +1,8 @@
 import groovy.json.JsonSlurper
 
 plugins {
-    id 'fabric-loom' version "0.11-SNAPSHOT" apply false
-    id "io.freefair.lombok" version "6.4.1" apply false
+    id 'fabric-loom' version "0.10-SNAPSHOT" apply false
+    id "io.freefair.lombok" version "6.3.0" apply false
 }
 
 subprojects {
@@ -16,7 +16,6 @@ subprojects {
     archivesBaseName = "$rootProject.archives_base_name-${project.name}"
     version = rootProject.mod_version
 
-    ext.minecraftMinorVersion = rootProject.minecraft_version.substring(0, 4)
     ext.modName = new JsonSlurper().parse(file("src/main/resources/fabric.mod.json")).name
 
     processResources {
@@ -38,18 +37,11 @@ subprojects {
 
     repositories {
         maven {
-            url "https://jitpack.io"
-        }
-        maven {
             url "https://maven.terraformersmc.com/"
         }
         maven {
             url "https://maven.shedaniel.me/"
         }
-        maven {
-            url "https://maven.siphalor.de/"
-        }
-        mavenCentral()
     }
 
     dependencies {
@@ -60,17 +52,10 @@ subprojects {
         modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}") {
             exclude(group: "net.fabricmc.fabric-api")
         }
-        modApi("de.siphalor:coat-$minecraftMinorVersion:${rootProject.coat_version}") {
-            exclude(group: "net.fabricmc.fabric-api")
-            exclude(group: "de.siphalor", module: "amecsapi-$minecraftMinorVersion")
-            exclude(group: "com.github.astei", module: "lazydfu")
-        }
         modImplementation("com.terraformersmc:modmenu:${rootProject.modmenu_version}")
 
         // Using modApi because api does not include dependency inside Maven pom file
         // see https://github.com/FabricMC/fabric-loom/issues/200
         modApi("org.spongepowered:configurate-hocon:${rootProject.configurate_version}")
-
-        implementation("org.jetbrains:annotations:${rootProject.jetbrains_annotations_version}")
     }
 }

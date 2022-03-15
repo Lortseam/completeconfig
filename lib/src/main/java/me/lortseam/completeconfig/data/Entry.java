@@ -3,36 +3,35 @@ package me.lortseam.completeconfig.data;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.data.extension.BaseExtension;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.StructurePart;
-import me.lortseam.completeconfig.data.structure.client.DescriptionSupplier;
+import me.lortseam.completeconfig.data.structure.client.TooltipSupplier;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
 import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.data.transform.Transformer;
+import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
+import me.lortseam.completeconfig.extension.BaseExtension;
 import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-@Slf4j(topic = "CompleteConfig")
-public class Entry<T> implements StructurePart, Identifiable, Translatable, DescriptionSupplier {
+@Log4j2(topic = "CompleteConfig")
+public class Entry<T> implements StructurePart, Identifiable, Translatable, TooltipSupplier {
 
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
 
@@ -42,8 +41,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         }
     }
 
-    static Entry<?> of(Config root, Parent parent, Field field, ConfigContainer container) {
-        EntryOrigin origin = new EntryOrigin(root, parent, field, container);
+    static Entry<?> of(Parent parent, Field field, ConfigContainer object) {
+        EntryOrigin origin = new EntryOrigin(parent, field, object);
         return ConfigRegistry.getTransformations().stream().filter(transformation -> {
             return transformation.test(origin);
         }).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
@@ -59,28 +58,28 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
     @Environment(EnvType.CLIENT)
-    private TranslationKey descriptionTranslation;
+    private TranslationKey[] tooltipTranslation;
     @Accessors(fluent = true)
     @Getter
     private final boolean requiresRestart;
     private final String comment;
+    private final UnaryOperator<T> valueModifier;
     private final Setter<T> setter;
-    private final UnaryOperator<T> revisor;
 
-    protected Entry(EntryOrigin origin, UnaryOperator<T> revisor) {
+    protected Entry(EntryOrigin origin, UnaryOperator<T> valueModifier) {
         ConfigRegistry.register(origin);
         this.origin = origin;
-        this.revisor = revisor;
         if (!origin.getField().canAccess(origin.getObject())) {
             origin.getField().setAccessible(true);
         }
-        typeClass = (Class<T>) ReflectionUtils.getTypeClass(origin.getType());
+        typeClass = (Class<T>) ReflectionUtils.getTypeClass(getType());
+        this.valueModifier = valueModifier;
+        defaultValue = getValue();
         Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
         id = annotation.isPresent() && !annotation.get().value().isBlank() ? annotation.get().value() : origin.getField().getName();
         requiresRestart = annotation.isPresent() && annotation.get().requiresRestart();
         comment = annotation.isPresent() && !annotation.get().comment().isBlank() ? annotation.get().comment() : null;
         setter = ReflectionUtils.getSetterMethod(origin.getField(), origin.getObject()).<Setter<T>>map(method -> method::invoke).orElse((object, value) -> origin.getField().set(object, value));
-        defaultValue = getValue();
     }
 
     protected Entry(EntryOrigin origin) {
@@ -115,15 +114,13 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     private boolean update(T value) {
-        if (revisor != null) {
-            value = revisor.apply(value);
+        if (valueModifier != null) {
+            value = valueModifier.apply(value);
         }
         if (value.equals(getFieldValue())) {
             return false;
         }
         set(value);
-        origin.getContainer().onUpdate();
-        origin.getRoot().onChildUpdate();
         return true;
     }
 
@@ -139,8 +136,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     public TranslationKey getTranslation() {
         if (translation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
-            if (annotation.isPresent() && !annotation.get().key().isBlank()) {
-                translation = origin.getParent().getTranslation().root().append(annotation.get().key());
+            if (annotation.isPresent() && !annotation.get().translationKey().isBlank()) {
+                translation = origin.getParent().getTranslation().root().append(annotation.get().translationKey());
             } else {
                 translation = origin.getParent().getTranslation().append(id);
             }
@@ -149,21 +146,21 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     @Override
-    public Optional<TranslationKey> getDescriptionTranslation() {
-        if (descriptionTranslation == null) {
+    public TranslationKey[] getTooltipTranslation() {
+        if (tooltipTranslation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
-            if (annotation.isPresent() && !annotation.get().descriptionKey().isBlank()) {
-                descriptionTranslation = getTranslation().root().append(annotation.get().descriptionKey());
+            if (annotation.isPresent() && annotation.get().tooltipTranslationKeys().length > 0) {
+                tooltipTranslation = Arrays.stream(annotation.get().tooltipTranslationKeys()).map(key -> {
+                    if (key.isBlank()) {
+                        throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + origin.getField() + " may not be blank");
+                    }
+                    return getTranslation().root().append(key);
+                }).toArray(TranslationKey[]::new);
             } else {
-                descriptionTranslation = getTranslation().append("description");
+                tooltipTranslation = getTranslation().appendTooltip().orElse(new TranslationKey[0]);
             }
         }
-        return descriptionTranslation.exists() ? Optional.of(descriptionTranslation) : Optional.empty();
-    }
-
-    @Environment(EnvType.CLIENT)
-    public Function<T, Text> getValueTextSupplier() {
-        return value -> new LiteralText(value.toString());
+        return tooltipTranslation;
     }
 
     @Override
@@ -200,7 +197,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     @FunctionalInterface
     private interface Setter<T> {
 
-        void set(Object object, T value) throws IllegalAccessException, InvocationTargetException;
+        void set(ConfigContainer object, T value) throws IllegalAccessException, InvocationTargetException;
 
     }
 

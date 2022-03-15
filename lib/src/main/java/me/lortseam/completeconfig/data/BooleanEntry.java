@@ -1,11 +1,9 @@
 package me.lortseam.completeconfig.data;
 
-import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
 import java.util.HashMap;
@@ -17,13 +15,9 @@ public class BooleanEntry extends Entry<Boolean> {
 
     @Environment(EnvType.CLIENT)
     private Map<Boolean, TranslationKey> valueTranslations;
-    @Environment(EnvType.CLIENT)
-    @Getter
-    private final boolean checkbox;
 
     public BooleanEntry(EntryOrigin origin) {
         super(origin);
-        checkbox = origin.isAnnotationPresent(ConfigEntry.Checkbox.class);
     }
 
     @Environment(EnvType.CLIENT)
@@ -32,11 +26,11 @@ public class BooleanEntry extends Entry<Boolean> {
             valueTranslations = new HashMap<>();
             Optional<ConfigEntry.Boolean> annotation = origin.getOptionalAnnotation(ConfigEntry.Boolean.class);
             if (annotation.isPresent()) {
-                if (!annotation.get().trueKey().isBlank()) {
-                    valueTranslations.put(true, getTranslation().root().append(annotation.get().trueKey()));
+                if (!annotation.get().trueTranslationKey().isBlank()) {
+                    valueTranslations.put(true, getTranslation().root().append(annotation.get().trueTranslationKey()));
                 }
-                if (!annotation.get().falseKey().isBlank()) {
-                    valueTranslations.put(false, getTranslation().root().append(annotation.get().falseKey()));
+                if (!annotation.get().falseTranslationKey().isBlank()) {
+                    valueTranslations.put(false, getTranslation().root().append(annotation.get().falseTranslationKey()));
                 }
             }
             TranslationKey defaultTrueTranslation = getTranslation().append("true");
@@ -51,10 +45,10 @@ public class BooleanEntry extends Entry<Boolean> {
         return valueTranslations;
     }
 
-    @Override
+    @Environment(EnvType.CLIENT)
     public Function<Boolean, Text> getValueTextSupplier() {
         if (getValueTranslations().isEmpty()) {
-            return ScreenTexts::onOrOff;
+            return null;
         }
         return value -> getValueTranslations().get(value).toText();
     }
