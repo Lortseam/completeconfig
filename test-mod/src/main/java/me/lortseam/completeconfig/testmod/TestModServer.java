@@ -1,9 +1,9 @@
-package me.lortseam.completeconfig.example;
+package me.lortseam.completeconfig.testmod;
 
-import me.lortseam.completeconfig.example.config.Settings;
+import me.lortseam.completeconfig.testmod.config.Settings;
 import net.fabricmc.api.DedicatedServerModInitializer;
 
-public class ExampleModServer implements DedicatedServerModInitializer {
+public class TestModServer implements DedicatedServerModInitializer {
 
     @Override
     public void onInitializeServer() {

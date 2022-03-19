@@ -1,12 +1,12 @@
-package me.lortseam.completeconfig.example;
+package me.lortseam.completeconfig.testmod;
 
 import me.lortseam.completeconfig.data.ConfigRegistry;
-import me.lortseam.completeconfig.example.config.ClientSettings;
-import me.lortseam.completeconfig.example.config.Options;
+import me.lortseam.completeconfig.testmod.config.ClientSettings;
+import me.lortseam.completeconfig.testmod.config.Options;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import net.fabricmc.api.ClientModInitializer;
 
-public class ExampleModClient implements ClientModInitializer {
+public class TestModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
@@ -14,7 +14,7 @@ public class ExampleModClient implements ClientModInitializer {
         ClientSettings settings = new ClientSettings();
         settings.load();
         ConfigRegistry.setMainConfig(settings);
-        ConfigScreenBuilder.setMain(ExampleMod.MOD_ID, () -> Options.getScreenBuilderType().create());
+        ConfigScreenBuilder.setMain(TestMod.MOD_ID, () -> Options.getScreenBuilderType().create());
     }
 
 }

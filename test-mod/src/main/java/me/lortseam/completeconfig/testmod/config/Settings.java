@@ -1,11 +1,11 @@
-package me.lortseam.completeconfig.example.config;
+package me.lortseam.completeconfig.testmod.config;
 
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.Config;
-import me.lortseam.completeconfig.example.ExampleMod;
+import me.lortseam.completeconfig.testmod.TestMod;
 import me.shedaniel.math.Color;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -17,7 +17,7 @@ import java.util.List;
 public class Settings extends Config {
 
     public Settings() {
-        super(ExampleMod.MOD_ID);
+        super(TestMod.MOD_ID);
     }
 
     @ConfigEntry(comment = "This is a test comment")

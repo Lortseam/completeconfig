@@ -10,6 +10,6 @@ pluginManagement {
 }
 
 include("lib")
-include("example")
+include("test-mod")
 
 rootProject.name = 'completeconfig'

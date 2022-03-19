@@ -1,9 +1,9 @@
-package me.lortseam.completeconfig.example.config;
+package me.lortseam.completeconfig.testmod.config;
 
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.data.Config;
-import me.lortseam.completeconfig.example.ExampleMod;
+import me.lortseam.completeconfig.testmod.TestMod;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.cloth.ClothConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.coat.CoatScreenBuilder;
@@ -15,7 +15,7 @@ public class Options extends Config {
     private static ScreenBuilderType screenBuilderType = ScreenBuilderType.CLOTH_CONFIG;
 
     public Options() {
-        super(ExampleMod.MOD_ID, new String[]{"options"});
+        super(TestMod.MOD_ID, new String[]{"options"});
     }
 
     public enum ScreenBuilderType {
