@@ -13,7 +13,7 @@ Beside the basic elements of a config library, CompleteConfig offers the followi
 * Fully extensible via extension system
 
 ## Usage
-Usage instructions can be found in the [wiki](https://gitlab.com/Lortseam/completeconfig/-/wikis/home).
+Usage instructions and examples can be found in the [wiki](https://gitlab.com/Lortseam/completeconfig/-/wikis/home).
 
 ## License
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
