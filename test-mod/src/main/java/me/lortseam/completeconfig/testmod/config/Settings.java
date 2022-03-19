@@ -1,11 +1,11 @@
-package me.lortseam.completeconfig.example.config;
+package me.lortseam.completeconfig.testmod.config;
 
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.Config;
-import me.lortseam.completeconfig.example.ExampleMod;
+import me.lortseam.completeconfig.testmod.TestMod;
 import me.shedaniel.math.Color;
 
 import java.util.Arrays;
@@ -14,7 +14,7 @@ import java.util.List;
 public class Settings extends Config implements ConfigContainer {
 
     public Settings() {
-        super(ExampleMod.MOD_ID);
+        super(TestMod.MOD_ID);
     }
 
     @Transitive

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "example",
+  "id": "completeconfig-test-mod",
   "version": "${version}",
-  "name": "CompleteConfig Example Mod",
+  "name": "CompleteConfig Test Mod",
   "authors": [
     "Lortseam"
   ],
@@ -10,10 +10,10 @@
   "environment": "*",
   "entrypoints": {
     "client": [
-      "me.lortseam.completeconfig.example.ExampleModClient"
+      "me.lortseam.completeconfig.testmod.TestModClient"
     ],
     "server": [
-      "me.lortseam.completeconfig.example.ExampleModServer"
+      "me.lortseam.completeconfig.testmod.TestModServer"
     ]
   },
   "depends": {
