@@ -30,12 +30,16 @@ public class Settings extends Config {
     private static class DataTypes implements ConfigGroup {
 
         private boolean bool;
+        private int anInt;
         @ConfigEntry.BoundedInteger(min = 0, max = 10)
         @ConfigEntry.Slider
         private int intSlider;
+        private long aLong;
         @ConfigEntry.BoundedLong(min = -10, max = 10)
         @ConfigEntry.Slider
         private long longSlider;
+        private float aFloat;
+        private double aDouble;
         private String string = "";
         private AnEnum anEnum = AnEnum.FOO;
 
@@ -55,16 +59,12 @@ public class Settings extends Config {
         @ConfigEntries
         private static class ClothConfigDataTypes implements ConfigContainer {
 
-            private int anInt;
             @ConfigEntry.BoundedInteger(min = 0, max = 10)
             private int boundedInt;
-            private long aLong;
             @ConfigEntry.BoundedLong(min = -10, max = 10)
             private long boundedLong;
-            private float aFloat;
             @ConfigEntry.BoundedFloat(min = 0, max = 10)
             private float boundedFloat;
-            private double aDouble;
             @ConfigEntry.BoundedDouble(min = -10, max = 10)
             private double boundedDouble;
             @ConfigEntry.Dropdown

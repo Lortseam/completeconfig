@@ -13,6 +13,7 @@ import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.GuiProvider;
 import me.lortseam.completeconfig.gui.coat.handler.BasicEntryHandler;
 import me.lortseam.completeconfig.gui.coat.handler.BoundedEntryHandler;
+import me.lortseam.completeconfig.gui.coat.handler.EntryHandlerConverter;
 import me.lortseam.completeconfig.gui.coat.input.ButtonConfigInput;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
@@ -40,24 +41,48 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
                     new BasicEntryHandler<>(entry),
                     new ButtonConfigInput<>(BooleanUtils.booleanValues(), entry.getValue(), entry.getValueTextSupplier())
             ), entry -> !entry.isCheckbox(), boolean.class, Boolean.class),
+            GuiProvider.create((Entry<Integer> entry) -> new ConfigCategoryConfigEntry<>(
+                    (BaseText) entry.getText(),
+                    (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
+                    EntryHandlerConverter.numberToString(entry, Integer::parseInt),
+                    new TextConfigInput(entry.getValue().toString())
+            ), int.class, Integer.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> new ConfigCategoryConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
                     new BoundedEntryHandler<>(entry),
                     new SliderConfigInput<>(entry.getValue(), entry.getMin(), entry.getMax())
             ), int.class, Integer.class),
+            GuiProvider.create((Entry<Long> entry) -> new ConfigCategoryConfigEntry<>(
+                    (BaseText) entry.getText(),
+                    (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
+                    EntryHandlerConverter.numberToString(entry, Long::parseLong),
+                    new TextConfigInput(entry.getValue().toString())
+            ), long.class, Long.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Long> entry) -> new ConfigCategoryConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
                     new BoundedEntryHandler<>(entry),
                     new SliderConfigInput<>(entry.getValue(), entry.getMin(), entry.getMax())
             ), long.class, Long.class),
+            GuiProvider.create((Entry<Float> entry) -> new ConfigCategoryConfigEntry<>(
+                    (BaseText) entry.getText(),
+                    (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
+                    EntryHandlerConverter.numberToString(entry, Float::parseFloat),
+                    new TextConfigInput(entry.getValue().toString())
+            ), float.class, Float.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Float> entry) -> new ConfigCategoryConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
                     new BoundedEntryHandler<>(entry),
                     new SliderConfigInput<>(entry.getValue(), entry.getMin(), entry.getMax())
             ), float.class, Float.class),
+            GuiProvider.create((Entry<Double> entry) -> new ConfigCategoryConfigEntry<>(
+                    (BaseText) entry.getText(),
+                    (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
+                    EntryHandlerConverter.numberToString(entry, Double::parseDouble),
+                    new TextConfigInput(entry.getValue().toString())
+            ), double.class, Double.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Double> entry) -> new ConfigCategoryConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
