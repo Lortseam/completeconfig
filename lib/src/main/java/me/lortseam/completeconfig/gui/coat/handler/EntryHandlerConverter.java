@@ -40,24 +40,24 @@ public class EntryHandlerConverter<T, C> implements ConfigEntryHandler<C> {
     }
 
     @Override
-    public C getDefault() {
+    public final C getDefault() {
         return converterTo.apply(handler.getDefault());
     }
 
     @Override
-    public @NotNull Collection<Message> getMessages(C convertedValue) {
+    public final @NotNull Collection<Message> getMessages(C convertedValue) {
         return tryConvertFrom(convertedValue).map(handler::getMessages).orElseGet(() -> {
             return Collections.singleton(errorMessageSupplier.get());
         });
     }
 
     @Override
-    public void save(C convertedValue) {
+    public final void save(C convertedValue) {
         tryConvertFrom(convertedValue).ifPresent(handler::save);
     }
 
     @Override
-    public Text asText(C convertedValue) {
+    public final Text asText(C convertedValue) {
         return handler.asText(converterFrom.apply(convertedValue));
     }
 
