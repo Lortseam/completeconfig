@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -19,7 +18,7 @@ import java.util.function.Supplier;
 public class EntryHandlerConverter<T, C> implements ConfigEntryHandler<C> {
 
     public static <T extends Number> EntryHandlerConverter<T, String> numberToString(BasicEntryHandler<T, ? extends Entry<T>> handler, Function<String, T> parser) {
-        return new EntryHandlerConverter<>(handler, parser, Objects::toString, () -> new Message(Message.Level.ERROR, new TranslatableText("completeconfig.gui.coat.message.invalidNumber")));
+        return new EntryHandlerConverter<>(handler, parser, Object::toString, () -> new Message(Message.Level.ERROR, new TranslatableText("completeconfig.gui.coat.message.invalidNumber")));
     }
 
     public static <T extends Number> EntryHandlerConverter<T, String> numberToString(Entry<T> entry, Function<String, T> parser) {
