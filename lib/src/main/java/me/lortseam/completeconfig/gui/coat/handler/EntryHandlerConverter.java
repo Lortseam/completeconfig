@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor
 public class EntryHandlerConverter<T, C> implements ConfigEntryHandler<C> {
 
-    public static <T extends Number> EntryHandlerConverter<T, String> numberToString(BasicEntryHandler<T, Entry<T>> handler, Function<String, T> parser) {
+    public static <T extends Number> EntryHandlerConverter<T, String> numberToString(BasicEntryHandler<T, ? extends Entry<T>> handler, Function<String, T> parser) {
         return new EntryHandlerConverter<>(handler, parser, Objects::toString, () -> new Message(Message.Level.ERROR, new TranslatableText("completeconfig.gui.coat.message.invalidNumber")));
     }
 
@@ -26,7 +26,7 @@ public class EntryHandlerConverter<T, C> implements ConfigEntryHandler<C> {
         return numberToString(new BasicEntryHandler<>(entry), parser);
     }
 
-    private final BasicEntryHandler<T, Entry<T>> handler;
+    private final BasicEntryHandler<T, ? extends Entry<T>> handler;
     private final Function<C, T> converterFrom;
     private final Function<T, C> converterTo;
     private final Supplier<Message> errorMessageSupplier;

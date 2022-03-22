@@ -27,7 +27,6 @@ import java.util.List;
 
 public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryConfigEntry<?>> {
 
-    // TODO: Add missing providers
     private static final List<GuiProvider<ConfigCategoryConfigEntry<?>>> globalProviders = Lists.newArrayList(
             GuiProvider.create(BooleanEntry.class, entry -> new ConfigCategoryConfigEntry<>(
                     (BaseText) entry.getText(),
@@ -47,6 +46,12 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
                     EntryHandlerConverter.numberToString(entry, Integer::parseInt),
                     new TextConfigInput(entry.getValue().toString())
             ), int.class, Integer.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Integer> entry) -> new ConfigCategoryConfigEntry<>(
+                    (BaseText) entry.getText(),
+                    (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
+                    EntryHandlerConverter.numberToString(new BoundedEntryHandler<>(entry), Integer::parseInt),
+                    new TextConfigInput(entry.getValue().toString())
+            ), int.class, Integer.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> new ConfigCategoryConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
@@ -57,6 +62,12 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
                     EntryHandlerConverter.numberToString(entry, Long::parseLong),
+                    new TextConfigInput(entry.getValue().toString())
+            ), long.class, Long.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Long> entry) -> new ConfigCategoryConfigEntry<>(
+                    (BaseText) entry.getText(),
+                    (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
+                    EntryHandlerConverter.numberToString(new BoundedEntryHandler<>(entry), Long::parseLong),
                     new TextConfigInput(entry.getValue().toString())
             ), long.class, Long.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Long> entry) -> new ConfigCategoryConfigEntry<>(
@@ -71,6 +82,12 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
                     EntryHandlerConverter.numberToString(entry, Float::parseFloat),
                     new TextConfigInput(entry.getValue().toString())
             ), float.class, Float.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Float> entry) -> new ConfigCategoryConfigEntry<>(
+                    (BaseText) entry.getText(),
+                    (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
+                    EntryHandlerConverter.numberToString(new BoundedEntryHandler<>(entry), Float::parseFloat),
+                    new TextConfigInput(entry.getValue().toString())
+            ), float.class, Float.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Float> entry) -> new ConfigCategoryConfigEntry<>(
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
@@ -81,6 +98,12 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
                     (BaseText) entry.getText(),
                     (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
                     EntryHandlerConverter.numberToString(entry, Double::parseDouble),
+                    new TextConfigInput(entry.getValue().toString())
+            ), double.class, Double.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Double> entry) -> new ConfigCategoryConfigEntry<>(
+                    (BaseText) entry.getText(),
+                    (BaseText) entry.getDescription().orElse(LiteralText.EMPTY),
+                    EntryHandlerConverter.numberToString(new BoundedEntryHandler<>(entry), Double::parseDouble),
                     new TextConfigInput(entry.getValue().toString())
             ), double.class, Double.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Double> entry) -> new ConfigCategoryConfigEntry<>(
