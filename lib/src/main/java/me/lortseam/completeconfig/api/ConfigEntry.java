@@ -24,7 +24,7 @@ public @interface ConfigEntry {
 
     /**
      * Specifies a comment to describe the purpose of this entry. The comment will only be visible in the config
-     * save file.
+     * file.
      *
      * <p>If blank, no comment will be applied to the entry.
      *

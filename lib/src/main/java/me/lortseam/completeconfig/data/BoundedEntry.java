@@ -1,11 +1,11 @@
 package me.lortseam.completeconfig.data;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 
-@Log4j2(topic = "CompleteConfig")
+@Slf4j(topic = "CompleteConfig")
 public class BoundedEntry<T extends Number> extends Entry<T> {
 
     @Getter

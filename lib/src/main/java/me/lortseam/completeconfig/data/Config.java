@@ -4,10 +4,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.extension.BaseExtension;
+import me.lortseam.completeconfig.data.extension.BaseExtension;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 /**
  * The base config class. Instantiate or inherit this class to create a config for your mod.
  */
-@Log4j2(topic = "CompleteConfig")
+@Slf4j(topic = "CompleteConfig")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
 public class Config extends Parent {
@@ -62,7 +62,7 @@ public class Config extends Parent {
     /**
      * Creates a config with the specified branch.
      *
-     * <p>The branch determines the location of the config's save file and has to be mod-unique.
+     * <p>The branch determines the location of the config file and has to be mod-unique.
      *
      * @param modId the ID of the mod creating the config
      * @param branch the branch
@@ -151,7 +151,7 @@ public class Config extends Parent {
     }
 
     /**
-     * Loads the config from the save file.
+     * Loads the config from the config file.
      */
     public final void load() {
         deserialize(loader);
@@ -182,10 +182,17 @@ public class Config extends Parent {
     }
 
     /**
-     * Saves the config to the save file.
+     * Saves the config to the config file.
      */
     public final void save() {
         serialize(loader);
+    }
+
+    protected void onChildUpdate() {}
+
+    @Override
+    Config getRoot() {
+        return this;
     }
 
 }

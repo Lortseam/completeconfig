@@ -32,6 +32,11 @@ public class EntryTest implements ConfigContainer {
             public TranslationKey getTranslation() {
                 return parentTranslation;
             }
+
+            @Override
+            Config getRoot() {
+                return mock(Config.class);
+            }
         };
     }
 
@@ -75,7 +80,7 @@ public class EntryTest implements ConfigContainer {
 
     private Entry<?> of(String fieldName) {
         try {
-            return Entry.of(PARENT, getClass().getDeclaredField((fieldName)), this);
+            return Entry.of(mock(Config.class), PARENT, getClass().getDeclaredField((fieldName)), this);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }

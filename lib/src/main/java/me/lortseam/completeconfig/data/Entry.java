@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.data;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
@@ -13,8 +13,7 @@ import me.lortseam.completeconfig.data.structure.client.TooltipSupplier;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
 import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.data.transform.Transformer;
-import me.lortseam.completeconfig.exception.IllegalAnnotationParameterException;
-import me.lortseam.completeconfig.extension.BaseExtension;
+import me.lortseam.completeconfig.data.extension.BaseExtension;
 import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
@@ -30,7 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
-@Log4j2(topic = "CompleteConfig")
+@Slf4j(topic = "CompleteConfig")
 public class Entry<T> implements StructurePart, Identifiable, Translatable, TooltipSupplier {
 
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
@@ -41,8 +40,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
         }
     }
 
-    static Entry<?> of(Parent parent, Field field, ConfigContainer object) {
-        EntryOrigin origin = new EntryOrigin(parent, field, object);
+    static Entry<?> of(Config root, Parent parent, Field field, ConfigContainer container) {
+        EntryOrigin origin = new EntryOrigin(root, parent, field, container);
         return ConfigRegistry.getTransformations().stream().filter(transformation -> {
             return transformation.test(origin);
         }).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
@@ -121,6 +120,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
             return false;
         }
         set(value);
+        origin.getContainer().onUpdate();
+        origin.getRoot().onChildUpdate();
         return true;
     }
 
@@ -152,7 +153,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
             if (annotation.isPresent() && annotation.get().tooltipTranslationKeys().length > 0) {
                 tooltipTranslation = Arrays.stream(annotation.get().tooltipTranslationKeys()).map(key -> {
                     if (key.isBlank()) {
-                        throw new IllegalAnnotationParameterException("Tooltip translation key of entry " + origin.getField() + " may not be blank");
+                        throw new AssertionError("Tooltip translation key of entry " + origin.getField() + " may not be blank");
                     }
                     return getTranslation().root().append(key);
                 }).toArray(TranslationKey[]::new);
@@ -197,7 +198,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Tool
     @FunctionalInterface
     private interface Setter<T> {
 
-        void set(ConfigContainer object, T value) throws IllegalAccessException, InvocationTargetException;
+        void set(Object object, T value) throws IllegalAccessException, InvocationTargetException;
 
     }
 

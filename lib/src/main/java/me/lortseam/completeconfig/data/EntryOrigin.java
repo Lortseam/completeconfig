@@ -8,6 +8,7 @@ import me.lortseam.completeconfig.util.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
@@ -18,6 +19,8 @@ import java.util.Optional;
 public final class EntryOrigin {
 
     @Getter(AccessLevel.PACKAGE)
+    private final Config root;
+    @Getter(AccessLevel.PACKAGE)
     private final Parent parent;
     @Getter
     @EqualsAndHashCode.Include
@@ -25,14 +28,19 @@ public final class EntryOrigin {
     @Getter
     private final Type type;
     @Getter
-    @EqualsAndHashCode.Include
-    private final ConfigContainer object;
+    private final ConfigContainer container;
 
-    EntryOrigin(Parent parent, Field field, ConfigContainer object) {
+    EntryOrigin(Config root, Parent parent, Field field, ConfigContainer container) {
+        this.root = root;
         this.parent = parent;
         this.field = field;
         type = ReflectionUtils.getFieldType(field);
-        this.object = object;
+        this.container = container;
+    }
+
+    @EqualsAndHashCode.Include
+    public Object getObject() {
+        return Modifier.isStatic(field.getModifiers()) ? null : container;
     }
 
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "completeconfig-test-mod",
+  "version": "${version}",
+  "name": "CompleteConfig Test Mod",
+  "authors": [
+    "Lortseam"
+  ],
+  "license": "Apache-2.0",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "me.lortseam.completeconfig.testmod.TestModClient"
+    ],
+    "server": [
+      "me.lortseam.completeconfig.testmod.TestModServer"
+    ]
+  },
+  "depends": {
+    "java": ">=17",
+    "fabricloader": ">=0.11.3",
+    "completeconfig": "^1.0.0"
+  }
+}

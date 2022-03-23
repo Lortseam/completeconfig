@@ -27,5 +27,5 @@ bin/
 # fabric
 
 run/
-example/run/
+test-mod/run/
 /logs/
