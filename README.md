@@ -4,7 +4,7 @@ CompleteConfig is a flexible, all-in-one configuration API for [Fabric](https://
 ## Highlights
 Beside the basic elements of a config library, CompleteConfig offers the following unique features:
 * Simple and well-documented API to start quickly
-* Highly adjustable usage
+* Highly adjustable usage for Client and Server mods
 * Multi-config support
 * Listeners for reacting to config changes
 * User-friendly save format with permanently retained comments
