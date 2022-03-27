@@ -4,6 +4,7 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TextColor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -11,8 +12,7 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class EntryTest implements ConfigContainer {
 
@@ -128,7 +128,16 @@ public class EntryTest implements ConfigContainer {
         assertEquals(PARENT.getTranslation().append(customIdEntry.getId()), customIdEntry.getTranslation());
         assertEquals(PARENT.getTranslation().root().append(CUSTOM_KEY), customKeyEntry.getTranslation());
 
-        // TODO: Description key
+        // Description key
+        try (var i18n = mockStatic(I18n.class)) {
+            var defaultTranslation = PARENT.getTranslation().append(entry.getId(), "description");
+            i18n.when(() -> I18n.hasTranslation(defaultTranslation.toString())).thenReturn(true);
+            assertEquals(defaultTranslation, entry.getDescriptionTranslation().get());
+
+            var customTranslation = PARENT.getTranslation().root().append(CUSTOM_DESCRIPTION_KEY);
+            i18n.when(() -> I18n.hasTranslation(customTranslation.toString())).thenReturn(true);
+            assertEquals(customTranslation, customKeyEntry.getDescriptionTranslation().get());
+        }
     }
 
     private enum AnEnum {
