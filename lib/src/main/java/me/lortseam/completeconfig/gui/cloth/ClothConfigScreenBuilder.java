@@ -223,6 +223,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
     public Screen build(Screen parentScreen, Config config) {
         ConfigBuilder builder = supplier.get()
                 .setParentScreen(parentScreen)
+                .setDefaultBackgroundTexture(background)
                 .setSavingRunnable(config::save);
         builder.setTitle(getTitle(config));
         if (!config.getEntries().isEmpty()) {
@@ -234,6 +235,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
         for(Cluster cluster : config.getClusters()) {
             ConfigCategory category = builder.getOrCreateCategory(cluster.getText());
             category.setDescription(() -> cluster.getDescription().map(description -> new StringVisitable[]{description}));
+            cluster.getBackground().ifPresent(category::setBackground);
             for (AbstractConfigListEntry<?> entry : buildCategoryList(cluster)) {
                 category.addEntry(entry);
             }

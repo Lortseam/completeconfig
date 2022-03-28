@@ -1,6 +1,9 @@
 package me.lortseam.completeconfig.api;
 
 import com.google.common.base.CaseFormat;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.util.Identifier;
 
 /**
  * A group of config entries.
@@ -26,6 +29,11 @@ public interface ConfigGroup extends ConfigContainer {
      * @return a comment
      */
     default String getComment() {
+        return null;
+    }
+
+    @Environment(EnvType.CLIENT)
+    default Identifier getBackground() {
         return null;
     }
 

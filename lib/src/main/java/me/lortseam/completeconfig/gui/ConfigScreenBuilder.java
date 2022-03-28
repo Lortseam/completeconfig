@@ -6,9 +6,11 @@ import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -38,6 +40,7 @@ public abstract class ConfigScreenBuilder<T> {
     }
 
     private final List<GuiProvider<T>> providers = new ArrayList<>();
+    protected Identifier background = DrawableHelper.OPTIONS_BACKGROUND_TEXTURE;
 
     protected ConfigScreenBuilder(List<GuiProvider<T>> globalProviders) {
         providers.addAll(globalProviders);
@@ -67,6 +70,11 @@ public abstract class ConfigScreenBuilder<T> {
             return customTitle.toText();
         }
         return new TranslatableText("completeconfig.gui.defaultTitle", config.getMod().getName());
+    }
+
+    public final ConfigScreenBuilder<?> setBackground(Identifier background) {
+        this.background = background;
+        return this;
     }
 
     /**

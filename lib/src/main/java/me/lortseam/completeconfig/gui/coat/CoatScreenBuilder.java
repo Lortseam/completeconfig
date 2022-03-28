@@ -16,7 +16,6 @@ import me.lortseam.completeconfig.gui.coat.handler.BoundedEntryHandler;
 import me.lortseam.completeconfig.gui.coat.handler.EntryHandlerConverter;
 import me.lortseam.completeconfig.gui.coat.input.ButtonConfigInput;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.BaseText;
 import net.minecraft.text.LiteralText;
@@ -138,7 +137,7 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
             for (Entry<?> entry : config.getEntries()) {
                 entries.add(createEntry(entry));
             }
-            list.add(new ConfigCategoryWidget(MinecraftClient.getInstance(), config.getText(), entries, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE));
+            list.add(new ConfigCategoryWidget(MinecraftClient.getInstance(), config.getText(), entries, background));
         }
         for (Cluster cluster : config.getClusters()) {
             list.add(buildListWidget(cluster));
@@ -151,7 +150,7 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
         for (Entry<?> entry : cluster.getEntries()) {
             list.add(createEntry(entry));
         }
-        ConfigCategoryWidget widget = new ConfigCategoryWidget(MinecraftClient.getInstance(), cluster.getText(), list, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE);
+        ConfigCategoryWidget widget = new ConfigCategoryWidget(MinecraftClient.getInstance(), cluster.getText(), list, cluster.getBackground().orElse(background));
         for (Cluster subCluster : cluster.getClusters()) {
             widget.addSubTree(buildListWidget(subCluster));
         }
