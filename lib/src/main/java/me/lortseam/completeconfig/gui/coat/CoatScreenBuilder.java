@@ -136,7 +136,7 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
         if (!config.getEntries().isEmpty()) {
             List<ConfigContainerEntry> entries = new ArrayList<>();
             for (Entry<?> entry : config.getEntries()) {
-                entries.add(buildEntry(entry));
+                entries.add(createEntry(entry));
             }
             list.add(new ConfigCategoryWidget(MinecraftClient.getInstance(), config.getText(), entries, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE));
         }
@@ -149,7 +149,7 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
     private ConfigCategoryWidget buildListWidget(Cluster cluster) {
         List<ConfigContainerEntry> list = new ArrayList<>();
         for (Entry<?> entry : cluster.getEntries()) {
-            list.add(buildEntry(entry));
+            list.add(createEntry(entry));
         }
         ConfigCategoryWidget widget = new ConfigCategoryWidget(MinecraftClient.getInstance(), cluster.getText(), list, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE);
         for (Cluster subCluster : cluster.getClusters()) {

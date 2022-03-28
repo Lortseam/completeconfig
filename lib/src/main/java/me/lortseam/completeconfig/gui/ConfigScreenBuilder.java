@@ -78,7 +78,7 @@ public abstract class ConfigScreenBuilder<T> {
      */
     public abstract Screen build(Screen parentScreen, Config config);
 
-    protected T buildEntry(Entry<?> entry) {
+    protected T createEntry(Entry<?> entry) {
         return providers.stream().filter(provider -> provider.test(entry)).findFirst().map(provider -> {
             return (EntryBuilder<Entry<?>, T>) provider.getBuilder();
         }).orElseThrow(() -> {

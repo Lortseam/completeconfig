@@ -228,7 +228,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
         if (!config.getEntries().isEmpty()) {
             ConfigCategory category = builder.getOrCreateCategory(config.getText());
             for (Entry<?> entry : config.getEntries()) {
-                category.addEntry(buildFinalEntry(entry));
+                category.addEntry(buildEntry(entry));
             }
         }
         for(Cluster cluster : config.getClusters()) {
@@ -244,20 +244,20 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
     private List<AbstractConfigListEntry> buildCategoryList(Cluster cluster) {
         List<AbstractConfigListEntry> list = new ArrayList<>();
         for (Entry<?> entry : cluster.getEntries()) {
-            list.add(buildFinalEntry(entry));
+            list.add(buildEntry(entry));
         }
         for (Cluster subCluster : cluster.getClusters()) {
-            SubCategoryBuilder subBuilder = ConfigEntryBuilder.create()
+            SubCategoryBuilder builder = ConfigEntryBuilder.create()
                     .startSubCategory(subCluster.getText())
                     .setTooltip(subCluster.getDescription().map(description -> new Text[]{description}));
-            subBuilder.addAll(buildCategoryList(subCluster));
-            list.add(subBuilder.build());
+            builder.addAll(buildCategoryList(subCluster));
+            list.add(builder.build());
         }
         return list;
     }
 
-    private AbstractConfigListEntry<?> buildFinalEntry(Entry<?> entry) {
-        FieldBuilder<?, ?> builder = buildEntry(entry);
+    private AbstractConfigListEntry<?> buildEntry(Entry<?> entry) {
+        FieldBuilder<?, ?> builder = createEntry(entry);
         builder.requireRestart(entry.requiresRestart());
         return  builder.build();
     }
