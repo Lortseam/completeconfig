@@ -19,6 +19,7 @@ public interface ConfigGroup extends ConfigContainer {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, getClass().getSimpleName());
     }
 
+    @Environment(EnvType.CLIENT)
     default String getDescriptionKey() {
         return null;
     }

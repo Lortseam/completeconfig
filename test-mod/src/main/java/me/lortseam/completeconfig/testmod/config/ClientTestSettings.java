@@ -10,7 +10,7 @@ import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
 @ConfigEntries
-public class ClientSettings extends Settings {
+public class ClientTestSettings extends TestSettings {
 
     private boolean defaultDescription;
     @ConfigEntry(descriptionKey = "customDescriptionKey")
@@ -23,7 +23,7 @@ public class ClientSettings extends Settings {
 
         @Override
         public ConfigContainer[] getTransitives() {
-            if (Options.getScreenBuilderType() == Options.ScreenBuilderType.CLOTH_CONFIG) {
+            if (ClientOptions.getScreenBuilderType() == ClientOptions.ScreenBuilderType.CLOTH_CONFIG) {
                 return new ConfigContainer[] {new ClothConfigClientDataTypes()};
             }
             return new ConfigContainer[0];

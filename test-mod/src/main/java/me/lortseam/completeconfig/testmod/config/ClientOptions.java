@@ -9,12 +9,12 @@ import me.lortseam.completeconfig.gui.cloth.ClothConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.coat.CoatScreenBuilder;
 
 @ConfigEntries
-public class Options extends Config {
+public class ClientOptions extends Config {
 
     @Getter
     private static ScreenBuilderType screenBuilderType = ScreenBuilderType.CLOTH_CONFIG;
 
-    public Options() {
+    public ClientOptions() {
         super(TestMod.MOD_ID, new String[]{"options"});
     }
 

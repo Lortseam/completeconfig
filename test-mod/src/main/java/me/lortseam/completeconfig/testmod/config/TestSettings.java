@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @ConfigEntries
-public class Settings extends Config {
+public class TestSettings extends Config {
 
-    public Settings() {
+    public TestSettings() {
         super(TestMod.MOD_ID);
     }
 
@@ -55,7 +55,7 @@ public class Settings extends Config {
         public ConfigContainer[] getTransitives() {
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 return new ConfigContainer[] {
-                        switch (Options.getScreenBuilderType()) {
+                        switch (ClientOptions.getScreenBuilderType()) {
                             case CLOTH_CONFIG -> new ClothConfigDataTypes();
                             case COAT -> new CoatDataTypes();
                         }
