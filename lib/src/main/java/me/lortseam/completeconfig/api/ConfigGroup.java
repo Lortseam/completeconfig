@@ -20,6 +20,11 @@ public interface ConfigGroup extends ConfigContainer {
     }
 
     @Environment(EnvType.CLIENT)
+    default String getNameKey() {
+        return null;
+    }
+
+    @Environment(EnvType.CLIENT)
     default String getDescriptionKey() {
         return null;
     }
