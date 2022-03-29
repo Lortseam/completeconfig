@@ -103,6 +103,11 @@ public class Config extends Parent implements ConfigContainer {
         this(modId, new String[0], containers);
     }
 
+    /**
+     * Gets the metadata of the mod that owns this config.
+     *
+     * @return the mod that owns this config
+     */
     public final ModMetadata getMod() {
         return FabricLoader.getInstance().getModContainer(modId).get().getMetadata();
     }
@@ -186,6 +191,9 @@ public class Config extends Parent implements ConfigContainer {
         serialize(loader);
     }
 
+    /**
+     * Called when an entry of this config gets updated.
+     */
     protected void onChildUpdate() {}
 
     @Override

@@ -23,10 +23,9 @@ public @interface ConfigEntry {
     String value() default "";
 
     /**
-     * Specifies a comment to describe the purpose of this entry. The comment will only be visible in the config
-     * file.
+     * Specifies a comment for this entry. The comment will only be visible in the config file.
      *
-     * <p>If blank, no comment will be applied to the entry.
+     * <p>If empty, no comment will be applied.
      *
      * @return a comment
      */
@@ -39,17 +38,23 @@ public @interface ConfigEntry {
      */
     String nameKey() default "";
 
+    /**
+     * Specifies a custom translation key for this entry's description. If empty, the default key for this entry will be
+     * used.
+     *
+     * @return a custom description translation key
+     */
     String descriptionKey() default "";
 
     /**
      * Specifies whether the game needs to be restarted after modifying the entry.
      *
-     * @return whether the game needs to be restarted after modifying the entry
+     * @return whether the game needs to be restarted after modification
      */
     boolean requiresRestart() default false;
 
     /**
-     * Applied to an entry of type Boolean.
+     * Can be applied to an entry of type Boolean.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
@@ -71,6 +76,11 @@ public @interface ConfigEntry {
         
     }
 
+    /**
+     * If applied to an entry of type Boolean, a checkbox will be rendered for this entry.
+     *
+     * <p>Not supported for the {@link me.lortseam.completeconfig.gui.cloth.ClothConfigScreenBuilder}.
+     */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface Checkbox {
@@ -171,6 +181,9 @@ public @interface ConfigEntry {
 
     /**
      * If applied, renders a slider for this entry. Usually used together with a bounding annotation.
+     *
+     * <p>Not supported for the {@link me.lortseam.completeconfig.gui.cloth.ClothConfigScreenBuilder} for types Float
+     * and Double.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
@@ -190,6 +203,8 @@ public @interface ConfigEntry {
 
     /**
      * If applied, renders a dropdown menu for this entry.
+     *
+     * Not supported for the {@link me.lortseam.completeconfig.gui.coat.CoatScreenBuilder}.
      */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
@@ -198,7 +213,7 @@ public @interface ConfigEntry {
         /**
          * Specifies whether to make the value editable and show suggestions only.
          *
-         * @return whether to enable suggestions
+         * @return whether to enable the suggestion mode
          */
         boolean suggestionMode() default false;
 

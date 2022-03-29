@@ -20,6 +20,13 @@ public abstract class ConfigScreenBuilder<T> {
 
     private static final Map<String, Supplier<ConfigScreenBuilder<?>>> suppliers = new HashMap<>();
 
+    /**
+     * Sets the main screen builder for a mod using a supplier. The main screen builder will be used to build the config
+     * screen if no custom builder was specified.
+     *
+     * @param modId the mod's ID
+     * @param screenBuilderSupplier the screen builder supplier
+     */
     public static void setMain(@NonNull String modId, @NonNull Supplier<ConfigScreenBuilder<?>> screenBuilderSupplier) {
         suppliers.put(modId, screenBuilderSupplier);
     }
@@ -72,6 +79,12 @@ public abstract class ConfigScreenBuilder<T> {
         return new TranslatableText("completeconfig.gui.defaultTitle", config.getMod().getName());
     }
 
+    /**
+     * Sets the background of the config screen.
+     *
+     * @param background the background identifier
+     * @return this screen builder
+     */
     public final ConfigScreenBuilder<?> setBackground(Identifier background) {
         this.background = background;
         return this;

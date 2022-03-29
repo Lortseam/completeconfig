@@ -38,6 +38,9 @@ public interface ConfigContainer {
         return new ConfigContainer[0];
     }
 
+    /**
+     * Called when an entry of this container gets updated.
+     */
     default void onUpdate() {}
 
     /**
