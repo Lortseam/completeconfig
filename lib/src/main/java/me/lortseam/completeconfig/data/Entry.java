@@ -87,11 +87,11 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         this(origin, null);
     }
 
-    public Type getType() {
+    public final Type getType() {
         return origin.getType();
     }
 
-    public T getValue() {
+    public final T getValue() {
         if (update()) {
             return getValue();
         }
@@ -106,7 +106,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         }
     }
 
-    public void setValue(@NonNull T value) {
+    public final void setValue(@NonNull T value) {
         update(value);
     }
 
@@ -136,7 +136,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     @Override
-    public TranslationKey getNameTranslation() {
+    public final TranslationKey getNameTranslation() {
         if (translation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
             if (annotation.isPresent() && !annotation.get().nameKey().isBlank()) {
@@ -149,7 +149,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     @Override
-    public Optional<TranslationKey> getDescriptionTranslation() {
+    public final Optional<TranslationKey> getDescriptionTranslation() {
         if (descriptionTranslation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
             if (annotation.isPresent() && !annotation.get().descriptionKey().isBlank()) {
@@ -167,7 +167,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     @Override
-    public void apply(CommentedConfigurationNode node) {
+    public final void apply(CommentedConfigurationNode node) {
         try {
             T value = (T) node.get(getType());
             if (value == null) {
@@ -180,7 +180,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     @Override
-    public void fetch(CommentedConfigurationNode node) {
+    public final void fetch(CommentedConfigurationNode node) {
         try {
             // Need to box the type here as getValue returns the boxed value
             node.set(ReflectionUtils.boxType(getType()), getValue());
@@ -193,7 +193,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return origin.getField().toString();
     }
 
