@@ -15,7 +15,7 @@ final class ClothBasicMathClothConfigGuiExtension implements ClothConfigGuiExten
     @Override
     public List<GuiProvider<FieldBuilder<?, ?>>> getProviders() {
         return List.of(GuiProvider.create(ColorEntry.class, (ColorEntry<Color> entry) -> ConfigEntryBuilder.create()
-                        .startColorField(entry.getText(), entry.getValue())
+                        .startColorField(entry.getName(), entry.getValue())
                         .setAlphaMode(entry.isAlphaMode())
                         .setDefaultValue(entry.getDefaultValue().getColor())
                         .setTooltip(entry.getDescription().map(description -> new Text[]{description}))

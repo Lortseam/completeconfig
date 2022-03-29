@@ -108,7 +108,7 @@ public class Config extends Parent implements ConfigContainer {
     }
 
     @Override
-    public final TranslationKey getTranslation() {
+    public final TranslationKey getNameTranslation() {
         return getTranslation(false);
     }
 

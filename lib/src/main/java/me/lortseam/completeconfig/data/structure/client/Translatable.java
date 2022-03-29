@@ -8,11 +8,11 @@ import net.minecraft.text.Text;
 public interface Translatable {
 
     @Environment(EnvType.CLIENT)
-    TranslationKey getTranslation();
+    TranslationKey getNameTranslation();
 
     @Environment(EnvType.CLIENT)
-    default Text getText() {
-        return getTranslation().toText();
+    default Text getName() {
+        return getNameTranslation().toText();
     }
 
 }

@@ -31,7 +31,7 @@ public final class ClothConfigExtension implements ClientExtension, ClothConfigG
     @Override
     public List<GuiProvider<FieldBuilder<?, ?>>> getProviders() {
         return List.of(GuiProvider.create((Entry<ModifierKeyCode> entry) -> ConfigEntryBuilder.create()
-                        .startModifierKeyCodeField(entry.getText(), entry.getValue())
+                        .startModifierKeyCodeField(entry.getName(), entry.getValue())
                         .setDefaultValue(entry.getDefaultValue())
                         .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
                         .setModifierSaveConsumer(entry::setValue),

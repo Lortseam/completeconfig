@@ -17,13 +17,13 @@ public final class MinecraftClothConfigGuiExtension implements ClothConfigGuiExt
     @Override
     public List<GuiProvider<FieldBuilder<?, ?>>> getProviders() {
         return List.of(GuiProvider.create(ColorEntry.class, (ColorEntry<TextColor> entry) -> ConfigEntryBuilder.create()
-                                .startColorField(entry.getText(), entry.getValue())
+                                .startColorField(entry.getName(), entry.getValue())
                                 .setDefaultValue(entry.getDefaultValue())
                                 .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
                                 .setSaveConsumer3(entry::setValue),
                         entry -> !entry.isAlphaMode(), TextColor.class),
                 GuiProvider.create((Entry<InputUtil.Key> entry) -> ConfigEntryBuilder.create()
-                                .startKeyCodeField(entry.getText(), entry.getValue())
+                                .startKeyCodeField(entry.getName(), entry.getValue())
                                 .setDefaultValue(entry.getDefaultValue())
                                 .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
                                 .setSaveConsumer(entry::setValue),

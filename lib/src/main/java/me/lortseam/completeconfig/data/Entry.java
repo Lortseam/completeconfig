@@ -136,13 +136,13 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     @Override
-    public TranslationKey getTranslation() {
+    public TranslationKey getNameTranslation() {
         if (translation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
-            if (annotation.isPresent() && !annotation.get().key().isBlank()) {
-                translation = origin.getParent().getTranslation().root().append(annotation.get().key());
+            if (annotation.isPresent() && !annotation.get().nameKey().isBlank()) {
+                translation = origin.getParent().getNameTranslation().root().append(annotation.get().nameKey());
             } else {
-                translation = origin.getParent().getTranslation().append(id);
+                translation = origin.getParent().getNameTranslation().append(id);
             }
         }
         return translation;
@@ -153,9 +153,9 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         if (descriptionTranslation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
             if (annotation.isPresent() && !annotation.get().descriptionKey().isBlank()) {
-                descriptionTranslation = getTranslation().root().append(annotation.get().descriptionKey());
+                descriptionTranslation = getNameTranslation().root().append(annotation.get().descriptionKey());
             } else {
-                descriptionTranslation = getTranslation().append("description");
+                descriptionTranslation = getNameTranslation().append("description");
             }
         }
         return descriptionTranslation.exists() ? Optional.of(descriptionTranslation) : Optional.empty();

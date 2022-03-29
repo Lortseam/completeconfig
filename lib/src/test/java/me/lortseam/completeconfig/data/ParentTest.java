@@ -20,7 +20,7 @@ public class ParentTest {
     public void beforeEach() {
         parent = new Parent() {
             @Override
-            public TranslationKey getTranslation() {
+            public TranslationKey getNameTranslation() {
                 return mock(TranslationKey.class);
             }
 

@@ -33,11 +33,11 @@ public @interface ConfigEntry {
     String comment() default "";
 
     /**
-     * Specifies a custom translation key for this entry. If empty, the default key for this entry will be used.
+     * Specifies a custom translation key for this entry's name. If empty, the default key for this entry will be used.
      *
-     * @return a custom translation key
+     * @return a custom name translation key
      */
-    String key() default "";
+    String nameKey() default "";
 
     String descriptionKey() default "";
 

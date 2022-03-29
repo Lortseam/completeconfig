@@ -22,9 +22,9 @@ public class SliderEntry<T extends Number> extends BoundedEntry<T> {
         if (valueTranslation == null) {
             ConfigEntry.Slider slider = origin.getAnnotation(ConfigEntry.Slider.class);
             if (!slider.valueKey().isBlank()) {
-                valueTranslation = getTranslation().root().append(slider.valueKey());
+                valueTranslation = getNameTranslation().root().append(slider.valueKey());
             } else {
-                valueTranslation = getTranslation().append("value");
+                valueTranslation = getNameTranslation().append("value");
             }
         }
         if (valueTranslation.exists()) {

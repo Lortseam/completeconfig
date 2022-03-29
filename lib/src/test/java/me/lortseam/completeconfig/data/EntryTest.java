@@ -31,7 +31,7 @@ public class EntryTest implements ConfigContainer {
         TranslationKey parentTranslation = new TranslationKey(config).append("subKey");
         PARENT = new Parent() {
             @Override
-            public TranslationKey getTranslation() {
+            public TranslationKey getNameTranslation() {
                 return parentTranslation;
             }
 
@@ -76,7 +76,7 @@ public class EntryTest implements ConfigContainer {
     @ConfigEntry(CUSTOM_ID)
     private boolean customIdField;
     private Entry<?> customIdEntry = of("customIdField");
-    @ConfigEntry(key = CUSTOM_KEY, descriptionKey = CUSTOM_DESCRIPTION_KEY)
+    @ConfigEntry(nameKey = CUSTOM_KEY, descriptionKey = CUSTOM_DESCRIPTION_KEY)
     private boolean customKeyField;
     private Entry<?> customKeyEntry = of("customKeyField");
 
@@ -124,17 +124,17 @@ public class EntryTest implements ConfigContainer {
     @EnabledIfSystemProperty(named = "fabric.dli.env", matches = "client")
     public void of_transformClientProperties() {
         // Key
-        assertEquals(PARENT.getTranslation().append(entry.getId()), entry.getTranslation());
-        assertEquals(PARENT.getTranslation().append(customIdEntry.getId()), customIdEntry.getTranslation());
-        assertEquals(PARENT.getTranslation().root().append(CUSTOM_KEY), customKeyEntry.getTranslation());
+        assertEquals(PARENT.getNameTranslation().append(entry.getId()), entry.getNameTranslation());
+        assertEquals(PARENT.getNameTranslation().append(customIdEntry.getId()), customIdEntry.getNameTranslation());
+        assertEquals(PARENT.getNameTranslation().root().append(CUSTOM_KEY), customKeyEntry.getNameTranslation());
 
         // Description key
         try (var i18n = mockStatic(I18n.class)) {
-            var defaultTranslation = PARENT.getTranslation().append(entry.getId(), "description");
+            var defaultTranslation = PARENT.getNameTranslation().append(entry.getId(), "description");
             i18n.when(() -> I18n.hasTranslation(defaultTranslation.toString())).thenReturn(true);
             assertEquals(defaultTranslation, entry.getDescriptionTranslation().get());
 
-            var customTranslation = PARENT.getTranslation().root().append(CUSTOM_DESCRIPTION_KEY);
+            var customTranslation = PARENT.getNameTranslation().root().append(CUSTOM_DESCRIPTION_KEY);
             i18n.when(() -> I18n.hasTranslation(customTranslation.toString())).thenReturn(true);
             assertEquals(customTranslation, customKeyEntry.getDescriptionTranslation().get());
         }
