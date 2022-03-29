@@ -8,7 +8,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
-import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.util.Optional;
@@ -17,6 +16,7 @@ public final class Cluster extends Parent implements Identifiable, DescriptionSu
 
     private final Parent parent;
     private final ConfigGroup group;
+    private final String comment;
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
     @Environment(EnvType.CLIENT)
@@ -27,6 +27,7 @@ public final class Cluster extends Parent implements Identifiable, DescriptionSu
     Cluster(Parent parent, ConfigGroup group) {
         this.parent = parent;
         this.group = group;
+        comment = group.getComment();
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             background = group.getBackground();
         }
@@ -70,8 +71,8 @@ public final class Cluster extends Parent implements Identifiable, DescriptionSu
 
     @Override
     public void fetch(CommentedConfigurationNode node) {
-        if (!StringUtils.isEmpty(group.getComment())) {
-            node.comment(group.getComment());
+        if (comment != null) {
+            node.comment(comment);
         }
         super.fetch(node);
     }
