@@ -1,3 +1,5 @@
 dependencies {
-    implementation(project(path: ":lib", configuration: "namedElements"))
+    implementation(project(path: ":base", configuration: "namedElements"))
+    implementation(project(path: ":gui-cloth", configuration: "namedElements"))
+    implementation(project(path: ":gui-coat", configuration: "namedElements"))
 }

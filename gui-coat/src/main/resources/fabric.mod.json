@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "completeconfig-gui-coat",
+  "version": "${version}",
+
+  "authors": [
+    "Lortseam"
+  ],
+  "license": "Apache-2.0",
+
+  "environment": "client",
+  "entrypoints": {
+    "completeconfig": [
+      "me.lortseam.completeconfig.CompleteConfigCoatGui"
+    ]
+  },
+
+  "depends": {
+    "completeconfig": "*"
+  },
+
+  "custom": {
+    "modmenu": {
+      "badges": [
+        "library"
+      ]
+    }
+  }
+}

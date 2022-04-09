@@ -9,7 +9,9 @@ pluginManagement {
     }
 }
 
-include("lib")
+include("base")
+include("gui-cloth")
+include("gui-coat")
 include("test-mod")
 
 rootProject.name = 'completeconfig'

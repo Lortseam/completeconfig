@@ -1,0 +1,47 @@
+plugins {
+	id 'com.github.johnrengelman.shadow' version '7.1.0'
+}
+
+dependencies {
+	shadow("org.spongepowered:configurate-hocon:$configurate_version")
+
+	modImplementation("me.shedaniel.cloth:basic-math:$cloth_basic_math_version")
+	modImplementation("me.shedaniel.cloth:cloth-config-fabric:$cloth_config_version") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
+	testImplementation("org.junit.jupiter:junit-jupiter:$junit_version")
+	testImplementation("org.assertj:assertj-core:$assertj_version")
+	testImplementation("org.mockito:mockito-inline:$mockito_version")
+	testImplementation("org.mockito:mockito-junit-jupiter:$mockito_version")
+	testImplementation("com.google.jimfs:jimfs:$jimfs_version") {
+		exclude group: 'com.google.guava', module: 'guava'
+	}
+}
+
+shadowJar {
+	configurations = [project.configurations.shadow]
+	archiveClassifier = "shadow"
+}
+
+remapJar {
+	dependsOn(shadowJar)
+	input.set(shadowJar.archiveFile)
+}
+
+test.enabled = false
+
+task testClient(type: Test) {
+	systemProperty "fabric.dli.env", "client"
+}
+test.dependsOn testClient
+
+task testServer(type: Test) {
+	systemProperty "fabric.dli.env", "server"
+}
+test.dependsOn testServer
+
+tasks.withType(Test) {
+	group = "verification"
+	useJUnitPlatform()
+}
