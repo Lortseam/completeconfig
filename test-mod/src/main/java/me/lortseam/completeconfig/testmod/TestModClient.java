@@ -1,20 +1,21 @@
 package me.lortseam.completeconfig.testmod;
 
-import me.lortseam.completeconfig.data.ConfigRegistry;
+import lombok.Getter;
 import me.lortseam.completeconfig.testmod.config.ClientTestSettings;
-import me.lortseam.completeconfig.testmod.config.ClientOptions;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
+import me.lortseam.completeconfig.testmod.gui.ScreenBuilderType;
 import net.fabricmc.api.ClientModInitializer;
 
 public class TestModClient implements ClientModInitializer {
 
+    @Getter
+    private static final ScreenBuilderType screenBuilderType = ScreenBuilderType.valueOf(System.getProperty("screenBuilderType", ScreenBuilderType.values()[0].name()));
+
     @Override
     public void onInitializeClient() {
-        new ClientOptions().load();
         ClientTestSettings settings = new ClientTestSettings();
         settings.load();
-        ConfigRegistry.setMainConfig(settings);
-        ConfigScreenBuilder.setMain(TestMod.MOD_ID, () -> ClientOptions.getScreenBuilderType().create());
+        ConfigScreenBuilder.setMain(TestMod.MOD_ID, screenBuilderType.create());
     }
 
 }

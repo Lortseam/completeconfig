@@ -6,6 +6,7 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.testmod.TestMod;
+import me.lortseam.completeconfig.testmod.TestModClient;
 import me.shedaniel.math.Color;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -55,7 +56,7 @@ public class TestSettings extends Config {
         public ConfigContainer[] getTransitives() {
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 return new ConfigContainer[] {
-                        switch (ClientOptions.getScreenBuilderType()) {
+                        switch (TestModClient.getScreenBuilderType()) {
                             case CLOTH_CONFIG -> new ClothConfigDataTypes();
                             case COAT -> new CoatDataTypes();
                         }

@@ -4,6 +4,8 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigGroup;
+import me.lortseam.completeconfig.testmod.TestModClient;
+import me.lortseam.completeconfig.testmod.gui.ScreenBuilderType;
 import me.shedaniel.clothconfig2.api.ModifierKeyCode;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TextColor;
@@ -23,7 +25,7 @@ public class ClientTestSettings extends TestSettings {
 
         @Override
         public ConfigContainer[] getTransitives() {
-            if (ClientOptions.getScreenBuilderType() == ClientOptions.ScreenBuilderType.CLOTH_CONFIG) {
+            if (TestModClient.getScreenBuilderType() == ScreenBuilderType.CLOTH_CONFIG) {
                 return new ConfigContainer[] {new ClothConfigClientDataTypes()};
             }
             return new ConfigContainer[0];
