@@ -3,7 +3,7 @@ package me.lortseam.completeconfig.test.data.listeners;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigContainer;
 
-public class EmptyListener implements ConfigContainer {
+public class EmptyEntryListener implements ConfigContainer {
 
     @ConfigEntry
     private boolean value;

@@ -61,8 +61,14 @@ public class EntryTest implements ConfigContainer {
     private long sliderLong;
     @ConfigEntry.BoundedFloat
     private float boundedFloat;
+    @ConfigEntry.BoundedFloat
+    @ConfigEntry.Slider
+    private float sliderFloat;
     @ConfigEntry.BoundedDouble
     private double boundedDouble;
+    @ConfigEntry.BoundedDouble
+    @ConfigEntry.Slider
+    private double sliderDouble;
     private AnEnum anEnum = AnEnum.FOO;
     @ConfigEntry.Dropdown
     private AnEnum dropdown = AnEnum.FOO;
@@ -97,7 +103,9 @@ public class EntryTest implements ConfigContainer {
         assertEntryType(of("boundedLong"), BoundedEntry.class);
         assertEntryType(of("sliderLong"), SliderEntry.class);
         assertEntryType(of("boundedFloat"), BoundedEntry.class);
+        assertEntryType(of("sliderFloat"), SliderEntry.class);
         assertEntryType(of("boundedDouble"), BoundedEntry.class);
+        assertEntryType(of("sliderDouble"), SliderEntry.class);
         assertEntryType(of("anEnum"), EnumEntry.class);
         assertEntryType(of("dropdown"), DropdownEntry.class);
         assertEntryType(of("color"), ColorEntry.class);

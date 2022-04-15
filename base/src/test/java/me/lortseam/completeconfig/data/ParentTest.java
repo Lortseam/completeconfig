@@ -3,8 +3,9 @@ package me.lortseam.completeconfig.data;
 import com.google.common.collect.Iterables;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.test.data.containers.*;
-import me.lortseam.completeconfig.test.data.listeners.EmptyListener;
-import me.lortseam.completeconfig.test.data.listeners.SetterListener;
+import me.lortseam.completeconfig.test.data.listeners.EmptyEntryListener;
+import me.lortseam.completeconfig.test.data.listeners.ContainerListener;
+import me.lortseam.completeconfig.test.data.listeners.SetterEntryListener;
 import me.lortseam.completeconfig.text.TranslationKey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -106,8 +107,8 @@ public class ParentTest {
     }
 
     @Test
-    public void resolve_listenSetter() {
-        SetterListener listener = new SetterListener();
+    public void resolve_listenEntrySetter() {
+        SetterEntryListener listener = new SetterEntryListener();
         parent.resolve(listener);
         boolean value = !listener.getValue();
         Iterables.getOnlyElement(parent.getEntries()).setValue(value);
@@ -115,12 +116,21 @@ public class ParentTest {
     }
 
     @Test
-    public void resolve_doNotUpdateListenerField() {
-        EmptyListener listener = new EmptyListener();
+    public void resolve_doNotUpdateEntryListenerField() {
+        EmptyEntryListener listener = new EmptyEntryListener();
         parent.resolve(listener);
         boolean oldValue = listener.getValue();
         Iterables.getOnlyElement(parent.getEntries()).setValue(!oldValue);
         assertEquals(oldValue, listener.getValue());
+    }
+
+    @Test
+    public void resolve_listenGroup() {
+        var listener = new ContainerListener();
+        parent.resolve(listener);
+        boolean value = listener.getValue();
+        Iterables.getOnlyElement(parent.getEntries()).setValue(!value);
+        assertTrue(listener.isCalled());
     }
 
 }
