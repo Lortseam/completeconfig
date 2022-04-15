@@ -2,6 +2,21 @@ plugins {
     id 'fabric-loom' version "0.11-SNAPSHOT" apply false
     id "io.freefair.lombok" version "6.4.1" apply false
     id 'maven-publish'
+    id 'java'
+}
+
+allprojects {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    group = rootProject.maven_group
+    version = rootProject.mod_version
+
+    // Disable Gradle Module Metadata (.module) generation
+    // The module file doesn't include excludes of transitive dependencies
+    tasks.withType(GenerateModuleMetadata) {
+        enabled = false
+    }
 }
 
 subprojects {
@@ -9,12 +24,7 @@ subprojects {
     apply plugin: "io.freefair.lombok"
     apply plugin: "maven-publish"
 
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-
-    group = rootProject.maven_group
     archivesBaseName = "$rootProject.archives_base_name-${project.name}"
-    version = rootProject.mod_version
 
     processResources {
         inputs.property "version", project.version
@@ -98,10 +108,22 @@ subprojects {
             }
         }
     }
+}
 
-    // Disable Gradle Module Metadata (.module) generation
-    // The module file doesn't include excludes of transitive dependencies
-    tasks.withType(GenerateModuleMetadata) {
-        enabled = false
+task uberJar(type: Jar, dependsOn: subprojects.assemble) {
+    manifest {
+        from zipTree(project("base").tasks.remapJar.outputs.files.singleFile).find {
+            it.name == "MANIFEST.MF"
+        }
+    }
+
+    (subprojects - project("test-mod")).each { project ->
+        from zipTree(project.tasks.remapJar.outputs.files.singleFile).matching {
+            if(project.name != "base") {
+                exclude "fabric.mod.json"
+            }
+        }
     }
 }
+
+build.dependsOn uberJar
