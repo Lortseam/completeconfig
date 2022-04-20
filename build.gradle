@@ -5,6 +5,8 @@ plugins {
     id "java"
 }
 
+def outProjects = subprojects - project("test-mod")
+
 allprojects {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -22,7 +24,6 @@ allprojects {
 subprojects {
     apply plugin: "fabric-loom"
     apply plugin: "io.freefair.lombok"
-    apply plugin: "maven-publish"
 
     archivesBaseName = "$rootProject.archives_base_name-${project.name}"
 
@@ -52,21 +53,6 @@ subprojects {
 
     jar {
         from "LICENSE"
-    }
-
-    javadoc {
-        options {
-            source = "17"
-            encoding = "UTF-8"
-            charSet = "UTF-8"
-            memberLevel = JavadocMemberLevel.PROTECTED
-            links = [
-                    "https://docs.oracle.com/en/java/javase/17/docs/api/"
-            ]
-            // Disable the crazy super-strict doclint tool in Java 8
-            addStringOption("Xdoclint:none", "-quiet")
-        }
-        failOnError false
     }
 
     repositories {
@@ -99,6 +85,25 @@ subprojects {
 
         implementation("org.jetbrains:annotations:$jetbrains_annotations_version")
     }
+}
+
+configure(outProjects) {
+    apply plugin: "maven-publish"
+
+    javadoc {
+        options {
+            source = "17"
+            encoding = "UTF-8"
+            charSet = "UTF-8"
+            memberLevel = JavadocMemberLevel.PROTECTED
+            links = [
+                    "https://docs.oracle.com/en/java/javase/17/docs/api/"
+            ]
+            // Disable the crazy super-strict doclint tool in Java 8
+            addStringOption("Xdoclint:none", "-quiet")
+        }
+        failOnError false
+    }
 
     // configure the maven publication
     publishing {
@@ -117,7 +122,7 @@ task uberJar(type: Jar, dependsOn: subprojects.assemble) {
         }
     }
 
-    (subprojects - project("test-mod")).each { project ->
+    outProjects.each { project ->
         from zipTree(project.tasks.remapJar.outputs.files.singleFile).matching {
             if(project.name != "base") {
                 exclude "fabric.mod.json"
