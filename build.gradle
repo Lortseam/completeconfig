@@ -117,8 +117,10 @@ configure(outProjects) {
 
 task uberJar(type: Jar, dependsOn: subprojects.assemble) {
     manifest {
-        from zipTree(project("base").tasks.remapJar.outputs.files.singleFile).find {
-            it.name == "MANIFEST.MF"
+        from {
+            zipTree(project("base").tasks.remapJar.outputs.files.singleFile).find {
+                it.name == "MANIFEST.MF"
+            }
         }
     }
 
