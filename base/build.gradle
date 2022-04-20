@@ -44,4 +44,5 @@ test.dependsOn testServer
 tasks.withType(Test) {
 	group = "verification"
 	useJUnitPlatform()
+	workingDir = "$rootDir/run"
 }
