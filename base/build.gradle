@@ -1,5 +1,5 @@
 plugins {
-	id 'com.github.johnrengelman.shadow' version '7.1.0'
+	id "com.github.johnrengelman.shadow" version "$shadow_version"
 }
 
 dependencies {
@@ -15,7 +15,7 @@ dependencies {
 	testImplementation("org.mockito:mockito-inline:$mockito_version")
 	testImplementation("org.mockito:mockito-junit-jupiter:$mockito_version")
 	testImplementation("com.google.jimfs:jimfs:$jimfs_version") {
-		exclude group: 'com.google.guava', module: 'guava'
+		exclude group: "com.google.guava", module: "guava"
 	}
 }
 
