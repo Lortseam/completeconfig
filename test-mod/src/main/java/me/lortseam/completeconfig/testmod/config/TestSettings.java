@@ -5,6 +5,7 @@ import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.Config;
+import me.lortseam.completeconfig.data.ConfigOptions;
 import me.lortseam.completeconfig.testmod.TestMod;
 import me.lortseam.completeconfig.testmod.TestModClient;
 import me.shedaniel.math.Color;
@@ -18,7 +19,7 @@ import java.util.List;
 public class TestSettings extends Config {
 
     public TestSettings() {
-        super(TestMod.MOD_ID);
+        super(ConfigOptions.mod(TestMod.MOD_ID));
     }
 
     @ConfigEntry(comment = "This is a test comment")

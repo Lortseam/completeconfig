@@ -1,31 +1,24 @@
 package me.lortseam.completeconfig.data;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
-import me.lortseam.completeconfig.data.extension.BaseExtension;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
-import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.Callable;
-import java.util.function.Consumer;
 
 /**
  * The base config class. Instantiate or inherit this class to create a config for your mod.
@@ -35,55 +28,16 @@ import java.util.function.Consumer;
 @ToString(onlyExplicitlyIncluded = true)
 public class Config extends Parent implements ConfigContainer {
 
-    private static HoconConfigurationLoader createLoader(Consumer<HoconConfigurationLoader.Builder> builderConsumer) {
-        HoconConfigurationLoader.Builder builder = HoconConfigurationLoader.builder()
-                .defaultOptions(options -> options.serializers(typeSerializerCollection -> {
-                    for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(BaseExtension.class, BaseExtension::getTypeSerializers)) {
-                        typeSerializerCollection.registerAll(typeSerializers);
-                    }
-                }));
-        builderConsumer.accept(builder);
-        return builder.build();
-    }
-
-    @EqualsAndHashCode.Include
-    @ToString.Include
-    @Getter
-    private final String modId;
-    @EqualsAndHashCode.Include
-    @ToString.Include
-    @Getter
-    private final String[] branch;
+    private final ConfigOptions options;
     private final HoconConfigurationLoader loader;
     private Runnable resolver;
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
 
-    /**
-     * Creates a config with the specified branch.
-     *
-     * <p>The branch determines the location of the config file and has to be mod-unique.
-     *
-     * @param modId the ID of the mod creating the config
-     * @param branch the branch
-     */
-    public Config(@NonNull String modId, @NonNull String[] branch, @NonNull ConfigContainer... containers) {
-        if (!FabricLoader.getInstance().isModLoaded(modId)) {
-            throw new IllegalArgumentException("Mod " + modId + " is not loaded");
-        }
-        Arrays.stream(branch).forEach(Objects::requireNonNull);
+    public Config(@NonNull ConfigOptions.Builder optionsBuilder, @NonNull ConfigContainer... containers) {
         Arrays.stream(containers).forEach(Objects::requireNonNull);
-        this.modId = modId;
-        this.branch = branch;
-        loader = createLoader(builder -> {
-            Path path = FabricLoader.getInstance().getConfigDir();
-            String[] subPath = ArrayUtils.addFirst(branch, modId);
-            subPath[subPath.length - 1] = subPath[subPath.length - 1] + ".conf";
-            for (String child : subPath) {
-                path = path.resolve(child);
-            }
-            builder.path(path);
-        });
+        this.options = optionsBuilder.build();
+        loader = options.createDefaultLoader();
         resolver = () -> {
             resolve(this);
             resolve(containers);
@@ -95,21 +49,12 @@ public class Config extends Parent implements ConfigContainer {
     }
 
     /**
-     * Creates a config with the default branch.
-     *
-     * @param modId the ID of the mod creating the config
-     */
-    public Config(String modId, ConfigContainer... containers) {
-        this(modId, new String[0], containers);
-    }
-
-    /**
      * Gets the metadata of the mod that owns this config.
      *
      * @return the mod that owns this config
      */
     public final ModMetadata getMod() {
-        return FabricLoader.getInstance().getModContainer(modId).get().getMetadata();
+        return FabricLoader.getInstance().getModContainer(options.getModId()).get().getMetadata();
     }
 
     @Override
@@ -123,7 +68,7 @@ public class Config extends Parent implements ConfigContainer {
             translation = new TranslationKey(this);
         }
         if (includeBranch) {
-            return translation.append(branch);
+            return translation.append(options.getBranch());
         }
         return translation;
     }
@@ -150,7 +95,7 @@ public class Config extends Parent implements ConfigContainer {
      * @param source the source to deserialize from
      */
     public final void deserialize(Callable<BufferedReader> source) {
-        deserialize(createLoader(builder -> builder.source(source)));
+        deserialize(options.createLoader(builder -> builder.source(source)));
     }
 
     /**
@@ -181,7 +126,7 @@ public class Config extends Parent implements ConfigContainer {
      * @param sink the sink to serialize to
      */
     public final void serialize(Callable<BufferedWriter> sink) {
-        serialize(createLoader(builder -> builder.sink(sink)));
+        serialize(options.createLoader(builder -> builder.sink(sink)));
     }
 
     /**

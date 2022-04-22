@@ -12,10 +12,7 @@ public class ConfigTest {
     @Test
     public void _throwExceptionIfArgNull() {
         NullPointerException exception = assertThrows(NullPointerException.class, () -> new Config(null));
-        assertEquals("modId is marked non-null but is null", exception.getMessage());
-        exception = assertThrows(NullPointerException.class, () -> new Config(MOD_ID, (String[]) null));
-        assertEquals("branch is marked non-null but is null", exception.getMessage());
-        assertThrows(NullPointerException.class, () -> new Config(MOD_ID, new String[]{null}));
+        assertEquals("optionsBuilder is marked non-null but is null", exception.getMessage());
     }
 
 }
