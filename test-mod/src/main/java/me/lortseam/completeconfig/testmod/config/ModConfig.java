@@ -16,9 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @ConfigEntries
-public class TestSettings extends Config {
+public class ModConfig extends Config {
 
-    public TestSettings() {
+    public ModConfig() {
         super(ConfigOptions
                 .mod(TestMod.MOD_ID)
                 .fileHeader("This is a test config")

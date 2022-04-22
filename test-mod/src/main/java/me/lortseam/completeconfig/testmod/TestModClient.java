@@ -1,7 +1,7 @@
 package me.lortseam.completeconfig.testmod;
 
 import lombok.Getter;
-import me.lortseam.completeconfig.testmod.config.ClientTestSettings;
+import me.lortseam.completeconfig.testmod.config.ModClientConfig;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.testmod.gui.ScreenBuilderType;
 import net.fabricmc.api.ClientModInitializer;
@@ -13,8 +13,8 @@ public class TestModClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ClientTestSettings settings = new ClientTestSettings();
-        settings.load();
+        ModClientConfig config = new ModClientConfig();
+        config.load();
         ConfigScreenBuilder.setMain(TestMod.MOD_ID, screenBuilderType.create());
     }
 

@@ -1,14 +1,14 @@
 package me.lortseam.completeconfig.testmod;
 
-import me.lortseam.completeconfig.testmod.config.TestSettings;
+import me.lortseam.completeconfig.testmod.config.ModConfig;
 import net.fabricmc.api.DedicatedServerModInitializer;
 
 public class TestModServer implements DedicatedServerModInitializer {
 
     @Override
     public void onInitializeServer() {
-        TestSettings settings = new TestSettings();
-        settings.load();
+        ModConfig config = new ModConfig();
+        config.load();
     }
     
 }

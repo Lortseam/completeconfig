@@ -12,7 +12,7 @@ import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
 @ConfigEntries
-public class ClientTestSettings extends TestSettings {
+public class ModClientConfig extends ModConfig {
 
     private boolean defaultDescription;
     @ConfigEntry(descriptionKey = "customDescriptionKey")
