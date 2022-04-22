@@ -86,12 +86,12 @@ public final class ConfigOptions {
             return this;
         }
 
-        public Builder objectMapperFactory(ObjectMapper.Factory objectMapperFactory) {
+        public Builder objectMapperFactory(@NonNull ObjectMapper.Factory objectMapperFactory) {
             typeSerializerCollectionBuilder.registerAnnotatedObjects(objectMapperFactory);
             return this;
         }
 
-        public Builder fileHeader(String fileHeader) {
+        public Builder fileHeader(@NonNull String fileHeader) {
             this.fileHeader = fileHeader;
             return this;
         }
