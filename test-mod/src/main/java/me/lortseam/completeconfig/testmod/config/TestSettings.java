@@ -19,7 +19,10 @@ import java.util.List;
 public class TestSettings extends Config {
 
     public TestSettings() {
-        super(ConfigOptions.mod(TestMod.MOD_ID));
+        super(ConfigOptions
+                .mod(TestMod.MOD_ID)
+                .fileHeader("This is a test config")
+        );
     }
 
     @ConfigEntry(comment = "This is a test comment")

@@ -6,6 +6,7 @@ import me.lortseam.completeconfig.data.extension.BaseExtension;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.objectmapping.ObjectMapper;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
@@ -34,6 +35,7 @@ public final class ConfigOptions {
     @Getter(AccessLevel.PACKAGE)
     private final String[] branch;
     private final TypeSerializerCollection typeSerializers;
+    private final String fileHeader;
 
     HoconConfigurationLoader createDefaultLoader() {
         return createLoader(builder -> {
@@ -49,12 +51,15 @@ public final class ConfigOptions {
 
     HoconConfigurationLoader createLoader(Consumer<HoconConfigurationLoader.Builder> builderConsumer) {
         HoconConfigurationLoader.Builder builder = HoconConfigurationLoader.builder()
-                .defaultOptions(options -> options.serializers(typeSerializersBuilder -> {
-                    typeSerializersBuilder.registerAll(typeSerializers);
-                    for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(BaseExtension.class, BaseExtension::getTypeSerializers)) {
-                        typeSerializersBuilder.registerAll(typeSerializers);
-                    }
-                }));
+                .defaultOptions(options -> options
+                        .serializers(typeSerializersBuilder -> {
+                            typeSerializersBuilder.registerAll(typeSerializers);
+                            for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(BaseExtension.class, BaseExtension::getTypeSerializers)) {
+                                typeSerializersBuilder.registerAll(typeSerializers);
+                            }
+                        })
+                        .header(fileHeader)
+                );
         builderConsumer.accept(builder);
         return builder.build();
     }
@@ -63,6 +68,7 @@ public final class ConfigOptions {
 
         private final String modId;
         private String[] branch = new String[0];
+        private String fileHeader;
         private final TypeSerializerCollection.Builder typeSerializerCollectionBuilder = TypeSerializerCollection.builder();
 
         private Builder(String modId) {
@@ -80,8 +86,18 @@ public final class ConfigOptions {
             return this;
         }
 
+        public Builder objectMapperFactory(ObjectMapper.Factory objectMapperFactory) {
+            typeSerializerCollectionBuilder.registerAnnotatedObjects(objectMapperFactory);
+            return this;
+        }
+
+        public Builder fileHeader(String fileHeader) {
+            this.fileHeader = fileHeader;
+            return this;
+        }
+
         ConfigOptions build() {
-            return new ConfigOptions(modId, branch, typeSerializerCollectionBuilder.build());
+            return new ConfigOptions(modId, branch.clone(), typeSerializerCollectionBuilder.build(), fileHeader);
         }
 
     }
