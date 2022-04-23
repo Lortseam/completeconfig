@@ -6,7 +6,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 @EqualsAndHashCode
 public final class TranslationKey {
@@ -43,7 +42,7 @@ public final class TranslationKey {
     }
 
     public Text toText(Object... args) {
-        return new TranslatableText(getKey(), args);
+        return Text.translatable(getKey(), args);
     }
 
     public TranslationKey append(String... subKeys) {

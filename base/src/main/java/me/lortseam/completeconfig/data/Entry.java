@@ -18,7 +18,6 @@ import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -163,7 +162,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
 
     @Environment(EnvType.CLIENT)
     public Function<T, Text> getValueTextSupplier() {
-        return value -> new LiteralText(value.toString());
+        return value -> Text.of(value.toString());
     }
 
     @Override

@@ -9,7 +9,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 import java.util.*;
@@ -76,7 +75,7 @@ public abstract class ConfigScreenBuilder<T> {
         if (customTitle.exists()) {
             return customTitle.toText();
         }
-        return new TranslatableText("completeconfig.gui.defaultTitle", config.getMod().getName());
+        return Text.translatable("completeconfig.gui.defaultTitle", config.getMod().getName());
     }
 
     /**
