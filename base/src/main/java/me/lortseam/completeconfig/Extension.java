@@ -1,6 +1,6 @@
 package me.lortseam.completeconfig;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * The base type for CompleteConfig extensions. Every extension type must extend this interface.
@@ -12,7 +12,7 @@ public interface Extension {
      *
      * @return child extensions of this extension
      */
-    default Set<Class<? extends Extension>> children() {
+    default Collection<Class<? extends Extension>> children() {
         return null;
     }
 

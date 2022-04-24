@@ -4,28 +4,30 @@ import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.Extension;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
+import java.util.Collection;
+
 /**
  * The data extension type for both client and server environment.
  */
 public interface DataExtension extends Extension {
 
     /**
-     * Used to register custom type serializers for config entries.
+     * Used to register global type serializers for config entries.
      *
-     * @return a collection of custom type serializers
+     * @return a collection of global type serializers
      */
     default TypeSerializerCollection getTypeSerializers() {
         return null;
     }
 
     /**
-     * Used to register custom entry transformations.
+     * Used to register entry transformations.
      *
-     * @return an array of custom transformations
+     * @return a collection of transformations
      *
      * @see Transformation
      */
-    default Transformation[] getTransformations() {
+    default Collection<Transformation> getTransformations() {
         return null;
     }
 

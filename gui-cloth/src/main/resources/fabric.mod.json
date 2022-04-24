@@ -8,10 +8,10 @@
   "environment": "client",
   "entrypoints": {
     "completeconfig": [
-      "me.lortseam.completeconfig.CompleteConfigClothConfigGui"
+      "me.lortseam.completeconfig.gui.cloth.Initializer"
     ],
     "completeconfig-extender": [
-      "me.lortseam.completeconfig.CompleteConfigClothConfigGui.Extender"
+      "me.lortseam.completeconfig.gui.cloth.Extender"
     ]
   },
 

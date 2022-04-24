@@ -12,6 +12,9 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
+import java.util.Collection;
+import java.util.Collections;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MinecraftClientDataExtension implements ClientDataExtension {
 
@@ -38,10 +41,10 @@ public final class MinecraftClientDataExtension implements ClientDataExtension {
     }
 
     @Override
-    public Transformation[] getTransformations() {
-        return new Transformation[] {
+    public Collection<Transformation> getTransformations() {
+        return Collections.singleton(
                 Transformation.builder().byType(TextColor.class).transforms(origin -> new ColorEntry<>(origin, false))
-        };
+        );
     }
 
 }

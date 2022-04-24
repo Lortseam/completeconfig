@@ -25,6 +25,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -36,7 +37,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
 
     static {
-        for (Transformation[] transformations : CompleteConfig.collectExtensions(DataExtension.class, DataExtension::getTransformations)) {
+        for (Collection<Transformation> transformations : CompleteConfig.collectExtensions(DataExtension.class, DataExtension::getTransformations)) {
             ConfigRegistry.register(transformations);
         }
     }

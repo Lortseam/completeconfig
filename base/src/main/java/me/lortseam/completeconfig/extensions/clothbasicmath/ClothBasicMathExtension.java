@@ -10,6 +10,11 @@ import org.spongepowered.configurate.serialize.CoercionFailedException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ClothBasicMathExtension implements DataExtension {
 
@@ -26,10 +31,10 @@ public final class ClothBasicMathExtension implements DataExtension {
     }
 
     @Override
-    public Transformation[] getTransformations() {
-        return new Transformation[] {
+    public Collection<Transformation> getTransformations() {
+        return Collections.singleton(
                 Transformation.builder().byType(Color.class).transforms(origin -> new ColorEntry<>(origin, true))
-        };
+        );
     }
 
 }

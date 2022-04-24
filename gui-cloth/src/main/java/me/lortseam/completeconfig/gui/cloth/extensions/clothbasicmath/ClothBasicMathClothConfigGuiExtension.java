@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.extensions.clothbasicmath;
+package me.lortseam.completeconfig.gui.cloth.extensions.clothbasicmath;
 
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.gui.GuiProvider;

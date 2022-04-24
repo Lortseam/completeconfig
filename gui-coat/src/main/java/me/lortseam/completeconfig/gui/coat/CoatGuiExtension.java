@@ -4,11 +4,11 @@ import de.siphalor.coat.list.entry.ConfigCategoryConfigEntry;
 import me.lortseam.completeconfig.Extension;
 import me.lortseam.completeconfig.gui.GuiProvider;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface CoatGuiExtension extends Extension {
 
-    default List<GuiProvider<ConfigCategoryConfigEntry<?>>> getProviders() {
+    default Collection<GuiProvider<ConfigCategoryConfigEntry<?>>> getProviders() {
         return null;
     }
 

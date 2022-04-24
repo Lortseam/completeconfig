@@ -12,9 +12,9 @@ import me.lortseam.completeconfig.extensions.clothconfig.ClothConfigClientDataEx
 import me.lortseam.completeconfig.extensions.minecraft.MinecraftClientDataExtension;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.EntrypointException;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @UtilityClass
 public final class CompleteConfig {
 
-    private static final String MOD_ID = "completeconfig";
     private static final Set<Class<? extends Extension>> validExtensionTypes = Sets.newHashSet(DataExtension.class);
     private static final Set<Extension> extensions = new HashSet<>();
 
@@ -39,7 +38,12 @@ public final class CompleteConfig {
         registerExtension("cloth-basic-math", ClothBasicMathExtension.class);
         registerExtension("cloth-config", ClothConfigClientDataExtension.class);
         for (EntrypointContainer<CompleteConfigExtender> entrypoint : FabricLoader.getInstance().getEntrypointContainers("completeconfig-extender", CompleteConfigExtender.class)) {
-            // TODO
+            var extender = entrypoint.getEntrypoint();
+            registerExtensions(extender.getExtensions());
+            var providedExtensions = extender.getProvidedExtensions();
+            if (providedExtensions != null) {
+                providedExtensions.forEach(CompleteConfig::registerExtension);
+            }
         }
     }
 
@@ -68,13 +72,16 @@ public final class CompleteConfig {
         registerExtensionType(extensionType, null, mods);
     }
 
+    private static void registerExtensions(@Nullable Collection<Class<? extends Extension>> extensions) {
+        if(extensions == null) return;
+        for (Class<? extends Extension> extension : extensions) {
+            registerExtension(extension);
+        }
+    }
+
     private static void registerExtension(Extension extension) {
         extensions.add(extension);
-        Set<Class<? extends Extension>> children = extension.children();
-        if(children == null) return;
-        for (Class<? extends Extension> child : children) {
-            registerExtension(child);
-        }
+        registerExtensions(extension.children());
     }
 
     private static void registerExtension(Class<? extends Extension> extension) {
@@ -86,15 +93,6 @@ public final class CompleteConfig {
         }
     }
 
-    /**
-     * Registers an external CompleteConfig extension. To register an extension provided by your own mod, use the
-     * {@link DataExtension} entrypoint.
-     *
-     * @param modId the ID of the external mod
-     * @param extension the extension
-     *
-     * @see DataExtension
-     */
     private static void registerExtension(@NonNull String modId, @NonNull Class<? extends Extension> extension) {
         if(!FabricLoader.getInstance().isModLoaded(modId)) return;
         registerExtension(extension);

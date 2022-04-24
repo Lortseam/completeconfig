@@ -34,8 +34,8 @@ public final class ConfigRegistry {
         origins.add(origin);
     }
 
-    static void register(Transformation... transformations) {
-        ConfigRegistry.transformations.addAll(Arrays.asList(transformations));
+    static void register(Collection<Transformation> transformations) {
+        ConfigRegistry.transformations.addAll(transformations);
     }
 
     /**

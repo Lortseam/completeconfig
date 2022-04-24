@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.extensions.minecraft;
+package me.lortseam.completeconfig.gui.cloth.extensions.minecraft;
 
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.Entry;

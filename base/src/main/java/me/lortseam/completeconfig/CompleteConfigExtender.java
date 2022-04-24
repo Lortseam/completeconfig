@@ -1,14 +1,14 @@
 package me.lortseam.completeconfig;
 
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Used for the {@code completeconfig-extender} entrypoint.
  */
 public interface CompleteConfigExtender {
 
-    default Set<Class<? extends Extension>> getExtensions() {
+    default Collection<Class<? extends Extension>> getExtensions() {
         return null;
     }
 

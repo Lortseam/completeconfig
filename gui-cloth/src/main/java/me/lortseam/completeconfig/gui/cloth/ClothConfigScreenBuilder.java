@@ -21,6 +21,7 @@ import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -203,7 +204,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
     );
 
     static {
-        for (List<GuiProvider<FieldBuilder<?, ?>>> providers : CompleteConfig.collectExtensions(ClothConfigGuiExtension.class, ClothConfigGuiExtension::getProviders)) {
+        for (Collection<GuiProvider<FieldBuilder<?, ?>>> providers : CompleteConfig.collectExtensions(ClothConfigGuiExtension.class, ClothConfigGuiExtension::getProviders)) {
             globalProviders.addAll(providers);
         }
     }

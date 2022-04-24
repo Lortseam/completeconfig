@@ -8,7 +8,7 @@
   "environment": "client",
   "entrypoints": {
     "completeconfig": [
-      "me.lortseam.completeconfig.CompleteConfigCoatGui"
+      "me.lortseam.completeconfig.gui.coat.Initializer"
     ]
   },
   "mixins": [

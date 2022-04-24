@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig;
+package me.lortseam.completeconfig.gui.coat;
 
 import me.lortseam.completeconfig.gui.coat.CoatGuiExtension;
 import net.fabricmc.api.EnvType;
