@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.gui.coat.input;
 
 import de.siphalor.coat.input.ConfigInput;
 import de.siphalor.coat.input.InputChangeListener;
-import me.lortseam.completeconfig.mixin.ClickableWidgetAccess;
+import me.lortseam.completeconfig.gui.coat.mixin.ClickableWidgetAccess;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
