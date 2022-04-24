@@ -14,7 +14,7 @@ public interface DataExtension extends Extension {
     /**
      * Used to register global type serializers for config entries.
      *
-     * @return a collection of global type serializers
+     * @return a collection of type serializers
      */
     default TypeSerializerCollection getTypeSerializers() {
         return null;
