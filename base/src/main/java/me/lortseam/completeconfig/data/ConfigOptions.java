@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import lombok.*;
 import me.lortseam.completeconfig.CompleteConfig;
-import me.lortseam.completeconfig.data.extension.BaseExtension;
+import me.lortseam.completeconfig.data.extension.DataExtension;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
@@ -54,7 +54,7 @@ public final class ConfigOptions {
                 .defaultOptions(options -> options
                         .serializers(typeSerializersBuilder -> {
                             typeSerializersBuilder.registerAll(typeSerializers);
-                            for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(BaseExtension.class, BaseExtension::getTypeSerializers)) {
+                            for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(DataExtension.class, DataExtension::getTypeSerializers)) {
                                 typeSerializersBuilder.registerAll(typeSerializers);
                             }
                         })

@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.data.extension.ClientExtension;
+import me.lortseam.completeconfig.data.extension.ClientDataExtension;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TextColor;
 import org.spongepowered.configurate.serialize.CoercionFailedException;
@@ -13,7 +13,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MinecraftClientExtension implements ClientExtension {
+public final class MinecraftClientDataExtension implements ClientDataExtension {
 
     @Override
     public TypeSerializerCollection getTypeSerializers() {

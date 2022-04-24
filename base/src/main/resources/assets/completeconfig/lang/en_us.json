@@ -1,7 +1,3 @@
 {
-  "completeconfig.gui.defaultTitle": "%s Configuration",
-  "completeconfig.gui.coat.message.requiresRestart": "Requires restart",
-  "completeconfig.gui.coat.message.tooLarge": "Too large (Maximum: %d)",
-  "completeconfig.gui.coat.message.tooSmall": "Too small (Minimum: %d)",
-  "completeconfig.gui.coat.message.invalidNumber": "Not a valid number"
+  "completeconfig.gui.defaultTitle": "%s Configuration"
 }

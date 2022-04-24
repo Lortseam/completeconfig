@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "completeconfig",
+  "version": "${version}",
+
+  "name": "CompleteConfig",
+  "description": "Configuration library",
+  "contact": {
+    "email": "lortseam@gmail.com",
+    "homepage": "https://gitlab.com/Lortseam/completeconfig",
+    "sources": "https://gitlab.com/Lortseam/completeconfig",
+    "issues": "https://gitlab.com/Lortseam/completeconfig/-/issues"
+  },
+  "authors": [
+    "Lortseam"
+  ],
+  "license": "Apache-2.0",
+
+  "custom": {
+    "modmenu": {
+      "badges": [
+        "library"
+      ]
+    }
+  }
+}

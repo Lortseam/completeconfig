@@ -1,6 +1,6 @@
 package me.lortseam.completeconfig.extensions.clothconfig;
 
-import me.lortseam.completeconfig.data.extension.ClientExtension;
+import me.lortseam.completeconfig.data.extension.ClientDataExtension;
 import me.shedaniel.clothconfig2.api.Modifier;
 import me.shedaniel.clothconfig2.api.ModifierKeyCode;
 import net.minecraft.client.util.InputUtil;
@@ -12,7 +12,7 @@ import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-public final class ClothConfigClientExtension implements ClientExtension {
+public final class ClothConfigClientDataExtension implements ClientDataExtension {
 
     @Override
     public TypeSerializerCollection getTypeSerializers() {

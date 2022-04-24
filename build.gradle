@@ -2,30 +2,18 @@ plugins {
     id "fabric-loom" version "$loom_version" apply false
     id "io.freefair.lombok" version "$lombok_version" apply false
     id "maven-publish"
-    id "java"
 }
 
 def outProjects = subprojects - project("test-mod")
 
 allprojects {
+    apply plugin: "fabric-loom"
+
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 
     group = rootProject.maven_group
     version = rootProject.mod_version
-
-    // Disable Gradle Module Metadata (.module) generation
-    // The module file doesn't include excludes of transitive dependencies
-    tasks.withType(GenerateModuleMetadata) {
-        enabled = false
-    }
-}
-
-subprojects {
-    apply plugin: "fabric-loom"
-    apply plugin: "io.freefair.lombok"
-
-    archivesBaseName = "$rootProject.archives_base_name-${project.name}"
 
     processResources {
         inputs.property "version", project.version
@@ -100,6 +88,18 @@ subprojects {
 
         implementation("org.jetbrains:annotations:$jetbrains_annotations_version")
     }
+
+    // Disable Gradle Module Metadata (.module) generation
+    // The module file doesn't include excludes of transitive dependencies
+    tasks.withType(GenerateModuleMetadata) {
+        enabled = false
+    }
+}
+
+subprojects {
+    apply plugin: "io.freefair.lombok"
+
+    archivesBaseName = "$rootProject.archives_base_name-${project.name}"
 }
 
 configure(outProjects) {
@@ -115,22 +115,10 @@ configure(outProjects) {
     }
 }
 
-task uberJar(type: Jar, dependsOn: subprojects.assemble) {
-    manifest {
-        from {
-            zipTree(project("base").tasks.remapJar.outputs.files.singleFile).find {
-                it.name == "MANIFEST.MF"
-            }
-        }
-    }
-
-    outProjects.each { project ->
-        from zipTree(project.tasks.remapJar.outputs.files.singleFile).matching {
-            if(project.name != "base") {
-                exclude "fabric.mod.json"
-            }
+remapJar {
+    afterEvaluate {
+        outProjects.each {
+            nestedJars.from it.tasks.remapJar
         }
     }
 }
-
-build.dependsOn uberJar

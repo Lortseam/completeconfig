@@ -5,10 +5,9 @@ import me.lortseam.completeconfig.Extension;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 /**
- * The main CompleteConfig extension type for both client and server environment. Used for the
- * {@code completeconfig-extension} entrypoint.
+ * The data extension type for both client and server environment.
  */
-public interface BaseExtension extends Extension {
+public interface DataExtension extends Extension {
 
     /**
      * Used to register custom type serializers for config entries.

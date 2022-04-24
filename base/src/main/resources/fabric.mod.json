@@ -1,19 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "completeconfig",
+  "id": "completeconfig-base",
   "version": "${version}",
 
-  "name": "CompleteConfig",
-  "description": "Configuration library",
-  "contact": {
-    "email": "lortseam@gmail.com",
-    "homepage": "https://gitlab.com/Lortseam/completeconfig",
-    "sources": "https://gitlab.com/Lortseam/completeconfig",
-    "issues": "https://gitlab.com/Lortseam/completeconfig/-/issues"
-  },
-  "authors": [
-    "Lortseam"
-  ],
   "license": "Apache-2.0",
 
   "environment": "*",
@@ -22,25 +11,19 @@
       "me.lortseam.completeconfig.gui.ModMenuIntegration"
     ]
   },
-  "mixins": [
-    "completeconfig.mixins.json"
-  ],
 
   "depends": {
     "java": ">=17",
     "minecraft": ">=1.19-alpha.1",
     "fabricloader": ">=0.14.0"
   },
-  "suggests": {
-    "cloth-config": "*",
-    "modmenu": "*"
-  },
 
   "custom": {
     "modmenu": {
       "badges": [
         "library"
-      ]
+      ],
+      "parent": "completeconfig"
     }
   }
 }

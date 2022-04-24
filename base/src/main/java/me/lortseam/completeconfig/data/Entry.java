@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.data.extension.BaseExtension;
+import me.lortseam.completeconfig.data.extension.DataExtension;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.StructurePart;
 import me.lortseam.completeconfig.data.structure.client.DescriptionSupplier;
@@ -36,7 +36,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
 
     static {
-        for (Transformation[] transformations : CompleteConfig.collectExtensions(BaseExtension.class, BaseExtension::getTransformations)) {
+        for (Transformation[] transformations : CompleteConfig.collectExtensions(DataExtension.class, DataExtension::getTransformations)) {
             ConfigRegistry.register(transformations);
         }
     }

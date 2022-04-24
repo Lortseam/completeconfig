@@ -4,17 +4,14 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import me.lortseam.completeconfig.data.ColorEntry;
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.data.extension.BaseExtension;
-import me.lortseam.completeconfig.Extension;
+import me.lortseam.completeconfig.data.extension.DataExtension;
 import me.shedaniel.math.Color;
 import org.spongepowered.configurate.serialize.CoercionFailedException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
-import java.util.Set;
-
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class ClothBasicMathExtension implements BaseExtension {
+public final class ClothBasicMathExtension implements DataExtension {
 
     @Override
     public TypeSerializerCollection getTypeSerializers() {
