@@ -41,7 +41,7 @@ public abstract class ConfigScreenBuilder<T> {
         setMain(modId, () -> screenBuilder);
     }
 
-    public static Optional<Supplier<ConfigScreenBuilder<?>>> getMainSupplier(String modId) {
+    public static Optional<Supplier<ConfigScreenBuilder<?>>> getMain(String modId) {
         return Optional.ofNullable(suppliers.get(modId));
     }
 
@@ -53,21 +53,23 @@ public abstract class ConfigScreenBuilder<T> {
     }
 
     /**
-     * Registers a custom GUI provider.
+     * Registers a local GUI provider.
      *
-     * @param provider the custom GUI provider
+     * @param provider a GUI provider
      */
-    public final void register(GuiProvider<T> provider) {
+    public final ConfigScreenBuilder<T> registerProvider(GuiProvider<T> provider) {
         providers.add(provider);
+        return this;
     }
 
     /**
-     * Registers custom GUI providers.
+     * Registers local GUI providers.
      *
-     * @param providers the custom GUI providers
+     * @param providers a collection of GUI providers
      */
-    public final void register(Collection<GuiProvider<T>> providers) {
+    public final ConfigScreenBuilder<T> registerProviders(Collection<GuiProvider<T>> providers) {
         this.providers.addAll(providers);
+        return this;
     }
 
     protected final Text getTitle(Config config) {
@@ -84,7 +86,7 @@ public abstract class ConfigScreenBuilder<T> {
      * @param background the background identifier
      * @return this screen builder
      */
-    public final ConfigScreenBuilder<?> setBackground(Identifier background) {
+    public final ConfigScreenBuilder<T> setBackground(Identifier background) {
         this.background = background;
         return this;
     }
