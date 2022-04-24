@@ -1,22 +1,19 @@
 {
   "schemaVersion": 1,
-  "id": "completeconfig-gui-coat",
+  "id": "completeconfig-gui",
   "version": "${version}",
 
   "license": "Apache-2.0",
 
-  "environment": "client",
+  "environment": "*",
   "entrypoints": {
-    "completeconfig": [
-      "me.lortseam.completeconfig.gui.coat.Initializer"
+    "modmenu": [
+      "me.lortseam.completeconfig.gui.ModMenuIntegration"
     ]
   },
-  "mixins": [
-    "completeconfig-gui-coat.mixins.json"
-  ],
 
   "depends": {
-    "completeconfig-gui": "*"
+    "completeconfig-base": "*"
   },
 
   "custom": {

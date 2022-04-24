@@ -16,7 +16,7 @@
   },
 
   "depends": {
-    "completeconfig-base": "*"
+    "completeconfig-gui": "*"
   },
 
   "custom": {

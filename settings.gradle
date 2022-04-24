@@ -10,6 +10,7 @@ pluginManagement {
 }
 
 include("base")
+include("gui")
 include("gui-cloth")
 // TODO
 //include("gui-coat")
