@@ -28,6 +28,8 @@ import java.util.concurrent.Callable;
 @ToString(onlyExplicitlyIncluded = true)
 public class Config extends Parent implements ConfigContainer {
 
+    @EqualsAndHashCode.Include
+    @ToString.Include
     private final ConfigOptions options;
     private final HoconConfigurationLoader loader;
     private Runnable resolver;
