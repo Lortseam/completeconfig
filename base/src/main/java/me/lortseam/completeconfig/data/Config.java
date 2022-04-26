@@ -34,6 +34,11 @@ public class Config extends Parent implements ConfigContainer {
     @Environment(EnvType.CLIENT)
     private TranslationKey translation;
 
+    /**
+     * Creates a config with the specified options.
+     *
+     * @param optionsBuilder the config options
+     */
     public Config(@NonNull ConfigOptions.Builder optionsBuilder, @NonNull ConfigContainer... containers) {
         Arrays.stream(containers).forEach(Objects::requireNonNull);
         this.options = optionsBuilder.build();
@@ -46,6 +51,25 @@ public class Config extends Parent implements ConfigContainer {
             }
         };
         ConfigRegistry.register(this);
+    }
+
+    /**
+     * Creates a config with the specified branch.
+     *
+     * @param modId the ID of the mod creating the config
+     * @param branch the branch
+     */
+    public Config(String modId, String[] branch, ConfigContainer... containers) {
+        this(ConfigOptions.mod(modId).branch(branch), containers);
+    }
+
+    /**
+     * Creates a config.
+     *
+     * @param modId the ID of the mod creating the config
+     */
+    public Config(String modId, ConfigContainer... containers) {
+        this(ConfigOptions.mod(modId), containers);
     }
 
     /**

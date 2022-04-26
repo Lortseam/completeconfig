@@ -19,6 +19,11 @@ import java.util.function.Consumer;
 @ToString(onlyExplicitlyIncluded = true)
 public final class ConfigOptions {
 
+    /**
+     * Creates a new {@link ConfigOptions.Builder} for the specified mod.
+     *
+     * @param modId the ID of the mod creating the config
+     */
     public static ConfigOptions.Builder mod(@NonNull String modId) {
         if (!FabricLoader.getInstance().isModLoaded(modId)) {
             throw new IllegalArgumentException("Mod " + modId + " is not loaded");
@@ -75,6 +80,12 @@ public final class ConfigOptions {
             this.modId = modId;
         }
 
+        /**
+         * Sets the config branch. The branch determines the location of the config file and has to be mod-unique.
+         *
+         * @param branch the branch
+         * @return this builder
+         */
         public Builder branch(@NonNull String[] branch) {
             Arrays.stream(branch).forEach(Objects::requireNonNull);
             this.branch = branch;
