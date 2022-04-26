@@ -79,6 +79,8 @@ allprojects {
         mappings("net.fabricmc:yarn:$yarn_mappings:v2")
         modImplementation("net.fabricmc:fabric-loader:$loader_version")
 
+        modImplementation("com.terraformersmc:modmenu:$modmenu_version")
+
         // Using modApi because api does not include dependency inside Maven pom file
         // see https://github.com/FabricMC/fabric-loom/issues/200
         // TODO: Test if this bug still applies

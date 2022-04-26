@@ -1,7 +1,7 @@
 ext.minecraftMinorVersion = minecraft_version.substring(0, 4)
 
 dependencies {
-    api(project(path: ":gui", configuration: "namedElements"))
+    api(project(path: ":base", configuration: "namedElements"))
 
     modApi("de.siphalor:coat-$minecraftMinorVersion:$coat_version") {
         exclude(group: "net.fabricmc.fabric-api")
