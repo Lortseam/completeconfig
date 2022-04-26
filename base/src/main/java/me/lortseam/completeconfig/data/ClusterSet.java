@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.data;
 
 import me.lortseam.completeconfig.api.ConfigGroup;
 
-public class ClusterSet extends SortedSet<Cluster> {
+public class ClusterSet extends OrderedSet<Cluster> {
 
     protected ClusterSet(Parent parent) {
         super(parent);

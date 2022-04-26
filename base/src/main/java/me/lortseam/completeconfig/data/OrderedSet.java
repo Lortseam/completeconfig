@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-abstract class SortedSet<T extends StructurePart & Identifiable> extends AbstractSet<T> {
+abstract class OrderedSet<T extends StructurePart & Identifiable> extends AbstractSet<T> {
 
     protected final Parent parent;
     private final Map<String, T> map = new LinkedHashMap<>();

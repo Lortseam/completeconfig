@@ -7,7 +7,7 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
-public class EntrySet extends SortedSet<Entry> {
+public class EntrySet extends OrderedSet<Entry> {
 
     EntrySet(Parent parent) {
         super(parent);
