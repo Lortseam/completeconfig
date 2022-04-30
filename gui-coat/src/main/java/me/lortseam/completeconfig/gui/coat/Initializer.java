@@ -1,9 +1,10 @@
 package me.lortseam.completeconfig.gui.coat;
 
-import me.lortseam.completeconfig.gui.coat.CoatGuiExtension;
+import me.lortseam.completeconfig.CompleteConfig;
+import me.lortseam.completeconfig.CompleteConfigInitializer;
 import net.fabricmc.api.EnvType;
 
-public final class CompleteConfigCoatGui implements CompleteConfigInitializer {
+public final class Initializer implements CompleteConfigInitializer {
 
     @Override
     public void onInitializeCompleteConfig() {

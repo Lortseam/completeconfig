@@ -5,7 +5,6 @@ import de.siphalor.coat.handler.Message;
 import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.data.Entry;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +33,7 @@ public class BasicEntryHandler<T, E extends Entry<T>> implements ConfigEntryHand
     @MustBeInvokedByOverriders
     public void onUpdate(T value) {
         if (entry.requiresRestart() && !value.equals(entry.getValue())) {
-            addMessage(new Message(Message.Level.INFO, new TranslatableText("completeconfig.gui.coat.message.requiresRestart")));
+            addMessage(new Message(Message.Level.INFO, Text.translatable("completeconfig.gui.coat.message.requiresRestart")));
         }
     }
 

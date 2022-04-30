@@ -1,4 +1,4 @@
-package me.lortseam.completeconfig.gui.coatmixin;
+package me.lortseam.completeconfig.gui.coat.mixin;
 
 import net.minecraft.client.gui.widget.ClickableWidget;
 import org.spongepowered.asm.mixin.Mixin;
