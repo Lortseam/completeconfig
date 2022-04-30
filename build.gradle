@@ -120,3 +120,8 @@ remapJar {
         }
     }
 }
+
+dependencies {
+    // Include coat as there's no way for users to download it
+    include("de.siphalor:coat-$minecraft_major_minor_version:$coat_version")
+}
