@@ -41,7 +41,7 @@ public interface ConfigContainer {
     /**
      * Called when an entry of this container gets updated.
      */
-    default void onUpdate() {}
+    default void onContainerEntryUpdate() {}
 
     /**
      * Applied to declare that a field or a nested class of type {@link ConfigContainer} is transitive.

@@ -165,7 +165,7 @@ public class Config extends Parent implements ConfigContainer {
     /**
      * Called when an entry of this config gets updated.
      */
-    protected void onChildUpdate() {}
+    protected void onConfigEntryUpdate() {}
 
     @Override
     Config getRoot() {

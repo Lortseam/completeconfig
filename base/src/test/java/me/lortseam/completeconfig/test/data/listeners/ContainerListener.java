@@ -10,7 +10,7 @@ public class ContainerListener implements ConfigContainer {
     private boolean called;
 
     @Override
-    public void onUpdate() {
+    public void onContainerEntryUpdate() {
         called = true;
     }
 
