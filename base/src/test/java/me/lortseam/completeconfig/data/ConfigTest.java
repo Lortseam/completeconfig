@@ -11,7 +11,7 @@ public class ConfigTest {
 
     @Test
     public void _throwExceptionIfArgNull() {
-        NullPointerException exception = assertThrows(NullPointerException.class, () -> new Config(null));
+        NullPointerException exception = assertThrows(NullPointerException.class, () -> new Config((ConfigOptions.Builder) null));
         assertEquals("optionsBuilder is marked non-null but is null", exception.getMessage());
     }
 
