@@ -125,7 +125,7 @@ public class ParentTest {
     }
 
     @Test
-    public void resolve_listenGroup() {
+    public void resolve_listenContainer() {
         var listener = new ContainerListener();
         parent.resolve(listener);
         boolean value = listener.getValue();
