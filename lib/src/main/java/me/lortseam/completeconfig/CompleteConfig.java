@@ -92,7 +92,7 @@ public final class CompleteConfig {
      *
      * @see BaseExtension
      */
-    public static void registerExtension(@NonNull String modId, @NonNull Class<? extends BaseExtension> extension) {
+    public static void registerExtension(@NonNull String modId, @NonNull Class<? extends Extension> extension) {
         if(!FabricLoader.getInstance().isModLoaded(modId)) return;
         registerExtension(extension);
     }
