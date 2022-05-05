@@ -13,6 +13,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @ConfigEntries
@@ -57,16 +58,16 @@ public class ModConfig extends Config {
         private AnEnum anEnum = AnEnum.FOO;
 
         @Override
-        public ConfigContainer[] getTransitives() {
+        public Collection<ConfigContainer> getTransitives() {
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                return new ConfigContainer[] {
+                return List.of(
                         switch (TestModClient.getScreenBuilderType()) {
                             case CLOTH_CONFIG -> new ClothConfigDataTypes();
                             case COAT -> new CoatDataTypes();
                         }
-                };
+                );
             }
-            return new ConfigContainer[] {new ClothConfigDataTypes(), new CoatDataTypes()};
+            return List.of(new ClothConfigDataTypes(), new CoatDataTypes());
         }
 
         @ConfigEntries

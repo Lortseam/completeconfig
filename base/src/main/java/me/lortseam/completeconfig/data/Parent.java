@@ -91,7 +91,10 @@ public abstract class Parent implements StructurePart, Translatable {
                 }
             }).toArray(ConfigContainer[]::new));
         }
-        resolve(container.getTransitives());
+        var transitives = container.getTransitives();
+        if (transitives != null) {
+            transitives.forEach(this::resolve);
+        }
     }
 
     final void resolve(ConfigContainer... containers) {

@@ -11,6 +11,10 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 @ConfigEntries
 public class ModClientConfig extends ModConfig {
 
@@ -18,17 +22,16 @@ public class ModClientConfig extends ModConfig {
     @ConfigEntry(descriptionKey = "customDescriptionKey")
     private boolean customDescription;
 
-
     @Transitive
     @ConfigEntries
     private static final class ClientDataTypes implements ConfigGroup {
 
         @Override
-        public ConfigContainer[] getTransitives() {
+        public Collection<ConfigContainer> getTransitives() {
             if (TestModClient.getScreenBuilderType() == ScreenBuilderType.CLOTH_CONFIG) {
-                return new ConfigContainer[] {new ClothConfigClientDataTypes()};
+                return List.of(new ClothConfigClientDataTypes());
             }
-            return new ConfigContainer[0];
+            return null;
         }
 
         @ConfigEntries

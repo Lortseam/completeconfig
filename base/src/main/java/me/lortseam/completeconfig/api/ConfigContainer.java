@@ -1,10 +1,13 @@
 package me.lortseam.completeconfig.api;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,12 +33,12 @@ public interface ConfigContainer {
     /**
      * Used to register transitive containers dynamically.
      *
-     * @return an array of containers
+     * @return a collection of containers
      *
      * @see Transitive
      */
-    default ConfigContainer[] getTransitives() {
-        return new ConfigContainer[0];
+    default @Nullable Collection<ConfigContainer> getTransitives() {
+        return null;
     }
 
     /**
