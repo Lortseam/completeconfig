@@ -88,7 +88,7 @@ public class EntryTest implements ConfigContainer {
 
     private Entry<?> of(String fieldName) {
         try {
-            return Entry.of(mock(Config.class), PARENT, getClass().getDeclaredField((fieldName)), this);
+            return Entry.create(mock(Config.class), PARENT, getClass().getDeclaredField((fieldName)), this);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }

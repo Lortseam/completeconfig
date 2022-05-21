@@ -42,7 +42,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         }
     }
 
-    static Entry<?> of(Config root, Parent parent, Field field, ConfigContainer container) {
+    static Entry<?> create(Config root, Parent parent, Field field, ConfigContainer container) {
         EntryOrigin origin = new EntryOrigin(root, parent, field, container);
         return ConfigRegistry.getTransformations().stream().filter(transformation -> {
             return transformation.test(origin);

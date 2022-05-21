@@ -28,7 +28,7 @@ public class EntrySet extends OrderedSet<Entry> {
                 if (Modifier.isFinal(field.getModifiers())) {
                     throw new AssertionError("Entry field " + field + " must not be final");
                 }
-                return Entry.of(root, parent, field, container);
+                return Entry.create(root, parent, field, container);
             }).forEach(this::add);
         }
     }
