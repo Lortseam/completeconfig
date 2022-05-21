@@ -43,7 +43,7 @@ public final class MinecraftClientDataExtension implements ClientDataExtension {
     @Override
     public Collection<Transformation> getTransformations() {
         return Collections.singleton(
-                Transformation.builder().byType(TextColor.class).transforms(origin -> new ColorEntry<>(origin, false))
+                new Transformation(Transformation.filter().byType(TextColor.class), origin -> new ColorEntry<>(origin, false))
         );
     }
 
