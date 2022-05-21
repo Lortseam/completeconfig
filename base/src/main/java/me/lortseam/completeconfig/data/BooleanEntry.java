@@ -5,7 +5,7 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screen.ScreenTexts;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
 import java.util.HashMap;
