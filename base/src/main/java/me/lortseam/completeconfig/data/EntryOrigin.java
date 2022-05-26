@@ -39,7 +39,7 @@ public final class EntryOrigin {
     }
 
     @EqualsAndHashCode.Include
-    public Object getObject() {
+    public ConfigContainer getObject() {
         return Modifier.isStatic(field.getModifiers()) ? null : container;
     }
 

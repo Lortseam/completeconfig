@@ -43,7 +43,7 @@ public final class Cluster extends Parent implements Identifiable, DescriptionSu
         if (translation == null) {
             String customKey = group.getNameKey();
             if (customKey != null && !customKey.isBlank()) {
-                translation = parent.getNameTranslation().root().append(customKey);
+                translation = getRoot().getTranslation(false).append(customKey);
             } else {
                 translation = parent.getNameTranslation().append(group.getId());
             }
@@ -56,7 +56,7 @@ public final class Cluster extends Parent implements Identifiable, DescriptionSu
         if (descriptionTranslation == null) {
             String customKey = group.getDescriptionKey();
             if (customKey != null && !customKey.isBlank()) {
-                descriptionTranslation = getNameTranslation().root().append(customKey);
+                descriptionTranslation = getRoot().getTranslation(false).append(customKey);
             } else {
                 descriptionTranslation = getNameTranslation().append("description");
             }

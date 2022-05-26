@@ -33,10 +33,6 @@ public final class TranslationKey {
         }
     }
 
-    public TranslationKey root() {
-        return new TranslationKey(modKey, null);
-    }
-
     public boolean exists() {
         return I18n.hasTranslation(getKey());
     }

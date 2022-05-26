@@ -28,7 +28,9 @@ public class EntryTest implements ConfigContainer {
         when(modMetadata.getId()).thenReturn("test");
         Config config = mock(Config.class);
         when(config.getMod()).thenReturn(modMetadata);
-        TranslationKey parentTranslation = new TranslationKey(config).append("subKey");
+        var rootTranslation = new TranslationKey(config);
+        when(config.getTranslation(false)).thenReturn(rootTranslation);
+        TranslationKey parentTranslation = rootTranslation.append("subKey");
         PARENT = new Parent() {
             @Override
             public TranslationKey getNameTranslation() {
@@ -37,7 +39,7 @@ public class EntryTest implements ConfigContainer {
 
             @Override
             Config getRoot() {
-                return mock(Config.class);
+                return config;
             }
         };
     }
@@ -134,7 +136,7 @@ public class EntryTest implements ConfigContainer {
         // Key
         assertEquals(PARENT.getNameTranslation().append(entry.getId()), entry.getNameTranslation());
         assertEquals(PARENT.getNameTranslation().append(customIdEntry.getId()), customIdEntry.getNameTranslation());
-        assertEquals(PARENT.getNameTranslation().root().append(CUSTOM_KEY), customKeyEntry.getNameTranslation());
+        assertEquals(PARENT.getRoot().getTranslation(false).append(CUSTOM_KEY), customKeyEntry.getNameTranslation());
 
         // Description key
         try (var i18n = mockStatic(I18n.class)) {
@@ -142,7 +144,7 @@ public class EntryTest implements ConfigContainer {
             i18n.when(() -> I18n.hasTranslation(defaultTranslation.toString())).thenReturn(true);
             assertEquals(defaultTranslation, entry.getDescriptionTranslation().get());
 
-            var customTranslation = PARENT.getNameTranslation().root().append(CUSTOM_DESCRIPTION_KEY);
+            var customTranslation = PARENT.getRoot().getTranslation(false).append(CUSTOM_DESCRIPTION_KEY);
             i18n.when(() -> I18n.hasTranslation(customTranslation.toString())).thenReturn(true);
             assertEquals(customTranslation, customKeyEntry.getDescriptionTranslation().get());
         }

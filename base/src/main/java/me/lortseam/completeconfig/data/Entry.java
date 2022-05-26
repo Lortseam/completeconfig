@@ -71,20 +71,24 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         ConfigRegistry.register(origin);
         this.origin = origin;
         this.revisor = revisor;
-        if (!origin.getField().canAccess(origin.getObject())) {
-            origin.getField().setAccessible(true);
+        if (!getField().canAccess(origin.getObject())) {
+            getField().setAccessible(true);
         }
         typeClass = (Class<T>) ReflectionUtils.getTypeClass(origin.getType());
         Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
-        id = annotation.isPresent() && !annotation.get().value().isBlank() ? annotation.get().value() : origin.getField().getName();
+        id = annotation.isPresent() && !annotation.get().value().isBlank() ? annotation.get().value() : getField().getName();
         requiresRestart = annotation.isPresent() && annotation.get().requiresRestart();
         comment = annotation.isPresent() && !annotation.get().comment().isBlank() ? annotation.get().comment() : null;
-        setter = ReflectionUtils.getSetterMethod(origin.getField(), origin.getObject()).<Setter<T>>map(method -> method::invoke).orElse((object, value) -> origin.getField().set(object, value));
+        setter = ReflectionUtils.getSetterMethod(getField(), origin.getObject()).<Setter<T>>map(method -> method::invoke).orElse((object, value) -> getField().set(object, value));
         defaultValue = getValue();
     }
 
     protected Entry(EntryOrigin origin) {
         this(origin, null);
+    }
+    
+    private Field getField() {
+        return origin.getField();
     }
 
     public final Type getType() {
@@ -100,7 +104,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
 
     private T getFieldValue() {
         try {
-            return (T) Objects.requireNonNull(origin.getField().get(origin.getObject()), origin.getField().toString());
+            return (T) Objects.requireNonNull(getField().get(origin.getObject()), getField().toString());
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Failed to get entry value", e);
         }
@@ -140,7 +144,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         if (translation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
             if (annotation.isPresent() && !annotation.get().nameKey().isBlank()) {
-                translation = origin.getParent().getNameTranslation().root().append(annotation.get().nameKey());
+                translation = origin.getRoot().getTranslation(false).append(annotation.get().nameKey());
             } else {
                 translation = origin.getParent().getNameTranslation().append(id);
             }
@@ -153,7 +157,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         if (descriptionTranslation == null) {
             Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
             if (annotation.isPresent() && !annotation.get().descriptionKey().isBlank()) {
-                descriptionTranslation = getNameTranslation().root().append(annotation.get().descriptionKey());
+                descriptionTranslation = origin.getRoot().getTranslation(false).append(annotation.get().descriptionKey());
             } else {
                 descriptionTranslation = getNameTranslation().append("description");
             }
@@ -194,7 +198,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
 
     @Override
     public final String toString() {
-        return origin.getField().toString();
+        return getField().toString();
     }
 
     @FunctionalInterface

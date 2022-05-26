@@ -3,6 +3,8 @@ package me.lortseam.completeconfig.data;
 import com.google.common.collect.Lists;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import me.lortseam.completeconfig.CompleteConfig;
+import me.lortseam.completeconfig.data.extension.DataExtension;
 import me.lortseam.completeconfig.data.transform.Transformation;
 
 import java.util.*;
