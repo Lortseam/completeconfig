@@ -16,21 +16,24 @@ import static org.mockito.Mockito.*;
 
 public class EntryTest implements ConfigContainer {
 
+    private static final String MOD_ID = "test",
+            SUB_KEY = "subKey",
+            CUSTOM_ID = "customId",
+            CUSTOM_KEY = "customKey",
+            CUSTOM_DESCRIPTION_KEY = "customDescriptionKey",
+            COMMENT = "Comment";
+    private static final Config CONFIG;
     private static final Parent PARENT;
     private static final boolean REQUIRES_RESTART = true;
-    private static final String COMMENT = "Comment";
-    private static final String CUSTOM_ID = "customId",
-            CUSTOM_KEY = "customKey",
-            CUSTOM_DESCRIPTION_KEY = "customDescriptionKey";
 
     static {
         ModMetadata modMetadata = mock(ModMetadata.class);
-        when(modMetadata.getId()).thenReturn("test");
-        Config config = mock(Config.class);
-        when(config.getMod()).thenReturn(modMetadata);
-        var rootTranslation = new TranslationKey(config);
-        when(config.getTranslation(false)).thenReturn(rootTranslation);
-        TranslationKey parentTranslation = rootTranslation.append("subKey");
+        when(modMetadata.getId()).thenReturn(MOD_ID);
+        CONFIG = mock(Config.class);
+        when(CONFIG.getMod()).thenReturn(modMetadata);
+        var rootTranslation = new TranslationKey(CONFIG);
+        when(CONFIG.getTranslation(false)).thenReturn(rootTranslation);
+        var parentTranslation = rootTranslation.append(SUB_KEY);
         PARENT = new Parent() {
             @Override
             public TranslationKey getNameTranslation() {
@@ -39,7 +42,7 @@ public class EntryTest implements ConfigContainer {
 
             @Override
             Config getRoot() {
-                return config;
+                return CONFIG;
             }
         };
     }
@@ -90,7 +93,7 @@ public class EntryTest implements ConfigContainer {
 
     private Entry<?> of(String fieldName) {
         try {
-            return Entry.create(mock(Config.class), PARENT, getClass().getDeclaredField((fieldName)), this);
+            return Entry.create(CONFIG, PARENT, getClass().getDeclaredField((fieldName)), this);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -134,9 +137,9 @@ public class EntryTest implements ConfigContainer {
     @EnabledIfSystemProperty(named = "fabric.dli.env", matches = "client")
     public void of_transformClientProperties() {
         // Key
-        assertEquals(PARENT.getNameTranslation().append(entry.getId()), entry.getNameTranslation());
-        assertEquals(PARENT.getNameTranslation().append(customIdEntry.getId()), customIdEntry.getNameTranslation());
-        assertEquals(PARENT.getRoot().getTranslation(false).append(CUSTOM_KEY), customKeyEntry.getNameTranslation());
+        assertEquals("config." + MOD_ID + "." + SUB_KEY + ".field", entry.getNameTranslation().toString());
+        assertEquals("config." + MOD_ID + "." + SUB_KEY + "." + CUSTOM_ID, customIdEntry.getNameTranslation().toString());
+        assertEquals("config." + MOD_ID + "." + CUSTOM_KEY, customKeyEntry.getNameTranslation().toString());
 
         // Description key
         try (var i18n = mockStatic(I18n.class)) {
