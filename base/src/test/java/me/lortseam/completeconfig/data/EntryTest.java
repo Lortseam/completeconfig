@@ -143,13 +143,13 @@ public class EntryTest implements ConfigContainer {
 
         // Description key
         try (var i18n = mockStatic(I18n.class)) {
-            var defaultTranslation = PARENT.getNameTranslation().append(entry.getId(), "description");
-            i18n.when(() -> I18n.hasTranslation(defaultTranslation.toString())).thenReturn(true);
-            assertEquals(defaultTranslation, entry.getDescriptionTranslation().get());
+            var defaultDescriptionKey = "config." + MOD_ID + "." + SUB_KEY + ".field.description";
+            i18n.when(() -> I18n.hasTranslation(defaultDescriptionKey)).thenReturn(true);
+            assertEquals(defaultDescriptionKey, entry.getDescriptionTranslation().get().toString());
 
-            var customTranslation = PARENT.getRoot().getTranslation(false).append(CUSTOM_DESCRIPTION_KEY);
-            i18n.when(() -> I18n.hasTranslation(customTranslation.toString())).thenReturn(true);
-            assertEquals(customTranslation, customKeyEntry.getDescriptionTranslation().get());
+            var customDescriptionKey = "config." + MOD_ID + "." + CUSTOM_DESCRIPTION_KEY;
+            i18n.when(() -> I18n.hasTranslation(customDescriptionKey)).thenReturn(true);
+            assertEquals(customDescriptionKey, customKeyEntry.getDescriptionTranslation().get().toString());
         }
     }
 
