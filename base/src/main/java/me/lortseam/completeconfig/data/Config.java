@@ -5,11 +5,13 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import me.lortseam.completeconfig.api.ConfigContainer;
+import me.lortseam.completeconfig.text.TranslationBase;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
@@ -83,20 +85,8 @@ public class Config extends Parent implements ConfigContainer {
         return FabricLoader.getInstance().getModContainer(options.getModId()).get().getMetadata();
     }
 
-    @Override
-    public final TranslationKey getNameTranslation() {
-        return getTranslation(false);
-    }
-
-    @Environment(EnvType.CLIENT)
-    public final TranslationKey getTranslation(boolean includeBranch) {
-        if (translation == null) {
-            translation = new TranslationKey(this);
-        }
-        if (includeBranch) {
-            return translation.append(options.getBranch());
-        }
-        return translation;
+    public final String[] getBranch() {
+        return options.getBranch();
     }
 
     private void deserialize(HoconConfigurationLoader loader) {
@@ -170,6 +160,19 @@ public class Config extends Parent implements ConfigContainer {
     @Override
     Config getRoot() {
         return this;
+    }
+
+    @Override
+    public TranslationKey getBaseTranslation(TranslationBase translationBase, @Nullable Class<? extends ConfigContainer> clazz) {
+        return new TranslationKey(this);
+    }
+
+    @Override
+    public TranslationKey getNameTranslation() {
+        if (translation == null) {
+            translation = getBaseTranslation();
+        }
+        return translation;
     }
 
 }

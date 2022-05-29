@@ -5,7 +5,7 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import me.lortseam.completeconfig.CompleteConfig;
-import me.lortseam.completeconfig.api.ConfigContainer;
+import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.extension.DataExtension;
 import me.lortseam.completeconfig.data.structure.Identifiable;
@@ -14,6 +14,7 @@ import me.lortseam.completeconfig.data.structure.client.DescriptionSupplier;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
 import me.lortseam.completeconfig.data.transform.Transformation;
 import me.lortseam.completeconfig.data.transform.Transformer;
+import me.lortseam.completeconfig.text.TranslationBase;
 import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import net.fabricmc.api.EnvType;
@@ -42,8 +43,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         }
     }
 
-    static Entry<?> create(Config root, Parent parent, Field field, ConfigContainer container) {
-        EntryOrigin origin = new EntryOrigin(root, parent, field, container);
+    static Entry<?> create(EntryOrigin origin) {
         return ConfigRegistry.getTransformations().stream().filter(transformation -> {
             return transformation.test(origin);
         }).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
@@ -75,7 +75,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
             getField().setAccessible(true);
         }
         typeClass = (Class<T>) ReflectionUtils.getTypeClass(origin.getType());
-        Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
+        Optional<ConfigEntry> annotation = origin.getMainAnnotation();
         id = annotation.isPresent() && !annotation.get().value().isBlank() ? annotation.get().value() : getField().getName();
         requiresRestart = annotation.isPresent() && annotation.get().requiresRestart();
         comment = annotation.isPresent() && !annotation.get().comment().isBlank() ? annotation.get().comment() : null;
@@ -142,11 +142,12 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     @Override
     public final TranslationKey getNameTranslation() {
         if (translation == null) {
-            Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
+            Optional<ConfigEntry> annotation = origin.getMainAnnotation();
             if (annotation.isPresent() && !annotation.get().nameKey().isBlank()) {
-                translation = origin.getRoot().getTranslation(false).append(annotation.get().nameKey());
+                translation = origin.getRoot().getBaseTranslation().append(annotation.get().nameKey());
             } else {
-                translation = origin.getParent().getNameTranslation().append(id);
+                var translationBase = origin.getClassAnnotation().map(ConfigEntries::translationBase).orElse(TranslationBase.INSTANCE);
+                translation = origin.getParent().getBaseTranslation(translationBase, origin.getDeclaringClass()).append(id);
             }
         }
         return translation;
@@ -155,9 +156,9 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     @Override
     public final Optional<TranslationKey> getDescriptionTranslation() {
         if (descriptionTranslation == null) {
-            Optional<ConfigEntry> annotation = origin.getOptionalAnnotation(ConfigEntry.class);
+            Optional<ConfigEntry> annotation = origin.getMainAnnotation();
             if (annotation.isPresent() && !annotation.get().descriptionKey().isBlank()) {
-                descriptionTranslation = origin.getRoot().getTranslation(false).append(annotation.get().descriptionKey());
+                descriptionTranslation = origin.getRoot().getBaseTranslation().append(annotation.get().descriptionKey());
             } else {
                 descriptionTranslation = getNameTranslation().append("description");
             }

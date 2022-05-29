@@ -1,12 +1,14 @@
 package me.lortseam.completeconfig.data;
 
-import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntry;
+import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TextColor;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
@@ -14,42 +16,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class EntryTest implements ConfigContainer {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class EntryTest implements ConfigGroup {
 
     private static final String MOD_ID = "test",
-            SUB_KEY = "subKey",
             CUSTOM_ID = "customId",
             CUSTOM_KEY = "customKey",
             CUSTOM_DESCRIPTION_KEY = "customDescriptionKey",
             COMMENT = "Comment";
-    private static final Config CONFIG;
-    private static final Parent PARENT;
     private static final boolean REQUIRES_RESTART = true;
-
-    static {
-        ModMetadata modMetadata = mock(ModMetadata.class);
-        when(modMetadata.getId()).thenReturn(MOD_ID);
-        CONFIG = mock(Config.class);
-        when(CONFIG.getMod()).thenReturn(modMetadata);
-        var rootTranslation = new TranslationKey(CONFIG);
-        when(CONFIG.getTranslation(false)).thenReturn(rootTranslation);
-        var parentTranslation = rootTranslation.append(SUB_KEY);
-        PARENT = new Parent() {
-            @Override
-            public TranslationKey getNameTranslation() {
-                return parentTranslation;
-            }
-
-            @Override
-            Config getRoot() {
-                return CONFIG;
-            }
-        };
-    }
 
     private static <E extends Entry<?>> void assertEntryType(Entry<?> entry, Class<E> entryType) {
         assertTrue(entryType.isInstance(entry));
     }
+
+    private Config config;
+    private Parent parent;
 
     private boolean booleanWithoutAnnotation;
     @ConfigEntry.Boolean
@@ -83,17 +65,33 @@ public class EntryTest implements ConfigContainer {
 
     @ConfigEntry(requiresRestart = REQUIRES_RESTART, comment = COMMENT)
     private int field = 123456789;
-    private Entry<?> entry = of("field");
+    private Entry<?> entry;
     @ConfigEntry(CUSTOM_ID)
     private boolean customIdField;
-    private Entry<?> customIdEntry = of("customIdField");
+    private Entry<?> customIdEntry;
     @ConfigEntry(nameKey = CUSTOM_KEY, descriptionKey = CUSTOM_DESCRIPTION_KEY)
     private boolean customKeyField;
-    private Entry<?> customKeyEntry = of("customKeyField");
+    private Entry<?> customKeyEntry;
+
+    @BeforeAll
+    public void beforeAll() {
+        config = mock(Config.class);
+        ModMetadata modMetadata = mock(ModMetadata.class);
+        when(modMetadata.getId()).thenReturn(MOD_ID);
+        when(config.getMod()).thenReturn(modMetadata);
+        var rootTranslation = new TranslationKey(config);
+        when(config.getBaseTranslation()).thenCallRealMethod();
+        when(config.getBaseTranslation(any(), any())).thenReturn(rootTranslation);
+        parent = new Cluster(config, this);
+
+        entry = of("field");
+        customIdEntry = of("customIdField");
+        customKeyEntry = of("customKeyField");
+    }
 
     private Entry<?> of(String fieldName) {
         try {
-            return Entry.create(CONFIG, PARENT, getClass().getDeclaredField((fieldName)), this);
+            return Entry.create(new EntryOrigin(config, parent, getClass().getDeclaredField((fieldName)), this));
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
@@ -136,14 +134,14 @@ public class EntryTest implements ConfigContainer {
     @Test
     @EnabledIfSystemProperty(named = "fabric.dli.env", matches = "client")
     public void of_transformClientProperties() {
-        // Key
-        assertEquals("config." + MOD_ID + "." + SUB_KEY + ".field", entry.getNameTranslation().toString());
-        assertEquals("config." + MOD_ID + "." + SUB_KEY + "." + CUSTOM_ID, customIdEntry.getNameTranslation().toString());
+        // Name key
+        assertEquals("config." + MOD_ID + ".entryTest.field", entry.getNameTranslation().toString());
+        assertEquals("config." + MOD_ID + ".entryTest." + CUSTOM_ID, customIdEntry.getNameTranslation().toString());
         assertEquals("config." + MOD_ID + "." + CUSTOM_KEY, customKeyEntry.getNameTranslation().toString());
 
         // Description key
         try (var i18n = mockStatic(I18n.class)) {
-            var defaultDescriptionKey = "config." + MOD_ID + "." + SUB_KEY + ".field.description";
+            var defaultDescriptionKey = "config." + MOD_ID + ".entryTest.field.description";
             i18n.when(() -> I18n.hasTranslation(defaultDescriptionKey)).thenReturn(true);
             assertEquals(defaultDescriptionKey, entry.getDescriptionTranslation().get().toString());
 

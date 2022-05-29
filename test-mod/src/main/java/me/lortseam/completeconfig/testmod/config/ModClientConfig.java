@@ -12,10 +12,9 @@ import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-@ConfigEntries
+@ConfigEntries(includeAll = true)
 public class ModClientConfig extends ModConfig {
 
     private boolean defaultDescription;
@@ -23,7 +22,7 @@ public class ModClientConfig extends ModConfig {
     private boolean customDescription;
 
     @Transitive
-    @ConfigEntries
+    @ConfigEntries(includeAll = true)
     private static final class ClientDataTypes implements ConfigGroup {
 
         @Override
@@ -34,7 +33,7 @@ public class ModClientConfig extends ModConfig {
             return null;
         }
 
-        @ConfigEntries
+        @ConfigEntries(includeAll = true)
         public static class ClothConfigClientDataTypes implements ConfigContainer {
 
             private TextColor textColor = TextColor.fromFormatting(Formatting.GREEN);

@@ -33,10 +33,10 @@ public class BooleanEntry extends Entry<Boolean> {
             Optional<ConfigEntry.Boolean> annotation = origin.getOptionalAnnotation(ConfigEntry.Boolean.class);
             if (annotation.isPresent()) {
                 if (!annotation.get().trueKey().isBlank()) {
-                    valueTranslations.put(true, origin.getRoot().getTranslation(false).append(annotation.get().trueKey()));
+                    valueTranslations.put(true, origin.getRoot().getBaseTranslation().append(annotation.get().trueKey()));
                 }
                 if (!annotation.get().falseKey().isBlank()) {
-                    valueTranslations.put(false, origin.getRoot().getTranslation(false).append(annotation.get().falseKey()));
+                    valueTranslations.put(false, origin.getRoot().getBaseTranslation().append(annotation.get().falseKey()));
                 }
             }
             TranslationKey defaultTrueTranslation = getNameTranslation().append("true");

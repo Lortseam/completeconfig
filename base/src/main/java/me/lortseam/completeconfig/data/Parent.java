@@ -7,8 +7,13 @@ import me.lortseam.completeconfig.api.ConfigGroup;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.StructurePart;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
+import me.lortseam.completeconfig.text.TranslationBase;
+import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.lang.reflect.InvocationTargetException;
@@ -108,7 +113,7 @@ public abstract class Parent implements StructurePart, Translatable {
     }
 
     @Override
-    public final void apply(CommentedConfigurationNode node) {
+    public void apply(CommentedConfigurationNode node) {
         propagateToChildren(entries, node, childNode -> !childNode.isNull(), StructurePart::apply);
         propagateToChildren(clusters, node, childNode -> !childNode.isNull(), StructurePart::apply);
     }
@@ -121,6 +126,14 @@ public abstract class Parent implements StructurePart, Translatable {
 
     final boolean isEmpty() {
         return entries.isEmpty() && clusters.isEmpty();
+    }
+
+    @Environment(EnvType.CLIENT)
+    abstract TranslationKey getBaseTranslation(TranslationBase translationBase, @Nullable Class<? extends ConfigContainer> clazz);
+
+    @Environment(EnvType.CLIENT)
+    public final TranslationKey getBaseTranslation() {
+        return getBaseTranslation(TranslationBase.INSTANCE, null);
     }
 
 }

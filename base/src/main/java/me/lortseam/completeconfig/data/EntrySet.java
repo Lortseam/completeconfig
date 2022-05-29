@@ -20,7 +20,7 @@ public class EntrySet extends OrderedSet<Entry> {
                 if (clazz != container.getClass() && Modifier.isStatic(field.getModifiers())) {
                     return false;
                 }
-                if (clazz.isAnnotationPresent(ConfigEntries.class)) {
+                if (clazz.isAnnotationPresent(ConfigEntries.class) && clazz.getAnnotation(ConfigEntries.class).includeAll()) {
                     return !ConfigContainer.class.isAssignableFrom(field.getType()) && !field.isAnnotationPresent(ConfigEntries.Exclude.class) && !Modifier.isTransient(field.getModifiers());
                 }
                 return field.isAnnotationPresent(ConfigEntry.class);
@@ -28,7 +28,7 @@ public class EntrySet extends OrderedSet<Entry> {
                 if (Modifier.isFinal(field.getModifiers())) {
                     throw new AssertionError("Entry field " + field + " must not be final");
                 }
-                return Entry.create(root, parent, field, container);
+                return Entry.create(new EntryOrigin(root, parent, field, container));
             }).forEach(this::add);
         }
     }

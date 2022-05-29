@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-@ConfigEntries
+@ConfigEntries(includeAll = true)
 public class ModConfig extends Config {
 
     public ModConfig() {
@@ -32,7 +32,7 @@ public class ModConfig extends Config {
     private boolean requiresRestart;
 
     @Transitive
-    @ConfigEntries
+    @ConfigEntries(includeAll = true)
     private static class DataTypes implements ConfigGroup {
 
         private boolean bool;
@@ -70,7 +70,7 @@ public class ModConfig extends Config {
             return List.of(new ClothConfigDataTypes(), new CoatDataTypes());
         }
 
-        @ConfigEntries
+        @ConfigEntries(includeAll = true)
         private static class ClothConfigDataTypes implements ConfigContainer {
 
             @ConfigEntry.Dropdown
@@ -81,7 +81,7 @@ public class ModConfig extends Config {
 
         }
 
-        @ConfigEntries
+        @ConfigEntries(includeAll = true)
         private static class CoatDataTypes implements ConfigContainer {
 
             @ConfigEntry.Checkbox

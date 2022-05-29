@@ -6,31 +6,24 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
+import org.apache.commons.lang3.ArrayUtils;
 
 @EqualsAndHashCode
 public final class TranslationKey {
 
-    private static final char DELIMITER = '.';
-
-    private final String modKey;
-    private final String subKey;
+    private final String[] elements;
 
     @Environment(EnvType.CLIENT)
-    private TranslationKey(String modKey, String subKey) {
-        this.modKey = modKey;
-        this.subKey = subKey;
+    private TranslationKey(String... elements) {
+        this.elements = elements;
     }
 
     public TranslationKey(Config config) {
-        this("config" + DELIMITER + config.getMod().getId(), null);
+        this("config", config.getMod().getId());
     }
 
     private String getKey() {
-        if (subKey == null) {
-            return modKey;
-        } else {
-            return modKey + subKey;
-        }
+        return String.join(".", elements);
     }
 
     public boolean exists() {
@@ -41,15 +34,8 @@ public final class TranslationKey {
         return Text.translatable(getKey(), args);
     }
 
-    public TranslationKey append(String... subKeys) {
-        StringBuilder subKeyBuilder = new StringBuilder();
-        if (subKey != null) {
-            subKeyBuilder.append(subKey);
-        }
-        for (String subKey : subKeys) {
-            subKeyBuilder.append(DELIMITER).append(subKey);
-        }
-        return new TranslationKey(modKey, subKeyBuilder.toString());
+    public TranslationKey append(String... elements) {
+        return new TranslationKey(ArrayUtils.addAll(this.elements, elements));
     }
 
     @Override

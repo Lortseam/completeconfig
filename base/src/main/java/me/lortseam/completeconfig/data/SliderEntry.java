@@ -22,7 +22,7 @@ public class SliderEntry<T extends Number> extends BoundedEntry<T> {
         if (valueTranslation == null) {
             ConfigEntry.Slider slider = origin.getAnnotation(ConfigEntry.Slider.class);
             if (!slider.valueKey().isBlank()) {
-                valueTranslation = origin.getRoot().getTranslation(false).append(slider.valueKey());
+                valueTranslation = origin.getRoot().getBaseTranslation().append(slider.valueKey());
             } else {
                 valueTranslation = getNameTranslation().append("value");
             }

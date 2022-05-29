@@ -73,7 +73,7 @@ public abstract class ConfigScreenBuilder<T> {
     }
 
     protected final Text getTitle(Config config) {
-        TranslationKey customTitle = config.getTranslation(true).append("title");
+        TranslationKey customTitle = config.getBaseTranslation().append(config.getBranch()).append("title");
         if (customTitle.exists()) {
             return customTitle.toText();
         }

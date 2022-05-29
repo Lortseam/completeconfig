@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigContainer;
+import me.lortseam.completeconfig.api.ConfigEntries;
+import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 
 import java.lang.annotation.Annotation;
@@ -38,6 +40,10 @@ public final class EntryOrigin {
         this.container = container;
     }
 
+    public Class<? extends ConfigContainer> getDeclaringClass() {
+        return (Class<? extends ConfigContainer>) field.getDeclaringClass();
+    }
+
     @EqualsAndHashCode.Include
     public ConfigContainer getObject() {
         return Modifier.isStatic(field.getModifiers()) ? null : container;
@@ -57,6 +63,14 @@ public final class EntryOrigin {
 
     public <A extends Annotation> Optional<A> getOptionalAnnotation(Class<A> annotationType) {
         return Optional.ofNullable(field.getDeclaredAnnotation(annotationType));
+    }
+
+    public Optional<ConfigEntry> getMainAnnotation() {
+        return getOptionalAnnotation(ConfigEntry.class);
+    }
+
+    public Optional<ConfigEntries> getClassAnnotation() {
+        return getOptionalAnnotation(ConfigEntries.class);
     }
 
 }

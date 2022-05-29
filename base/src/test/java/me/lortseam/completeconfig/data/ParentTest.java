@@ -6,7 +6,9 @@ import me.lortseam.completeconfig.test.data.containers.*;
 import me.lortseam.completeconfig.test.data.listeners.EmptyEntryListener;
 import me.lortseam.completeconfig.test.data.listeners.ContainerListener;
 import me.lortseam.completeconfig.test.data.listeners.SetterEntryListener;
+import me.lortseam.completeconfig.text.TranslationBase;
 import me.lortseam.completeconfig.text.TranslationKey;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +30,11 @@ public class ParentTest {
             @Override
             Config getRoot() {
                 return mock(Config.class);
+            }
+
+            @Override
+            TranslationKey getBaseTranslation(TranslationBase translationBase, @Nullable Class<? extends ConfigContainer> clazz) {
+                return mock(TranslationKey.class);
             }
         };
     }
