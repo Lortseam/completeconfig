@@ -6,10 +6,10 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 public class ContainerNestingStaticContainerWithEntry implements ConfigContainer {
 
     @Transitive
-    public static class ContainerWithEntry implements ConfigContainer {
+    public static class Container implements ConfigContainer {
 
         @ConfigEntry
-        private boolean containerNestingStaticContainerWithEntryEntry;
+        private boolean cnscweEntry;
 
     }
 

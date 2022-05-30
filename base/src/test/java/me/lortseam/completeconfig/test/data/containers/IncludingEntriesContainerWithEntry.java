@@ -4,8 +4,8 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 
 @ConfigEntries(includeAll = true)
-public class EntriesContainerWithTransientField implements ConfigContainer {
+public class IncludingEntriesContainerWithEntry implements ConfigContainer {
 
-    private transient boolean entriesContainerWithTransientFieldField;
+    private boolean iecweEntry;
 
 }

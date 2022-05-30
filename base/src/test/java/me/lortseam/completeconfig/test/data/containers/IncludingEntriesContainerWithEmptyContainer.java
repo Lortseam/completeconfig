@@ -4,9 +4,9 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 
 @ConfigEntries(includeAll = true)
-public class EntriesContainerWithEmptyContainer implements ConfigContainer {
+public class IncludingEntriesContainerWithEmptyContainer implements ConfigContainer {
 
-    private final ConfigContainer emptyContainer = new ConfigContainer() {
+    private final ConfigContainer container = new ConfigContainer() {
 
     };
 

@@ -54,25 +54,31 @@ public class ParentTest {
 
     @Test
     public void resolve_includeFieldInEntries() {
-        parent.resolve(new EntriesContainerWithEntry());
+        parent.resolve(new IncludingEntriesContainerWithEntry());
         assertEquals(1, parent.getEntries().size());
     }
 
     @Test
     public void resolve_excludeFieldInEntriesIfContainer() {
-        parent.resolve(new EntriesContainerWithEmptyContainer());
+        parent.resolve(new IncludingEntriesContainerWithEmptyContainer());
         assertTrue(parent.isEmpty());
     }
 
     @Test
-    public void resolve_excludeFieldInEntriesIfIgnoreAnnotated() {
-        parent.resolve(new EntriesContainerWithIgnoredField());
+    public void resolve_excludeFieldInEntriesIfExcludeAnnotated() {
+        parent.resolve(new IncludingEntriesContainerWithExcludedField());
         assertTrue(parent.isEmpty());
     }
 
     @Test
     public void resolve_excludeFieldInEntriesIfTransient() {
-        parent.resolve(new EntriesContainerWithTransientField());
+        parent.resolve(new IncludingEntriesContainerWithTransientField());
+        assertTrue(parent.isEmpty());
+    }
+
+    @Test
+    public void resolve_excludeFieldIfNotIncludeAll() {
+        parent.resolve(new EntriesContainerWithField());
         assertTrue(parent.isEmpty());
     }
 
@@ -90,7 +96,7 @@ public class ParentTest {
 
     @Test
     public void resolve_includeFromMethod() {
-        parent.resolve(new ContainerIncludingContainerWithEntry(), new ContainerIncludingGroupWithEntry());
+        parent.resolve(new ContainerRegisteringContainerWithEntry(), new ContainerRegisteringGroupWithEntry());
         assertEquals(1, parent.getEntries().size());
         assertEquals(1, parent.getClusters().size());
     }
@@ -110,7 +116,7 @@ public class ParentTest {
     @Test
     public void resolve_throwIfNestedNonStatic() {
         AssertionError error = assertThrows(AssertionError.class, () -> parent.resolve(new ContainerNestingContainerWithEntry()));
-        assertEquals("Transitive " + ContainerNestingContainerWithEntry.ContainerWithEntry.class + " must be static", error.getMessage());
+        assertEquals("Transitive " + ContainerNestingContainerWithEntry.Container.class + " must be static", error.getMessage());
     }
 
     @Test

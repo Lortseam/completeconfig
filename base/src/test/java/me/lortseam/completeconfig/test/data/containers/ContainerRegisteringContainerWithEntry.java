@@ -6,14 +6,14 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import java.util.Collection;
 import java.util.List;
 
-public class ContainerIncludingContainerWithEntry implements ConfigContainer {
+public class ContainerRegisteringContainerWithEntry implements ConfigContainer {
 
     @Override
     public Collection<ConfigContainer> getTransitives() {
         return List.of(new ConfigContainer() {
 
             @ConfigEntry
-            private boolean containerIncludingContainerWithEntryEntry;
+            private boolean crcweEntry;
 
         });
     }

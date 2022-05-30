@@ -4,9 +4,9 @@ import me.lortseam.completeconfig.api.ConfigContainer;
 import me.lortseam.completeconfig.api.ConfigEntries;
 
 @ConfigEntries(includeAll = true)
-public class EntriesContainerWithIgnoredField implements ConfigContainer {
+public class IncludingEntriesContainerWithExcludedField implements ConfigContainer {
 
     @ConfigEntries.Exclude
-    private boolean entriesContainerWithIgnoredFieldField;
+    private boolean iecwefField;
 
 }

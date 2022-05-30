@@ -9,7 +9,7 @@ public class ContainerWithStaticContainerWithEntry implements ConfigContainer {
     private static final ConfigContainer container = new ConfigContainer() {
 
         @ConfigEntry
-        private boolean containerWithStaticContainerWithEntryEntry;
+        private boolean cwscweEntry;
 
     };
 
