@@ -57,7 +57,7 @@ public abstract class Parent implements StructurePart, Translatable {
     final void resolveContainer(ConfigContainer container) {
         entries.resolve(container);
         for (Class<? extends ConfigContainer> clazz : container.getConfigClasses()) {
-            resolve(Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
+            Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (field.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(field.getType())) {
                         throw new AssertionError("Transitive field " + field + " must implement " + ConfigContainer.class.getSimpleName());
@@ -74,10 +74,10 @@ public abstract class Parent implements StructurePart, Translatable {
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
-            }).toArray(ConfigContainer[]::new));
+            }).forEach(this::resolve);
             Class<?>[] nestedClasses = clazz.getDeclaredClasses();
             ArrayUtils.reverse(nestedClasses);
-            resolve(Arrays.stream(nestedClasses).filter(nestedClass -> {
+            Arrays.stream(nestedClasses).filter(nestedClass -> {
                 if (nestedClass.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(nestedClass)) {
                         throw new AssertionError("Transitive " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
@@ -94,7 +94,7 @@ public abstract class Parent implements StructurePart, Translatable {
                 } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                     throw new RuntimeException("Failed to instantiate nested " + nestedClass, e);
                 }
-            }).toArray(ConfigContainer[]::new));
+            }).forEach(this::resolve);
         }
         var transitives = container.getTransitives();
         if (transitives != null) {
@@ -129,7 +129,7 @@ public abstract class Parent implements StructurePart, Translatable {
     }
 
     @Environment(EnvType.CLIENT)
-    abstract TranslationKey getBaseTranslation(TranslationBase translationBase, @Nullable Class<? extends ConfigContainer> clazz);
+    public abstract TranslationKey getBaseTranslation(TranslationBase translationBase, @Nullable Class<? extends ConfigContainer> clazz);
 
     @Environment(EnvType.CLIENT)
     public final TranslationKey getBaseTranslation() {

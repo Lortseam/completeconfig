@@ -33,7 +33,7 @@ public class ParentTest {
             }
 
             @Override
-            TranslationKey getBaseTranslation(TranslationBase translationBase, @Nullable Class<? extends ConfigContainer> clazz) {
+            public TranslationKey getBaseTranslation(TranslationBase translationBase, @Nullable Class<? extends ConfigContainer> clazz) {
                 return mock(TranslationKey.class);
             }
         };
