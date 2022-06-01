@@ -30,7 +30,8 @@ public class ClusterTest {
         when(config.getMod()).thenReturn(modMetadata);
         when(config.getRoot()).thenCallRealMethod();
         var rootTranslation = new TranslationKey(config);
-        when(config.getBaseTranslation()).thenReturn(rootTranslation);
+        when(config.getBaseTranslation(any(), any())).thenReturn(rootTranslation);
+        when(config.getBaseTranslation()).thenCallRealMethod();
         defaultCluster = new Cluster(config, new EmptyGroup());
         customCluster = new Cluster(config, new CustomGroup(CUSTOM_ID, CUSTOM_NAME_KEY, CUSTOM_DESCRIPTION_KEY));
     }
