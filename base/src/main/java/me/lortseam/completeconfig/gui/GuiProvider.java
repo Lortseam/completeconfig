@@ -12,15 +12,15 @@ import java.lang.reflect.Type;
 import java.util.function.Predicate;
 
 /**
- * A GUI provider is used to generate a GUI for an {@link Entry}. This class stores a predicate, which an entry has to
- * fulfill, and an {@link EntryBuilder}, which performs the actual GUI generation.
+ * A GUI provider is used to generate a GUI element for an {@link Entry}. This class stores a predicate, which an entry
+ * has to fulfill, and an {@link EntryBuilder}, which performs the actual generation.
  */
 @Environment(EnvType.CLIENT)
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class GuiProvider<T> {
 
     /**
-     * Creates a new GUI provider for a custom entry type, filtered by a predicate and value types.
+     * Creates a GUI provider for a custom entry type, filtered by a predicate and value types.
      *
      * @param entryType the custom entry class
      * @param builder the entry builder
@@ -38,7 +38,7 @@ public final class GuiProvider<T> {
     }
 
     /**
-     * Creates a new GUI provider for a custom entry type, filtered by value types.
+     * Creates a GUI provider for a custom entry type, filtered by value types.
      *
      * @param entryType the custom entry class
      * @param builder the entry builder
@@ -51,7 +51,7 @@ public final class GuiProvider<T> {
     }
 
     /**
-     * Creates a new GUI provider for the default entry type, filtered by a predicate and value types.
+     * Creates a GUI provider for the default entry type, filtered by a predicate and value types.
      *
      * @param builder the entry builder
      * @param predicate a predicate which the entry has to fulfill
@@ -63,7 +63,7 @@ public final class GuiProvider<T> {
     }
 
     /**
-     * Creates a new GUI provider for the default entry type, filtered by value types.
+     * Creates a GUI provider for the default entry type, filtered by value types.
      *
      * @param builder the entry builder
      * @param types the valid value types

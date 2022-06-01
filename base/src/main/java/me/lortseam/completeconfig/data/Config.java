@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 
 /**
- * The base config class. Instantiate or inherit this class to create a config for your mod.
+ * The base config class. Instantiate or inherit this class to create a mod config.
  */
 @Slf4j(topic = "CompleteConfig")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
@@ -77,7 +77,7 @@ public class Config extends Parent implements ConfigContainer {
     }
 
     /**
-     * Gets the metadata of the mod that owns this config.
+     * Retrieves the metadata of the mod that owns this config.
      *
      * @return the mod that owns this config
      */

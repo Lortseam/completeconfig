@@ -5,9 +5,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
 
-/**
- * A group of config entries.
- */
 public interface ConfigGroup extends ConfigContainer {
 
     /**

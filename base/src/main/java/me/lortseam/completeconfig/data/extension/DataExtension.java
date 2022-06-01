@@ -24,8 +24,6 @@ public interface DataExtension extends Extension {
      * Used to register entry transformations.
      *
      * @return a collection of transformations
-     *
-     * @see Transformation
      */
     default Collection<Transformation> getTransformations() {
         return null;

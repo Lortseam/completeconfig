@@ -3,7 +3,6 @@ package me.lortseam.completeconfig.data.transform;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.data.*;
 import me.lortseam.completeconfig.util.ReflectionUtils;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 
 /**
  * A transformation is used to transform a field to an {@link me.lortseam.completeconfig.data.Entry}. This class stores
- * a predicate, which a field has to fulfill, and a {@link Transformer}, which performs the actual transformation
+ * a filter predicate, which a field has to fulfill, and a {@link Transformer}, which performs the actual transformation
  * process.
  */
 public final class Transformation {
@@ -66,14 +65,20 @@ public final class Transformation {
     };
 
     /**
-     * Creates a new transformation filter.
+     * Creates a transformation filter.
      *
-     * @return a new transformation filter
+     * @return a transformation filter
      */
     public static Filter filter() {
         return new Filter();
     }
 
+    /**
+     * Creates a transformation. Use {@link Transformation#filter()} to construct the {@code filter}.
+     *
+     * @param filter the filter
+     * @param transformer the transformer
+     */
     public Transformation(Transformation.Filter filter, Transformer transformer) {
         predicate = filter.build();
         this.transformer = transformer;

@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 public final class ConfigOptions {
 
     /**
-     * Creates a new {@link ConfigOptions.Builder} for the specified mod.
+     * Creates a {@link ConfigOptions.Builder} for the specified mod.
      *
      * @param modId the ID of the mod creating the config
      */
