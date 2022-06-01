@@ -21,7 +21,7 @@ public class EntryTest implements ConfigGroup {
 
     private static final String MOD_ID = "test",
             CUSTOM_ID = "customId",
-            CUSTOM_KEY = "customKey",
+            CUSTOM_NAME_KEY = "customKey",
             CUSTOM_DESCRIPTION_KEY = "customDescriptionKey",
             COMMENT = "Comment";
     private static final boolean REQUIRES_RESTART = true;
@@ -69,7 +69,7 @@ public class EntryTest implements ConfigGroup {
     @ConfigEntry(CUSTOM_ID)
     private boolean customIdField;
     private Entry<?> customIdEntry;
-    @ConfigEntry(nameKey = CUSTOM_KEY, descriptionKey = CUSTOM_DESCRIPTION_KEY)
+    @ConfigEntry(nameKey = CUSTOM_NAME_KEY, descriptionKey = CUSTOM_DESCRIPTION_KEY)
     private boolean customKeyField;
     private Entry<?> customKeyEntry;
 
@@ -80,8 +80,7 @@ public class EntryTest implements ConfigGroup {
         when(modMetadata.getId()).thenReturn(MOD_ID);
         when(config.getMod()).thenReturn(modMetadata);
         var rootTranslation = new TranslationKey(config);
-        when(config.getBaseTranslation()).thenCallRealMethod();
-        when(config.getBaseTranslation(any(), any())).thenReturn(rootTranslation);
+        when(config.getBaseTranslation()).thenReturn(rootTranslation);
         parent = new Cluster(config, this);
 
         entry = of("field");
@@ -98,7 +97,7 @@ public class EntryTest implements ConfigGroup {
     }
 
     @Test
-    public void of_transformTypes() {
+    public void create_transformTypes() {
         assertEntryType(of("booleanWithoutAnnotation"), BooleanEntry.class);
         assertEntryType(of("booleanWithAnnotation"), BooleanEntry.class);
         assertEntryType(of("boundedInt"), BoundedEntry.class);
@@ -116,12 +115,12 @@ public class EntryTest implements ConfigGroup {
 
     @Test
     @EnabledIfSystemProperty(named = "fabric.dli.env", matches = "client")
-    public void of_transformClientTypes() {
+    public void create_transformClientTypes() {
         assertEntryType(of("textColor"), ColorEntry.class);
     }
 
     @Test
-    public void of_transformProperties() {
+    public void create_transformProperties() {
         assertEquals("field", entry.getId());
         assertEquals(CUSTOM_ID, customIdEntry.getId());
         assertEquals(field, entry.getDefaultValue());
@@ -133,11 +132,11 @@ public class EntryTest implements ConfigGroup {
 
     @Test
     @EnabledIfSystemProperty(named = "fabric.dli.env", matches = "client")
-    public void of_transformClientProperties() {
+    public void create_transformClientProperties() {
         // Name key
         assertEquals("config." + MOD_ID + ".entryTest.field", entry.getNameTranslation().toString());
         assertEquals("config." + MOD_ID + ".entryTest." + CUSTOM_ID, customIdEntry.getNameTranslation().toString());
-        assertEquals("config." + MOD_ID + "." + CUSTOM_KEY, customKeyEntry.getNameTranslation().toString());
+        assertEquals("config." + MOD_ID + "." + CUSTOM_NAME_KEY, customKeyEntry.getNameTranslation().toString());
 
         // Description key
         try (var i18n = mockStatic(I18n.class)) {
