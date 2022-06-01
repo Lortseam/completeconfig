@@ -94,7 +94,7 @@ public final class Cluster extends Parent implements Identifiable, DescriptionSu
                 if (clazz == null || !clazz.isInstance(group)) {
                     clazz = group.getClass();
                 }
-                yield parent.getBaseTranslation().append(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, clazz.getSimpleName()));
+                yield parent.getBaseTranslation(translationBase, null).append(CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, clazz.getSimpleName()));
             }
         };
     }
