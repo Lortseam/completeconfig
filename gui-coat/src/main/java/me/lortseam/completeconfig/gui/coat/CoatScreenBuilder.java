@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * A screen builder based on the coat library.
+ */
 public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryConfigEntry<?>> {
 
     private static final List<GuiProvider<ConfigCategoryConfigEntry<?>>> globalProviders = Lists.newArrayList(
