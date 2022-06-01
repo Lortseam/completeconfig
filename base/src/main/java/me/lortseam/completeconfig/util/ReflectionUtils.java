@@ -5,7 +5,6 @@ import io.leangen.geantyref.GenericTypeReflector;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Optional;
 
@@ -46,14 +45,6 @@ public final class ReflectionUtils {
 
     public static Type boxType(Type type) {
         return GenericTypeReflector.box(type);
-    }
-
-    public static <T> T getDefaultAnnotationMemberValue(Class<? extends Annotation> annotationClass, String memberName) {
-        try {
-            return (T) annotationClass.getMethod(memberName).getDefaultValue();
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }
