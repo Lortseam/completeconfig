@@ -13,7 +13,7 @@
       "me.lortseam.completeconfig.testmod.TestModClient"
     ],
     "server": [
-      "me.lortseam.completeconfig.testmod.TestModServer"
+      "me.lortseam.completeconfig.testmod.TestMod"
     ]
   },
   "depends": {
