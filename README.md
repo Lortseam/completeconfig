@@ -18,7 +18,7 @@ usage and provide all the necessary components for mod configs.
 * Fully extensible via extension system
 
 ## Usage
-Usage instructions and examples can be found in the [wiki](https://gitlab.com/Lortseam/completeconfig/-/wikis/home). For
+Usage instructions and examples can be found in the [wiki](https://github.com/Lortseam/completeconfig/wiki). For
 questions, please use the [discussions](https://github.com/Lortseam/completeconfig/discussions).
 
 ## License
