@@ -15,8 +15,10 @@ usage and provide all the necessary components for mod configs.
 * Automatic Mod Menu integration
 * Fully extensible via extension system
 
-## Usage
+## Usage and Support
 Usage instructions and examples can be found in the [wiki](https://gitlab.com/Lortseam/completeconfig/-/wikis/home).
+For questions, please use the [discussions](https://github.com/Lortseam/completeconfig/discussions).
+If you found a bug, please create an [issue](https://github.com/Lortseam/completeconfig/issues).
 
 ## License
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
