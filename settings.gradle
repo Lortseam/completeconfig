@@ -12,7 +12,6 @@ pluginManagement {
 include("base")
 include("gui-cloth")
 include("gui-coat")
-include("gui-yacl")
 include("test-mod")
 
 rootProject.name = 'completeconfig'
