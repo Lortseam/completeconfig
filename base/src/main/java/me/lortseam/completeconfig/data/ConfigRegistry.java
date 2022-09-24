@@ -3,8 +3,6 @@ package me.lortseam.completeconfig.data;
 import com.google.common.collect.Lists;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
-import me.lortseam.completeconfig.CompleteConfig;
-import me.lortseam.completeconfig.data.extension.DataExtension;
 import me.lortseam.completeconfig.data.transform.Transformation;
 
 import java.util.*;
@@ -56,8 +54,8 @@ public final class ConfigRegistry {
         return Collections.unmodifiableMap(mainConfigs);
     }
 
-    static Collection<Transformation> getTransformations() {
-        return Collections.unmodifiableCollection(transformations);
+    static List<Transformation> getTransformations() {
+        return new ArrayList<>(transformations);
     }
 
 }

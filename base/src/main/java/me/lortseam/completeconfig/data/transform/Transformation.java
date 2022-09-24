@@ -167,9 +167,6 @@ public final class Transformation {
         }
 
         private Predicate<EntryOrigin> build() {
-            if (predicate == null && requiredAnnotations.isEmpty()) {
-                throw new IllegalStateException("Missing transformation filter");
-            }
             by(origin -> {
                 Set<Class<? extends Annotation>> declaredAnnotations = Arrays.stream(origin.getField().getDeclaredAnnotations()).map(Annotation::annotationType).filter(registeredAnnotations::contains).collect(Collectors.toSet());
                 for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {
