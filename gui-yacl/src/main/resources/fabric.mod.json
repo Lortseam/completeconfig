@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "completeconfig-gui-coat",
+  "id": "completeconfig-gui-yacl",
   "version": "${version}",
 
   "license": "Apache-2.0",
@@ -11,9 +11,6 @@
       "me.lortseam.completeconfig.gui.yacl.Initializer"
     ]
   },
-  "mixins": [
-    "completeconfig-gui-coat.mixins.json"
-  ],
 
   "depends": {
     "completeconfig-base": "*"
