@@ -13,7 +13,6 @@ import me.lortseam.completeconfig.data.structure.StructurePart;
 import me.lortseam.completeconfig.data.structure.client.DescriptionSupplier;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.data.transform.Transformer;
 import me.lortseam.completeconfig.text.TranslationBase;
 import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
@@ -31,11 +30,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 @Slf4j(topic = "CompleteConfig")
 public class Entry<T> implements StructurePart, Identifiable, Translatable, DescriptionSupplier {
 
-    private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
+    private static final Transformation DEFAULT_TRANSFORMATION = new Transformation(Transformation.filter(), Entry::new);
 
     static {
         for (Collection<Transformation> transformations : CompleteConfig.collectExtensions(DataExtension.class, DataExtension::getTransformations)) {
@@ -44,9 +44,11 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     static Entry<?> create(EntryOrigin origin) {
-        return ConfigRegistry.getTransformations().stream().filter(transformation -> {
+        return Stream.concat(ConfigRegistry.getTransformations().stream(), Stream.of(DEFAULT_TRANSFORMATION)).filter(transformation -> {
             return transformation.test(origin);
-        }).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
+        }).findFirst().orElseThrow(() -> {
+            return new UnsupportedOperationException("No suitable transformation found for field " + origin.getField());
+        }).getTransformer().transform(origin);
     }
 
     protected final EntryOrigin origin;
