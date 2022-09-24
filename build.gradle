@@ -72,6 +72,9 @@ allprojects {
         maven {
             url "https://maven.siphalor.de/"
         }
+        maven {
+            url "https://maven.isxander.dev/releases"
+        }
     }
 
     dependencies {
