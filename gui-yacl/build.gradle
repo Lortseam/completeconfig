@@ -1,5 +1,5 @@
 dependencies {
     api(project(path: ":base", configuration: "namedElements"))
 
-    modImplementation("dev.isxander:yet-another-config-lib:$yacl_version")
+    modApi("dev.isxander:yet-another-config-lib:$yacl_version")
 }
