@@ -16,7 +16,7 @@ public class EnumEntry<T extends Enum<?>> extends Entry<T> {
     }
 
     @Override
-    public Function<T, Text> getValueTextSupplier() {
+    public Function<T, Text> getValueFormatter() {
         return enumValue -> getNameTranslation().append(CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, enumValue.name())).toText();
     }
 

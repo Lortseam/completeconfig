@@ -52,7 +52,7 @@ public class BooleanEntry extends Entry<Boolean> {
     }
 
     @Override
-    public Function<Boolean, Text> getValueTextSupplier() {
+    public Function<Boolean, Text> getValueFormatter() {
         if (getValueTranslations().isEmpty()) {
             return ScreenTexts::onOrOff;
         }

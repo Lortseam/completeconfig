@@ -169,7 +169,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     @Environment(EnvType.CLIENT)
-    public Function<T, Text> getValueTextSupplier() {
+    public Function<T, Text> getValueFormatter() {
         return value -> Text.of(value.toString());
     }
 

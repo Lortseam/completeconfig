@@ -18,7 +18,7 @@ public class SliderEntry<T extends Number> extends BoundedEntry<T> {
     }
 
     @Override
-    public Function<T, Text> getValueTextSupplier() {
+    public Function<T, Text> getValueFormatter() {
         if (valueTranslation == null) {
             ConfigEntry.Slider slider = origin.getAnnotation(ConfigEntry.Slider.class);
             if (!slider.valueKey().isBlank()) {
@@ -30,7 +30,7 @@ public class SliderEntry<T extends Number> extends BoundedEntry<T> {
         if (valueTranslation.exists()) {
             return value -> valueTranslation.toText(value);
         }
-        return super.getValueTextSupplier();
+        return super.getValueFormatter();
     }
 
 }

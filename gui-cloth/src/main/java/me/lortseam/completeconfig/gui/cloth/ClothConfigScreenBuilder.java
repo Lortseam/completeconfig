@@ -34,7 +34,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
             GuiProvider.create(BooleanEntry.class, entry -> ConfigEntryBuilder.create()
                     .startBooleanToggle(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
-                    .setYesNoTextSupplier(entry.getValueTextSupplier())
+                    .setYesNoTextSupplier(entry.getValueFormatter())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
                     .setSaveConsumer(entry::setValue),
                     entry -> !entry.isCheckbox(), boolean.class, Boolean.class),
@@ -55,7 +55,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
             GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> ConfigEntryBuilder.create()
                     .startIntSlider(entry.getName(), entry.getValue(), entry.getMin(), entry.getMax())
                     .setDefaultValue(entry.getDefaultValue())
-                    .setTextGetter(entry.getValueTextSupplier())
+                    .setTextGetter(entry.getValueFormatter())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
                     .setSaveConsumer(entry::setValue),
                     int.class, Integer.class),
@@ -83,7 +83,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
             GuiProvider.create(SliderEntry.class, (SliderEntry<Long> entry) -> ConfigEntryBuilder.create()
                     .startLongSlider(entry.getName(), entry.getValue(), entry.getMin(), entry.getMax())
                     .setDefaultValue(entry.getDefaultValue())
-                    .setTextGetter(entry.getValueTextSupplier())
+                    .setTextGetter(entry.getValueFormatter())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
                     .setSaveConsumer(entry::setValue),
                     long.class, Long.class),
@@ -125,16 +125,16 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
                     .startEnumSelector(entry.getName(), entry.getTypeClass(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setEnumNameProvider(value -> entry.getValueTextSupplier().apply(value))
+                    .setEnumNameProvider(value -> entry.getValueFormatter().apply(value))
                     .setSaveConsumer(entry::setValue)),
             GuiProvider.create(DropdownEntry.class, (DropdownEntry<Enum<?>> entry) -> {
                 List<Enum<?>> enumValues = Arrays.asList(entry.getEnumConstants());
                 return ConfigEntryBuilder.create()
                         .startDropdownMenu(entry.getName(), DropdownMenuBuilder.TopCellElementBuilder.of(
                                 entry.getValue(),
-                                enumTranslation -> enumValues.stream().filter(enumValue -> entry.getValueTextSupplier().apply(enumValue).getString().equals(enumTranslation)).collect(MoreCollectors.toOptional()).orElse(null),
-                                entry.getValueTextSupplier()
-                        ), DropdownMenuBuilder.CellCreatorBuilder.of(entry.getValueTextSupplier()))
+                                enumTranslation -> enumValues.stream().filter(enumValue -> entry.getValueFormatter().apply(enumValue).getString().equals(enumTranslation)).collect(MoreCollectors.toOptional()).orElse(null),
+                                entry.getValueFormatter()
+                        ), DropdownMenuBuilder.CellCreatorBuilder.of(entry.getValueFormatter()))
                         .setSelections(enumValues)
                         .setSuggestionMode(entry.isSuggestionMode())
                         .setDefaultValue(entry.getDefaultValue())
