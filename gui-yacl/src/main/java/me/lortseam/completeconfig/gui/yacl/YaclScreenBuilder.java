@@ -24,7 +24,7 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
     private static final List<GuiProvider<ControllerFunction<?>>> globalProviders = Lists.newArrayList(
             GuiProvider.create(BooleanEntry.class, entry -> (Option<Boolean> option) -> new BooleanController(
                     option,
-                    entry.getValueTextSupplier(),
+                    entry.getValueFormatter(),
                     false
             ), (BooleanEntry entry) -> !entry.isCheckbox(), boolean.class, Boolean.class),
             GuiProvider.create(BooleanEntry.class, entry -> (Option<Boolean> option) -> new TickBoxController(
