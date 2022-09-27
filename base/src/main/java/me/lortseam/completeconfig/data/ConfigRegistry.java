@@ -17,7 +17,7 @@ public final class ConfigRegistry {
 
     static void register(Config config) {
         if (!configs.add(config)) {
-            throw new UnsupportedOperationException(config + " already exists");
+            throw new RuntimeException(config + " already exists");
         }
         String modId = config.getMod().getId();
         if (!mainConfigs.containsKey(modId)) {
@@ -29,7 +29,7 @@ public final class ConfigRegistry {
 
     static void register(EntryOrigin origin) {
         if (origins.contains(origin)) {
-            throw new UnsupportedOperationException(origin.getField() + " was already resolved");
+            throw new RuntimeException(origin.getField() + " was already resolved");
         }
         origins.add(origin);
     }

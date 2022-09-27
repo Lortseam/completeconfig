@@ -60,7 +60,7 @@ public abstract class Parent implements StructurePart, Translatable {
             Arrays.stream(clazz.getDeclaredFields()).filter(field -> {
                 if (field.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(field.getType())) {
-                        throw new AssertionError("Transitive field " + field + " must implement " + ConfigContainer.class.getSimpleName());
+                        throw new RuntimeException("Transitive field " + field + " must implement " + ConfigContainer.class.getSimpleName());
                     }
                     return !Modifier.isStatic(field.getModifiers()) || clazz == container.getClass();
                 }
@@ -80,10 +80,10 @@ public abstract class Parent implements StructurePart, Translatable {
             Arrays.stream(nestedClasses).filter(nestedClass -> {
                 if (nestedClass.isAnnotationPresent(ConfigContainer.Transitive.class)) {
                     if (!ConfigContainer.class.isAssignableFrom(nestedClass)) {
-                        throw new AssertionError("Transitive " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
+                        throw new RuntimeException("Transitive " + nestedClass + " must implement " + ConfigContainer.class.getSimpleName());
                     }
                     if (!Modifier.isStatic(nestedClass.getModifiers())) {
-                        throw new AssertionError("Transitive " + nestedClass + " must be static");
+                        throw new RuntimeException("Transitive " + nestedClass + " must be static");
                     }
                     return true;
                 }
