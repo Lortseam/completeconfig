@@ -4,10 +4,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.data.extension.DataExtension;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.StructurePart;
 import me.lortseam.completeconfig.data.structure.client.DescriptionSupplier;
@@ -25,7 +23,6 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -37,14 +34,8 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
 
     private static final Transformation DEFAULT_TRANSFORMATION = new Transformation(Transformation.filter(), Entry::new);
 
-    static {
-        for (Collection<Transformation> transformations : CompleteConfig.collectExtensions(DataExtension.class, DataExtension::getTransformations)) {
-            ConfigRegistry.register(transformations);
-        }
-    }
-
     static Entry<?> create(EntryOrigin origin) {
-        return Stream.concat(ConfigRegistry.getTransformations().stream(), Stream.of(DEFAULT_TRANSFORMATION)).filter(transformation -> {
+        return Stream.concat(origin.getRoot().getRegistry().getTransformations().stream(), Stream.of(DEFAULT_TRANSFORMATION)).filter(transformation -> {
             return transformation.test(origin);
         }).findFirst().orElseThrow(() -> {
             return new UnsupportedOperationException("No suitable transformation found for field " + origin.getField());
@@ -70,7 +61,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     private final UnaryOperator<T> revisor;
 
     protected Entry(EntryOrigin origin, UnaryOperator<T> revisor) {
-        ConfigRegistry.register(origin);
+        ConfigRegistry.registerEntryOrigin(origin);
         this.origin = origin;
         this.revisor = revisor;
         if (!getField().canAccess(origin.getObject())) {

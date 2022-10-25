@@ -2,20 +2,19 @@ package me.lortseam.completeconfig.data;
 
 import com.google.common.collect.Lists;
 import lombok.NonNull;
-import lombok.experimental.UtilityClass;
+import me.lortseam.completeconfig.CompleteConfig;
+import me.lortseam.completeconfig.data.extension.DataExtension;
 import me.lortseam.completeconfig.data.transform.Transformation;
 
 import java.util.*;
 
-@UtilityClass
 public final class ConfigRegistry {
 
     private static final Set<Config> configs = new HashSet<>();
     private static final Map<String, Config> mainConfigs = new HashMap<>();
     private static final Set<EntryOrigin> origins = new HashSet<>();
-    private static final List<Transformation> transformations = Lists.newArrayList(Transformation.DEFAULTS);
 
-    static void register(Config config) {
+    static void registerConfig(Config config) {
         if (!configs.add(config)) {
             throw new RuntimeException(config + " already exists");
         }
@@ -27,15 +26,11 @@ public final class ConfigRegistry {
         }
     }
 
-    static void register(EntryOrigin origin) {
+    static void registerEntryOrigin(EntryOrigin origin) {
         if (origins.contains(origin)) {
             throw new RuntimeException(origin.getField() + " was already resolved");
         }
         origins.add(origin);
-    }
-
-    static void register(Collection<Transformation> transformations) {
-        ConfigRegistry.transformations.addAll(transformations);
     }
 
     /**
@@ -54,7 +49,19 @@ public final class ConfigRegistry {
         return Collections.unmodifiableMap(mainConfigs);
     }
 
-    static List<Transformation> getTransformations() {
+    private final List<Transformation> transformations = Lists.newArrayList(Transformation.DEFAULTS);
+
+    ConfigRegistry() {
+        for (Collection<Transformation> transformations : CompleteConfig.collectExtensions(DataExtension.class, DataExtension::getTransformations)) {
+            registerTransformations(transformations);
+        }
+    }
+
+    void registerTransformations(Collection<Transformation> transformations) {
+        this.transformations.addAll(transformations);
+    }
+
+    List<Transformation> getTransformations() {
         return new ArrayList<>(transformations);
     }
 

@@ -3,18 +3,18 @@ package me.lortseam.completeconfig.data;
 import lombok.*;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.extension.DataExtension;
+import me.lortseam.completeconfig.data.transform.Transformation;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ObjectMapper;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 public final class ConfigOptions {
@@ -41,6 +41,16 @@ public final class ConfigOptions {
     private final String[] branch;
     private final TypeSerializerCollection typeSerializers;
     private final String fileHeader;
+    @Getter(AccessLevel.PACKAGE)
+    private final ConfigRegistry registry = new ConfigRegistry();
+
+    private ConfigOptions(String modId, String[] branch, TypeSerializerCollection typeSerializers, List<Transformation> transformations, String fileHeader) {
+        this.modId = modId;
+        this.branch = branch;
+        this.typeSerializers = typeSerializers;
+        registry.registerTransformations(transformations);
+        this.fileHeader = fileHeader;
+    }
 
     HoconConfigurationLoader createDefaultLoader() {
         return createLoader(builder -> {
@@ -75,6 +85,7 @@ public final class ConfigOptions {
         private String[] branch = new String[0];
         private String fileHeader;
         private final TypeSerializerCollection.Builder typeSerializerCollectionBuilder = TypeSerializerCollection.builder();
+        private final List<Transformation> transformations = new ArrayList<>();
 
         private Builder(String modId) {
             this.modId = modId;
@@ -102,13 +113,23 @@ public final class ConfigOptions {
             return this;
         }
 
+        public Builder transformation(@NonNull Transformation transformation) {
+            transformations.add(transformation);
+            return this;
+        }
+
+        public Builder transformations(@NotNull List<Transformation> transformations) {
+            this.transformations.addAll(transformations);
+            return this;
+        }
+
         public Builder fileHeader(@NonNull String fileHeader) {
             this.fileHeader = fileHeader;
             return this;
         }
 
         ConfigOptions build() {
-            return new ConfigOptions(modId, branch.clone(), typeSerializerCollectionBuilder.build(), fileHeader);
+            return new ConfigOptions(modId, branch.clone(), typeSerializerCollectionBuilder.build(), transformations, fileHeader);
         }
 
     }
