@@ -39,15 +39,15 @@ public class ModConfig extends Config {
 //        private int anInt;
 //        @ConfigEntry.BoundedInteger(min = 0, max = 10)
 //        private int boundedInt;
-//        @ConfigEntry.BoundedInteger(min = 0, max = 10)
-//        @ConfigEntry.Slider
-//        private int intSlider;
+        @ConfigEntry.BoundedInteger(min = 0, max = 10)
+        @ConfigEntry.Slider
+        private int intSlider;
 //        private long aLong;
 //        @ConfigEntry.BoundedLong(min = -10, max = 10)
 //        private long boundedLong;
-//        @ConfigEntry.BoundedLong(min = -10, max = 10)
-//        @ConfigEntry.Slider
-//        private long longSlider;
+        @ConfigEntry.BoundedLong(min = -10, max = 10)
+        @ConfigEntry.Slider
+        private long longSlider;
 //        private float aFloat;
 //        @ConfigEntry.BoundedFloat(min = 0, max = 10)
 //        private float boundedFloat;
@@ -101,12 +101,28 @@ public class ModConfig extends Config {
 
             @ConfigEntry.Checkbox
             private boolean checkboxBoolean;
-//            @ConfigEntry.BoundedFloat(min = 0, max = 10)
-//            @ConfigEntry.Slider
-//            private float floatSlider;
-//            @ConfigEntry.BoundedDouble(min = -10, max = 10)
-//            @ConfigEntry.Slider
-//            private double doubleSlider;
+            @ConfigEntry.BoundedInteger(min = 0, max = 10)
+            @ConfigEntry.Slider
+            @ConfigEntry.IntegerSliderInterval(2)
+            private int intIntervalSlider;
+            @ConfigEntry.BoundedLong(min = -10, max = 10)
+            @ConfigEntry.Slider
+            @ConfigEntry.LongSliderInterval(2)
+            private long longIntervalSlider;
+            @ConfigEntry.BoundedFloat(min = 0, max = 10)
+            @ConfigEntry.Slider
+            private float floatSlider;
+            @ConfigEntry.BoundedFloat(min = 0, max = 10)
+            @ConfigEntry.Slider
+            @ConfigEntry.FloatSliderInterval(0.1f)
+            private float floatSliderSlider;
+            @ConfigEntry.BoundedDouble(min = -10, max = 10)
+            @ConfigEntry.Slider
+            private double doubleSlider;
+            @ConfigEntry.BoundedDouble(min = -10, max = 10)
+            @ConfigEntry.Slider
+            @ConfigEntry.DoubleSliderInterval(0.1)
+            private double doubleIntervalSlider;
 
         }
 

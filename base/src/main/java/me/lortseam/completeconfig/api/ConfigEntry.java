@@ -196,6 +196,38 @@ public @interface ConfigEntry {
 
     }
 
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface IntegerSliderInterval {
+
+        int value();
+
+    }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface LongSliderInterval {
+
+        long value();
+
+    }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface FloatSliderInterval {
+
+        float value();
+
+    }
+
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface DoubleSliderInterval {
+
+        double value();
+
+    }
+
     /**
      * If applied, renders a dropdown menu for this entry.
      */

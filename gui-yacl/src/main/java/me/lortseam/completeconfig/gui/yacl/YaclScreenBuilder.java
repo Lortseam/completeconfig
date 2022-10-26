@@ -4,11 +4,16 @@ import com.google.common.collect.Lists;
 import dev.isxander.yacl.api.*;
 import dev.isxander.yacl.gui.controllers.BooleanController;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
+import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
+import dev.isxander.yacl.gui.controllers.slider.FloatSliderController;
+import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController;
+import dev.isxander.yacl.gui.controllers.slider.LongSliderController;
 import dev.isxander.yacl.gui.controllers.string.StringController;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.BooleanEntry;
 import me.lortseam.completeconfig.data.Config;
 import me.lortseam.completeconfig.data.Entry;
+import me.lortseam.completeconfig.data.SliderEntry;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.GuiProvider;
 import net.minecraft.client.gui.screen.Screen;
@@ -32,7 +37,31 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
             ), BooleanEntry::isCheckbox, boolean.class, Boolean.class),
             GuiProvider.create(entry -> (Option<String> option) -> new StringController(
                     option
-            ), String.class)
+            ), String.class),
+            GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> (Option<Integer> option) -> new IntegerSliderController(
+                    option,
+                    entry.getMin(),
+                    entry.getMax(),
+                    entry.getInterval()
+            ), int.class, Integer.class),
+            GuiProvider.create(SliderEntry.class, (SliderEntry<Long> entry) -> (Option<Long> option) -> new LongSliderController(
+                    option,
+                    entry.getMin(),
+                    entry.getMax(),
+                    entry.getInterval()
+            ), long.class, Long.class),
+            GuiProvider.create(SliderEntry.class, (SliderEntry<Float> entry) -> (Option<Float> option) -> new FloatSliderController(
+                    option,
+                    entry.getMin(),
+                    entry.getMax(),
+                    entry.getInterval()
+            ), float.class, Float.class),
+            GuiProvider.create(SliderEntry.class, (SliderEntry<Double> entry) -> (Option<Double> option) -> new DoubleSliderController(
+                    option,
+                    entry.getMin(),
+                    entry.getMax(),
+                    entry.getInterval()
+            ), double.class, Double.class)
             // TODO: Compiler error
 //            GuiProvider.create(EnumEntry.class, entry -> (Option<Enum> option) -> new EnumController<>(
 //                    option,

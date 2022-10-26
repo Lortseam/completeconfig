@@ -1,5 +1,6 @@
 package me.lortseam.completeconfig.data;
 
+import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
@@ -10,11 +11,14 @@ import java.util.function.Function;
 
 public class SliderEntry<T extends Number> extends BoundedEntry<T> {
 
+    @Getter
+    private final T interval;
     @Environment(EnvType.CLIENT)
     private TranslationKey valueTranslation;
 
-    public SliderEntry(EntryOrigin origin, T min, T max) {
+    public SliderEntry(EntryOrigin origin, T min, T max, T interval) {
         super(origin, min, max);
+        this.interval = interval;
     }
 
     @Override
