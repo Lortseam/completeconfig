@@ -33,7 +33,6 @@ public final class Transformation {
             }),
             new Transformation(filter().byType(int.class, Integer.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedInteger.class, ConfigEntry.Slider.class)).byAnnotation(ConfigEntry.IntegerSliderInterval.class, true), origin -> {
                 ConfigEntry.BoundedInteger bounds = origin.getAnnotation(ConfigEntry.BoundedInteger.class);
-                // TODO: Calculate fallback interval based on min and max
                 return new SliderEntry<>(origin, bounds.min(), bounds.max(), origin.getOptionalAnnotation(ConfigEntry.IntegerSliderInterval.class).map(ConfigEntry.IntegerSliderInterval::value).orElse(1));
             }),
             new Transformation(filter().byType(long.class, Long.class).byAnnotation(ConfigEntry.BoundedLong.class), origin -> {
@@ -42,7 +41,6 @@ public final class Transformation {
             }),
             new Transformation(filter().byType(long.class, Long.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedLong.class, ConfigEntry.Slider.class)), origin -> {
                 ConfigEntry.BoundedLong bounds = origin.getAnnotation(ConfigEntry.BoundedLong.class);
-                // TODO: Calculate fallback interval based on min and max
                 return new SliderEntry<>(origin, bounds.min(), bounds.max(), origin.getOptionalAnnotation(ConfigEntry.LongSliderInterval.class).map(ConfigEntry.LongSliderInterval::value).orElse(1L));
             }),
             new Transformation(filter().byType(float.class, Float.class).byAnnotation(ConfigEntry.BoundedFloat.class), origin -> {
@@ -51,7 +49,6 @@ public final class Transformation {
             }),
             new Transformation(filter().byType(float.class, Float.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedFloat.class, ConfigEntry.Slider.class)), origin -> {
                 ConfigEntry.BoundedFloat bounds = origin.getAnnotation(ConfigEntry.BoundedFloat.class);
-                // TODO: Calculate fallback interval based on min and max
                 return new SliderEntry<>(origin, bounds.min(), bounds.max(), origin.getOptionalAnnotation(ConfigEntry.FloatSliderInterval.class).map(ConfigEntry.FloatSliderInterval::value).orElse(0.1f));
             }),
             new Transformation(filter().byType(double.class, Double.class).byAnnotation(ConfigEntry.BoundedDouble.class), origin -> {
@@ -60,8 +57,7 @@ public final class Transformation {
             }),
             new Transformation(filter().byType(double.class, Double.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedDouble.class, ConfigEntry.Slider.class)), origin -> {
                 ConfigEntry.BoundedDouble bounds = origin.getAnnotation(ConfigEntry.BoundedDouble.class);
-                // TODO: Calculate fallback interval based on min and max
-                return new SliderEntry<>(origin, bounds.min(), bounds.max(), origin.getOptionalAnnotation(ConfigEntry.DoubleSliderInterval.class).map(ConfigEntry.DoubleSliderInterval::value).orElse(0.1));
+                return new SliderEntry<>(origin, bounds.min(), bounds.max(), origin.getOptionalAnnotation(ConfigEntry.DoubleSliderInterval.class).map(ConfigEntry.DoubleSliderInterval::value).orElse(0.01));
             }),
             new Transformation(filter().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))), EnumEntry::new),
             new Transformation(filter().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).byAnnotation(ConfigEntry.Dropdown.class), DropdownEntry::new),

@@ -114,14 +114,14 @@ public class ModConfig extends Config {
             private float floatSlider;
             @ConfigEntry.BoundedFloat(min = 0, max = 10)
             @ConfigEntry.Slider
-            @ConfigEntry.FloatSliderInterval(0.1f)
-            private float floatSliderSlider;
+            @ConfigEntry.FloatSliderInterval(0.5f)
+            private float floatIntervalSlider;
             @ConfigEntry.BoundedDouble(min = -10, max = 10)
             @ConfigEntry.Slider
             private double doubleSlider;
             @ConfigEntry.BoundedDouble(min = -10, max = 10)
             @ConfigEntry.Slider
-            @ConfigEntry.DoubleSliderInterval(0.1)
+            @ConfigEntry.DoubleSliderInterval(0.5)
             private double doubleIntervalSlider;
 
         }
