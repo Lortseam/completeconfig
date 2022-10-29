@@ -36,22 +36,22 @@ public class ModConfig extends Config {
     private static class DataTypes implements ConfigGroup {
 
         private boolean bool;
-//        private int anInt;
+        private int anInt;
 //        @ConfigEntry.BoundedInteger(min = 0, max = 10)
 //        private int boundedInt;
         @ConfigEntry.BoundedInteger(min = 0, max = 10)
         @ConfigEntry.Slider
         private int intSlider;
-//        private long aLong;
+        private long aLong;
 //        @ConfigEntry.BoundedLong(min = -10, max = 10)
 //        private long boundedLong;
         @ConfigEntry.BoundedLong(min = -10, max = 10)
         @ConfigEntry.Slider
         private long longSlider;
-//        private float aFloat;
+        private float aFloat;
 //        @ConfigEntry.BoundedFloat(min = 0, max = 10)
 //        private float boundedFloat;
-//        private double aDouble;
+        private double aDouble;
 //        @ConfigEntry.BoundedDouble(min = -10, max = 10)
 //        private double boundedDouble;
         private String string = "";

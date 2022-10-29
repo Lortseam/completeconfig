@@ -16,6 +16,7 @@ import me.lortseam.completeconfig.data.Entry;
 import me.lortseam.completeconfig.data.SliderEntry;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.GuiProvider;
+import me.lortseam.completeconfig.gui.yacl.controller.NumberController;
 import net.minecraft.client.gui.screen.Screen;
 
 import java.util.Collection;
@@ -35,9 +36,18 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
             GuiProvider.create(BooleanEntry.class, entry -> (Option<Boolean> option) -> new TickBoxController(
                     option
             ), BooleanEntry::isCheckbox, boolean.class, Boolean.class),
-            GuiProvider.create(entry -> (Option<String> option) -> new StringController(
+            GuiProvider.create(entry -> (Option<Integer> option) -> new NumberController<>(
                     option
-            ), String.class),
+            ), int.class, Integer.class),
+            GuiProvider.create(entry -> (Option<Long> option) -> new NumberController<>(
+                    option
+            ), long.class, Long.class),
+            GuiProvider.create(entry -> (Option<Float> option) -> new NumberController<>(
+                    option
+            ), float.class, Float.class),
+            GuiProvider.create(entry -> (Option<Double> option) -> new NumberController<>(
+                    option
+            ), double.class, Double.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> (Option<Integer> option) -> new IntegerSliderController(
                     option,
                     entry.getMin(),
@@ -61,7 +71,10 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
                     entry.getMin(),
                     entry.getMax(),
                     entry.getInterval()
-            ), double.class, Double.class)
+            ), double.class, Double.class),
+            GuiProvider.create(entry -> (Option<String> option) -> new StringController(
+                    option
+            ), String.class)
             // TODO: Compiler error
 //            GuiProvider.create(EnumEntry.class, entry -> (Option<Enum> option) -> new EnumController<>(
 //                    option,
