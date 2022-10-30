@@ -1,17 +1,17 @@
 package me.lortseam.completeconfig.data;
 
-import lombok.Getter;
 import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.text.TranslationKey;
+import me.lortseam.completeconfig.util.NumberUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.text.Text;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 public class SliderEntry<T extends Number> extends BoundedEntry<T> {
 
-    @Getter
     private final T interval;
     @Environment(EnvType.CLIENT)
     private TranslationKey valueTranslation;
@@ -35,6 +35,10 @@ public class SliderEntry<T extends Number> extends BoundedEntry<T> {
             return value -> valueTranslation.toText(value);
         }
         return super.getValueFormatter();
+    }
+
+    public Optional<T> getInterval() {
+        return NumberUtils.isPositive(interval) ? Optional.of(interval) : Optional.empty();
     }
 
 }

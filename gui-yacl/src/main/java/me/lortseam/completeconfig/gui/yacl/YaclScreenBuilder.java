@@ -52,25 +52,25 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
                     option,
                     entry.getMin(),
                     entry.getMax(),
-                    entry.getInterval()
+                    entry.getInterval().orElse(1)
             ), int.class, Integer.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Long> entry) -> (Option<Long> option) -> new LongSliderController(
                     option,
                     entry.getMin(),
                     entry.getMax(),
-                    entry.getInterval()
+                    entry.getInterval().orElse(1L)
             ), long.class, Long.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Float> entry) -> (Option<Float> option) -> new FloatSliderController(
                     option,
                     entry.getMin(),
                     entry.getMax(),
-                    entry.getInterval()
+                    entry.getInterval().orElse(0.1f)
             ), float.class, Float.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Double> entry) -> (Option<Double> option) -> new DoubleSliderController(
                     option,
                     entry.getMin(),
                     entry.getMax(),
-                    entry.getInterval()
+                    entry.getInterval().orElse(0.01)
             ), double.class, Double.class),
             GuiProvider.create(entry -> (Option<String> option) -> new StringController(
                     option

@@ -31,7 +31,7 @@ public class NumberController<T extends Number> implements IStringController<T> 
     public void setFromString(String string) {
         pendingString = string;
         var type = option.typeClass();
-        Number value;
+        Number value = option.binding().getValue();
         try {
             if (type == int.class || type == Integer.class) {
                 value = Integer.parseInt(string);
@@ -44,8 +44,8 @@ public class NumberController<T extends Number> implements IStringController<T> 
             } else {
                 throw new RuntimeException("Number class " + type.getSimpleName() + " is not supported");
             }
-            option.requestSet((T) value);
         } catch (NumberFormatException ignore) {}
+        option.requestSet((T) value);
     }
 
     @Override
