@@ -78,7 +78,7 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
             // TODO: Compiler error
 //            GuiProvider.create(EnumEntry.class, entry -> (Option<Enum> option) -> new EnumController<>(
 //                    option,
-//                    entry.getValueTextSupplier()
+//                    entry.getValueFormatter()
 //            ))
     );
 

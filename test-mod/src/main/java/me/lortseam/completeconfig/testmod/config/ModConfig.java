@@ -37,23 +37,15 @@ public class ModConfig extends Config {
 
         private boolean bool;
         private int anInt;
-//        @ConfigEntry.BoundedInteger(min = 0, max = 10)
-//        private int boundedInt;
         @ConfigEntry.BoundedInteger(min = 0, max = 10)
         @ConfigEntry.Slider
         private int intSlider;
         private long aLong;
-//        @ConfigEntry.BoundedLong(min = -10, max = 10)
-//        private long boundedLong;
         @ConfigEntry.BoundedLong(min = -10, max = 10)
         @ConfigEntry.Slider
         private long longSlider;
         private float aFloat;
-//        @ConfigEntry.BoundedFloat(min = 0, max = 10)
-//        private float boundedFloat;
         private double aDouble;
-//        @ConfigEntry.BoundedDouble(min = -10, max = 10)
-//        private double boundedDouble;
         private String string = "";
 //        private AnEnum anEnum = AnEnum.FOO;
 
@@ -74,6 +66,14 @@ public class ModConfig extends Config {
         @ConfigEntries(includeAll = true)
         private static class ClothConfigDataTypes implements ConfigContainer {
 
+            @ConfigEntry.BoundedInteger(min = 0, max = 10)
+            private int boundedInt;
+            @ConfigEntry.BoundedLong(min = -10, max = 10)
+            private long boundedLong;
+            @ConfigEntry.BoundedFloat(min = 0, max = 10)
+            private float boundedFloat;
+            @ConfigEntry.BoundedDouble(min = -10, max = 10)
+            private double boundedDouble;
             @ConfigEntry.Dropdown
             private AnEnum enumDropdown = AnEnum.FOO;
             private List<String> list = Arrays.asList("First entry", "Second entry");
@@ -87,9 +87,17 @@ public class ModConfig extends Config {
 
             @ConfigEntry.Checkbox
             private boolean checkboxBoolean;
+            @ConfigEntry.BoundedInteger(min = 0, max = 10)
+            private int boundedInt;
+            @ConfigEntry.BoundedLong(min = -10, max = 10)
+            private long boundedLong;
+            @ConfigEntry.BoundedFloat(min = 0, max = 10)
+            private float boundedFloat;
             @ConfigEntry.BoundedFloat(min = 0, max = 10)
             @ConfigEntry.Slider
             private float floatSlider;
+            @ConfigEntry.BoundedDouble(min = -10, max = 10)
+            private double boundedDouble;
             @ConfigEntry.BoundedDouble(min = -10, max = 10)
             @ConfigEntry.Slider
             private double doubleSlider;
