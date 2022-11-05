@@ -196,6 +196,9 @@ public @interface ConfigEntry {
 
     }
 
+    /**
+     * Specifies the interval of an integer slider.
+     */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface IntegerSliderInterval {
@@ -204,6 +207,9 @@ public @interface ConfigEntry {
 
     }
 
+    /**
+     * Specifies the interval of a long slider.
+     */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface LongSliderInterval {
@@ -212,6 +218,9 @@ public @interface ConfigEntry {
 
     }
 
+    /**
+     * Specifies the interval of a float slider.
+     */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface FloatSliderInterval {
@@ -220,6 +229,9 @@ public @interface ConfigEntry {
 
     }
 
+    /**
+     * Specifies the interval of a double slider.
+     */
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     @interface DoubleSliderInterval {
