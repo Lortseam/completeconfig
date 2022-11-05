@@ -38,22 +38,14 @@ public class ModConfig extends Config {
         private boolean bool;
         private int anInt;
         @ConfigEntry.BoundedInteger(min = 0, max = 10)
-        private int boundedInt;
-        @ConfigEntry.BoundedInteger(min = 0, max = 10)
         @ConfigEntry.Slider
         private int intSlider;
         private long aLong;
         @ConfigEntry.BoundedLong(min = -10, max = 10)
-        private long boundedLong;
-        @ConfigEntry.BoundedLong(min = -10, max = 10)
         @ConfigEntry.Slider
         private long longSlider;
         private float aFloat;
-        @ConfigEntry.BoundedFloat(min = 0, max = 10)
-        private float boundedFloat;
         private double aDouble;
-        @ConfigEntry.BoundedDouble(min = -10, max = 10)
-        private double boundedDouble;
         private String string = "";
         private AnEnum anEnum = AnEnum.FOO;
 
@@ -64,6 +56,7 @@ public class ModConfig extends Config {
                         switch (TestModClient.getScreenBuilderType()) {
                             case CLOTH_CONFIG -> new ClothConfigDataTypes();
                             case COAT -> new CoatDataTypes();
+                            case YACL -> new YaclDataTypes();
                         }
                 );
             }
@@ -73,6 +66,14 @@ public class ModConfig extends Config {
         @ConfigEntries(includeAll = true)
         private static class ClothConfigDataTypes implements ConfigContainer {
 
+            @ConfigEntry.BoundedInteger(min = 0, max = 10)
+            private int boundedInt;
+            @ConfigEntry.BoundedLong(min = -10, max = 10)
+            private long boundedLong;
+            @ConfigEntry.BoundedFloat(min = 0, max = 10)
+            private float boundedFloat;
+            @ConfigEntry.BoundedDouble(min = -10, max = 10)
+            private double boundedDouble;
             @ConfigEntry.Dropdown
             private AnEnum enumDropdown = AnEnum.FOO;
             private List<String> list = Arrays.asList("First entry", "Second entry");
@@ -86,12 +87,50 @@ public class ModConfig extends Config {
 
             @ConfigEntry.Checkbox
             private boolean checkboxBoolean;
+            @ConfigEntry.BoundedInteger(min = 0, max = 10)
+            private int boundedInt;
+            @ConfigEntry.BoundedLong(min = -10, max = 10)
+            private long boundedLong;
+            @ConfigEntry.BoundedFloat(min = 0, max = 10)
+            private float boundedFloat;
             @ConfigEntry.BoundedFloat(min = 0, max = 10)
             @ConfigEntry.Slider
             private float floatSlider;
             @ConfigEntry.BoundedDouble(min = -10, max = 10)
+            private double boundedDouble;
+            @ConfigEntry.BoundedDouble(min = -10, max = 10)
             @ConfigEntry.Slider
             private double doubleSlider;
+
+        }
+
+        @ConfigEntries(includeAll = true)
+        private static class YaclDataTypes implements ConfigContainer {
+
+            @ConfigEntry.Checkbox
+            private boolean checkboxBoolean;
+            @ConfigEntry.BoundedInteger(min = 0, max = 10)
+            @ConfigEntry.Slider
+            @ConfigEntry.IntegerSliderInterval(2)
+            private int intIntervalSlider;
+            @ConfigEntry.BoundedLong(min = -10, max = 10)
+            @ConfigEntry.Slider
+            @ConfigEntry.LongSliderInterval(2)
+            private long longIntervalSlider;
+            @ConfigEntry.BoundedFloat(min = 0, max = 10)
+            @ConfigEntry.Slider
+            private float floatSlider;
+            @ConfigEntry.BoundedFloat(min = 0, max = 10)
+            @ConfigEntry.Slider
+            @ConfigEntry.FloatSliderInterval(0.5f)
+            private float floatIntervalSlider;
+            @ConfigEntry.BoundedDouble(min = -10, max = 10)
+            @ConfigEntry.Slider
+            private double doubleSlider;
+            @ConfigEntry.BoundedDouble(min = -10, max = 10)
+            @ConfigEntry.Slider
+            @ConfigEntry.DoubleSliderInterval(0.5)
+            private double doubleIntervalSlider;
 
         }
 

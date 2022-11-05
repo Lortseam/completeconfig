@@ -11,4 +11,8 @@ public final class NumberUtils {
         return new BigDecimal(first.toString()).compareTo(new BigDecimal(second.toString()));
     }
 
+    public static boolean isPositive(Number number) {
+        return compare(number, 0) > 0;
+    }
+
 }
