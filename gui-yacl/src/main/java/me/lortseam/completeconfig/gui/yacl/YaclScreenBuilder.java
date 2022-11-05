@@ -3,6 +3,7 @@ package me.lortseam.completeconfig.gui.yacl;
 import com.google.common.collect.Lists;
 import dev.isxander.yacl.api.*;
 import dev.isxander.yacl.gui.controllers.BooleanController;
+import dev.isxander.yacl.gui.controllers.EnumController;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
 import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
 import dev.isxander.yacl.gui.controllers.slider.FloatSliderController;
@@ -10,10 +11,7 @@ import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController;
 import dev.isxander.yacl.gui.controllers.slider.LongSliderController;
 import dev.isxander.yacl.gui.controllers.string.StringController;
 import me.lortseam.completeconfig.CompleteConfig;
-import me.lortseam.completeconfig.data.BooleanEntry;
-import me.lortseam.completeconfig.data.Config;
-import me.lortseam.completeconfig.data.Entry;
-import me.lortseam.completeconfig.data.SliderEntry;
+import me.lortseam.completeconfig.data.*;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.GuiProvider;
 import me.lortseam.completeconfig.gui.yacl.controller.NumberController;
@@ -74,12 +72,11 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
             ), double.class, Double.class),
             GuiProvider.create(entry -> (Option<String> option) -> new StringController(
                     option
-            ), String.class)
-            // TODO: Compiler error
-//            GuiProvider.create(EnumEntry.class, entry -> (Option<Enum> option) -> new EnumController<>(
-//                    option,
-//                    entry.getValueFormatter()
-//            ))
+            ), String.class),
+            GuiProvider.create(EnumEntry.class, (EnumEntry<?> entry) -> (Option<Enum<?>> option) -> new EnumController(
+                    option,
+                    entry.getValueFormatter()
+            ))
     );
 
     static {

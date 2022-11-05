@@ -47,7 +47,7 @@ public class ModConfig extends Config {
         private float aFloat;
         private double aDouble;
         private String string = "";
-//        private AnEnum anEnum = AnEnum.FOO;
+        private AnEnum anEnum = AnEnum.FOO;
 
         @Override
         public Collection<ConfigContainer> getTransitives() {
