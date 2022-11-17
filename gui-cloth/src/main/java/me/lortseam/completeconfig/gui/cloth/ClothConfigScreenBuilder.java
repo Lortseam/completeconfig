@@ -28,9 +28,9 @@ import java.util.function.Supplier;
 /**
  * A screen builder based on the Cloth Config API.
  */
-public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBuilder<?, ?>> {
+public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBuilder<?, ?, ?>> {
 
-    private static final List<GuiProvider<FieldBuilder<?, ?>>> globalProviders = Lists.newArrayList(
+    private static final List<GuiProvider<FieldBuilder<?, ?, ?>>> globalProviders = Lists.newArrayList(
             GuiProvider.create(BooleanEntry.class, entry -> ConfigEntryBuilder.create()
                     .startBooleanToggle(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
@@ -204,7 +204,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
     );
 
     static {
-        for (Collection<GuiProvider<FieldBuilder<?, ?>>> providers : CompleteConfig.collectExtensions(ClothConfigGuiExtension.class, ClothConfigGuiExtension::getProviders)) {
+        for (Collection<GuiProvider<FieldBuilder<?, ?, ?>>> providers : CompleteConfig.collectExtensions(ClothConfigGuiExtension.class, ClothConfigGuiExtension::getProviders)) {
             globalProviders.addAll(providers);
         }
     }
@@ -260,7 +260,7 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
     }
 
     private AbstractConfigListEntry<?> buildEntry(Entry<?> entry) {
-        FieldBuilder<?, ?> builder = createEntry(entry);
+        FieldBuilder<?, ?, ?> builder = createEntry(entry);
         builder.requireRestart(entry.requiresRestart());
         return  builder.build();
     }

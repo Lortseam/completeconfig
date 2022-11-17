@@ -13,7 +13,7 @@ import java.util.List;
 public final class ClothConfigClothConfigGuiExtension implements ClothConfigGuiExtension {
 
     @Override
-    public List<GuiProvider<FieldBuilder<?, ?>>> getProviders() {
+    public List<GuiProvider<FieldBuilder<?, ?, ?>>> getProviders() {
         return List.of(GuiProvider.create((Entry<ModifierKeyCode> entry) -> ConfigEntryBuilder.create()
                         .startModifierKeyCodeField(entry.getName(), entry.getValue())
                         .setDefaultValue(entry.getDefaultValue())

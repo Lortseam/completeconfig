@@ -13,7 +13,7 @@ public interface ClothConfigGuiExtension extends Extension {
      *
      * @return a collection of GUI providers
      */
-    default Collection<GuiProvider<FieldBuilder<?, ?>>> getProviders() {
+    default Collection<GuiProvider<FieldBuilder<?, ?, ?>>> getProviders() {
         return null;
     }
 

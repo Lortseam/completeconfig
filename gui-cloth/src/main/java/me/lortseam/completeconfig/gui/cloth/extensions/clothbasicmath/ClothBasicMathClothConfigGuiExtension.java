@@ -13,7 +13,7 @@ import java.util.List;
 public final class ClothBasicMathClothConfigGuiExtension implements ClothConfigGuiExtension {
 
     @Override
-    public List<GuiProvider<FieldBuilder<?, ?>>> getProviders() {
+    public List<GuiProvider<FieldBuilder<?, ?, ?>>> getProviders() {
         return List.of(GuiProvider.create(ColorEntry.class, (ColorEntry<Color> entry) -> ConfigEntryBuilder.create()
                         .startColorField(entry.getName(), entry.getValue())
                         .setAlphaMode(entry.isAlphaMode())

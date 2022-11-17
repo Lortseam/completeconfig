@@ -15,7 +15,7 @@ import java.util.List;
 public final class MinecraftClothConfigGuiExtension implements ClothConfigGuiExtension {
 
     @Override
-    public List<GuiProvider<FieldBuilder<?, ?>>> getProviders() {
+    public List<GuiProvider<FieldBuilder<?, ?, ?>>> getProviders() {
         return List.of(GuiProvider.create(ColorEntry.class, (ColorEntry<TextColor> entry) -> ConfigEntryBuilder.create()
                                 .startColorField(entry.getName(), entry.getValue())
                                 .setDefaultValue(entry.getDefaultValue())
@@ -26,7 +26,7 @@ public final class MinecraftClothConfigGuiExtension implements ClothConfigGuiExt
                                 .startKeyCodeField(entry.getName(), entry.getValue())
                                 .setDefaultValue(entry.getDefaultValue())
                                 .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                                .setSaveConsumer(entry::setValue),
+                                .setKeySaveConsumer(entry::setValue),
                         InputUtil.Key.class));
     }
 
