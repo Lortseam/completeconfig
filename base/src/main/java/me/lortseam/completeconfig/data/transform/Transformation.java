@@ -31,9 +31,9 @@ public final class Transformation {
                 ConfigEntry.BoundedInteger bounds = origin.getAnnotation(ConfigEntry.BoundedInteger.class);
                 return new BoundedEntry<>(origin, bounds.min(), bounds.max());
             }),
-            new Transformation(filter().byType(int.class, Integer.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedInteger.class, ConfigEntry.Slider.class)), origin -> {
+            new Transformation(filter().byType(int.class, Integer.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedInteger.class, ConfigEntry.Slider.class)).byAnnotation(ConfigEntry.IntegerSliderInterval.class, true), origin -> {
                 ConfigEntry.BoundedInteger bounds = origin.getAnnotation(ConfigEntry.BoundedInteger.class);
-                return new SliderEntry<>(origin, bounds.min(), bounds.max());
+                return new SliderEntry<>(origin, bounds.min(), bounds.max(), origin.getOptionalAnnotation(ConfigEntry.IntegerSliderInterval.class).map(ConfigEntry.IntegerSliderInterval::value).orElse(0));
             }),
             new Transformation(filter().byType(long.class, Long.class).byAnnotation(ConfigEntry.BoundedLong.class), origin -> {
                 ConfigEntry.BoundedLong bounds = origin.getAnnotation(ConfigEntry.BoundedLong.class);
@@ -41,7 +41,7 @@ public final class Transformation {
             }),
             new Transformation(filter().byType(long.class, Long.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedLong.class, ConfigEntry.Slider.class)), origin -> {
                 ConfigEntry.BoundedLong bounds = origin.getAnnotation(ConfigEntry.BoundedLong.class);
-                return new SliderEntry<>(origin, bounds.min(), bounds.max());
+                return new SliderEntry<>(origin, bounds.min(), bounds.max(), origin.getOptionalAnnotation(ConfigEntry.LongSliderInterval.class).map(ConfigEntry.LongSliderInterval::value).orElse(0L));
             }),
             new Transformation(filter().byType(float.class, Float.class).byAnnotation(ConfigEntry.BoundedFloat.class), origin -> {
                 ConfigEntry.BoundedFloat bounds = origin.getAnnotation(ConfigEntry.BoundedFloat.class);
@@ -49,7 +49,7 @@ public final class Transformation {
             }),
             new Transformation(filter().byType(float.class, Float.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedFloat.class, ConfigEntry.Slider.class)), origin -> {
                 ConfigEntry.BoundedFloat bounds = origin.getAnnotation(ConfigEntry.BoundedFloat.class);
-                return new SliderEntry<>(origin, bounds.min(), bounds.max());
+                return new SliderEntry<>(origin, bounds.min(), bounds.max(), origin.getOptionalAnnotation(ConfigEntry.FloatSliderInterval.class).map(ConfigEntry.FloatSliderInterval::value).orElse(0f));
             }),
             new Transformation(filter().byType(double.class, Double.class).byAnnotation(ConfigEntry.BoundedDouble.class), origin -> {
                 ConfigEntry.BoundedDouble bounds = origin.getAnnotation(ConfigEntry.BoundedDouble.class);
@@ -57,7 +57,7 @@ public final class Transformation {
             }),
             new Transformation(filter().byType(double.class, Double.class).byAnnotation(Arrays.asList(ConfigEntry.BoundedDouble.class, ConfigEntry.Slider.class)), origin -> {
                 ConfigEntry.BoundedDouble bounds = origin.getAnnotation(ConfigEntry.BoundedDouble.class);
-                return new SliderEntry<>(origin, bounds.min(), bounds.max());
+                return new SliderEntry<>(origin, bounds.min(), bounds.max(), origin.getOptionalAnnotation(ConfigEntry.DoubleSliderInterval.class).map(ConfigEntry.DoubleSliderInterval::value).orElse(0d));
             }),
             new Transformation(filter().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))), EnumEntry::new),
             new Transformation(filter().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).byAnnotation(ConfigEntry.Dropdown.class), DropdownEntry::new),
@@ -167,9 +167,6 @@ public final class Transformation {
         }
 
         private Predicate<EntryOrigin> build() {
-            if (predicate == null && requiredAnnotations.isEmpty()) {
-                throw new IllegalStateException("Missing transformation filter");
-            }
             by(origin -> {
                 Set<Class<? extends Annotation>> declaredAnnotations = Arrays.stream(origin.getField().getDeclaredAnnotations()).map(Annotation::annotationType).filter(registeredAnnotations::contains).collect(Collectors.toSet());
                 for (Class<? extends Annotation> requiredAnnotation : requiredAnnotations) {

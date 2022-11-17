@@ -1,19 +1,18 @@
-package me.lortseam.completeconfig.gui.cloth;
+package me.lortseam.completeconfig.gui.yacl;
 
 import me.lortseam.completeconfig.Extension;
 import me.lortseam.completeconfig.gui.GuiProvider;
-import me.shedaniel.clothconfig2.impl.builders.FieldBuilder;
 
 import java.util.Collection;
 
-public interface ClothConfigGuiExtension extends Extension {
+public interface YaclGuiExtension extends Extension {
 
     /**
      * Used to register global GUI providers.
      *
      * @return a collection of GUI providers
      */
-    default Collection<GuiProvider<FieldBuilder<?, ?, ?>>> getProviders() {
+    default Collection<GuiProvider<ControllerFunction<?>>> getProviders() {
         return null;
     }
 

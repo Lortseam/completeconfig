@@ -52,7 +52,7 @@ public final class EntryOrigin {
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
         A annotation = field.getDeclaredAnnotation(annotationType);
         if (annotation == null) {
-            throw new IllegalStateException("Missing required transformation annotation: " + annotationType);
+            throw new RuntimeException("Missing required transformation annotation: " + annotationType);
         }
         return annotation;
     }

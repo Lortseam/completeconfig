@@ -197,6 +197,50 @@ public @interface ConfigEntry {
     }
 
     /**
+     * Specifies the interval of an integer slider.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface IntegerSliderInterval {
+
+        int value();
+
+    }
+
+    /**
+     * Specifies the interval of a long slider.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface LongSliderInterval {
+
+        long value();
+
+    }
+
+    /**
+     * Specifies the interval of a float slider.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface FloatSliderInterval {
+
+        float value();
+
+    }
+
+    /**
+     * Specifies the interval of a double slider.
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface DoubleSliderInterval {
+
+        double value();
+
+    }
+
+    /**
      * If applied, renders a dropdown menu for this entry.
      */
     @Target(ElementType.FIELD)

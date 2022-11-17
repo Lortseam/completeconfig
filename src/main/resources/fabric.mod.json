@@ -7,9 +7,9 @@
   "description": "Configuration library",
   "contact": {
     "email": "lortseam@gmail.com",
-    "homepage": "https://gitlab.com/Lortseam/completeconfig",
-    "sources": "https://gitlab.com/Lortseam/completeconfig",
-    "issues": "https://gitlab.com/Lortseam/completeconfig/-/issues"
+    "homepage": "https://github.com/Lortseam/completeconfig",
+    "sources": "https://github.com/Lortseam/completeconfig",
+    "issues": "https://github.com/Lortseam/completeconfig/issues"
   },
   "authors": [
     "Lortseam"

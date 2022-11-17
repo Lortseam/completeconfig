@@ -3,6 +3,7 @@ package me.lortseam.completeconfig.testmod.gui;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.cloth.ClothConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.coat.CoatScreenBuilder;
+import me.lortseam.completeconfig.gui.yacl.YaclScreenBuilder;
 
 public enum ScreenBuilderType {
 
@@ -16,6 +17,12 @@ public enum ScreenBuilderType {
         @Override
         public ConfigScreenBuilder<?> create() {
             return new CoatScreenBuilder();
+        }
+    },
+    YACL() {
+        @Override
+        public ConfigScreenBuilder<?> create() {
+            return new YaclScreenBuilder();
         }
     };
 

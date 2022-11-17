@@ -4,16 +4,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.api.ConfigEntries;
 import me.lortseam.completeconfig.api.ConfigEntry;
-import me.lortseam.completeconfig.data.extension.DataExtension;
 import me.lortseam.completeconfig.data.structure.Identifiable;
 import me.lortseam.completeconfig.data.structure.StructurePart;
 import me.lortseam.completeconfig.data.structure.client.DescriptionSupplier;
 import me.lortseam.completeconfig.data.structure.client.Translatable;
 import me.lortseam.completeconfig.data.transform.Transformation;
-import me.lortseam.completeconfig.data.transform.Transformer;
 import me.lortseam.completeconfig.text.TranslationBase;
 import me.lortseam.completeconfig.text.TranslationKey;
 import me.lortseam.completeconfig.util.ReflectionUtils;
@@ -26,27 +23,23 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 @Slf4j(topic = "CompleteConfig")
 public class Entry<T> implements StructurePart, Identifiable, Translatable, DescriptionSupplier {
 
-    private static final Transformer DEFAULT_TRANSFORMER = Entry::new;
-
-    static {
-        for (Collection<Transformation> transformations : CompleteConfig.collectExtensions(DataExtension.class, DataExtension::getTransformations)) {
-            ConfigRegistry.register(transformations);
-        }
-    }
+    private static final Transformation DEFAULT_TRANSFORMATION = new Transformation(Transformation.filter(), Entry::new);
 
     static Entry<?> create(EntryOrigin origin) {
-        return ConfigRegistry.getTransformations().stream().filter(transformation -> {
+        return Stream.concat(origin.getRoot().getRegistry().getTransformations().stream(), Stream.of(DEFAULT_TRANSFORMATION)).filter(transformation -> {
             return transformation.test(origin);
-        }).findFirst().map(Transformation::getTransformer).orElse(DEFAULT_TRANSFORMER).transform(origin);
+        }).findFirst().orElseThrow(() -> {
+            return new UnsupportedOperationException("No suitable transformation found for field " + origin.getField());
+        }).getTransformer().transform(origin);
     }
 
     protected final EntryOrigin origin;
@@ -68,7 +61,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     private final UnaryOperator<T> revisor;
 
     protected Entry(EntryOrigin origin, UnaryOperator<T> revisor) {
-        ConfigRegistry.register(origin);
+        ConfigRegistry.registerEntryOrigin(origin);
         this.origin = origin;
         this.revisor = revisor;
         if (!getField().canAccess(origin.getObject())) {
@@ -167,7 +160,7 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
     }
 
     @Environment(EnvType.CLIENT)
-    public Function<T, Text> getValueTextSupplier() {
+    public Function<T, Text> getValueFormatter() {
         return value -> Text.of(value.toString());
     }
 

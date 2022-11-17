@@ -1,0 +1,5 @@
+dependencies {
+    api(project(path: ":base", configuration: "namedElements"))
+
+    modApi("dev.isxander:yet-another-config-lib:$yacl_version")
+}

@@ -42,7 +42,7 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
                     (MutableText) entry.getName(),
                     (MutableText) entry.getDescription().orElse(Text.empty()),
                     new BasicEntryHandler<>(entry),
-                    new ButtonConfigInput<>(BooleanUtils.booleanValues(), entry.getValue(), entry.getValueTextSupplier())
+                    new ButtonConfigInput<>(BooleanUtils.booleanValues(), entry.getValue(), entry.getValueFormatter())
             ), entry -> !entry.isCheckbox(), boolean.class, Boolean.class),
             GuiProvider.create((Entry<Integer> entry) -> new ConfigCategoryConfigEntry<>(
                     (MutableText) entry.getName(),
@@ -126,7 +126,7 @@ public final class CoatScreenBuilder extends ConfigScreenBuilder<ConfigCategoryC
                     (MutableText) entry.getName(),
                     (MutableText) entry.getDescription().orElse(Text.empty()),
                     new BasicEntryHandler<>(entry),
-                    new ButtonConfigInput<>(entry.getEnumConstants(), entry.getValue(), entry.getValueTextSupplier())
+                    new ButtonConfigInput<>(entry.getEnumConstants(), entry.getValue(), entry.getValueFormatter())
             ))
     );
 

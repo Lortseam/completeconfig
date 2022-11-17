@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ParentTest {
 
@@ -29,7 +30,10 @@ public class ParentTest {
 
             @Override
             Config getRoot() {
-                return mock(Config.class);
+                var config = mock(Config.class);
+                var registry = new ConfigRegistry();
+                when(config.getRegistry()).thenReturn(registry);
+                return config;
             }
 
             @Override
@@ -109,14 +113,14 @@ public class ParentTest {
 
     @Test
     public void resolve_throwIfNestedNonContainer() {
-        AssertionError error = assertThrows(AssertionError.class, () -> parent.resolve(new ContainerNestingStaticClass()));
-        assertEquals("Transitive " + ContainerNestingStaticClass.Class.class + " must implement " + ConfigContainer.class.getSimpleName(), error.getMessage());
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> parent.resolve(new ContainerNestingStaticClass()));
+        assertEquals("Transitive " + ContainerNestingStaticClass.Class.class + " must implement " + ConfigContainer.class.getSimpleName(), exception.getMessage());
     }
 
     @Test
     public void resolve_throwIfNestedNonStatic() {
-        AssertionError error = assertThrows(AssertionError.class, () -> parent.resolve(new ContainerNestingContainerWithEntry()));
-        assertEquals("Transitive " + ContainerNestingContainerWithEntry.Container.class + " must be static", error.getMessage());
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> parent.resolve(new ContainerNestingContainerWithEntry()));
+        assertEquals("Transitive " + ContainerNestingContainerWithEntry.Container.class + " must be static", exception.getMessage());
     }
 
     @Test

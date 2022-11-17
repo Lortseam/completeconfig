@@ -26,7 +26,7 @@ public class EntrySet extends OrderedSet<Entry> {
                 return field.isAnnotationPresent(ConfigEntry.class);
             }).map(field -> {
                 if (Modifier.isFinal(field.getModifiers())) {
-                    throw new AssertionError("Entry field " + field + " must not be final");
+                    throw new RuntimeException("Entry field " + field + " must not be final");
                 }
                 return Entry.create(new EntryOrigin(root, parent, field, container));
             }).forEach(this::add);

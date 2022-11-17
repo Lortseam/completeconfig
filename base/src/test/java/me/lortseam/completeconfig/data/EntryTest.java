@@ -81,6 +81,8 @@ public class EntryTest implements ConfigGroup {
         when(config.getMod()).thenReturn(modMetadata);
         var rootTranslation = new TranslationKey(config);
         when(config.getBaseTranslation()).thenReturn(rootTranslation);
+        var registry = new ConfigRegistry();
+        when(config.getRegistry()).thenReturn(registry);
         parent = new Cluster(config, this);
 
         entry = of("field");

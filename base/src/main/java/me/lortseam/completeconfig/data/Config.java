@@ -54,7 +54,7 @@ public class Config extends Parent implements ConfigContainer {
                 logger.warn(this + " is empty");
             }
         };
-        ConfigRegistry.register(this);
+        ConfigRegistry.registerConfig(this);
     }
 
     /**
@@ -160,6 +160,10 @@ public class Config extends Parent implements ConfigContainer {
     @Override
     Config getRoot() {
         return this;
+    }
+
+    ConfigRegistry getRegistry() {
+        return options.getRegistry();
     }
 
     @Override

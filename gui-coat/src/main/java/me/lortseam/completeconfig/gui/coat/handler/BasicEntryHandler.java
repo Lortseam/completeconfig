@@ -48,7 +48,7 @@ public class BasicEntryHandler<T, E extends Entry<T>> implements ConfigEntryHand
 
     @Override
     public final Text asText(T value) {
-        return entry.getValueTextSupplier().apply(value);
+        return entry.getValueFormatter().apply(value);
     }
 
 }
