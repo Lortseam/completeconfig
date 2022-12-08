@@ -55,8 +55,8 @@ public class ButtonConfigInput<T> implements ConfigInput<T> {
 
     @Override
     public void render(MatrixStack matrices, int x, int y, int width, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-        widget.x = x;
-        widget.y = y;
+        widget.setX(x);
+        widget.setY(y);
         widget.setWidth(width);
         widget.render(matrices, mouseX, mouseY, tickDelta);
     }
