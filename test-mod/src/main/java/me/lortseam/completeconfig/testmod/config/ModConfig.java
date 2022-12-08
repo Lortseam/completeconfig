@@ -36,16 +36,28 @@ public class ModConfig extends Config {
     private static class DataTypes implements ConfigGroup {
 
         private boolean bool;
+
         private int anInt;
+        private long aLong;
+        private float aFloat;
+        private double aDouble;
+
+        @ConfigEntry.BoundedInteger(min = 0, max = 10)
+        private int boundedInt;
+        @ConfigEntry.BoundedLong(min = -10, max = 10)
+        private long boundedLong;
+        @ConfigEntry.BoundedFloat(min = 0, max = 10)
+        private float boundedFloat;
+        @ConfigEntry.BoundedDouble(min = -10, max = 10)
+        private double boundedDouble;
+
         @ConfigEntry.BoundedInteger(min = 0, max = 10)
         @ConfigEntry.Slider
         private int intSlider;
-        private long aLong;
         @ConfigEntry.BoundedLong(min = -10, max = 10)
         @ConfigEntry.Slider
         private long longSlider;
-        private float aFloat;
-        private double aDouble;
+
         private String string = "";
         private AnEnum anEnum = AnEnum.FOO;
 
@@ -66,14 +78,6 @@ public class ModConfig extends Config {
         @ConfigEntries(includeAll = true)
         private static class ClothConfigDataTypes implements ConfigContainer {
 
-            @ConfigEntry.BoundedInteger(min = 0, max = 10)
-            private int boundedInt;
-            @ConfigEntry.BoundedLong(min = -10, max = 10)
-            private long boundedLong;
-            @ConfigEntry.BoundedFloat(min = 0, max = 10)
-            private float boundedFloat;
-            @ConfigEntry.BoundedDouble(min = -10, max = 10)
-            private double boundedDouble;
             @ConfigEntry.Dropdown
             private AnEnum enumDropdown = AnEnum.FOO;
             private List<String> list = Arrays.asList("First entry", "Second entry");
@@ -87,17 +91,10 @@ public class ModConfig extends Config {
 
             @ConfigEntry.Checkbox
             private boolean checkboxBoolean;
-            @ConfigEntry.BoundedInteger(min = 0, max = 10)
-            private int boundedInt;
-            @ConfigEntry.BoundedLong(min = -10, max = 10)
-            private long boundedLong;
-            @ConfigEntry.BoundedFloat(min = 0, max = 10)
-            private float boundedFloat;
+
             @ConfigEntry.BoundedFloat(min = 0, max = 10)
             @ConfigEntry.Slider
             private float floatSlider;
-            @ConfigEntry.BoundedDouble(min = -10, max = 10)
-            private double boundedDouble;
             @ConfigEntry.BoundedDouble(min = -10, max = 10)
             @ConfigEntry.Slider
             private double doubleSlider;
@@ -109,6 +106,14 @@ public class ModConfig extends Config {
 
             @ConfigEntry.Checkbox
             private boolean checkboxBoolean;
+
+            @ConfigEntry.BoundedFloat(min = 0, max = 10)
+            @ConfigEntry.Slider
+            private float floatSlider;
+            @ConfigEntry.BoundedDouble(min = -10, max = 10)
+            @ConfigEntry.Slider
+            private double doubleSlider;
+
             @ConfigEntry.BoundedInteger(min = 0, max = 10)
             @ConfigEntry.Slider
             @ConfigEntry.IntegerSliderInterval(2)
@@ -119,14 +124,8 @@ public class ModConfig extends Config {
             private long longIntervalSlider;
             @ConfigEntry.BoundedFloat(min = 0, max = 10)
             @ConfigEntry.Slider
-            private float floatSlider;
-            @ConfigEntry.BoundedFloat(min = 0, max = 10)
-            @ConfigEntry.Slider
             @ConfigEntry.FloatSliderInterval(0.5f)
             private float floatIntervalSlider;
-            @ConfigEntry.BoundedDouble(min = -10, max = 10)
-            @ConfigEntry.Slider
-            private double doubleSlider;
             @ConfigEntry.BoundedDouble(min = -10, max = 10)
             @ConfigEntry.Slider
             @ConfigEntry.DoubleSliderInterval(0.5)

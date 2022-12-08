@@ -10,11 +10,14 @@ import dev.isxander.yacl.gui.controllers.slider.FloatSliderController;
 import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController;
 import dev.isxander.yacl.gui.controllers.slider.LongSliderController;
 import dev.isxander.yacl.gui.controllers.string.StringController;
+import dev.isxander.yacl.gui.controllers.string.number.DoubleFieldController;
+import dev.isxander.yacl.gui.controllers.string.number.FloatFieldController;
+import dev.isxander.yacl.gui.controllers.string.number.IntegerFieldController;
+import dev.isxander.yacl.gui.controllers.string.number.LongFieldController;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.*;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.GuiProvider;
-import me.lortseam.completeconfig.gui.yacl.controller.NumberController;
 import net.minecraft.client.gui.screen.Screen;
 
 import java.util.Collection;
@@ -34,17 +37,45 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
             GuiProvider.create(BooleanEntry.class, entry -> (Option<Boolean> option) -> new TickBoxController(
                     option
             ), BooleanEntry::isCheckbox, boolean.class, Boolean.class),
-            GuiProvider.create(entry -> (Option<Integer> option) -> new NumberController<>(
-                    option
+            GuiProvider.create((Entry<Integer> entry) -> (Option<Integer> option) -> new IntegerFieldController(
+                    option,
+                    entry.getValueFormatter()
             ), int.class, Integer.class),
-            GuiProvider.create(entry -> (Option<Long> option) -> new NumberController<>(
-                    option
+            GuiProvider.create((Entry<Long> entry) -> (Option<Long> option) -> new LongFieldController(
+                    option,
+                    entry.getValueFormatter()
             ), long.class, Long.class),
-            GuiProvider.create(entry -> (Option<Float> option) -> new NumberController<>(
-                    option
+            GuiProvider.create((Entry<Float> entry) -> (Option<Float> option) -> new FloatFieldController(
+                    option,
+                    entry.getValueFormatter()
             ), float.class, Float.class),
-            GuiProvider.create(entry -> (Option<Double> option) -> new NumberController<>(
-                    option
+            GuiProvider.create((Entry<Double> entry) -> (Option<Double> option) -> new DoubleFieldController(
+                    option,
+                    entry.getValueFormatter()
+            ), double.class, Double.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Integer> entry) -> (Option<Integer> option) -> new IntegerFieldController(
+                    option,
+                    entry.getMin(),
+                    entry.getMax(),
+                    entry.getValueFormatter()
+            ), int.class, Integer.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Long> entry) -> (Option<Long> option) -> new LongFieldController(
+                    option,
+                    entry.getMin(),
+                    entry.getMax(),
+                    entry.getValueFormatter()
+            ), long.class, Long.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Float> entry) -> (Option<Float> option) -> new FloatFieldController(
+                    option,
+                    entry.getMin(),
+                    entry.getMax(),
+                    entry.getValueFormatter()
+            ), float.class, Float.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Double> entry) -> (Option<Double> option) -> new DoubleFieldController(
+                    option,
+                    entry.getMin(),
+                    entry.getMax(),
+                    entry.getValueFormatter()
             ), double.class, Double.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> (Option<Integer> option) -> new IntegerSliderController(
                     option,
