@@ -83,6 +83,7 @@ public class ModConfig extends Config {
             private List<String> list = Arrays.asList("First entry", "Second entry");
             private String[] array = new String[0];
             private Color color = Color.ofRGB(0, 255, 0);
+            private java.awt.Color awtColor = new java.awt.Color(255, 0, 0);
 
         }
 
@@ -130,6 +131,7 @@ public class ModConfig extends Config {
             @ConfigEntry.Slider
             @ConfigEntry.DoubleSliderInterval(0.5)
             private double doubleIntervalSlider;
+            private java.awt.Color awtColor = new java.awt.Color(255, 0, 0);
 
         }
 

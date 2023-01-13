@@ -3,6 +3,7 @@ package me.lortseam.completeconfig.gui.yacl;
 import com.google.common.collect.Lists;
 import dev.isxander.yacl.api.*;
 import dev.isxander.yacl.gui.controllers.BooleanController;
+import dev.isxander.yacl.gui.controllers.ColorController;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
 import dev.isxander.yacl.gui.controllers.cycling.EnumController;
 import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
@@ -20,6 +21,7 @@ import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
 import me.lortseam.completeconfig.gui.GuiProvider;
 import net.minecraft.client.gui.screen.Screen;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -107,7 +109,11 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
             GuiProvider.create(EnumEntry.class, (EnumEntry<?> entry) -> (Option<Enum<?>> option) -> new EnumController(
                     option,
                     entry.getValueFormatter()
-            ))
+            )),
+            GuiProvider.create(ColorEntry.class, (ColorEntry<Color> entry) -> (Option<Color> option) -> new ColorController(
+                    option,
+                    entry.isAlphaMode()
+            ), Color.class)
     );
 
     static {

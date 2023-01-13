@@ -8,6 +8,7 @@ import me.lortseam.completeconfig.data.*;
 import me.lortseam.completeconfig.util.ReflectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.awt.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -61,7 +62,8 @@ public final class Transformation {
             }),
             new Transformation(filter().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))), EnumEntry::new),
             new Transformation(filter().byType(type -> Enum.class.isAssignableFrom(ReflectionUtils.getTypeClass(type))).byAnnotation(ConfigEntry.Dropdown.class), DropdownEntry::new),
-            new Transformation(filter().byAnnotation(ConfigEntry.Color.class), origin -> new ColorEntry<>(origin, origin.getAnnotation(ConfigEntry.Color.class).alphaMode()))
+            new Transformation(filter().byAnnotation(ConfigEntry.Color.class), origin -> new ColorEntry<>(origin, origin.getAnnotation(ConfigEntry.Color.class).alphaMode())),
+            new Transformation(filter().byType(Color.class), origin -> new ColorEntry<>(origin, true))
     };
 
     /**

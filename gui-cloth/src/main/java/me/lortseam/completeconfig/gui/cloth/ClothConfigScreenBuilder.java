@@ -19,6 +19,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -200,7 +201,14 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
                     .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
                     .setSaveConsumer(list -> entry.setValue(list.toArray(new String[0]))),
-                    String[].class)
+                    String[].class),
+            GuiProvider.create(ColorEntry.class, (ColorEntry<Color> entry) -> ConfigEntryBuilder.create()
+                    .startColorField(entry.getName(), entry.getValue().getRGB())
+                    .setDefaultValue(entry.getDefaultValue().getRGB())
+                    .setAlphaMode(entry.isAlphaMode())
+                    .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
+                    .setSaveConsumer(rgb -> entry.setValue(new Color(rgb))),
+                    Color.class)
     );
 
     static {
