@@ -2,7 +2,7 @@ package me.lortseam.completeconfig.gui.cloth;
 
 import me.lortseam.completeconfig.Extension;
 import me.lortseam.completeconfig.gui.GuiProvider;
-import me.shedaniel.clothconfig2.impl.builders.FieldBuilder;
+import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 
 import java.util.Collection;
 
@@ -13,7 +13,7 @@ public interface ClothConfigGuiExtension extends Extension {
      *
      * @return a collection of GUI providers
      */
-    default Collection<GuiProvider<FieldBuilder<?, ?, ?>>> getProviders() {
+    default Collection<GuiProvider<AbstractConfigListEntry<?>>> getProviders() {
         return null;
     }
 

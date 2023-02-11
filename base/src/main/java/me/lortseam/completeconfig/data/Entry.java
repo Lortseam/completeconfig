@@ -88,6 +88,10 @@ public class Entry<T> implements StructurePart, Identifiable, Translatable, Desc
         return origin.getType();
     }
 
+    public final Type[] getGenericTypes() {
+        return origin.getGenericTypes();
+    }
+
     public final T getValue() {
         if (update()) {
             return getValue();

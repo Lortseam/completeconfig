@@ -19,6 +19,14 @@ public final class ReflectionUtils {
         return GenericTypeReflector.getExactFieldType(field, field.getDeclaringClass());
     }
 
+    public static Type[] getFieldGenericTypes(Field field) {
+        Type type = field.getGenericType();
+        if (type instanceof ParameterizedType) {
+            return ((ParameterizedType) type).getActualTypeArguments();
+        }
+        return new Type[0];
+    }
+
     public static <T> T instantiateClass(Class<T> clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<T> constructor = clazz.getDeclaredConstructor();
         if (!constructor.canAccess(null)) {

@@ -13,12 +13,12 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
-import me.shedaniel.clothconfig2.impl.builders.FieldBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.StringVisitable;
 import net.minecraft.text.Text;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,21 +28,23 @@ import java.util.function.Supplier;
 /**
  * A screen builder based on the Cloth Config API.
  */
-public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBuilder<?, ?, ?>> {
+public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<AbstractConfigListEntry<?>> {
 
-    private static final List<GuiProvider<FieldBuilder<?, ?, ?>>> globalProviders = Lists.newArrayList(
+    private static final List<GuiProvider<AbstractConfigListEntry<?>>> globalProviders = Lists.newArrayList(
             GuiProvider.create(BooleanEntry.class, entry -> ConfigEntryBuilder.create()
                     .startBooleanToggle(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setYesNoTextSupplier(entry.getValueFormatter())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     entry -> !entry.isCheckbox(), boolean.class, Boolean.class),
             GuiProvider.create((Entry<Integer> entry) -> ConfigEntryBuilder.create()
                     .startIntField(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     int.class, Integer.class),
             GuiProvider.create(BoundedEntry.class, (BoundedEntry<Integer> entry) -> ConfigEntryBuilder.create()
                     .startIntField(entry.getName(), entry.getValue())
@@ -50,27 +52,31 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
                     .setMin(entry.getMin())
                     .setMax(entry.getMax())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     int.class, Integer.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> ConfigEntryBuilder.create()
                     .startIntSlider(entry.getName(), entry.getValue(), entry.getMin(), entry.getMax())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTextGetter(entry.getValueFormatter())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     int.class, Integer.class),
             GuiProvider.create(ColorEntry.class, (ColorEntry<Integer> entry) -> ConfigEntryBuilder.create()
                     .startColorField(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setAlphaMode(entry.isAlphaMode())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     int.class, Integer.class),
             GuiProvider.create((Entry<Long> entry) -> ConfigEntryBuilder.create()
                     .startLongField(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     long.class, Long.class),
             GuiProvider.create(BoundedEntry.class, (BoundedEntry<Long> entry) -> ConfigEntryBuilder.create()
                     .startLongField(entry.getName(), entry.getValue())
@@ -78,20 +84,23 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
                     .setMin(entry.getMin())
                     .setMax(entry.getMax())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     long.class, Long.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Long> entry) -> ConfigEntryBuilder.create()
                     .startLongSlider(entry.getName(), entry.getValue(), entry.getMin(), entry.getMax())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTextGetter(entry.getValueFormatter())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     long.class, Long.class),
             GuiProvider.create((Entry<Float> entry) -> ConfigEntryBuilder.create()
                     .startFloatField(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     float.class, Float.class),
             GuiProvider.create(BoundedEntry.class, (BoundedEntry<Float> entry) -> ConfigEntryBuilder.create()
                     .startFloatField(entry.getName(), entry.getValue())
@@ -99,13 +108,15 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
                     .setMin(entry.getMin())
                     .setMax(entry.getMax())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     float.class, Float.class),
             GuiProvider.create((Entry<Double> entry) -> ConfigEntryBuilder.create()
                     .startDoubleField(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     double.class, Double.class),
             GuiProvider.create(BoundedEntry.class, (BoundedEntry<Double> entry) -> ConfigEntryBuilder.create()
                     .startDoubleField(entry.getName(), entry.getValue())
@@ -113,20 +124,23 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
                     .setMin(entry.getMin())
                     .setMax(entry.getMax())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     double.class, Double.class),
             GuiProvider.create((Entry<String> entry) -> ConfigEntryBuilder.create()
                     .startStrField(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     String.class),
             GuiProvider.create(EnumEntry.class, (EnumEntry<Enum<?>> entry) -> ConfigEntryBuilder.create()
                     .startEnumSelector(entry.getName(), entry.getTypeClass(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
                     .setEnumNameProvider(value -> entry.getValueFormatter().apply(value))
-                    .setSaveConsumer(entry::setValue)),
+                    .setSaveConsumer(entry::setValue)
+                    .build()),
             GuiProvider.create(DropdownEntry.class, (DropdownEntry<Enum<?>> entry) -> {
                 List<Enum<?>> enumValues = Arrays.asList(entry.getEnumConstants());
                 return ConfigEntryBuilder.create()
@@ -139,72 +153,91 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
                         .setSuggestionMode(entry.isSuggestionMode())
                         .setDefaultValue(entry.getDefaultValue())
                         .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                        .setSaveConsumer(entry::setValue);
+                        .setSaveConsumer(entry::setValue)
+                        .build();
             }),
             GuiProvider.create((Entry<List<Integer>> entry) -> ConfigEntryBuilder.create()
                     .startIntList(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     new TypeToken<List<Integer>>() {}.getType()),
             GuiProvider.create((Entry<Integer[]> entry) -> ConfigEntryBuilder.create()
                     .startIntList(entry.getName(), Arrays.asList(entry.getValue()))
                     .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(list -> entry.setValue(list.toArray(new Integer[0]))),
+                    .setSaveConsumer(list -> entry.setValue(list.toArray(new Integer[0])))
+                    .build(),
                     int[].class, Integer[].class),
             GuiProvider.create((Entry<List<Long>> entry) -> ConfigEntryBuilder.create()
                     .startLongList(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     new TypeToken<List<Long>>() {}.getType()),
             GuiProvider.create((Entry<Long[]> entry) -> ConfigEntryBuilder.create()
                     .startLongList(entry.getName(), Arrays.asList(entry.getValue()))
                     .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(list -> entry.setValue(list.toArray(new Long[0]))),
+                    .setSaveConsumer(list -> entry.setValue(list.toArray(new Long[0])))
+                    .build(),
                     long[].class, Long[].class),
             GuiProvider.create((Entry<List<Float>> entry) -> ConfigEntryBuilder.create()
                     .startFloatList(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     new TypeToken<List<Float>>() {}.getType()),
             GuiProvider.create((Entry<Float[]> entry) -> ConfigEntryBuilder.create()
                     .startFloatList(entry.getName(), Arrays.asList(entry.getValue()))
                     .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(list -> entry.setValue(list.toArray(new Float[0]))),
+                    .setSaveConsumer(list -> entry.setValue(list.toArray(new Float[0])))
+                    .build(),
                     float[].class, Float[].class),
             GuiProvider.create((Entry<List<Double>> entry) -> ConfigEntryBuilder.create()
                     .startDoubleList(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     new TypeToken<List<Double>>() {}.getType()),
             GuiProvider.create((Entry<Double[]> entry) -> ConfigEntryBuilder.create()
                     .startDoubleList(entry.getName(), Arrays.asList(entry.getValue()))
                     .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(list -> entry.setValue(list.toArray(new Double[0]))),
+                    .setSaveConsumer(list -> entry.setValue(list.toArray(new Double[0])))
+                    .build(),
                     double[].class, Double[].class),
             GuiProvider.create((Entry<List<String>> entry) -> ConfigEntryBuilder.create()
                     .startStrList(entry.getName(), entry.getValue())
                     .setDefaultValue(entry.getDefaultValue())
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(entry::setValue),
+                    .setSaveConsumer(entry::setValue)
+                    .build(),
                     new TypeToken<List<String>>() {}.getType()),
             GuiProvider.create((Entry<String[]> entry) -> ConfigEntryBuilder.create()
                     .startStrList(entry.getName(), Arrays.asList(entry.getValue()))
                     .setDefaultValue(Arrays.asList(entry.getDefaultValue()))
                     .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
-                    .setSaveConsumer(list -> entry.setValue(list.toArray(new String[0]))),
-                    String[].class)
+                    .setSaveConsumer(list -> entry.setValue(list.toArray(new String[0])))
+                    .build(),
+                    String[].class),
+            GuiProvider.create(ColorEntry.class, (ColorEntry<Color> entry) -> ConfigEntryBuilder.create()
+                    .startColorField(entry.getName(), entry.getValue().getRGB())
+                    .setDefaultValue(entry.getDefaultValue().getRGB())
+                    .setAlphaMode(entry.isAlphaMode())
+                    .setTooltip(entry.getDescription().map(description -> new Text[]{description}))
+                    .setSaveConsumer(rgb -> entry.setValue(new Color(rgb)))
+                    .build(),
+                    Color.class)
     );
 
     static {
-        for (Collection<GuiProvider<FieldBuilder<?, ?, ?>>> providers : CompleteConfig.collectExtensions(ClothConfigGuiExtension.class, ClothConfigGuiExtension::getProviders)) {
+        for (Collection<GuiProvider<AbstractConfigListEntry<?>>> providers : CompleteConfig.collectExtensions(ClothConfigGuiExtension.class, ClothConfigGuiExtension::getProviders)) {
             globalProviders.addAll(providers);
         }
     }
@@ -260,9 +293,9 @@ public final class ClothConfigScreenBuilder extends ConfigScreenBuilder<FieldBui
     }
 
     private AbstractConfigListEntry<?> buildEntry(Entry<?> entry) {
-        FieldBuilder<?, ?, ?> builder = createEntry(entry);
-        builder.requireRestart(entry.requiresRestart());
-        return  builder.build();
+        AbstractConfigListEntry<?> listEntry = createEntry(entry);
+        listEntry.setRequiresRestart(entry.requiresRestart());
+        return listEntry;
     }
 
 }

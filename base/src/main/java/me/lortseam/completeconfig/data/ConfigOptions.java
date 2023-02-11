@@ -9,15 +9,31 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.objectmapping.ObjectMapper;
+import org.spongepowered.configurate.serialize.CoercionFailedException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
+import java.awt.*;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 public final class ConfigOptions {
+
+    private static final TypeSerializerCollection COMMON_TYPE_SERIALIZERS = TypeSerializerCollection.builder()
+            .registerExact(TypeSerializer.of(Color.class, (v, pass) -> v.getRGB(), v -> {
+                if (v instanceof Integer) {
+                    // Integer value always contains alpha value
+                    return new Color((Integer) v, true);
+                }
+                throw new CoercionFailedException(v, Color.class.getSimpleName());
+            }))
+            .build();
 
     /**
      * Creates a {@link ConfigOptions.Builder} for the specified mod.
@@ -68,7 +84,9 @@ public final class ConfigOptions {
         HoconConfigurationLoader.Builder builder = HoconConfigurationLoader.builder()
                 .defaultOptions(options -> options
                         .serializers(typeSerializersBuilder -> {
+                            // Register user created serializers first so they can override default ones
                             typeSerializersBuilder.registerAll(typeSerializers);
+                            typeSerializersBuilder.registerAll(COMMON_TYPE_SERIALIZERS);
                             for (TypeSerializerCollection typeSerializers : CompleteConfig.collectExtensions(DataExtension.class, DataExtension::getTypeSerializers)) {
                                 typeSerializersBuilder.registerAll(typeSerializers);
                             }

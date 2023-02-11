@@ -25,10 +25,17 @@ public final class EntryOrigin {
     @Getter(AccessLevel.PACKAGE)
     private final Parent parent;
     @Getter
+    private final Class<? extends ConfigContainer> declaringClass;
+    @Getter
+    @EqualsAndHashCode.Include
+    private final ConfigContainer object;
+    @Getter
     @EqualsAndHashCode.Include
     private final Field field;
     @Getter
     private final Type type;
+    @Getter
+    private final Type[] genericTypes;
     @Getter
     private final ConfigContainer container;
 
@@ -36,17 +43,11 @@ public final class EntryOrigin {
         this.root = root;
         this.parent = parent;
         this.field = field;
-        type = ReflectionUtils.getFieldType(field);
         this.container = container;
-    }
-
-    public Class<? extends ConfigContainer> getDeclaringClass() {
-        return (Class<? extends ConfigContainer>) field.getDeclaringClass();
-    }
-
-    @EqualsAndHashCode.Include
-    public ConfigContainer getObject() {
-        return Modifier.isStatic(field.getModifiers()) ? null : container;
+        declaringClass = (Class<? extends ConfigContainer>) field.getDeclaringClass();
+        object = Modifier.isStatic(field.getModifiers()) ? null : container;
+        type = ReflectionUtils.getFieldType(field);
+        genericTypes = ReflectionUtils.getFieldGenericTypes(field);
     }
 
     public <A extends Annotation> A getAnnotation(Class<A> annotationType) {
@@ -70,7 +71,7 @@ public final class EntryOrigin {
     }
 
     public Optional<ConfigEntries> getClassAnnotation() {
-        return getOptionalAnnotation(ConfigEntries.class);
+        return Optional.ofNullable(declaringClass.getDeclaredAnnotation(ConfigEntries.class));
     }
 
 }
