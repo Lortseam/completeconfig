@@ -54,6 +54,11 @@ public class ButtonConfigInput<T> implements ConfigInput<T> {
     }
 
     @Override
+    public boolean isFocused() {
+        return widget.isFocused();
+    }
+
+    @Override
     public void render(MatrixStack matrices, int x, int y, int width, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
         widget.setX(x);
         widget.setY(y);

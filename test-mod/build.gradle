@@ -1,8 +1,10 @@
 dependencies {
     implementation(project(path: ":base", configuration: "namedElements"))
     implementation(project(path: ":gui-cloth", configuration: "namedElements"))
-    implementation(project(path: ":gui-coat", configuration: "namedElements"))
+    //implementation(project(path: ":gui-coat", configuration: "namedElements"))
     implementation(project(path: ":gui-yacl", configuration: "namedElements"))
 
-    modRuntimeOnly("com.terraformersmc:modmenu:$modmenu_version")
+    modRuntimeOnly("com.terraformersmc:modmenu:$modmenu_version") {
+        exclude(group: "net.fabricmc", module: 'fabric-loader')
+    }
 }
