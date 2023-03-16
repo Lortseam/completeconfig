@@ -2,6 +2,7 @@ dependencies {
     api(project(path: ":base", configuration: "namedElements"))
 
     modApi("de.siphalor:coat-$minecraft_major_minor_version:$coat_version") {
+        exclude(group: "net.fabricmc", module: 'fabric-loader')
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "de.siphalor", module: "amecsapi-$minecraft_major_minor_version")
         exclude(group: "com.github.astei", module: "lazydfu")
