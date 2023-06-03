@@ -1,7 +1,7 @@
 dependencies {
     api(project(path: ":base", configuration: "namedElements"))
 
-    modApi("dev.isxander:yet-another-config-lib:$yacl_version") {
+    modApi("dev.isxander.yacl:yet-another-config-lib-fabric:$yacl_version") {
         exclude(group: "net.fabricmc", module: 'fabric-loader')
     }
 }

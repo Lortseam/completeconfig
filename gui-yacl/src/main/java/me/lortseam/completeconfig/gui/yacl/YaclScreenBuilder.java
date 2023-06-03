@@ -2,19 +2,7 @@ package me.lortseam.completeconfig.gui.yacl;
 
 import com.google.common.collect.Lists;
 import dev.isxander.yacl.api.*;
-import dev.isxander.yacl.gui.controllers.BooleanController;
-import dev.isxander.yacl.gui.controllers.ColorController;
-import dev.isxander.yacl.gui.controllers.TickBoxController;
-import dev.isxander.yacl.gui.controllers.cycling.EnumController;
-import dev.isxander.yacl.gui.controllers.slider.DoubleSliderController;
-import dev.isxander.yacl.gui.controllers.slider.FloatSliderController;
-import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController;
-import dev.isxander.yacl.gui.controllers.slider.LongSliderController;
-import dev.isxander.yacl.gui.controllers.string.StringController;
-import dev.isxander.yacl.gui.controllers.string.number.DoubleFieldController;
-import dev.isxander.yacl.gui.controllers.string.number.FloatFieldController;
-import dev.isxander.yacl.gui.controllers.string.number.IntegerFieldController;
-import dev.isxander.yacl.gui.controllers.string.number.LongFieldController;
+import dev.isxander.yacl.api.controller.*;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.*;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
@@ -31,89 +19,69 @@ import java.util.List;
 public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunction<?>> {
 
     private static final List<GuiProvider<ControllerFunction<?>>> globalProviders = Lists.newArrayList(
-            GuiProvider.create(BooleanEntry.class, entry -> (Option<Boolean> option) -> new BooleanController(
-                    option,
-                    entry.getValueFormatter(),
-                    false
-            ), (BooleanEntry entry) -> !entry.isCheckbox(), boolean.class, Boolean.class),
-            GuiProvider.create(BooleanEntry.class, entry -> (Option<Boolean> option) -> new TickBoxController(
-                    option
-            ), BooleanEntry::isCheckbox, boolean.class, Boolean.class),
-            GuiProvider.create((Entry<Integer> entry) -> (Option<Integer> option) -> new IntegerFieldController(
-                    option,
-                    entry.getValueFormatter()
-            ), int.class, Integer.class),
-            GuiProvider.create((Entry<Long> entry) -> (Option<Long> option) -> new LongFieldController(
-                    option,
-                    entry.getValueFormatter()
-            ), long.class, Long.class),
-            GuiProvider.create((Entry<Float> entry) -> (Option<Float> option) -> new FloatFieldController(
-                    option,
-                    entry.getValueFormatter()
-            ), float.class, Float.class),
-            GuiProvider.create((Entry<Double> entry) -> (Option<Double> option) -> new DoubleFieldController(
-                    option,
-                    entry.getValueFormatter()
-            ), double.class, Double.class),
-            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Integer> entry) -> (Option<Integer> option) -> new IntegerFieldController(
-                    option,
-                    entry.getMin(),
-                    entry.getMax(),
-                    entry.getValueFormatter()
-            ), int.class, Integer.class),
-            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Long> entry) -> (Option<Long> option) -> new LongFieldController(
-                    option,
-                    entry.getMin(),
-                    entry.getMax(),
-                    entry.getValueFormatter()
-            ), long.class, Long.class),
-            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Float> entry) -> (Option<Float> option) -> new FloatFieldController(
-                    option,
-                    entry.getMin(),
-                    entry.getMax(),
-                    entry.getValueFormatter()
-            ), float.class, Float.class),
-            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Double> entry) -> (Option<Double> option) -> new DoubleFieldController(
-                    option,
-                    entry.getMin(),
-                    entry.getMax(),
-                    entry.getValueFormatter()
-            ), double.class, Double.class),
-            GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> (Option<Integer> option) -> new IntegerSliderController(
-                    option,
-                    entry.getMin(),
-                    entry.getMax(),
-                    entry.getInterval().orElse(1)
-            ), int.class, Integer.class),
-            GuiProvider.create(SliderEntry.class, (SliderEntry<Long> entry) -> (Option<Long> option) -> new LongSliderController(
-                    option,
-                    entry.getMin(),
-                    entry.getMax(),
-                    entry.getInterval().orElse(1L)
-            ), long.class, Long.class),
-            GuiProvider.create(SliderEntry.class, (SliderEntry<Float> entry) -> (Option<Float> option) -> new FloatSliderController(
-                    option,
-                    entry.getMin(),
-                    entry.getMax(),
-                    entry.getInterval().orElse(0.1f)
-            ), float.class, Float.class),
-            GuiProvider.create(SliderEntry.class, (SliderEntry<Double> entry) -> (Option<Double> option) -> new DoubleSliderController(
-                    option,
-                    entry.getMin(),
-                    entry.getMax(),
-                    entry.getInterval().orElse(0.01)
-            ), double.class, Double.class),
-            GuiProvider.create(entry -> (Option<String> option) -> new StringController(
-                    option
-            ), String.class),
-            GuiProvider.create(EnumEntry.class, (EnumEntry<?> entry) -> (Option<Enum<?>> option) -> new EnumController(
-                    option,
-                    entry.getValueFormatter()
-            )),
-            GuiProvider.create(ColorEntry.class, (ColorEntry<Color> entry) -> (Option<Color> option) -> new ColorController(
-                    option,
-                    entry.isAlphaMode()
-            ), Color.class)
+            GuiProvider.create(BooleanEntry.class, entry -> (Option<Boolean> option) -> BooleanControllerBuilder.create(option)
+                            .valueFormatter(entry.getValueFormatter())
+                            .coloured(false),
+                    (BooleanEntry entry) -> !entry.isCheckbox(), boolean.class, Boolean.class),
+            GuiProvider.create(BooleanEntry.class, entry -> (Option<Boolean> option) -> TickBoxControllerBuilder.create(option),
+                    BooleanEntry::isCheckbox, boolean.class, Boolean.class),
+            GuiProvider.create((Entry<Integer> entry) -> (Option<Integer> option) -> IntegerFieldControllerBuilder.create(option)
+                            .valueFormatter(entry.getValueFormatter()),
+                    int.class, Integer.class),
+            GuiProvider.create((Entry<Long> entry) -> (Option<Long> option) -> LongFieldControllerBuilder.create(option)
+                            .valueFormatter(entry.getValueFormatter()),
+                    long.class, Long.class),
+            GuiProvider.create((Entry<Float> entry) -> (Option<Float> option) -> FloatFieldControllerBuilder.create(option)
+                            .valueFormatter(entry.getValueFormatter()),
+                    float.class, Float.class),
+            GuiProvider.create((Entry<Double> entry) -> (Option<Double> option) -> DoubleFieldControllerBuilder.create(option)
+                            .valueFormatter(entry.getValueFormatter()),
+                    double.class, Double.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Integer> entry) -> (Option<Integer> option) -> IntegerFieldControllerBuilder.create(option)
+                            .min(entry.getMin())
+                            .max(entry.getMax())
+                            .valueFormatter(entry.getValueFormatter()),
+                    int.class, Integer.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Long> entry) -> (Option<Long> option) -> LongFieldControllerBuilder.create(option)
+                            .min(entry.getMin())
+                            .max(entry.getMax())
+                            .valueFormatter(entry.getValueFormatter()),
+                    long.class, Long.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Float> entry) -> (Option<Float> option) -> FloatFieldControllerBuilder.create(option)
+                            .min(entry.getMin())
+                            .max(entry.getMax())
+                            .valueFormatter(entry.getValueFormatter()),
+                    float.class, Float.class),
+            GuiProvider.create(BoundedEntry.class, (BoundedEntry<Double> entry) -> (Option<Double> option) -> DoubleFieldControllerBuilder.create(option)
+                            .min(entry.getMin())
+                            .max(entry.getMax())
+                            .valueFormatter(entry.getValueFormatter()),
+                    double.class, Double.class),
+            GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> (Option<Integer> option) -> IntegerSliderControllerBuilder.create(option)
+                            .range(entry.getMin(), entry.getMax())
+                            .step(entry.getInterval().orElse(1)),
+                    int.class, Integer.class),
+            GuiProvider.create(SliderEntry.class, (SliderEntry<Long> entry) -> (Option<Long> option) -> LongSliderControllerBuilder.create(option)
+                            .range(entry.getMin(), entry.getMax())
+                            .step(entry.getInterval().orElse(1L)),
+                    long.class, Long.class),
+            GuiProvider.create(SliderEntry.class, (SliderEntry<Float> entry) -> (Option<Float> option) -> FloatSliderControllerBuilder.create(option)
+                            .range(entry.getMin(), entry.getMax())
+                            .step(entry.getInterval().orElse(0.1f)),
+                    float.class, Float.class),
+            GuiProvider.create(SliderEntry.class, (SliderEntry<Double> entry) -> (Option<Double> option) -> DoubleSliderControllerBuilder.create(option)
+                            .range(entry.getMin(), entry.getMax())
+                            .step(entry.getInterval().orElse(0.01)),
+                    double.class, Double.class),
+            GuiProvider.create(entry -> (Option<String> option) -> StringControllerBuilder.create(option),
+                    String.class),
+            GuiProvider.create(EnumEntry.class, (EnumEntry<?> entry) -> (Option<Enum<?>> option) -> EnumControllerBuilder.create((Option) option)
+                            .enumClass(entry.getTypeClass())
+                            .valueFormatter(entry.getValueFormatter())
+                    ),
+            GuiProvider.create(ColorEntry.class, (ColorEntry<Color> entry) -> (Option<Color> option) -> ColorControllerBuilder.create(option)
+                            .allowAlpha(entry.isAlphaMode()),
+                    Color.class)
     );
 
     static {
@@ -149,7 +117,7 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
             for (var subCluster : cluster.getClusters()) {
                 var groupBuilder = OptionGroup.createBuilder()
                         .name(subCluster.getName());
-                subCluster.getDescription().ifPresent(groupBuilder::tooltip);
+                subCluster.getDescription().ifPresent(description -> groupBuilder.description(OptionDescription.of(description)));
                 for (Entry<?> entry : subCluster.getEntries()) {
                     groupBuilder.option(buildOption(entry));
                 }
@@ -164,11 +132,11 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
     }
 
     private <T> Option<T> buildOption(Entry<T> entry) {
-        var builder = Option.createBuilder(entry.getTypeClass())
+        var builder = Option.<T>createBuilder()
                 .name(entry.getName())
                 .binding(entry.getDefaultValue(), entry::getValue, entry::setValue)
                 .controller(option -> ((ControllerFunction<T>) createEntry(entry)).apply(option));
-        entry.getDescription().ifPresent(builder::tooltip);
+        entry.getDescription().ifPresent(description -> builder.description(OptionDescription.of(description)));
         if (entry.requiresRestart()) {
             builder.flag(OptionFlag.GAME_RESTART);
         }
