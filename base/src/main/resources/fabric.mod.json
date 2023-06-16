@@ -6,11 +6,6 @@
   "license": "Apache-2.0",
 
   "environment": "*",
-  "entrypoints": {
-    "modmenu": [
-      "me.lortseam.completeconfig.gui.ModMenuIntegration"
-    ]
-  },
 
   "depends": {
     "java": ">=17",

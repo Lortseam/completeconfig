@@ -1,8 +1,8 @@
 package me.lortseam.completeconfig.gui.yacl;
 
 import com.google.common.collect.Lists;
-import dev.isxander.yacl.api.*;
-import dev.isxander.yacl.api.controller.*;
+import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.*;
 import me.lortseam.completeconfig.CompleteConfig;
 import me.lortseam.completeconfig.data.*;
 import me.lortseam.completeconfig.gui.ConfigScreenBuilder;
