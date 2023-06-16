@@ -1,9 +1,9 @@
 package me.lortseam.completeconfig.gui.yacl;
 
-import dev.isxander.yacl.api.Controller;
-import dev.isxander.yacl.api.Option;
+import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.controller.ControllerBuilder;
 
 import java.util.function.Function;
 
 @FunctionalInterface
-public interface ControllerFunction<T> extends Function<Option<T>, Controller<T>> {}
+public interface ControllerFunction<T> extends Function<Option<T>, ControllerBuilder<T>> {}

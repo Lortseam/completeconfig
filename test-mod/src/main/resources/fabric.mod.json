@@ -9,11 +9,14 @@
   "license": "Apache-2.0",
   "environment": "*",
   "entrypoints": {
+    "main": [
+      "me.lortseam.completeconfig.testmod.TestMod"
+    ],
     "client": [
       "me.lortseam.completeconfig.testmod.TestModClient"
     ],
-    "server": [
-      "me.lortseam.completeconfig.testmod.TestMod"
+    "modmenu": [
+      "me.lortseam.completeconfig.testmod.gui.ModMenuIntegration"
     ]
   },
   "depends": {
