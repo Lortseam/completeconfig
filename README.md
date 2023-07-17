@@ -17,8 +17,7 @@ usage and provide all the necessary components for mod configs.
 * Dynamic config creation
 * Listeners for reacting to config changes
 * User-friendly file format with permanently retained comments
-* Customizable config screen (GUI) generation
-* Automatic Mod Menu integration
+* Customizable config screen generation (Cloth Config and YACL)
 * Fully extensible via extension system
 
 ## Usage
