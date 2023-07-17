@@ -100,8 +100,10 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
                 .title(getTitle(config))
                 .save(config::save);
         if (!config.getEntries().isEmpty()) {
+            // If there is only one cluster, use the config title for the cluster name
+            var name = config.getClusters().isEmpty() ? getTitle(config) : config.getName();
             var categoryBuilder = ConfigCategory.createBuilder()
-                    .name(config.getName());
+                    .name(name);
             for (Entry<?> entry : config.getEntries()) {
                 categoryBuilder.option(buildOption(entry));
             }
