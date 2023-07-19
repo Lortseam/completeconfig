@@ -59,19 +59,23 @@ public final class YaclScreenBuilder extends ConfigScreenBuilder<ControllerFunct
                     double.class, Double.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Integer> entry) -> (Option<Integer> option) -> IntegerSliderControllerBuilder.create(option)
                             .range(entry.getMin(), entry.getMax())
-                            .step(entry.getInterval().orElse(1)),
+                            .step(entry.getInterval().orElse(1))
+                            .valueFormatter(entry.getValueFormatter()),
                     int.class, Integer.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Long> entry) -> (Option<Long> option) -> LongSliderControllerBuilder.create(option)
                             .range(entry.getMin(), entry.getMax())
-                            .step(entry.getInterval().orElse(1L)),
+                            .step(entry.getInterval().orElse(1L))
+                            .valueFormatter(entry.getValueFormatter()),
                     long.class, Long.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Float> entry) -> (Option<Float> option) -> FloatSliderControllerBuilder.create(option)
                             .range(entry.getMin(), entry.getMax())
-                            .step(entry.getInterval().orElse(0.1f)),
+                            .step(entry.getInterval().orElse(0.1f))
+                            .valueFormatter(entry.getValueFormatter()),
                     float.class, Float.class),
             GuiProvider.create(SliderEntry.class, (SliderEntry<Double> entry) -> (Option<Double> option) -> DoubleSliderControllerBuilder.create(option)
                             .range(entry.getMin(), entry.getMax())
-                            .step(entry.getInterval().orElse(0.01)),
+                            .step(entry.getInterval().orElse(0.01))
+                            .valueFormatter(entry.getValueFormatter()),
                     double.class, Double.class),
             GuiProvider.create(entry -> (Option<String> option) -> StringControllerBuilder.create(option),
                     String.class),
