@@ -12,6 +12,7 @@ import me.shedaniel.math.Color;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -132,6 +133,8 @@ public class ModConfig extends Config {
             @ConfigEntry.DoubleSliderInterval(0.5)
             private double doubleIntervalSlider;
             private java.awt.Color awtColor = new java.awt.Color(255, 0, 0);
+
+            private List<String> list = new ArrayList<>();
 
         }
 
