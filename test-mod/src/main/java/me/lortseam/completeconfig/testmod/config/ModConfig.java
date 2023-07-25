@@ -12,7 +12,6 @@ import me.shedaniel.math.Color;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -61,6 +60,9 @@ public class ModConfig extends Config {
 
         private String string = "";
         private AnEnum anEnum = AnEnum.FOO;
+        private java.awt.Color awtColor = new java.awt.Color(255, 0, 0);
+
+        private List<String> list = Arrays.asList("First entry", "Second entry");
 
         @Override
         public Collection<ConfigContainer> getTransitives() {
@@ -68,12 +70,11 @@ public class ModConfig extends Config {
                 return List.of(
                         switch (TestModClient.getScreenBuilderType()) {
                             case CLOTH_CONFIG -> new ClothConfigDataTypes();
-                            case COAT -> new CoatDataTypes();
                             case YACL -> new YaclDataTypes();
                         }
                 );
             }
-            return List.of(new ClothConfigDataTypes(), new CoatDataTypes());
+            return List.of(new ClothConfigDataTypes(), new YaclDataTypes());
         }
 
         @ConfigEntries(includeAll = true)
@@ -81,25 +82,8 @@ public class ModConfig extends Config {
 
             @ConfigEntry.Dropdown
             private AnEnum enumDropdown = AnEnum.FOO;
-            private List<String> list = Arrays.asList("First entry", "Second entry");
             private String[] array = new String[0];
             private Color color = Color.ofRGB(0, 255, 0);
-            private java.awt.Color awtColor = new java.awt.Color(255, 0, 0);
-
-        }
-
-        @ConfigEntries(includeAll = true)
-        private static class CoatDataTypes implements ConfigContainer {
-
-            @ConfigEntry.Checkbox
-            private boolean checkboxBoolean;
-
-            @ConfigEntry.BoundedFloat(min = 0, max = 10)
-            @ConfigEntry.Slider
-            private float floatSlider;
-            @ConfigEntry.BoundedDouble(min = -10, max = 10)
-            @ConfigEntry.Slider
-            private double doubleSlider;
 
         }
 
@@ -132,9 +116,6 @@ public class ModConfig extends Config {
             @ConfigEntry.Slider
             @ConfigEntry.DoubleSliderInterval(0.5)
             private double doubleIntervalSlider;
-            private java.awt.Color awtColor = new java.awt.Color(255, 0, 0);
-
-            private List<String> list = new ArrayList<>();
 
         }
 

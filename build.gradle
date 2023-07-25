@@ -67,9 +67,6 @@ allprojects {
             url "https://maven.shedaniel.me/"
         }
         maven {
-            url "https://maven.siphalor.de/"
-        }
-        maven {
             url "https://maven.isxander.dev/releases"
         }
         maven {
