@@ -5,7 +5,6 @@ import me.lortseam.completeconfig.api.ConfigEntry;
 import me.lortseam.completeconfig.text.TranslationKey;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 
 import java.util.HashMap;
@@ -52,11 +51,11 @@ public class BooleanEntry extends Entry<Boolean> {
     }
 
     @Override
-    public Function<Boolean, Text> getValueFormatter() {
+    public Optional<Function<Boolean, Text>> getValueFormatter() {
         if (getValueTranslations().isEmpty()) {
-            return ScreenTexts::onOrOff;
+            return Optional.empty();
         }
-        return value -> getValueTranslations().get(value).toText();
+        return Optional.of(value -> getValueTranslations().get(value).toText());
     }
 
 }
