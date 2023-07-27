@@ -1,7 +1,0 @@
-{
-  "modmenu.descriptionTranslation.completeconfig": "Көйләүләр китапханәсе",
-  "completeconfig.gui.coat.message.requiresRestart": "Яңадан кушуны таләп итә",
-  "completeconfig.gui.coat.message.tooLarge": "Бигрәк артык (Максимум: %d)",
-  "completeconfig.gui.coat.message.tooSmall": "Бигрәк ким (Минимум: %d)",
-  "completeconfig.gui.coat.message.invalidNumber": "Хаталы сан"
-}

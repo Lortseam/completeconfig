@@ -12,13 +12,6 @@ public enum ScreenBuilderType {
             return new ClothConfigScreenBuilder();
         }
     },
-    COAT() {
-        @Override
-        public ConfigScreenBuilder<?> create() {
-//            return new CoatScreenBuilder();
-            throw new UnsupportedOperationException();
-        }
-    },
     YACL() {
         @Override
         public ConfigScreenBuilder<?> create() {
