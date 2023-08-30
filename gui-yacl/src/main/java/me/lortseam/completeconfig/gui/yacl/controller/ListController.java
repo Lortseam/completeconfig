@@ -6,35 +6,29 @@ import dev.isxander.yacl3.api.controller.ControllerBuilder;
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.AbstractWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import me.lortseam.completeconfig.gui.yacl.ControllerFunction;
 import net.minecraft.text.Text;
 
 import java.util.List;
-import java.util.function.Function;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ListController<T> implements Controller<List<T>> {
 
-    public static <T> ControllerBuilder<List<T>> createBuilder(Function<Option<T>, ControllerBuilder<T>> elementControllerBuilder) {
-        return new ControllerBuilder<List<T>>() {
+    public static <T> ControllerBuilder<List<T>> createBuilder(ControllerFunction<T> elementControllerBuilder, T initialValue) {
+        return () -> new ListController<>(elementControllerBuilder, initialValue);
+    }
 
-            @Override
-            public Controller<List<T>> build() {
-                return new ListController<>(elementControllerBuilder);
-            }
-
-        };
+    public static <T> ControllerBuilder<List<T>> createBuilder(ControllerFunction<T> elementControllerBuilder) {
+        return createBuilder(elementControllerBuilder, null);
     }
 
     @Getter
-    private final Function<Option<T>, ControllerBuilder<T>> elementControllerBuilder;
+    private final ControllerFunction<T> elementControllerBuilder;
     @Getter
     private final T initialValue;
-
-    private ListController(Function<Option<T>, ControllerBuilder<T>> elementControllerBuilder) {
-        this(elementControllerBuilder, null);
-    }
 
     @Override
     public Option<List<T>> option() {
