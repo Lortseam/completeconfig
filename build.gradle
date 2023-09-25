@@ -73,6 +73,9 @@ allprojects {
             url "https://maven.isxander.dev/releases"
         }
         maven {
+            url "https://maven.quiltmc.org/repository/release"
+        }
+        maven {
             url "https://jitpack.io"
         }
     }
