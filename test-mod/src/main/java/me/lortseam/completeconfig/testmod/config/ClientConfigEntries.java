@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 @ConfigEntries(includeAll = true)
-public class ModClientConfig extends ModConfig {
+public class ClientConfigEntries implements ConfigContainer {
 
     private boolean defaultDescription;
     @ConfigEntry(descriptionKey = "customDescriptionKey")

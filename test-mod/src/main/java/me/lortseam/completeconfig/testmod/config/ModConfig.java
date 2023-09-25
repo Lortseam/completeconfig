@@ -11,6 +11,7 @@ import me.lortseam.completeconfig.testmod.TestModClient;
 import me.shedaniel.math.Color;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +31,14 @@ public class ModConfig extends Config {
     private boolean comment;
     @ConfigEntry(requiresRestart = true)
     private boolean requiresRestart;
+
+    @Override
+    public @Nullable Collection<ConfigContainer> getTransitives() {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            return List.of(new ClientConfigEntries());
+        }
+        return null;
+    }
 
     @Transitive
     @ConfigEntries(includeAll = true)
