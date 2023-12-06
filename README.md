@@ -7,11 +7,11 @@
 
 </div>
 
+### This library is deprecated and will not get updated for Minecraft 1.21. I suggest switching to [YACL](https://github.com/isXander/YetAnotherConfigLib).
+
 ## Overview
 CompleteConfig is a configuration library for [Fabric](https://fabricmc.net/) mods. It aims to be highly flexible in
 usage and provide all the necessary components for mod configs.
-
-**This library is deprecated and will not get updated for Minecraft 1.21. I suggest switching to [YACL](https://github.com/isXander/YetAnotherConfigLib).**
 
 ### Highlights
 * Client and Server support
