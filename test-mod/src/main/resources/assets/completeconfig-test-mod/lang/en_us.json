@@ -26,7 +26,7 @@
   "config.completeconfig-test-mod.dataTypes.anEnum.foo": "Foo",
   "config.completeconfig-test-mod.dataTypes.anEnum.bar": "Bar",
   "config.completeconfig-test-mod.dataTypes.anEnum.baz": "Baz",
-  "config.completeconfig-test-mod.dataTypes.enumDropdown": "Enum",
+  "config.completeconfig-test-mod.dataTypes.enumDropdown": "Enum (Dropdown)",
   "config.completeconfig-test-mod.dataTypes.enumDropdown.foo": "Foo",
   "config.completeconfig-test-mod.dataTypes.enumDropdown.bar": "Bar",
   "config.completeconfig-test-mod.dataTypes.enumDropdown.baz": "Baz",
